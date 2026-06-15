@@ -63,7 +63,9 @@
   font-family: "Segoe UI", Arial, sans-serif;
   font-size: 12px;
   cursor: pointer;
-  transition: background-color 0.2s, border-color 0.2s;
+  transition:
+    background-color 0.2s,
+    border-color 0.2s;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
@@ -310,15 +312,17 @@
 }
 
 .wm-camera-arrow {
-  width: 32px;
-  height: 32px;
-  line-height: 32px;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
   text-align: center;
-  font-size: 24px;
+  font-size: 30px;
   color: #ff4444;
-  text-shadow: 0 0 6px rgba(0, 0, 0, 0.9), 0 0 12px rgba(255, 68, 68, 0.6);
-  background: radial-gradient(circle, rgba(255,68,68,0.25) 0%, transparent 70%);
-  border-radius: 50%;
+  text-shadow:
+    0 0 4px rgba(0, 0, 0, 1),
+    0 0 8px rgba(0, 0, 0, 0.8),
+    0 0 14px rgba(255, 68, 68, 0.7);
+  filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.9));
   transition: transform 0.15s ease-out;
 }
 

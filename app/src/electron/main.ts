@@ -425,6 +425,23 @@ function parseCommandLineArgs(): void {
             callback({ requestHeaders: details.requestHeaders });
           }
         );
+
+        // In dev mode, override CSP to allow Vite's inline scripts (React Fast
+        // Refresh preamble). Without this, the meta-tag CSP in index.html blocks
+        // the inline <script> that @vitejs/plugin-react injects, preventing the
+        // app from loading at all (white screen).
+        if (isDev) {
+          session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+            callback({
+              responseHeaders: {
+                ...details.responseHeaders,
+                "Content-Security-Policy": [
+                  "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: ws: wss: http://localhost:* https://*; img-src 'self' data:",
+                ],
+              },
+            });
+          });
+        }
       }
       _appIsReady = true;
       _startWindow();
@@ -555,6 +572,24 @@ function _createMainAppWindow(): void {
       Log.debug("Input path does not exist appear to exist: " + currentPath);
     }
   }
+
+  // Surface page-load failures (e.g. Vite dev server not running) instead of
+  // silently showing a white screen.
+  _mainWindow.webContents.on(
+    "did-fail-load",
+    (_event: any, errorCode: number, errorDescription: string, validatedURL: string) => {
+      Log.fail(`[Electron] Page failed to load: ${errorDescription} (code ${errorCode}) — ${validatedURL}`);
+      if (isDev) {
+        _mainWindow?.loadURL(
+          `data:text/html,<html><body style="background:#1e1e1e;color:#ccc;font-family:sans-serif;padding:2em">` +
+            `<h2>Failed to load dev server</h2>` +
+            `<p><b>${errorDescription}</b> (code ${errorCode})</p>` +
+            `<p>URL: <code>${validatedURL}</code></p>` +
+            `<p>Make sure the Vite dev server is running (<code>npm run web</code> in the app/ folder).</p></body></html>`
+        );
+      }
+    }
+  );
 
   _mainWindow.loadURL(indexHtmlPath);
 

@@ -343,14 +343,31 @@ export async function fillRequiredProjectDialogFields(page: Page, values?: { cre
 
   // FormField renders a TextField with name={id}; the actual <input> uses that
   // name attribute. Match by name to avoid label-text fragility.
+  // Use a longer (5s) wait so we cover the dialog's enter animation (~450ms)
+  // plus the async CreatorTools readiness gate (NewProjectDialog returns null
+  // until tools have loaded — see CreatorToolsProvider).
   const creatorInput = page.locator('input[name="creator"]').first();
-  if (await creatorInput.isVisible({ timeout: 1500 }).catch(() => false)) {
-    const current = (await creatorInput.inputValue().catch(() => "")) || "";
-    if (!current.trim()) {
-      await creatorInput.fill(creator);
+  const visible = await creatorInput.isVisible({ timeout: 5000 }).catch(() => false);
+  if (!visible) {
+    // Fall back to matching by accessible label so test failures are louder
+    // than a silent skip when the markup changes.
+    const byLabel = page.getByLabel(/^Creator Name/i).first();
+    if (await byLabel.isVisible({ timeout: 1000 }).catch(() => false)) {
+      await byLabel.fill(creator);
       await page.waitForTimeout(150);
-      console.log(`fillRequiredProjectDialogFields: Set Creator = "${creator}"`);
+      console.log(`fillRequiredProjectDialogFields: Set Creator (by label) = "${creator}"`);
+      return;
     }
+    console.log("fillRequiredProjectDialogFields: Creator input was not visible within 5s — skipping fill");
+    return;
+  }
+  const current = (await creatorInput.inputValue().catch(() => "")) || "";
+  if (!current.trim()) {
+    await creatorInput.fill(creator);
+    await page.waitForTimeout(150);
+    console.log(`fillRequiredProjectDialogFields: Set Creator = "${creator}"`);
+  } else {
+    console.log(`fillRequiredProjectDialogFields: Creator already filled with "${current}"`);
   }
 }
 

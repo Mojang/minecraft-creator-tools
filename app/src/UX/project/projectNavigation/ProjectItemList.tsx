@@ -53,7 +53,7 @@ import ProjectEditorUtilities, {
   isItemViewShowingTextEditor,
 } from "../ProjectEditorUtilities";
 import StorageUtilities from "../../../storage/StorageUtilities";
-import { ListItemButton, Button as MuiButton, Menu, MenuItem, Divider } from "@mui/material";
+import { ListItemButton, Button as MuiButton, Menu, MenuItem, Divider, IconButton } from "@mui/material";
 
 import {
   AssetsIcon,
@@ -73,7 +73,7 @@ import IGalleryItem from "../../../app/IGalleryItem";
 import ColorUtilities from "../../../core/ColorUtilities";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFolder } from "@fortawesome/free-regular-svg-icons";
-import { faCaretDown, faCaretRight, faClock, faListCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faCaretDown, faCaretRight, faClock, faListCheck, faXmark, faPlus } from "@fortawesome/free-solid-svg-icons";
 import ProjectItemUtilities from "../../../app/ProjectItemUtilities";
 import { getProjectItemTypeGroup } from "../../../app/ProjectItemTypeInfo";
 import ProjectInfoSet from "../../../info/ProjectInfoSet";
@@ -81,7 +81,7 @@ import IProjectItemSeed from "../../../app/IProjectItemSeed";
 import ProjectInfoItem from "../../../info/ProjectInfoItem";
 import { InfoItemType } from "../../../info/IInfoItemData";
 import { AnnotatedValueSet, IAnnotatedValue } from "../../../core/AnnotatedValue";
-import ProjectAddButton from "./ProjectAddButton";
+import ProjectAddButton, { requestProjectAddItemOfType, canAddProjectItemType } from "./ProjectAddButton";
 import WebUtilities from "../../utils/WebUtilities";
 import ProjectCreateManager from "../../../app/ProjectCreateManager";
 import CreatorToolsHost, { CreatorToolsThemeStyle } from "../../../app/CreatorToolsHost";
@@ -502,9 +502,7 @@ const VirtualizedRow = ({
       // screen readers can announce the collapsed/expanded state of the group.
       // The decorative caret inside the row is `aria-hidden`, so this attribute
       // is the only programmatic state signal.
-      aria-expanded={
-        typeof item["aria-expanded"] === "boolean" ? (item["aria-expanded"] as boolean) : undefined
-      }
+      aria-expanded={typeof item["aria-expanded"] === "boolean" ? (item["aria-expanded"] as boolean) : undefined}
       role={item.role || "treeitem"}
       disableGutters
       sx={{ padding: 0, minHeight: 0, height: 36, boxSizing: "border-box" }}
@@ -1410,6 +1408,51 @@ class ProjectItemList extends Component<IProjectItemListProps, IProjectItemListS
       );
     }
 
+    // "Add new …" affordance: only show a quick-add control for category types
+    // that ProjectAddButton knows how to create, and only when the project is
+    // actually editable (not read-only / explorer role).
+    const canAddItem =
+      canAddProjectItemType(displayType) && !this.props.readOnly && this.props.project?.role !== ProjectRole.explorer;
+
+    const addLabel = this.props.intl.formatMessage({ id: "project_item_list.add_new_of_type" }, { name });
+
+    const handleAddItemClick = (e: React.MouseEvent<HTMLElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      requestProjectAddItemOfType(displayType);
+    };
+
+    const headerMenu = canAddItem
+      ? [
+          {
+            key: "addNew." + displayType,
+            content: addLabel,
+            icon: <FontAwesomeIcon icon={faPlus} className="fa-sm" />,
+            onClick: handleAddItemClick,
+          },
+        ]
+      : undefined;
+
+    const addButton = canAddItem ? (
+      <IconButton
+        className="pil-headerAddButton"
+        size="small"
+        aria-label={addLabel}
+        title={addLabel}
+        onClick={handleAddItemClick}
+        sx={{
+          color: this.props.theme.foreground1,
+          padding: "2px",
+          width: 22,
+          height: 22,
+          justifySelf: "center",
+          alignSelf: "center",
+        }}
+      >
+        <FontAwesomeIcon icon={faPlus} className="fa-sm" />
+      </IconButton>
+    ) : null;
+
     (projectListItems as any).push({
       role: "treeitem",
       onClick: this._handleItemTypeToggle,
@@ -1444,6 +1487,7 @@ class ProjectItemList extends Component<IProjectItemListProps, IProjectItemListS
             contextMenu={itemIndex !== this.state.contextFocusedItem}
             open={itemIndex === this.state.contextFocusedItem ? true : undefined}
             onBlur={this._itemContextBlurred}
+            menu={headerMenu}
             trigger={
               <span className="pil-headerLabel" title={tooltip}>
                 <span className="pil-name pit-name" title={name}>
@@ -1454,6 +1498,7 @@ class ProjectItemList extends Component<IProjectItemListProps, IProjectItemListS
             }
             onMenuItemClick={this._contextMenuClick}
           />
+          {addButton}
         </div>
       ),
     });

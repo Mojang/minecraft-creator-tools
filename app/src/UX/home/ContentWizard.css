@@ -252,6 +252,11 @@
   filter: brightness(0.85);
 }
 
+.cwiz-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* Stone/secondary variant — gray Minecraft stone look */
 .cwiz-btn-stone {
   background-color: #3a3a3a;

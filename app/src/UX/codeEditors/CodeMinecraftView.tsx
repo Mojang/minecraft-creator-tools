@@ -2,7 +2,7 @@ import { Component } from "react";
 import "./CodeMinecraftView.css";
 import { TextField } from "@mui/material";
 import IAppProps from "../appShell/IAppProps";
-import { AppMode } from "../appShell/App";
+import { AppMode } from "../appShell/AppMode";
 import Project from "../../app/Project";
 import CodeProjectGallery, { GalleryProjectCommand } from "../home/CodeProjectGallery";
 import IGalleryItem from "../../app/IGalleryItem";

@@ -6,9 +6,9 @@ import ProjectItem from "../../../app/ProjectItem";
 import IProjectInfoItemGenerator from "../../IProjectItemInfoGenerator";
 import { ProjectItemType } from "../../../app/IProjectItemData";
 import MCWorld from "../../../minecraft/MCWorld";
+import IWorldScanCache from "../../../minecraft/IWorldScanCache";
 import Log from "../../../core/Log";
 import { InfoItemType } from "../../IInfoItemData";
-import CommandBlockActor from "../../../minecraft/blockActors/CommandBlockActor";
 import { StatusTopic } from "../../../app/Status";
 import CommandStructure from "../../../app/CommandStructure";
 import ProjectInfoSet from "../../ProjectInfoSet";
@@ -179,13 +179,124 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
     }
   }
 
+  /**
+   * Apply a pre-built {@link IWorldScanCache} to this generator's suite-specific
+   * scoring rules. Pure transform — does not touch MCWorld state, does not
+   * iterate chunks, can be called repeatedly across suites with no side effects.
+   */
+  private applyScanToInfoItems(
+    scan: IWorldScanCache,
+    items: ProjectInfoItem[],
+    projectItem: ProjectItem,
+    blocksPi: ProjectInfoItem | undefined,
+    blockActorsPi: ProjectInfoItem | undefined,
+    commandsPi: ProjectInfoItem,
+    subCommandsPi: ProjectInfoItem
+  ) {
+    // Per-actor-id counts. The cache's `blockActorCounts` includes EVERY
+    // actor (command blocks + signs + everything else), matching the legacy
+    // "increment per actor.id seen" behavior.
+    if (blockActorsPi) {
+      for (const [actorId, count] of scan.blockActorCounts) {
+        blockActorsPi.incrementFeature(actorId, "count", count);
+      }
+    }
+
+    // Block-type counts.
+    if (blocksPi) {
+      for (const [typeName, count] of scan.blockTypeCounts) {
+        let type = typeName;
+        if (type.indexOf(":") >= 0 && type.indexOf("minecraft:") < 0) {
+          type = "(custom)";
+        }
+        blocksPi.incrementFeature(type, "count", count);
+      }
+    }
+
+    // Command-block-specific scoring. The cache already contributed each
+    // command-block's `id` to `blockActorCounts` above; here we apply the
+    // suite-sensitive rules (version recommendation, addon-blocked command,
+    // unexpected commands) and feed the per-command-name counters.
+    for (const cba of scan.commandBlockActors) {
+      if (cba.version !== undefined && blockActorsPi) {
+        blockActorsPi.spectrumIntFeature("Command Version", cba.version);
+      }
+
+      if (cba.version !== undefined && cba.version < this.modernCommandVersion) {
+        items.push(
+          new ProjectInfoItem(
+            InfoItemType.recommendation,
+            this.id,
+            WorldDataInfoGeneratorTest.commandIsFromOlderMinecraftVersion,
+            "Command '" + cba.command + "' is from an older Minecraft version (" + cba.version + ") ",
+            projectItem,
+            "(Command at location " + cba.x + ", " + cba.y + ", " + cba.z + ")",
+            undefined,
+            cba.command
+          )
+        );
+      }
+
+      if (cba.command && cba.command.trim().length > 0) {
+        const command = CommandStructure.parse(cba.command);
+
+        if (command.fullName.length === 0) {
+          // Skip empty command names (e.g., command block containing just "/")
+        } else if (CommandRegistry.isMinecraftBuiltInCommand(command.fullName)) {
+          if (this.performAddOnValidations && CommandRegistry.isAddOnBlockedCommand(command.fullName)) {
+            items.push(
+              new ProjectInfoItem(
+                InfoItemType.warning,
+                this.id,
+                WorldDataInfoGeneratorTest.containsWorldImpactingCommand,
+                "Contains command '" +
+                  command.fullName +
+                  "' which is impacts the state of the entire world, and generally shouldn't be used in an add-on",
+                projectItem,
+                command.fullName,
+                undefined,
+                cba.command
+              )
+            );
+          }
+
+          commandsPi.incrementFeature(command.fullName);
+
+          if (command.fullName === "execute") {
+            let foundRun = false;
+            for (const arg of command.commandArguments) {
+              if (arg === "run") {
+                foundRun = true;
+              } else if (foundRun && CommandRegistry.isMinecraftBuiltInCommand(arg)) {
+                subCommandsPi.incrementFeature(arg);
+                break;
+              }
+            }
+          }
+        } else if (!this.performAddOnValidations && !this.performPlatformVersionValidations) {
+          items.push(
+            new ProjectInfoItem(
+              InfoItemType.error,
+              this.id,
+              WorldDataInfoGeneratorTest.unexpectedCommandInCommandBlock,
+              "Unexpected command '" + command.fullName + "'",
+              projectItem,
+              command.fullName,
+              undefined,
+              cba.command
+            )
+          );
+        }
+      }
+    }
+  }
+
   async generate(
     projectItem: ProjectItem,
     contentIndex: ContentIndex,
     options?: IGeneratorOptions
   ): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
-    const performAggressiveCleanup = options?.performAggressiveCleanup ?? false;
     const onProgress = options?.onProgress;
 
     if (
@@ -372,6 +483,12 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
         maxNumberOfRecordsToProcess: maxRecordsToProcess,
       });
 
+      // A truncated load still counts as "loaded" so subsequent calls into
+      // `loadLevelDb` / `getDimensionInfo` short-circuit. But we still want
+      // to emit the "couldNotProcessWorld" info item so the report flags
+      // that downstream stats only reflect a partial scan.
+      const wasTruncated = mcworld.wasLoadTruncated;
+
       if (
         mcworld.isInErrorState &&
         mcworld.errorMessages &&
@@ -398,7 +515,7 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
         didProcessWorldData = false;
       }
 
-      if (!didProcessWorldData) {
+      if (!didProcessWorldData || wasTruncated) {
         items.push(
           new ProjectInfoItem(
             InfoItemType.info,
@@ -487,150 +604,49 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
       );
 
       if (didProcessWorldData) {
-        let blockCount = 0;
-        let chunkCount = 0;
-        let subchunkLessChunkCount = 0;
+        // CONTRACT
+        // --------
+        // World-scoped validation generators (this one,
+        // CustomDimensionWorldDataInfoGenerator, etc.) MUST NOT mutate
+        // world state. They read facts via `mcworld.getOrBuildScanSummary`,
+        // which is idempotent and project-scoped — every generator gets the
+        // same canonical answer regardless of call order.
+        //
+        // A typical CLI validate run invokes WorldDataInfoGenerator from
+        // 1-3 ProjectInfoSets (defaultInDevelopment, cooperativeAddOn,
+        // currentPlatformVersions). Each pass needs the same per-chunk facts
+        // (block counts, block-actor ids, command-block actor list) but
+        // emits DIFFERENT ProjectInfoItems based on its suite-specific
+        // rule gates (e.g. `performAddOnValidations`). The summary is built
+        // once on the first call and reused for free on every subsequent
+        // call.
+        //
+        // The final memory teardown (clearing chunk maps, LevelDB keys,
+        // and the scan cache) happens externally in
+        // `TaskWorker.releaseHeavyItemManagers` after all suites finish.
+        const scan = await mcworld.getOrBuildScanSummary({
+          progressCallback: async (processed, total) => {
+            const worldName = mcworld.name ?? "unknown";
+            const chunkPercent = total > 0 ? Math.floor((processed / total) * 100) : 0;
+            const mess =
+              "World validation: scanned " +
+              Math.floor(processed / 1000) +
+              "K of " +
+              Math.floor(total / 1000) +
+              "K chunks in " +
+              worldName;
 
-        // Use the memory-efficient chunk iterator with aggressive data clearing
-        // This prevents heap exhaustion on large worlds by clearing chunk data after processing
-        await mcworld.forEachChunk(
-          async (chunk, x, z, dimIndex) => {
-            chunkCount++;
-
-            if (chunk.subChunks.length <= 0) {
-              subchunkLessChunkCount++;
+            // Map chunk progress (0-100%) to the 30-80% range of overall validation
+            if (onProgress) {
+              const overallPercent = Math.floor(30 + chunkPercent * 0.5); // 30-80%
+              onProgress(mess, overallPercent);
             }
 
-            const blockActors = chunk.blockActors;
-
-            for (let i = 0; i < blockActors.length; i++) {
-              const blockActor = blockActors[i];
-
-              if (blockActor.id) {
-                blockActorsPi?.incrementFeature(blockActor.id);
-              }
-
-              if (blockActor instanceof CommandBlockActor) {
-                let cba = blockActor as CommandBlockActor;
-                if (cba.version) {
-                  blockActorsPi?.spectrumIntFeature("Command Version", cba.version);
-                }
-
-                if (cba.version && cba.version < this.modernCommandVersion) {
-                  items.push(
-                    new ProjectInfoItem(
-                      InfoItemType.recommendation,
-                      this.id,
-                      WorldDataInfoGeneratorTest.commandIsFromOlderMinecraftVersion,
-                      "Command '" + cba.command + "' is from an older Minecraft version (" + cba.version + ") ",
-                      projectItem,
-                      "(Command at location " + cba.x + ", " + cba.y + ", " + cba.z + ")",
-                      undefined,
-                      cba.command
-                    )
-                  );
-                }
-
-                if (cba.command && cba.command.trim().length > 0) {
-                  let command = CommandStructure.parse(cba.command);
-
-                  if (command.fullName.length === 0) {
-                    // Skip empty command names (e.g., command block containing just "/")
-                  } else if (CommandRegistry.isMinecraftBuiltInCommand(command.fullName)) {
-                    if (this.performAddOnValidations && CommandRegistry.isAddOnBlockedCommand(command.fullName)) {
-                      items.push(
-                        new ProjectInfoItem(
-                          InfoItemType.warning,
-                          this.id,
-                          WorldDataInfoGeneratorTest.containsWorldImpactingCommand,
-                          "Contains command '" +
-                            command.fullName +
-                            "' which is impacts the state of the entire world, and generally shouldn't be used in an add-on",
-                          projectItem,
-                          command.fullName,
-                          undefined,
-                          cba.command
-                        )
-                      );
-                    }
-
-                    commandsPi.incrementFeature(command.fullName);
-
-                    if (command.fullName === "execute") {
-                      let foundRun = false;
-                      for (const arg of command.commandArguments) {
-                        if (arg === "run") {
-                          foundRun = true;
-                        } else if (foundRun && CommandRegistry.isMinecraftBuiltInCommand(arg)) {
-                          subCommandsPi.incrementFeature(arg);
-                          break;
-                        }
-                      }
-                    }
-                  } else if (!this.performAddOnValidations && !this.performPlatformVersionValidations) {
-                    items.push(
-                      new ProjectInfoItem(
-                        InfoItemType.error,
-                        this.id,
-                        WorldDataInfoGeneratorTest.unexpectedCommandInCommandBlock,
-                        "Unexpected command '" + command.fullName + "'",
-                        projectItem,
-                        command.fullName,
-                        undefined,
-                        cba.command
-                      )
-                    );
-                  }
-                }
-              }
-            }
-
-            // Use memory-efficient block type counting instead of getBlockList()
-            // This avoids allocating massive arrays of Block objects
-            const blockTypeCounts = chunk.countBlockTypes();
-
-            for (const [typeName, count] of blockTypeCounts) {
-              blockCount += count;
-
-              let type = typeName;
-              if (type.indexOf(":") >= 0 && type.indexOf("minecraft:") < 0) {
-                type = "(custom)";
-              }
-
-              blocksPi?.incrementFeature(type, "count", count);
-            }
+            await projectItem.project.creatorTools.notifyStatusUpdate(mess, StatusTopic.validation);
           },
-          {
-            // Always clear parsed/cached data after processing each chunk to prevent OOM.
-            // This is non-destructive - raw LevelKeyValue bytes are preserved, so chunks
-            // can be re-parsed on demand (e.g., when the world map needs them).
-            clearCacheAfterProcess: true,
-            // Only clear raw LevelKeyValue data when in aggressive cleanup mode (CLI validation).
-            // In browser contexts, we preserve raw data so the world map can re-parse chunks.
-            clearAllAfterProcess: performAggressiveCleanup,
-            progressCallback: async (processed, total) => {
-              // Use worldName captured from outside closure to avoid TypeScript null check issue
-              const worldName = mcworld?.name ?? "unknown";
-              const chunkPercent = total > 0 ? Math.floor((processed / total) * 100) : 0;
-              let mess =
-                "World validation: scanned " +
-                Math.floor(processed / 1000) +
-                "K of " +
-                Math.floor(total / 1000) +
-                "K chunks in " +
-                worldName;
+        });
 
-              // Report granular progress via onProgress callback if available
-              // Map chunk progress (0-100%) to the 30-80% range of overall validation
-              if (onProgress) {
-                const overallPercent = Math.floor(30 + chunkPercent * 0.5); // 30-80%
-                onProgress(mess, overallPercent);
-              }
-
-              await projectItem.project.creatorTools.notifyStatusUpdate(mess, StatusTopic.validation);
-            },
-          }
-        );
+        this.applyScanToInfoItems(scan, items, projectItem, blocksPi, blockActorsPi, commandsPi, subCommandsPi);
 
         items.push(
           new ProjectInfoItem(
@@ -639,13 +655,13 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
             WorldDataInfoGeneratorTest.subchunklessChunks,
             "Subchunkless Chunks",
             projectItem,
-            subchunkLessChunkCount,
+            scan.subchunkLessChunkCount,
             mcworld.name
           )
         );
 
         if (blocksPi) {
-          blocksPi.data = blockCount;
+          blocksPi.data = scan.blockCount;
         }
       }
 
@@ -693,6 +709,22 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
           mcworld.name
         )
       );
+
+      // NO clearAllData() HERE.
+      // ----------------------
+      // This generator is one of several world-scoped validators that may
+      // run during a single project validation (defaultInDevelopment ->
+      // cooperativeAddOn -> currentPlatformVersions; plus
+      // CustomDimensionWorldDataInfoGenerator immediately after this one).
+      // Clearing world state here forces every subsequent generator to
+      // re-decompress and re-parse the entire LevelDB — on a 179 MB world
+      // template that's gigabytes of extra wasted work and memory churn.
+      //
+      // Memory pressure during the scan itself is already bounded by
+      // `getOrBuildScanSummary`, which uses `clearAllAfterProcess: true`
+      // per chunk and collapses the world into a small primitive summary.
+      // Final teardown happens once in `TaskWorker.releaseHeavyItemManagers`
+      // after all suites finish.
     }
 
     return items;

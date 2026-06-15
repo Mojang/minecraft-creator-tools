@@ -134,13 +134,21 @@ export default class CustomDimensionWorldDataInfoGenerator implements IProjectIn
       return items;
     }
 
-    await mcworld.loadLevelDb(false);
+    // Read dimension info via the canonical project-scoped accessor. This
+    // never mutates world state — if WorldDataInfoGenerator has already run
+    // a full load, we reuse its cached fields; otherwise we trigger a
+    // minimal-index load (key-name walk only, no chunk parsing). Previously
+    // this validator called `loadLevelDb(false)` with no options, which
+    // forced `processWorldData` to instantiate every WorldChunk in the
+    // level — a 113K-chunk world template grew RSS by ~13 GB. See
+    // MCWorld.getDimensionInfo for the full rationale.
+    const dimensionInfo = await mcworld.getDimensionInfo();
 
     if (!mcworld.levelDb) {
       return items;
     }
 
-    const dimensionIds = mcworld.dimensionIdsInChunks;
+    const dimensionIds = dimensionInfo.ids;
 
     // No chunk data at all — nothing to validate
     if (dimensionIds.size === 0) {
@@ -176,7 +184,7 @@ export default class CustomDimensionWorldDataInfoGenerator implements IProjectIn
     }
 
     // Rule 101: DimensionNameIdTable required when custom dimension chunk data is present
-    if (hasCustomDimChunks && !mcworld.hasDimensionNameIdTable) {
+    if (hasCustomDimChunks && !dimensionInfo.hasNameIdTable) {
       items.push(
         new ProjectInfoItem(
           InfoItemType.error,
@@ -190,7 +198,7 @@ export default class CustomDimensionWorldDataInfoGenerator implements IProjectIn
     }
 
     // Rule 103: Unclaimed dimension mappings (name-ID entries with no corresponding chunk data)
-    const nameIdTable = mcworld.dimensionNameIdTable;
+    const nameIdTable = dimensionInfo.nameIdTable;
 
     if (nameIdTable && nameIdTable.size > 0) {
       for (const [dimName, dimId] of nameIdTable) {

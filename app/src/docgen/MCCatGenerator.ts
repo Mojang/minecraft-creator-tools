@@ -41,8 +41,8 @@ export default class MCCatGenerator {
       isPreview
     );
 
-    if (blockAuxToStateNodes) {
-      for (const node of blockAuxToStateNodes?.nodes) {
+    if (blockAuxToStateNodes && blockAuxToStateNodes.nodes) {
+      for (const node of blockAuxToStateNodes.nodes) {
         let name = node.name;
         let type = node.type;
 
@@ -135,7 +135,7 @@ export default class MCCatGenerator {
 
     const blockNodes = await LegacyDocumentationDefinition.loadNode("addons", "/Blocks/Blocks/", isPreview);
 
-    if (blockNodes) {
+    if (blockNodes && blockNodes.nodes) {
       for (const node of blockNodes.nodes) {
         let name = MinecraftUtilities.canonicalizeName(node.name);
 
@@ -639,6 +639,9 @@ export default class MCCatGenerator {
     node: ILegacyDocumentationNode,
     prefix?: string
   ) {
+    if (!node.nodes) {
+      return;
+    }
     for (const childNode of node.nodes) {
       if (childNode.name) {
         const name = this.getFormFileName(childNode.name);

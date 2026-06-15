@@ -120,12 +120,29 @@ export default class LevelKeyValue {
   }
 
   public loadFromLdb(incomingBytes: Uint8Array, startingIndex: number, prevKey: LevelKeyValue | undefined) {
-    this.fileBytes = incomingBytes;
+    // IMPORTANT MEMORY NOTE
+    // ---------------------
+    // We intentionally do NOT store `incomingBytes` on `this.fileBytes` (and
+    // we do NOT store the value/key fields via `incomingBytes.subarray(...)`).
+    //
+    // `Uint8Array.subarray()` returns a VIEW that pins the entire underlying
+    // ArrayBuffer alive. In the LDB path, `incomingBytes` is a decompressed
+    // LevelDB block (~32 KB typical, up to several MB) produced fresh by
+    // `pako.inflate(...)`. A single retained subarray view keeps that whole
+    // block's ArrayBuffer alive in external memory, even after the file has
+    // been `unload()`ed.
+    //
+    // Profiling a 179 MB world template showed validation pushing peak RSS to
+    // ~20 GB, with several GB of "external" memory still held after
+    // validation finished — every persisted LevelKeyValue was pinning its
+    // parent decompressed block. Using `slice(...)` makes a tightly-sized
+    // copy with its own ArrayBuffer, so V8 can reclaim each block as soon as
+    // the original `content` buffer goes out of scope at the caller.
     this.startIndex = startingIndex;
 
     let i = 0;
 
-    const sharedBytes = new Varint(this.fileBytes, this.startIndex);
+    const sharedBytes = new Varint(incomingBytes, startingIndex);
     this.sharedByteLength = sharedBytes.value;
     i += sharedBytes.byteLength;
 
@@ -133,14 +150,15 @@ export default class LevelKeyValue {
       this.previousKey = prevKey;
     }
 
-    const unsharedBytes = new Varint(this.fileBytes, this.startIndex + i);
+    const unsharedBytes = new Varint(incomingBytes, startingIndex + i);
     i += unsharedBytes.byteLength;
 
-    const valueLength = new Varint(this.fileBytes, this.startIndex + i);
+    const valueLength = new Varint(incomingBytes, startingIndex + i);
     i += valueLength.byteLength;
 
     // mystery: why is unsharedKeyBytes 8 bytes longer than what we are expecting for keys?
-    this.unsharedKeyBytes = incomingBytes.subarray(startingIndex + i, startingIndex + i + unsharedBytes.value - 8);
+    // slice() (not subarray) — see top-of-method note.
+    this.unsharedKeyBytes = incomingBytes.slice(startingIndex + i, startingIndex + i + unsharedBytes.value - 8);
 
     /*const extraBytes = incomingBytes.subarray(
       startingIndex + i + unsharedBytes.value - 8,
@@ -149,7 +167,8 @@ export default class LevelKeyValue {
 
     i += unsharedBytes.value;
 
-    this.value = incomingBytes.subarray(startingIndex + i, startingIndex + i + valueLength.value);
+    // slice() (not subarray) — see top-of-method note.
+    this.value = incomingBytes.slice(startingIndex + i, startingIndex + i + valueLength.value);
     i += valueLength.value;
 
     /*    this.restarts = [];

@@ -190,10 +190,13 @@ class NpmPackageEditor extends Component<INpmPackageEditorProps, INpmPackageEdit
   }
 
   _handleDataFormPropertyChange(props: IDataFormProps, property: IProperty, newValue: any) {
-    if (props.tagData && props.directObject) {
-      const file = props.tagData as IFile;
-
-      file.setObjectContentIfSemanticallyDifferent(props.directObject);
+    // FormPropertyManager mutates the directObject in place; flush the change to the
+    // underlying file via the manager's persist() so the file is marked dirty and Raw
+    // Mode sees the update. Previously this method was gated on props.tagData, which
+    // is never supplied here, so every edit was silently dropped (see BUG-01).
+    if (this.state && this.state.fileToEdit && this.state.fileToEdit.manager) {
+      const manager = this.state.fileToEdit.manager as NpmPackageDefinition;
+      manager.persist();
     }
   }
 

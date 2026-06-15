@@ -1,7 +1,7 @@
 import { Component } from "react";
 import "./CodeToolbox.css";
 import IAppProps from "../appShell/IAppProps";
-import { AppMode } from "../appShell/App";
+import { AppMode } from "../appShell/AppMode";
 import Project from "../../app/Project";
 import ProjectEditor from "../project/ProjectEditor";
 import { CreatorToolsEditorViewMode } from "../../app/ICreatorToolsData";

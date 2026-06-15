@@ -25,7 +25,7 @@
  */
 
 import * as BABYLON from "babylonjs";
-import ChunkMeshBuilder from "./ChunkMeshBuilder";
+import ChunkMeshBuilder, { IChunkMeshResult } from "./ChunkMeshBuilder";
 import BlockMeshFactory from "./BlockMeshFactory";
 import Log from "../../core/Log";
 import { ModelMeshFactory } from "./ModelMeshFactory";
@@ -34,6 +34,7 @@ import MinecraftEnvironment from "./MinecraftEnvironment";
 import LiveWorldState, { IChunkColumn } from "../../minecraft/client/LiveWorldState";
 import EntityManager, { IEntityState } from "../../minecraft/client/EntityManager";
 import Database from "../../minecraft/Database";
+import ProjectUtilities from "../../app/ProjectUtilities";
 import VanillaProjectManager, { IVanillaEntityModelData } from "../../minecraft/VanillaProjectManager";
 
 export interface IWorldRendererStats {
@@ -64,6 +65,13 @@ export default class WorldRenderer {
   private _baseChunkRate: number = 4;
   private _totalRebuildCycles: number = 0;
   private _totalChunksBuilt: number = 0;
+
+  // Cumulative render stats across all chunk meshes built. Used by render-stats
+  // hooks and the Y-floor regression test to confirm low-elevation content
+  // actually renders (minRenderedY) rather than being silently culled.
+  private _renderedBlockCount: number = 0;
+  private _minRenderedY: number = Infinity;
+  private _maxRenderedY: number = -Infinity;
 
   // Entity mesh tracking
   private _entityMeshes: Map<number, BABYLON.Mesh> = new Map();
@@ -134,9 +142,23 @@ export default class WorldRenderer {
 
     // Create scene — use shared MinecraftEnvironment configuration
     this._scene = new BABYLON.Scene(this._engine);
+
+    // HANDEDNESS / EAST-WEST MIRROR FIX:
+    // Minecraft (and the 2D WorldMap) use a north-up orientation where east (+X)
+    // is on the RIGHT. Babylon's default LEFT-handed scene computes screen-right as
+    // cross(up, forward) = -X for a north-up view, i.e. it puts WEST on the right —
+    // the horizontal mirror image of the map. That made the 3D world appear flipped
+    // left-to-right vs the map and made strafe-right (D) move the map frustum the
+    // wrong way. Switching to a RIGHT-handed system flips the projection so +X (east)
+    // renders on the right, matching the map, WITHOUT changing any world/camera/map
+    // coordinates (camera position, setRenderCenter, chunk authoring, and map
+    // reporting all stay in the same +X space). Must be set BEFORE any meshes/camera
+    // are created so MeshBuilder bakes the correct triangle winding for this handedness.
+    this._scene.useRightHandedSystem = true;
+
     MinecraftEnvironment.configureScene(this._scene, {
-      fogStart: 48,
-      fogEnd: 128,
+      fogStart: 96,
+      fogEnd: 256,
       worldPerformanceMode: true,
     });
     // Ambient color raised from 0.50 to 0.60 to brighten all block faces.
@@ -193,13 +215,66 @@ export default class WorldRenderer {
    * Call this after constructing WorldRenderer to enable textures (same pipeline as VolumeEditor).
    * Without this, ChunkMeshBuilder falls back to BlockRenderDatabase vertex colors.
    */
-  async initializeDatabase(): Promise<void> {
+  /**
+   * Initialize the Database with vanilla resource definitions for textured rendering.
+   * Once this completes, ChunkMeshBuilder uses BlockMeshFactory for materials.
+   * Without this, ChunkMeshBuilder falls back to BlockRenderDatabase vertex colors.
+   *
+   * Pass `options.world` and/or `options.project` to additionally register custom
+   * resource packs (embedded in the .mcworld or owned by the active project) so
+   * custom blocks render with their real textures instead of the gray fallback.
+   */
+  async initializeDatabase(options?: {
+    world?: { getEmbeddedResourcePackFolders(): Promise<any[]> };
+    project?: any;
+  }): Promise<void> {
     if (this._databaseLoaded) return;
     try {
       Log.debug("WorldRenderer: Loading vanilla catalog...");
       await Database.loadVanillaCatalog();
       Log.debug("WorldRenderer: Loading vanilla resource definitions...");
       await Database.loadVanillaResourceDefinitions();
+
+      // Register custom (project / world embedded) resource pack folders so
+      // BlockMeshFactory can resolve their block textures.
+      try {
+        const customRpFolders: any[] = [];
+        if (options?.world) {
+          const embeddedRps = await options.world.getEmbeddedResourcePackFolders();
+          if (embeddedRps && embeddedRps.length > 0) {
+            customRpFolders.push(...embeddedRps);
+          }
+        }
+        if (options?.project) {
+          const rp =
+            typeof options.project.getDefaultResourcePackFolder === "function"
+              ? await options.project.getDefaultResourcePackFolder()
+              : undefined;
+          if (rp) {
+            customRpFolders.push(rp);
+          }
+        }
+        if (customRpFolders.length > 0 || options?.project) {
+          Database.clearCustomResources();
+
+          if (customRpFolders.length > 0) {
+            await Database.loadCustomResourcePackFolders(customRpFolders);
+            Log.debug("WorldRenderer: Registered " + customRpFolders.length + " custom resource pack folder(s)");
+          }
+          // Use the project's own block-item enumeration to register custom
+          // blocks. This is preferred over walking BP folders directly because
+          // it leverages the project's dependency graph and supports modern
+          // (1.20.60+) custom blocks whose textures live in BP
+          // `minecraft:material_instances`, not in RP `blocks.json`.
+          if (options?.project) {
+            await ProjectUtilities.loadCustomBlocksFromProject(options.project);
+            Log.debug("WorldRenderer: Registered custom blocks from project");
+          }
+        }
+      } catch (rpe) {
+        Log.debug("WorldRenderer: Custom resource pack load failed (non-fatal): " + rpe);
+      }
+
       Log.debug("WorldRenderer: Creating BlockMeshFactory...");
       this._meshFactory = new BlockMeshFactory(this._scene);
       this._chunkMeshBuilder.setMeshFactory(this._meshFactory);
@@ -238,16 +313,125 @@ export default class WorldRenderer {
   }
 
   /**
+   * Set minimum Y coordinate to render. Subchunks/blocks entirely below this Y
+   * are skipped. Defaults to the world bottom (-64) so all content renders.
+   */
+  set minRenderY(y: number) {
+    this._chunkMeshBuilder.minRenderY = y;
+  }
+
+  get minRenderY(): number {
+    return this._chunkMeshBuilder.minRenderY;
+  }
+
+  /**
+   * Cumulative render statistics across every chunk mesh built so far.
+   * `minRenderedY` is the lowest world Y of any rendered block — the key signal
+   * for the Y-floor regression test (a re-introduced vertical floor would push
+   * this value up and silently drop low content).
+   */
+  getRenderStats(): { renderedBlockCount: number; minRenderedY: number; maxRenderedY: number; minRenderY: number } {
+    return {
+      renderedBlockCount: this._renderedBlockCount,
+      minRenderedY: this._minRenderedY,
+      maxRenderedY: this._maxRenderedY,
+      minRenderY: this._chunkMeshBuilder.minRenderY,
+    };
+  }
+
+  private _accumulateRenderStats(result: IChunkMeshResult): void {
+    this._renderedBlockCount += result.blockCount;
+    if (result.blockCount > 0) {
+      if (result.minBlockY < this._minRenderedY) this._minRenderedY = result.minBlockY;
+      if (result.maxBlockY > this._maxRenderedY) this._maxRenderedY = result.maxBlockY;
+    }
+  }
+
+  /**
    * Set render center and maximum radius for radial culling.
    * Blocks beyond maxRenderRadius from (centerX, centerZ) are not rendered.
    * Set radius slightly below fogEnd so culled edges are fully fog-hidden.
+   *
+   * IMPORTANT: the graduated Y taper (full height within nearRenderRadius, fading
+   * to groundRenderY at maxRenderRadius) is baked into each chunk mesh at BUILD
+   * time using the center that was active then. When the center moves (camera
+   * streaming), already-built chunks keep their stale taper — which makes the
+   * tapered "ring" of clipped building tops sit fixed in world space instead of
+   * following the camera. To fix that, re-dirty any meshed chunk whose effective
+   * taper ceiling changes by more than a small threshold so it rebuilds against
+   * the new center. The threshold keeps this from churning every chunk-cross.
    */
   setRenderCenter(centerX: number, centerZ: number, maxRadius: number, nearRadius?: number, groundY?: number): void {
+    const prevCenterX = this._chunkMeshBuilder.renderCenterX;
+    const prevCenterZ = this._chunkMeshBuilder.renderCenterZ;
+    const centerMoved = prevCenterX !== centerX || prevCenterZ !== centerZ;
+
     this._chunkMeshBuilder.renderCenterX = centerX;
     this._chunkMeshBuilder.renderCenterZ = centerZ;
     this._chunkMeshBuilder.maxRenderRadius = maxRadius;
     if (nearRadius !== undefined) this._chunkMeshBuilder.nearRenderRadius = nearRadius;
     if (groundY !== undefined) this._chunkMeshBuilder.groundRenderY = groundY;
+
+    if (centerMoved && this._chunkMeshes.size > 0) {
+      this._redirtyChunksForCenterChange(prevCenterX, prevCenterZ, centerX, centerZ);
+    }
+  }
+
+  /**
+   * Effective graduated-Y ceiling at a given squared horizontal distance from the
+   * render center — mirrors the per-block taper in ChunkMeshBuilder so we can tell
+   * when a chunk's baked taper is now stale.
+   */
+  private _effectiveCeilingForDistSq(distSq: number): number {
+    const b = this._chunkMeshBuilder;
+    const nearSq = b.nearRenderRadius * b.nearRenderRadius;
+    const maxSq = b.maxRenderRadius * b.maxRenderRadius;
+    if (distSq <= nearSq) return b.maxRenderY;
+    if (distSq >= maxSq) return b.groundRenderY;
+    const t = (distSq - nearSq) / (maxSq - nearSq);
+    return b.maxRenderY - t * (b.maxRenderY - b.groundRenderY);
+  }
+
+  /**
+   * Re-dirty meshed chunks whose graduated-Y taper ceiling shifts when the cull
+   * center moves, so the clipped "ring" of building tops rebuilds and follows the
+   * camera instead of staying pinned where the chunk was first built. Only chunks
+   * whose ceiling changes by more than CEILING_REBUILD_THRESHOLD are touched,
+   * which bounds the rebuild churn during continuous flight.
+   */
+  private _redirtyChunksForCenterChange(
+    prevCenterX: number,
+    prevCenterZ: number,
+    centerX: number,
+    centerZ: number
+  ): void {
+    const CEILING_REBUILD_THRESHOLD = 8; // world-Y blocks
+    let reDirtied = 0;
+
+    for (const key of this._chunkMeshes.keys()) {
+      const chunk = this._worldState.chunks.get(key);
+      if (!chunk) continue;
+
+      const cx = chunk.x * 16 + 8;
+      const cz = chunk.z * 16 + 8;
+
+      const prevDx = cx - prevCenterX;
+      const prevDz = cz - prevCenterZ;
+      const newDx = cx - centerX;
+      const newDz = cz - centerZ;
+
+      const prevCeiling = this._effectiveCeilingForDistSq(prevDx * prevDx + prevDz * prevDz);
+      const newCeiling = this._effectiveCeilingForDistSq(newDx * newDx + newDz * newDz);
+
+      if (Math.abs(newCeiling - prevCeiling) > CEILING_REBUILD_THRESHOLD) {
+        this._worldState.markChunkDirty(chunk);
+        reDirtied++;
+      }
+    }
+
+    if (reDirtied > 0) {
+      Log.verbose(`WorldRenderer.setRenderCenter: re-dirtied ${reDirtied} chunks for moved cull center`);
+    }
   }
 
   get maxRenderRadius(): number {
@@ -273,12 +457,15 @@ export default class WorldRenderer {
 
     this._camera.position.set(eyePosition.x, eyePosition.y, eyePosition.z);
 
-    // Convert Minecraft rotation to Babylon.js camera rotation
+    // Convert Minecraft rotation to Babylon.js camera rotation.
     // Our convention: positive pitch = looking up, negative = looking down
-    // Babylon.js FreeCamera: positive rotation.x = looking DOWN
-    // So we negate pitch for the conversion.
+    // Babylon.js FreeCamera: positive rotation.x = looking DOWN, so we negate pitch.
     this._camera.rotation.x = (-rotation.pitch * Math.PI) / 180;
-    this._camera.rotation.y = ((rotation.yaw + 180) * Math.PI) / 180;
+    // The scene is RIGHT-handed (see handedness/mirror fix in the constructor), where
+    // the camera's horizontal forward = (-sin(rotation.y), -cos(rotation.y)). To face
+    // Minecraft yaw, rotation.y° = 180 - yaw (the inverse of the yaw-reporting formula
+    // in WorldViewer). In the old left-handed scene this was yaw + 180.
+    this._camera.rotation.y = ((180 - rotation.yaw) * Math.PI) / 180;
 
     // Keep ground plane centered under camera
     this._updateGroundPlanePosition();
@@ -386,11 +573,15 @@ export default class WorldRenderer {
    * player renders first, giving a better loading experience.
    */
   updateChunkMeshes(): void {
-    // Hard cap: if too many chunk entries, aggressively unload distant ones.
-    // Cap at 300 — fog distance filtering already limits builds to ~200 chunks,
-    // so this is a safety valve for extreme cases, not a regular limiter.
-    if (this._chunkMeshes.size > 300) {
-      this.unloadDistantChunks(64);
+    // Hard cap: if too many chunk meshes exist, unload the ones outside the
+    // visible/fog region. This cap MUST exceed the number of chunks inside the
+    // render disc, otherwise it fights the radial cull and clamps the visible
+    // terrain to a tiny wedge. With a ~192-block render radius the disc holds
+    // ~π·(192/16)² ≈ 452 chunks, so cap at 600 for headroom. The emergency trim
+    // distance is kept just inside the fog-cull distance (~216) so trimming only
+    // removes chunks that are already fully fog-hidden, never visible terrain.
+    if (this._chunkMeshes.size > 600) {
+      this.unloadDistantChunks(208);
       const dirtyChunks = this._worldState.consumeDirtyChunks();
       for (const c of dirtyChunks) {
         this._worldState.markChunkDirty(c);
@@ -417,7 +608,7 @@ export default class WorldRenderer {
     // Filter out chunks beyond render distance FIRST (avoids sorting distant chunks)
     // Render distance MUST match fogCullDist (not fogEnd) — blocks beyond fogCullDist
     // are hard-culled anyway, so processing chunks beyond that distance is pure waste.
-    // fogCullDist ≈ fogStart + 0.65*(fogEnd-fogStart) = 48 + 0.65*80 ≈ 100 blocks.
+    // fogCullDist = fogStart + 0.65*(fogEnd-fogStart) = 96 + 0.65*160 ≈ 200 blocks.
     // Use fogCullDist + 16 blocks to include chunks that straddle the boundary.
     const fogCullDist = this._scene.fogStart + 0.65 * (this._scene.fogEnd - this._scene.fogStart);
     const RENDER_DISTANCE_SQ = (fogCullDist + 16) * (fogCullDist + 16);
@@ -478,6 +669,7 @@ export default class WorldRenderer {
       // Build new meshes
       const result = this._chunkMeshBuilder.buildChunkMesh(chunk, (id) => this._worldState.getBlockName(id));
       this._totalChunksBuilt++;
+      this._accumulateRenderStats(result);
 
       if (result.meshes.length > 0) {
         this._chunkMeshes.set(key, result.meshes);
@@ -541,6 +733,7 @@ export default class WorldRenderer {
         }
         const result = this._chunkMeshBuilder.buildChunkMesh(chunk, (id) => this._worldState.getBlockName(id));
         this._totalChunksBuilt++;
+        this._accumulateRenderStats(result);
         if (result.meshes.length > 0) {
           this._chunkMeshes.set(key, result.meshes);
           for (const m of result.meshes) {
@@ -1197,8 +1390,6 @@ export default class WorldRenderer {
 
   /**
    * Keep the ground plane centered under the camera so it always extends in all directions.
-   * Ground plane at Y=62 is always visible — it's far enough below terrain (Y=63+)
-   * and structure floors (Y=64+) that z-fighting is prevented by the zOffset=10.
    */
   private _updateGroundPlanePosition(): void {
     if (this._groundPlane) {
@@ -1207,6 +1398,16 @@ export default class WorldRenderer {
       // Always show ground plane — it fills gaps at chunk edges and provides
       // a green base color extending to the fog-obscured horizon.
       this._groundPlane.setEnabled(true);
+    }
+  }
+
+  /**
+   * Set the ground plane Y position. Use this to push the ground plane below
+   * the world's actual lowest blocks so it doesn't obscure rendered terrain.
+   */
+  setGroundPlaneY(y: number): void {
+    if (this._groundPlane) {
+      this._groundPlane.position.y = y;
     }
   }
 

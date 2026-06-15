@@ -5,19 +5,11 @@ import CreatorToolsHost from "../app/CreatorToolsHost";
 import AppServiceProxy from "./AppServiceProxy";
 import Utilities from "./Utilities";
 import { EventDispatcher } from "ste-events";
-
-export enum LogItemLevel {
-  debug = 0,
-  verbose = 1,
-  message = 2,
-  error = 3,
-  important = 4,
-  operationStarted = 10,
-  operationEnded = 11,
-}
+import ILogger from "./logging/ILogger";
+import { LogLevel } from "./logging/LogLevel";
 
 export class LogItem {
-  level: LogItemLevel;
+  level: LogLevel;
   message: string;
   created: Date;
   operId?: number;
@@ -26,16 +18,12 @@ export class LogItem {
 
   static alertFunction: ((message: string) => void) | undefined;
 
-  constructor(message: string, level: LogItemLevel, context?: string, category?: string) {
+  constructor(message: string, level: LogLevel, context?: string, category?: string) {
     this.level = level;
     this.message = message;
     this.created = new Date();
     this.context = context;
     this.category = category;
-
-    if (this.level === LogItemLevel.operationStarted) {
-      this.operId = Log.items.length;
-    }
   }
 }
 
@@ -43,6 +31,15 @@ export default class Log {
   static _suppressedLogs: { [id: string]: boolean } = {};
   static _log: LogItem[] = [];
   static _onItemAdded = new EventDispatcher<Log, LogItem>();
+  static _registeredLoggers = new Set<ILogger>();
+
+  static registerLogger(logger: ILogger) {
+    this._registeredLoggers.add(logger);
+  }
+
+  static unregisterLogger(logger: ILogger) {
+    this._registeredLoggers.delete(logger);
+  }
 
   static get items() {
     return Log._log;
@@ -52,20 +49,20 @@ export default class Log {
     return this._onItemAdded.asEvent();
   }
 
-  static message(message: string, context?: string, category?: string) {
-    this.log(message, LogItemLevel.message, context, category);
+  static message(message: string, context?: string, category?: string, ...args: unknown[]) {
+    this.log(message, LogLevel.message, context, category, ...args);
   }
 
-  static important(message: string, context?: string, category?: string) {
-    this.log(message, LogItemLevel.important, context, category);
+  static important(message: string, context?: string, category?: string, ...args: unknown[]) {
+    this.log(message, LogLevel.warn, context, category, ...args);
   }
 
-  static verbose(message: string, context?: string, category?: string) {
-    this.log(message, LogItemLevel.verbose, context, category);
+  static verbose(message: string, context?: string, category?: string, ...args: unknown[]) {
+    this.log(message, LogLevel.verbose, context, category, ...args);
   }
 
-  static error(message: string, context?: string, category?: string) {
-    this.log(message, LogItemLevel.error, context, category);
+  static error(message: string, context?: string, category?: string, ...args: unknown[]) {
+    this.log(message, LogLevel.error, context, category, ...args);
   }
 
   static unexpectedUndefined(token?: string) {
@@ -102,7 +99,23 @@ export default class Log {
     Log.fail("Unexpected arguments found." + (token ? " (" + token + ")" : ""));
   }
 
-  static log(message: string | object, level: LogItemLevel, context?: string, category?: string) {
+  static log(message: string | object, level: LogLevel, context?: string, category?: string, ...args: unknown[]) {
+    message = this.parseMessage(message);
+    const logItem = new LogItem(message, level, context, category);
+    // we have to clean the array to bridge the api gap
+    const loggerArgs = [context, category, ...args].filter((arg) => arg !== undefined);
+
+    this._log.push(logItem);
+
+    Log._onItemAdded.dispatch(this, logItem);
+
+    for (const logger of this._registeredLoggers) {
+      logger.log(message, level, ...loggerArgs);
+    }
+    return logItem.operId;
+  }
+
+  private static parseMessage(message: string | object): string {
     if (typeof message !== "string") {
       if ((message as any).message) {
         message = (message as any).message as string;
@@ -110,53 +123,17 @@ export default class Log {
         message = JSON.stringify(message);
       }
     }
-
-    const logItem = new LogItem(message, level, context, category);
-
-    this._log.push(logItem);
-
-    Log._onItemAdded.dispatch(this, logItem);
-
-    // Output to browser console for visibility during debugging
-    // In browser context, this helps developers see logs in DevTools
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if (typeof (globalThis as any).window !== "undefined") {
-      const prefix = context ? `[${context}] ` : "";
-      const fullMessage = prefix + message;
-
-      switch (level) {
-        case LogItemLevel.error:
-          console.error(fullMessage);
-          break;
-        case LogItemLevel.important:
-          console.warn(fullMessage);
-          break;
-        case LogItemLevel.message:
-          // Only message level goes to console.log by default
-          console.log(fullMessage);
-          break;
-        // verbose and debug are only shown in console when ?debug=true
-        case LogItemLevel.verbose:
-        case LogItemLevel.debug:
-          if (Utilities.isDebug) {
-            console.log(fullMessage);
-          }
-          break;
-        // operation started/ended don't need console output
-      }
-    }
-
-    return logItem.operId;
+    return message;
   }
 
   static debug(message: string, context?: string) {
-    this.log(message, LogItemLevel.debug, context);
-    // Console output is now handled in the log() method for browser contexts.
+    this.log(message, LogLevel.debug, context);
+    // This works as a fallback but browser logs should be handled by WebLogger
     // In Node.js contexts (window undefined), only print directly if there are
     // no event subscribers — otherwise the subscriber (e.g. LocalEnvironment)
     // already handles console output and we'd get duplicate lines.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if (typeof (globalThis as any).window === "undefined" && this._onItemAdded.count === 0) {
+    if (typeof (globalThis as any).window === "undefined" && this._registeredLoggers.size === 0) {
       console.log(message);
     }
   }

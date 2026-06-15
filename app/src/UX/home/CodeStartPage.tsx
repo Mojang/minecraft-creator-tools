@@ -2,7 +2,7 @@ import { Component } from "react";
 import "./CodeStartPage.css";
 import { Button, TextField } from "@mui/material";
 import IAppProps from "../appShell/IAppProps";
-import { AppMode } from "../appShell/App";
+import { AppMode } from "../appShell/AppMode";
 import Project from "../../app/Project";
 import CodeProjectGallery, { GalleryProjectCommand } from "./CodeProjectGallery";
 import IGalleryItem from "../../app/IGalleryItem";
@@ -96,7 +96,6 @@ class CodeStartPage extends Component<ICodeStartPageProps, ICodeStartPageState> 
       additionalLoadingMessage: additionalMessage,
     });
   }
-
 
   private async _handleProjectGalleryCommand(command: GalleryProjectCommand, project: IGalleryItem) {
     switch (command) {

@@ -105,7 +105,7 @@ import ProjectItemEditor from "./ProjectItemEditor";
 import type { IProjectItemEditorNavigationTarget } from "./ProjectItemEditor";
 import ProjectExporter from "../../app/ProjectExporter";
 import MCWorld from "../../minecraft/MCWorld";
-import { AppMode } from "../appShell/App";
+import { AppMode } from "../appShell/AppMode";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faFileArchive,
@@ -464,6 +464,7 @@ class ProjectEditor extends Component<IProjectEditorProps, IProjectEditorState> 
     this._handleFileDrop = this._handleFileDrop.bind(this);
     this._handleFileDragOut = this._handleFileDragOut.bind(this);
     this._handleFileDragOver = this._handleFileDragOver.bind(this);
+    this._stopDragEffect = this._stopDragEffect.bind(this);
     this._handleModeChangeRequested = this._handleModeChangeRequested.bind(this);
     this._handleActionRequested = this._handleActionRequested.bind(this);
     this._handleProjectItemSelected = this._handleProjectItemSelected.bind(this);
@@ -1355,10 +1356,27 @@ class ProjectEditor extends Component<IProjectEditorProps, IProjectEditorState> 
   private _handleFileDragOver(event: DragEvent) {
     if (this.state !== undefined) {
       if (this.state.effectMode !== ProjectEditorEffect.dragOver) {
-        // Only activate the overlay for actual file drags from outside the browser,
-        // not for internal text-selection drags within form fields.
-        // File drags include "Files" in dataTransfer.types; text-selection drags do not.
-        if (!event.dataTransfer || !event.dataTransfer.types || !event.dataTransfer.types.includes("Files")) {
+        // Only activate the overlay for actual file drags from outside the browser.
+        // Guard against internal text drags and browser-specific DataTransfer shapes.
+        const dataTransfer = event.dataTransfer;
+        const dataTypes: any = dataTransfer ? dataTransfer.types : undefined;
+
+        const hasFilesType =
+          !!dataTypes &&
+          ((typeof dataTypes.contains === "function" && dataTypes.contains("Files")) ||
+            (typeof dataTypes.includes === "function" && dataTypes.includes("Files")));
+
+        let hasFileItems = false;
+        if (dataTransfer && dataTransfer.items) {
+          for (let i = 0; i < dataTransfer.items.length; i++) {
+            if (dataTransfer.items[i]?.kind === "file") {
+              hasFileItems = true;
+              break;
+            }
+          }
+        }
+
+        if (!hasFilesType || !hasFileItems) {
           return;
         }
 
@@ -3912,11 +3930,24 @@ class ProjectEditor extends Component<IProjectEditorProps, IProjectEditorState> 
    * Handles clicking on widget links (textures, colors) in the JSON editor.
    * Opens the referenced project item when a user clicks a texture thumbnail or linked reference.
    */
-  private _handleOpenProjectItem(projectPath: string) {
+  private _handleOpenProjectItem(projectPath: string, lineNumber?: number, column?: number) {
     const projectItem = this.props.project.getItemByProjectPath(projectPath);
 
     if (projectItem) {
       this._handleProjectItemSelected(projectItem, ProjectItemEditorView.singleFileEditor);
+
+      // When a line/column is supplied (e.g. cross-file "Go to Definition"), set a
+      // navigation target so the editor reveals and selects the definition line.
+      if (lineNumber !== undefined) {
+        this.setState({
+          editorNavigationTarget: {
+            requestId: this._nextNavigationRequestId++,
+            projectPath: projectItem.projectPath ?? projectPath,
+            lineNumber,
+            column,
+          },
+        });
+      }
     }
   }
 
@@ -5588,7 +5619,10 @@ class ProjectEditor extends Component<IProjectEditorProps, IProjectEditorState> 
     if (this.state.effectMode === ProjectEditorEffect.dragOver) {
       if (this.state.dragStyle === ProjectEditorDragStyle.addOverwriteOrActiveItem) {
         effectArea = (
-          <div className="pe-zoneDragOver">
+          <div className="pe-zoneDragOver" onClick={this._stopDragEffect}>
+            <button className="pe-dragDismiss" onClick={this._stopDragEffect} title="Dismiss file drop overlay">
+              x
+            </button>
             <div className="pe-dragZone1">
               {this.props.intl.formatMessage({ id: "project_editor.drag_drop.drop_files" })}
             </div>
@@ -5602,7 +5636,10 @@ class ProjectEditor extends Component<IProjectEditorProps, IProjectEditorState> 
         );
       } else {
         effectArea = (
-          <div className="pe-singleDragOver">
+          <div className="pe-singleDragOver" onClick={this._stopDragEffect}>
+            <button className="pe-dragDismiss" onClick={this._stopDragEffect} title="Dismiss file drop overlay">
+              x
+            </button>
             {this.props.intl.formatMessage({ id: "project_editor.drag_drop.drop_files" })}
           </div>
         );

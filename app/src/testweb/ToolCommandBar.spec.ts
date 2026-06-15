@@ -702,7 +702,7 @@ test.describe("Editor /add Command", () => {
   });
 
   test("/add entity <name> creates an entity in the project", async ({ page }) => {
-    test.setTimeout(30000);
+    test.setTimeout(60000);
 
     const entered = await enterEditor(page);
     expect(entered).toBe(true);
@@ -722,15 +722,17 @@ test.describe("Editor /add Command", () => {
     // Execute the command
     await page.keyboard.press("Enter");
 
-    // Wait for the item to be added (involves gallery lookup + file creation)
-    await page.waitForTimeout(5000);
+    // Wait for the item to be added (involves gallery lookup + file creation).
+    // Gallery mode for /add entity downloads template files, applies them to the
+    // project, then saves — this can exceed a fixed 5s wait on slower dev servers.
+    // Use polling to wait for the input to clear, which is the signal that
+    // _executeToolCommand has finished and called setState({content: ""}).
+    await expect
+      .poll(async () => await getEditorCommandBarValue(page), { timeout: 20000, intervals: [500, 1000, 2000] })
+      .toBe("");
     await page.waitForLoadState("networkidle");
 
     await takeScreenshot(page, "debugoutput/screenshots/toolcmd-add-entity-after");
-
-    // Input should be cleared
-    const value = await getEditorCommandBarValue(page);
-    expect(value).toBe("");
 
     // Look for the new entity in the project item list
     // The item list may need "Show All" enabled to see it
@@ -747,7 +749,7 @@ test.describe("Editor /add Command", () => {
   });
 
   test("/add block <name> creates a block in the project", async ({ page }) => {
-    test.setTimeout(30000);
+    test.setTimeout(60000);
 
     const entered = await enterEditor(page);
     expect(entered).toBe(true);
@@ -764,17 +766,17 @@ test.describe("Editor /add Command", () => {
 
     await page.keyboard.press("Enter");
 
-    await page.waitForTimeout(5000);
+    // Poll until the command bar clears — see /add entity test above.
+    await expect
+      .poll(async () => await getEditorCommandBarValue(page), { timeout: 20000, intervals: [500, 1000, 2000] })
+      .toBe("");
     await page.waitForLoadState("networkidle");
 
     await takeScreenshot(page, "debugoutput/screenshots/toolcmd-add-block-after");
-
-    const value = await getEditorCommandBarValue(page);
-    expect(value).toBe("");
   });
 
   test("/add item <name> creates an item in the project", async ({ page }) => {
-    test.setTimeout(30000);
+    test.setTimeout(60000);
 
     const entered = await enterEditor(page);
     expect(entered).toBe(true);
@@ -791,17 +793,17 @@ test.describe("Editor /add Command", () => {
 
     await page.keyboard.press("Enter");
 
-    await page.waitForTimeout(5000);
+    // Poll until the command bar clears — see /add entity test above.
+    await expect
+      .poll(async () => await getEditorCommandBarValue(page), { timeout: 20000, intervals: [500, 1000, 2000] })
+      .toBe("");
     await page.waitForLoadState("networkidle");
 
     await takeScreenshot(page, "debugoutput/screenshots/toolcmd-add-item-after");
-
-    const value = await getEditorCommandBarValue(page);
-    expect(value).toBe("");
   });
 
   test("/add with typed flow: /add entity my_custom_mob", async ({ page }) => {
-    test.setTimeout(30000);
+    test.setTimeout(60000);
 
     const entered = await enterEditor(page);
     expect(entered).toBe(true);

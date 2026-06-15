@@ -418,7 +418,7 @@
       "type": "node-terminal",
       "request": "launch",
       "name": "Playwright (web UI) tests - headless",
-      "command": "npx playwright test",
+      "command": "npx --package=@playwright/test -- playwright test",
       "cwd": "${workspaceRoot}/",
       "skipFiles": ["<node_internals>/**"],
       "internalConsoleOptions": "openOnSessionStart"

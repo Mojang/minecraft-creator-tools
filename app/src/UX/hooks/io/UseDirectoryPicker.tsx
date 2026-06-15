@@ -67,6 +67,38 @@ export function useDirectoryPicker(window: typeof globalThis, config: PickerConf
       throw err;
     }
 
+    // Even with mode: "readwrite", the browser may only grant prompt-level
+    // permission at picker time. Explicitly verify/request write access now so
+    // that failures surface here instead of silently later during save.
+    try {
+      const handleAny = handle as unknown as {
+        queryPermission?: (d: { mode: "readwrite" }) => Promise<PermissionState>;
+        requestPermission?: (d: { mode: "readwrite" }) => Promise<PermissionState>;
+      };
+
+      let state: PermissionState | undefined;
+      if (typeof handleAny.queryPermission === "function") {
+        state = await handleAny.queryPermission({ mode: "readwrite" });
+      }
+      if (state !== "granted" && typeof handleAny.requestPermission === "function") {
+        state = await handleAny.requestPermission({ mode: "readwrite" });
+      }
+      if (state && state !== "granted") {
+        setError({
+          message:
+            "Write permission to the selected folder was not granted. Please pick the folder again and allow editing.",
+        });
+        return;
+      }
+    } catch (permErr) {
+      setError({
+        message:
+          "Could not obtain write permission for the selected folder: " +
+          (permErr instanceof Error ? permErr.message : String(permErr)),
+      });
+      return;
+    }
+
     const storage = new FileSystemStorage(handle, handle.name);
 
     const error = await getError(storage);

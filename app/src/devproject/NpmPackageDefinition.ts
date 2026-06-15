@@ -22,7 +22,7 @@ export const ScriptsDefault: Record<string, string> = {
   build: "just-scripts build",
   "build:production": "just-scripts build --production",
   clean: "just-scripts clean",
-  deploy: "npm run build && npx mct deploy env -i .",
+  deploy: "npm run build && npx --package=@minecraft/creator-tools -- mct deploy env -i .",
   "local-deploy": "just-scripts local-deploy",
   mcaddon: "just-scripts mcaddon",
   "mcaddon:production": "just-scripts mcaddon --production",
@@ -67,7 +67,7 @@ export const SetupRequiredScripts: Record<string, string> = {
   lint: "just-scripts lint",
   build: "just-scripts build",
   clean: "just-scripts clean",
-  deploy: "npm run build && npx mct deploy env -i .",
+  deploy: "npm run build && npx --package=@minecraft/creator-tools -- mct deploy env -i .",
   "local-deploy": "just-scripts local-deploy",
   mcaddon: "just-scripts mcaddon",
 };

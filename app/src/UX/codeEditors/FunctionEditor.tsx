@@ -22,6 +22,7 @@ import {
 import IProjectTheme from "../types/IProjectTheme";
 import type { IProjectItemEditorNavigationTarget } from "../project/ProjectItemEditor";
 import { WithLocalizationProps, withLocalization } from "../withLocalization";
+import MonacoErrorBoundary from "./MonacoErrorBoundary";
 
 interface IFunctionEditorProps extends WithLocalizationProps {
   file?: IFile;
@@ -496,6 +497,7 @@ class FunctionEditor extends Component<IFunctionEditorProps, IFunctionEditorStat
         }
 
         interior = (
+          <MonacoErrorBoundary>
           <Editor
             height={editorHeight}
             theme={"mcCommandsTheme" + this.props.roleId}
@@ -537,6 +539,7 @@ class FunctionEditor extends Component<IFunctionEditorProps, IFunctionEditorStat
             onMount={this._handleEditorDidMount}
             onChange={this._handleContentUpdated}
           />
+          </MonacoErrorBoundary>
         );
       }
     }

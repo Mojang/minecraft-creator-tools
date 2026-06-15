@@ -18,7 +18,8 @@ export default class ProjectWebUtilities {
       }
 
       if (itemSeed.action === ProjectItemSeedAction.defaultAction) {
-        ProjectEditorUtilities.integrateBrowserFileDefaultAction(project, "/" + fileSource.name, fileSource);
+        await ProjectEditorUtilities.integrateBrowserFileDefaultAction(project, "/" + fileSource.name, fileSource);
+        return true;
       } else if (itemSeed.action === ProjectItemSeedAction.overwriteFile) {
         let path = itemSeed.replacePath;
 

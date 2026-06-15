@@ -13,6 +13,7 @@ import { getThemeColors } from "../hooks/theme/useThemeColors";
 import Project from "../../app/Project";
 import IProjectTheme from "../types/IProjectTheme";
 import { WithLocalizationProps, withLocalization } from "../withLocalization";
+import MonacoErrorBoundary from "./MonacoErrorBoundary";
 
 interface IMolangEditorProps extends WithLocalizationProps {
   file?: IFile;
@@ -325,6 +326,7 @@ class MolangEditor extends Component<IMolangEditorProps, IMolangEditorState> {
         }
 
         interior = (
+          <MonacoErrorBoundary>
           <Editor
             height={editorHeight}
             theme={"mcCommandsTheme" + this.props.roleId}
@@ -344,6 +346,7 @@ class MolangEditor extends Component<IMolangEditorProps, IMolangEditorState> {
             onMount={this._handleEditorDidMount}
             onChange={this._handleContentUpdated}
           />
+          </MonacoErrorBoundary>
         );
       }
     }

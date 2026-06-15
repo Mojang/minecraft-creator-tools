@@ -4,7 +4,7 @@ import { useTheme } from "../../hooks/theme/UseTheme";
 import HeroBanner from "./HeroBanner";
 import Footer from "./Footer";
 import ElectronTitleBar from "../../appShell/ElectronTitleBar";
-import { AppMode } from "../../appShell/App";
+import { AppMode } from "../../appShell/AppMode";
 import HomeHeader from "../../home/HomeHeader";
 
 interface LayoutProps {

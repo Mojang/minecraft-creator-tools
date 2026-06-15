@@ -93,6 +93,9 @@ const WorldDisplayLazy = React.lazy(() =>
 const WorldViewerLazy = React.lazy(() =>
   import("../world/WorldViewer").then((m) => ({ default: m.default as unknown as LazyComponentType }))
 );
+const StandaloneWorldDisplayLazy = React.lazy(() =>
+  import("../world/StandaloneWorldDisplay").then((m) => ({ default: m.default as unknown as LazyComponentType }))
+);
 
 // Monaco Editor Components (~4MB)
 const JavaScriptEditorLazy = React.lazy(() =>
@@ -189,6 +192,13 @@ export const LazyWorldViewer: React.FC<any> = (props) => (
 export const LazyWorldDisplay: React.FC<any> = (props) => (
   <Suspense fallback={<LoadingFallback message="Loading world display..." />}>
     <WorldDisplayLazy {...props} />
+  </Suspense>
+);
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const LazyStandaloneWorldDisplay: React.FC<any> = (props) => (
+  <Suspense fallback={<LoadingFallback message="Loading world display..." />}>
+    <StandaloneWorldDisplayLazy {...props} />
   </Suspense>
 );
 

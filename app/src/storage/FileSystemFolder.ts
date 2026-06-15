@@ -436,13 +436,14 @@ export default class FileSystemFolder extends FolderBase implements IFolder {
               create: true,
             });
           } catch (e) {
-            Log.debugAlert("Folder r/w retrieval: " + e);
+            Log.error(
+              "Could not obtain write handle for folder '" + this.fullPath + "': " + e
+            );
+            throw e;
           }
         }
       }
     }
-
-    Log.assert(this._writeHandle !== undefined, "No folder handle.");
 
     return this._writeHandle;
   }
@@ -460,17 +461,21 @@ export default class FileSystemFolder extends FolderBase implements IFolder {
       const canonFolderNames: string[] = [];
       const canonFileNames: string[] = [];
 
-      for await (const [key, value] of handle.entries()) {
-        const nameCanon = StorageUtilities.canonicalizeName(key);
-        if (value.kind === "file") {
-          this.ensureFile(key, value as FileSystemFileHandle);
-          canonFileNames.push(nameCanon);
-        } else if (value.kind === "directory") {
-          canonFolderNames.push(nameCanon);
-          if (!StorageUtilities.isIgnorableFolder(key)) {
-            this.ensureFolder(key, value as FileSystemDirectoryHandle);
+      try {
+        for await (const [key, value] of handle.entries()) {
+          const nameCanon = StorageUtilities.canonicalizeName(key);
+          if (value.kind === "file") {
+            this.ensureFile(key, value as FileSystemFileHandle);
+            canonFileNames.push(nameCanon);
+          } else if (value.kind === "directory") {
+            canonFolderNames.push(nameCanon);
+            if (!StorageUtilities.isIgnorableFolder(key)) {
+              this.ensureFolder(key, value as FileSystemDirectoryHandle);
+            }
           }
         }
+      } catch (e) {
+        Log.debug("Could not enumerate folder '" + this.fullPath + "': " + e);
       }
 
       for (const folderKey in this.folders) {

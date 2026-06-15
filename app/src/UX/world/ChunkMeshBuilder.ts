@@ -44,6 +44,14 @@ export interface IChunkMeshResult {
   chunkZ: number;
   meshes: BABYLON.Mesh[];
   blockCount: number;
+  /**
+   * Lowest/highest world Y of any block that survived culling and was rendered.
+   * Used by render-stats hooks (and the Y-floor regression test) to assert that
+   * low-elevation content is not being silently dropped by a vertical floor.
+   * Infinity / -Infinity when no blocks were rendered.
+   */
+  minBlockY: number;
+  maxBlockY: number;
 }
 
 /**
@@ -71,6 +79,19 @@ export default class ChunkMeshBuilder {
    * data arrivals from BDS.
    */
   maxRenderY: number = Infinity;
+
+  /**
+   * Minimum Y coordinate to render. Subchunks/blocks entirely below this Y are
+   * skipped. Defaults to the Bedrock world bottom (-64) so NOTHING is culled by
+   * default — every block the world actually contains is rendered.
+   *
+   * NOTE: This previously was a hardcoded "Y < 40" floor tuned for VANILLA worlds
+   * (surface ~Y=63), which silently deleted all content below Y=40. Creator/custom
+   * worlds (e.g. flat city-scan templates whose baseplate sits well below Y=40)
+   * lost their ground and lower building floors, producing a floating horizontal
+   * slice. Consumers that want the old underground perf optimization can raise this.
+   */
+  minRenderY: number = -64;
 
   /**
    * Render center and maximum radius for radial culling.
@@ -304,660 +325,182 @@ export default class ChunkMeshBuilder {
   async createAtlasTemplates(): Promise<void> {
     const baseUrl = CreatorToolsHost.getVanillaContentRoot() + "res/latest/van/serve/resource_pack/";
 
-    // Grass block: green top, grass_side sides, dirt bottom
-    await this._createPerFaceAtlasTemplate(
-      "minecraft:grass_block",
+    const tex = (p: string) => baseUrl + "textures/blocks/" + p;
+
+    // Blocks that use the SAME texture on all six faces.
+    const uniform: Record<string, string> = {
+      "minecraft:stone": "stone.png",
+      "minecraft:granite": "stone_granite.png",
+      "minecraft:diorite": "stone_diorite.png",
+      "minecraft:andesite": "stone_andesite.png",
+      "minecraft:dirt": "dirt.png",
+      "minecraft:sand": "sand.png",
+      "minecraft:cobblestone": "cobblestone.png",
+      "minecraft:oak_planks": "planks_oak.png",
+      "minecraft:stonebrick": "stonebrick.png",
+      "minecraft:coal_ore": "coal_ore.png",
+      "minecraft:iron_ore": "iron_ore.png",
+      "minecraft:gold_ore": "gold_ore.png",
+      "minecraft:diamond_ore": "diamond_ore.png",
+      "minecraft:gravel": "gravel.png",
+      "minecraft:brick_block": "brick.png",
+      "minecraft:mossy_cobblestone": "cobblestone_mossy.png",
+      "minecraft:lapis_ore": "lapis_ore.png",
+      "minecraft:redstone_ore": "redstone_ore.png",
+      "minecraft:emerald_ore": "emerald_ore.png",
+      "minecraft:obsidian": "obsidian.png",
+      "minecraft:glowstone": "glowstone.png",
+      "minecraft:netherrack": "netherrack.png",
+      "minecraft:bedrock": "bedrock.png",
+      "minecraft:snow_layer": "snow.png",
+      "minecraft:spruce_planks": "planks_spruce.png",
+      "minecraft:birch_planks": "planks_birch.png",
+      "minecraft:white_wool": "wool_colored_white.png",
+      "minecraft:terracotta": "hardened_clay.png",
+      "minecraft:smooth_stone": "stone_slab_top.png",
+      "minecraft:lapis_block": "lapis_block.png",
+      "minecraft:iron_block": "iron_block.png",
+      "minecraft:gold_block": "gold_block.png",
+      "minecraft:diamond_block": "diamond_block.png",
+      "minecraft:bricks": "brick.png",
+      "minecraft:clay": "clay.png",
+      "minecraft:snow_block": "snow.png",
+      "minecraft:end_stone": "end_stone.png",
+      "minecraft:prismarine": "prismarine_rough.png",
+      "minecraft:emerald_block": "emerald_block.png",
+      "minecraft:redstone_block": "redstone_block.png",
+      "minecraft:purpur_block": "purpur_block.png",
+      "minecraft:soul_sand": "soul_sand.png",
+      "minecraft:sponge": "sponge.png",
+      "minecraft:moss_block": "moss_block.png",
+      "minecraft:mud": "mud.png",
+      "minecraft:tuff": "tuff.png",
+      "minecraft:dark_prismarine": "prismarine_dark.png",
+    };
+
+    // Blocks with distinct top/side/bottom faces (and optional biome tint).
+    // For blocks historically declared more than once, the values below are the
+    // LAST (winning) definition from the previous sequential code — e.g. crafting_table
+    // uses crafting_table_front, furnace uses furnace_front_off, smooth_stone uses
+    // stone_slab_top on all faces, podzol uses dirt_podzol_* textures.
+    const multiFace: { name: string; top: string; side: string; bottom: string; tint?: BABYLON.Color3 }[] = [
       {
-        top: baseUrl + "textures/blocks/grass_carried.png",
-        side: baseUrl + "textures/blocks/grass_side.png",
-        bottom: baseUrl + "textures/blocks/dirt.png",
+        name: "minecraft:grass_block",
+        top: "grass_carried.png",
+        side: "grass_side.png",
+        bottom: "dirt.png",
+        tint: new BABYLON.Color3(0.47, 0.66, 0.28),
       },
-      new BABYLON.Color3(0.47, 0.66, 0.28) // Plains biome tint for top face (natural green)
-    );
-
-    // Oak log: wood grain top/bottom, bark sides
-    await this._createPerFaceAtlasTemplate("minecraft:oak_log", {
-      top: baseUrl + "textures/blocks/log_oak_top.png",
-      side: baseUrl + "textures/blocks/log_oak.png",
-      bottom: baseUrl + "textures/blocks/log_oak_top.png",
-    });
-
-    // Crafting table: distinct top (grid), sides (tools), bottom (oak planks)
-    await this._createPerFaceAtlasTemplate("minecraft:crafting_table", {
-      top: baseUrl + "textures/blocks/crafting_table_top.png",
-      side: baseUrl + "textures/blocks/crafting_table_side.png",
-      bottom: baseUrl + "textures/blocks/planks_oak.png",
-    });
-
-    // Furnace: distinct front (dark mouth), sides (cobblestone)
-    await this._createPerFaceAtlasTemplate("minecraft:furnace", {
-      top: baseUrl + "textures/blocks/furnace_top.png",
-      side: baseUrl + "textures/blocks/furnace_side.png",
-      bottom: baseUrl + "textures/blocks/furnace_top.png",
-    });
-
-    // Bookshelf: shelves on sides, oak planks top/bottom
-    await this._createPerFaceAtlasTemplate("minecraft:bookshelf", {
-      top: baseUrl + "textures/blocks/planks_oak.png",
-      side: baseUrl + "textures/blocks/bookshelf.png",
-      bottom: baseUrl + "textures/blocks/planks_oak.png",
-    });
-
-    // Snowy grass: snow on top, grass_side_snowed sides, dirt bottom
-    await this._createPerFaceAtlasTemplate("minecraft:grass_block_snow", {
-      top: baseUrl + "textures/blocks/snow.png",
-      side: baseUrl + "textures/blocks/grass_side_snowed.png",
-      bottom: baseUrl + "textures/blocks/dirt.png",
-    });
-
-    // Podzol: dark top, podzol_side sides, dirt bottom
-    await this._createPerFaceAtlasTemplate("minecraft:podzol", {
-      top: baseUrl + "textures/blocks/podzol_top.png",
-      side: baseUrl + "textures/blocks/podzol_side.png",
-      bottom: baseUrl + "textures/blocks/dirt.png",
-    });
-
-    // Mycelium: purple-grey top, mycelium_side sides, dirt bottom
-    await this._createPerFaceAtlasTemplate("minecraft:mycelium", {
-      top: baseUrl + "textures/blocks/mycelium_top.png",
-      side: baseUrl + "textures/blocks/mycelium_side.png",
-      bottom: baseUrl + "textures/blocks/dirt.png",
-    });
-
-    // TNT: unique top/side/bottom textures
-    await this._createPerFaceAtlasTemplate("minecraft:tnt", {
-      top: baseUrl + "textures/blocks/tnt_top.png",
-      side: baseUrl + "textures/blocks/tnt_side.png",
-      bottom: baseUrl + "textures/blocks/tnt_bottom.png",
-    });
-
-    // Stone variants: same texture all faces, but edge darkening gives them visual definition
-    // without edge darkening, large stone surfaces look like flat, featureless walls
-    await this._createPerFaceAtlasTemplate("minecraft:stone", {
-      top: baseUrl + "textures/blocks/stone.png",
-      side: baseUrl + "textures/blocks/stone.png",
-      bottom: baseUrl + "textures/blocks/stone.png",
-    });
-    await this._createPerFaceAtlasTemplate("minecraft:granite", {
-      top: baseUrl + "textures/blocks/stone_granite.png",
-      side: baseUrl + "textures/blocks/stone_granite.png",
-      bottom: baseUrl + "textures/blocks/stone_granite.png",
-    });
-    await this._createPerFaceAtlasTemplate("minecraft:diorite", {
-      top: baseUrl + "textures/blocks/stone_diorite.png",
-      side: baseUrl + "textures/blocks/stone_diorite.png",
-      bottom: baseUrl + "textures/blocks/stone_diorite.png",
-    });
-    await this._createPerFaceAtlasTemplate("minecraft:andesite", {
-      top: baseUrl + "textures/blocks/stone_andesite.png",
-      side: baseUrl + "textures/blocks/stone_andesite.png",
-      bottom: baseUrl + "textures/blocks/stone_andesite.png",
-    });
-    // Dirt also benefits from edge darkening for visual definition
-    await this._createPerFaceAtlasTemplate("minecraft:dirt", {
-      top: baseUrl + "textures/blocks/dirt.png",
-      side: baseUrl + "textures/blocks/dirt.png",
-      bottom: baseUrl + "textures/blocks/dirt.png",
-    });
-    // Sand
-    await this._createPerFaceAtlasTemplate("minecraft:sand", {
-      top: baseUrl + "textures/blocks/sand.png",
-      side: baseUrl + "textures/blocks/sand.png",
-      bottom: baseUrl + "textures/blocks/sand.png",
-    });
-    // Cobblestone
-    await this._createPerFaceAtlasTemplate("minecraft:cobblestone", {
-      top: baseUrl + "textures/blocks/cobblestone.png",
-      side: baseUrl + "textures/blocks/cobblestone.png",
-      bottom: baseUrl + "textures/blocks/cobblestone.png",
-    });
-    // Oak planks
-    await this._createPerFaceAtlasTemplate("minecraft:oak_planks", {
-      top: baseUrl + "textures/blocks/planks_oak.png",
-      side: baseUrl + "textures/blocks/planks_oak.png",
-      bottom: baseUrl + "textures/blocks/planks_oak.png",
-    });
-    // Stone bricks
-    await this._createPerFaceAtlasTemplate("minecraft:stonebrick", {
-      top: baseUrl + "textures/blocks/stonebrick.png",
-      side: baseUrl + "textures/blocks/stonebrick.png",
-      bottom: baseUrl + "textures/blocks/stonebrick.png",
-    });
-
-    // Coal ore — dark veins in stone
-    await this._createPerFaceAtlasTemplate("minecraft:coal_ore", {
-      top: baseUrl + "textures/blocks/coal_ore.png",
-      side: baseUrl + "textures/blocks/coal_ore.png",
-      bottom: baseUrl + "textures/blocks/coal_ore.png",
-    });
-    // Iron ore — tan/brown spots in stone
-    await this._createPerFaceAtlasTemplate("minecraft:iron_ore", {
-      top: baseUrl + "textures/blocks/iron_ore.png",
-      side: baseUrl + "textures/blocks/iron_ore.png",
-      bottom: baseUrl + "textures/blocks/iron_ore.png",
-    });
-    // Gold ore — yellow spots in stone
-    await this._createPerFaceAtlasTemplate("minecraft:gold_ore", {
-      top: baseUrl + "textures/blocks/gold_ore.png",
-      side: baseUrl + "textures/blocks/gold_ore.png",
-      bottom: baseUrl + "textures/blocks/gold_ore.png",
-    });
-    // Diamond ore — blue gems in stone
-    await this._createPerFaceAtlasTemplate("minecraft:diamond_ore", {
-      top: baseUrl + "textures/blocks/diamond_ore.png",
-      side: baseUrl + "textures/blocks/diamond_ore.png",
-      bottom: baseUrl + "textures/blocks/diamond_ore.png",
-    });
-    // Gravel — gray pebbly texture
-    await this._createPerFaceAtlasTemplate("minecraft:gravel", {
-      top: baseUrl + "textures/blocks/gravel.png",
-      side: baseUrl + "textures/blocks/gravel.png",
-      bottom: baseUrl + "textures/blocks/gravel.png",
-    });
-    // Bricks — red brick pattern
-    await this._createPerFaceAtlasTemplate("minecraft:brick_block", {
-      top: baseUrl + "textures/blocks/brick.png",
-      side: baseUrl + "textures/blocks/brick.png",
-      bottom: baseUrl + "textures/blocks/brick.png",
-    });
-    // Mossy cobblestone — green-tinged cobblestone
-    await this._createPerFaceAtlasTemplate("minecraft:mossy_cobblestone", {
-      top: baseUrl + "textures/blocks/cobblestone_mossy.png",
-      side: baseUrl + "textures/blocks/cobblestone_mossy.png",
-      bottom: baseUrl + "textures/blocks/cobblestone_mossy.png",
-    });
-    // Sandstone — layered top/side/bottom
-    await this._createPerFaceAtlasTemplate("minecraft:sandstone", {
-      top: baseUrl + "textures/blocks/sandstone_top.png",
-      side: baseUrl + "textures/blocks/sandstone_normal.png",
-      bottom: baseUrl + "textures/blocks/sandstone_bottom.png",
-    });
-    // Lapis ore — blue spots in stone
-    await this._createPerFaceAtlasTemplate("minecraft:lapis_ore", {
-      top: baseUrl + "textures/blocks/lapis_ore.png",
-      side: baseUrl + "textures/blocks/lapis_ore.png",
-      bottom: baseUrl + "textures/blocks/lapis_ore.png",
-    });
-    // Redstone ore — red spots in stone
-    await this._createPerFaceAtlasTemplate("minecraft:redstone_ore", {
-      top: baseUrl + "textures/blocks/redstone_ore.png",
-      side: baseUrl + "textures/blocks/redstone_ore.png",
-      bottom: baseUrl + "textures/blocks/redstone_ore.png",
-    });
-    // Emerald ore — green gem in stone
-    await this._createPerFaceAtlasTemplate("minecraft:emerald_ore", {
-      top: baseUrl + "textures/blocks/emerald_ore.png",
-      side: baseUrl + "textures/blocks/emerald_ore.png",
-      bottom: baseUrl + "textures/blocks/emerald_ore.png",
-    });
-
-    // Glass — procedural semi-transparent texture.
-    // The vanilla glass.png is almost entirely transparent, which causes black rendering
-    // with thin instances (needDepthPrePass blocks geometry behind it, transparent pixels
-    // composite as black). Instead, we create a procedural glass: light blue fill with
-    // white grid lines, rendered as a semi-opaque surface via mat.alpha.
-    await this._createGlassAtlasTemplate();
-
-    // Oak leaves — green foliage with alpha cutout for natural look.
-    // IMPORTANT: Use leaves_oak.png (has alpha holes), NOT leaves_oak_carried.png (fully opaque inventory icon).
-    await this._createPerFaceAtlasTemplate(
-      "minecraft:oak_leaves",
+      { name: "minecraft:grass_block_snow", top: "snow.png", side: "grass_side_snowed.png", bottom: "dirt.png" },
+      { name: "minecraft:oak_log", top: "log_oak_top.png", side: "log_oak.png", bottom: "log_oak_top.png" },
+      { name: "minecraft:spruce_log", top: "log_spruce_top.png", side: "log_spruce.png", bottom: "log_spruce_top.png" },
+      { name: "minecraft:birch_log", top: "log_birch_top.png", side: "log_birch.png", bottom: "log_birch_top.png" },
       {
-        top: baseUrl + "textures/blocks/leaves_oak.png",
-        side: baseUrl + "textures/blocks/leaves_oak.png",
-        bottom: baseUrl + "textures/blocks/leaves_oak.png",
+        name: "minecraft:crafting_table",
+        top: "crafting_table_top.png",
+        side: "crafting_table_front.png",
+        bottom: "planks_oak.png",
       },
-      new BABYLON.Color3(0.58, 0.82, 0.38) // Plains biome leaf tint (brightened for grayscale texture)
-    );
-
-    // Water — translucent blue
-    await this._createPerFaceAtlasTemplate(
-      "minecraft:water",
+      { name: "minecraft:furnace", top: "furnace_top.png", side: "furnace_front_off.png", bottom: "furnace_top.png" },
+      { name: "minecraft:bookshelf", top: "planks_oak.png", side: "bookshelf.png", bottom: "planks_oak.png" },
+      { name: "minecraft:podzol", top: "dirt_podzol_top.png", side: "dirt_podzol_side.png", bottom: "dirt.png" },
+      { name: "minecraft:mycelium", top: "mycelium_top.png", side: "mycelium_side.png", bottom: "dirt.png" },
+      { name: "minecraft:tnt", top: "tnt_top.png", side: "tnt_side.png", bottom: "tnt_bottom.png" },
       {
-        top: baseUrl + "textures/blocks/water_placeholder.png",
-        side: baseUrl + "textures/blocks/water_placeholder.png",
-        bottom: baseUrl + "textures/blocks/water_placeholder.png",
+        name: "minecraft:sandstone",
+        top: "sandstone_top.png",
+        side: "sandstone_normal.png",
+        bottom: "sandstone_bottom.png",
       },
-      new BABYLON.Color3(0.24, 0.45, 0.85) // Water tint
-    );
-
-    // Obsidian — dark purple-black
-    await this._createPerFaceAtlasTemplate("minecraft:obsidian", {
-      top: baseUrl + "textures/blocks/obsidian.png",
-      side: baseUrl + "textures/blocks/obsidian.png",
-      bottom: baseUrl + "textures/blocks/obsidian.png",
-    });
-
-    // Glowstone — yellow luminous
-    await this._createPerFaceAtlasTemplate("minecraft:glowstone", {
-      top: baseUrl + "textures/blocks/glowstone.png",
-      side: baseUrl + "textures/blocks/glowstone.png",
-      bottom: baseUrl + "textures/blocks/glowstone.png",
-    });
-
-    // Netherrack (mapped from granite)
-    await this._createPerFaceAtlasTemplate("minecraft:netherrack", {
-      top: baseUrl + "textures/blocks/netherrack.png",
-      side: baseUrl + "textures/blocks/netherrack.png",
-      bottom: baseUrl + "textures/blocks/netherrack.png",
-    });
-
-    // Bedrock — dark with irregular pattern
-    await this._createPerFaceAtlasTemplate("minecraft:bedrock", {
-      top: baseUrl + "textures/blocks/bedrock.png",
-      side: baseUrl + "textures/blocks/bedrock.png",
-      bottom: baseUrl + "textures/blocks/bedrock.png",
-    });
-
-    // Torch: NOT rendered as a full cube atlas — handled by _getOrCreateTemplateMesh
-    // as a small billboard box (0.125 x 0.625). Creating a full-cube atlas template here
-    // would pre-populate _templateMeshes, causing the billboard check in buildChunkMesh
-    // to miss the torch, rendering it as a 1x1x1 opaque cube that blocks the view
-    // (the "black ceiling" bug when torches are inside a building).
-
-    // === Additional block types for terrain variety ===
-
-    // Snow — pure white
-    await this._createPerFaceAtlasTemplate("minecraft:snow_layer", {
-      top: baseUrl + "textures/blocks/snow.png",
-      side: baseUrl + "textures/blocks/snow.png",
-      bottom: baseUrl + "textures/blocks/snow.png",
-    });
-    // Spruce log — darker bark than oak
-    await this._createPerFaceAtlasTemplate("minecraft:spruce_log", {
-      top: baseUrl + "textures/blocks/log_spruce_top.png",
-      side: baseUrl + "textures/blocks/log_spruce.png",
-      bottom: baseUrl + "textures/blocks/log_spruce_top.png",
-    });
-    // Birch log — white bark with dark patches
-    await this._createPerFaceAtlasTemplate("minecraft:birch_log", {
-      top: baseUrl + "textures/blocks/log_birch_top.png",
-      side: baseUrl + "textures/blocks/log_birch.png",
-      bottom: baseUrl + "textures/blocks/log_birch_top.png",
-    });
-    // Spruce leaves — darker green than oak. Fixed tint #619961.
-    await this._createPerFaceAtlasTemplate(
-      "minecraft:spruce_leaves",
       {
-        top: baseUrl + "textures/blocks/leaves_spruce.png",
-        side: baseUrl + "textures/blocks/leaves_spruce.png",
-        bottom: baseUrl + "textures/blocks/leaves_spruce.png",
+        name: "minecraft:quartz_block",
+        top: "quartz_block_top.png",
+        side: "quartz_block_side.png",
+        bottom: "quartz_block_bottom.png",
       },
-      new BABYLON.Color3(0.46, 0.7, 0.46) // Spruce foliage tint (brightened)
-    );
-    // Birch leaves — lighter yellow-green. Fixed tint #80A755.
-    await this._createPerFaceAtlasTemplate(
-      "minecraft:birch_leaves",
+      { name: "minecraft:pumpkin", top: "pumpkin_top.png", side: "pumpkin_side.png", bottom: "pumpkin_top.png" },
+      { name: "minecraft:melon_block", top: "melon_top.png", side: "melon_side.png", bottom: "melon_top.png" },
       {
-        top: baseUrl + "textures/blocks/leaves_birch.png",
-        side: baseUrl + "textures/blocks/leaves_birch.png",
-        bottom: baseUrl + "textures/blocks/leaves_birch.png",
+        name: "minecraft:hay_block",
+        top: "hay_block_top.png",
+        side: "hay_block_side.png",
+        bottom: "hay_block_top.png",
       },
-      new BABYLON.Color3(0.58, 0.75, 0.4) // Birch foliage tint (brightened)
-    );
-    // Spruce/birch planks
-    await this._createPerFaceAtlasTemplate("minecraft:spruce_planks", {
-      top: baseUrl + "textures/blocks/planks_spruce.png",
-      side: baseUrl + "textures/blocks/planks_spruce.png",
-      bottom: baseUrl + "textures/blocks/planks_spruce.png",
-    });
-    await this._createPerFaceAtlasTemplate("minecraft:birch_planks", {
-      top: baseUrl + "textures/blocks/planks_birch.png",
-      side: baseUrl + "textures/blocks/planks_birch.png",
-      bottom: baseUrl + "textures/blocks/planks_birch.png",
-    });
-    // Wool — white (most common)
-    await this._createPerFaceAtlasTemplate("minecraft:white_wool", {
-      top: baseUrl + "textures/blocks/wool_colored_white.png",
-      side: baseUrl + "textures/blocks/wool_colored_white.png",
-      bottom: baseUrl + "textures/blocks/wool_colored_white.png",
-    });
-    // Terracotta — orange-brown clay
-    await this._createPerFaceAtlasTemplate("minecraft:terracotta", {
-      top: baseUrl + "textures/blocks/hardened_clay.png",
-      side: baseUrl + "textures/blocks/hardened_clay.png",
-      bottom: baseUrl + "textures/blocks/hardened_clay.png",
-    });
-    // Smooth stone — polished surface
-    await this._createPerFaceAtlasTemplate("minecraft:smooth_stone", {
-      top: baseUrl + "textures/blocks/stone_slab_top.png",
-      side: baseUrl + "textures/blocks/stone_slab_side.png",
-      bottom: baseUrl + "textures/blocks/stone_slab_top.png",
-    });
-    // Lapis block — deep blue
-    await this._createPerFaceAtlasTemplate("minecraft:lapis_block", {
-      top: baseUrl + "textures/blocks/lapis_block.png",
-      side: baseUrl + "textures/blocks/lapis_block.png",
-      bottom: baseUrl + "textures/blocks/lapis_block.png",
-    });
-    // Iron block — shiny silver
-    await this._createPerFaceAtlasTemplate("minecraft:iron_block", {
-      top: baseUrl + "textures/blocks/iron_block.png",
-      side: baseUrl + "textures/blocks/iron_block.png",
-      bottom: baseUrl + "textures/blocks/iron_block.png",
-    });
-    // Gold block — shiny gold
-    await this._createPerFaceAtlasTemplate("minecraft:gold_block", {
-      top: baseUrl + "textures/blocks/gold_block.png",
-      side: baseUrl + "textures/blocks/gold_block.png",
-      bottom: baseUrl + "textures/blocks/gold_block.png",
-    });
-    // Diamond block — teal-blue gems
-    await this._createPerFaceAtlasTemplate("minecraft:diamond_block", {
-      top: baseUrl + "textures/blocks/diamond_block.png",
-      side: baseUrl + "textures/blocks/diamond_block.png",
-      bottom: baseUrl + "textures/blocks/diamond_block.png",
-    });
-    // Bricks — classic red brick pattern
-    await this._createPerFaceAtlasTemplate("minecraft:bricks", {
-      top: baseUrl + "textures/blocks/brick.png",
-      side: baseUrl + "textures/blocks/brick.png",
-      bottom: baseUrl + "textures/blocks/brick.png",
-    });
-    // Mossy cobblestone
-    await this._createPerFaceAtlasTemplate("minecraft:mossy_cobblestone", {
-      top: baseUrl + "textures/blocks/cobblestone_mossy.png",
-      side: baseUrl + "textures/blocks/cobblestone_mossy.png",
-      bottom: baseUrl + "textures/blocks/cobblestone_mossy.png",
-    });
-    // Clay block
-    await this._createPerFaceAtlasTemplate("minecraft:clay", {
-      top: baseUrl + "textures/blocks/clay.png",
-      side: baseUrl + "textures/blocks/clay.png",
-      bottom: baseUrl + "textures/blocks/clay.png",
-    });
-    // Snow block
-    await this._createPerFaceAtlasTemplate("minecraft:snow_block", {
-      top: baseUrl + "textures/blocks/snow.png",
-      side: baseUrl + "textures/blocks/snow.png",
-      bottom: baseUrl + "textures/blocks/snow.png",
-    });
-    // Netherrack
-    await this._createPerFaceAtlasTemplate("minecraft:netherrack", {
-      top: baseUrl + "textures/blocks/netherrack.png",
-      side: baseUrl + "textures/blocks/netherrack.png",
-      bottom: baseUrl + "textures/blocks/netherrack.png",
-    });
-    // End stone
-    await this._createPerFaceAtlasTemplate("minecraft:end_stone", {
-      top: baseUrl + "textures/blocks/end_stone.png",
-      side: baseUrl + "textures/blocks/end_stone.png",
-      bottom: baseUrl + "textures/blocks/end_stone.png",
-    });
-    // Quartz block
-    await this._createPerFaceAtlasTemplate("minecraft:quartz_block", {
-      top: baseUrl + "textures/blocks/quartz_block_top.png",
-      side: baseUrl + "textures/blocks/quartz_block_side.png",
-      bottom: baseUrl + "textures/blocks/quartz_block_bottom.png",
-    });
-    // Prismarine — ocean monument block
-    await this._createPerFaceAtlasTemplate("minecraft:prismarine", {
-      top: baseUrl + "textures/blocks/prismarine_rough.png",
-      side: baseUrl + "textures/blocks/prismarine_rough.png",
-      bottom: baseUrl + "textures/blocks/prismarine_rough.png",
-    });
-    // Emerald block
-    await this._createPerFaceAtlasTemplate("minecraft:emerald_block", {
-      top: baseUrl + "textures/blocks/emerald_block.png",
-      side: baseUrl + "textures/blocks/emerald_block.png",
-      bottom: baseUrl + "textures/blocks/emerald_block.png",
-    });
-    // Redstone block
-    await this._createPerFaceAtlasTemplate("minecraft:redstone_block", {
-      top: baseUrl + "textures/blocks/redstone_block.png",
-      side: baseUrl + "textures/blocks/redstone_block.png",
-      bottom: baseUrl + "textures/blocks/redstone_block.png",
-    });
-
-    // White wool (all wool colors simplify to this)
-    await this._createPerFaceAtlasTemplate("minecraft:white_wool", {
-      top: baseUrl + "textures/blocks/wool_colored_white.png",
-      side: baseUrl + "textures/blocks/wool_colored_white.png",
-      bottom: baseUrl + "textures/blocks/wool_colored_white.png",
-    });
-    // Iron block
-    await this._createPerFaceAtlasTemplate("minecraft:iron_block", {
-      top: baseUrl + "textures/blocks/iron_block.png",
-      side: baseUrl + "textures/blocks/iron_block.png",
-      bottom: baseUrl + "textures/blocks/iron_block.png",
-    });
-    // Gold block
-    await this._createPerFaceAtlasTemplate("minecraft:gold_block", {
-      top: baseUrl + "textures/blocks/gold_block.png",
-      side: baseUrl + "textures/blocks/gold_block.png",
-      bottom: baseUrl + "textures/blocks/gold_block.png",
-    });
-    // Lapis block
-    await this._createPerFaceAtlasTemplate("minecraft:lapis_block", {
-      top: baseUrl + "textures/blocks/lapis_block.png",
-      side: baseUrl + "textures/blocks/lapis_block.png",
-      bottom: baseUrl + "textures/blocks/lapis_block.png",
-    });
-    // Obsidian
-    await this._createPerFaceAtlasTemplate("minecraft:obsidian", {
-      top: baseUrl + "textures/blocks/obsidian.png",
-      side: baseUrl + "textures/blocks/obsidian.png",
-      bottom: baseUrl + "textures/blocks/obsidian.png",
-    });
-    // Bookshelf — side has book spines, top/bottom are oak planks
-    await this._createPerFaceAtlasTemplate("minecraft:bookshelf", {
-      top: baseUrl + "textures/blocks/planks_oak.png",
-      side: baseUrl + "textures/blocks/bookshelf.png",
-      bottom: baseUrl + "textures/blocks/planks_oak.png",
-    });
-    // Crafting table — distinct top, front, and side textures
-    await this._createPerFaceAtlasTemplate("minecraft:crafting_table", {
-      top: baseUrl + "textures/blocks/crafting_table_top.png",
-      side: baseUrl + "textures/blocks/crafting_table_front.png",
-      bottom: baseUrl + "textures/blocks/planks_oak.png",
-    });
-    // Furnace — front face with oven door, side/top are stone-like
-    await this._createPerFaceAtlasTemplate("minecraft:furnace", {
-      top: baseUrl + "textures/blocks/furnace_top.png",
-      side: baseUrl + "textures/blocks/furnace_front_off.png",
-      bottom: baseUrl + "textures/blocks/furnace_top.png",
-    });
-    // Bedrock
-    await this._createPerFaceAtlasTemplate("minecraft:bedrock", {
-      top: baseUrl + "textures/blocks/bedrock.png",
-      side: baseUrl + "textures/blocks/bedrock.png",
-      bottom: baseUrl + "textures/blocks/bedrock.png",
-    });
-    // Terracotta (hardened clay)
-    await this._createPerFaceAtlasTemplate("minecraft:terracotta", {
-      top: baseUrl + "textures/blocks/hardened_clay.png",
-      side: baseUrl + "textures/blocks/hardened_clay.png",
-      bottom: baseUrl + "textures/blocks/hardened_clay.png",
-    });
-    // Smooth stone
-    await this._createPerFaceAtlasTemplate("minecraft:smooth_stone", {
-      top: baseUrl + "textures/blocks/stone_slab_top.png",
-      side: baseUrl + "textures/blocks/stone_slab_top.png",
-      bottom: baseUrl + "textures/blocks/stone_slab_top.png",
-    });
-    // Diamond block
-    await this._createPerFaceAtlasTemplate("minecraft:diamond_block", {
-      top: baseUrl + "textures/blocks/diamond_block.png",
-      side: baseUrl + "textures/blocks/diamond_block.png",
-      bottom: baseUrl + "textures/blocks/diamond_block.png",
-    });
-    // Podzol (forest biome)
-    await this._createPerFaceAtlasTemplate("minecraft:podzol", {
-      top: baseUrl + "textures/blocks/dirt_podzol_top.png",
-      side: baseUrl + "textures/blocks/dirt_podzol_side.png",
-      bottom: baseUrl + "textures/blocks/dirt.png",
-    });
-    // Mycelium
-    await this._createPerFaceAtlasTemplate("minecraft:mycelium", {
-      top: baseUrl + "textures/blocks/mycelium_top.png",
-      side: baseUrl + "textures/blocks/mycelium_side.png",
-      bottom: baseUrl + "textures/blocks/dirt.png",
-    });
-    // Purpur block
-    await this._createPerFaceAtlasTemplate("minecraft:purpur_block", {
-      top: baseUrl + "textures/blocks/purpur_block.png",
-      side: baseUrl + "textures/blocks/purpur_block.png",
-      bottom: baseUrl + "textures/blocks/purpur_block.png",
-    });
-
-    // --- Stone variants ---
-    await this._createPerFaceAtlasTemplate("minecraft:granite", {
-      top: baseUrl + "textures/blocks/stone_granite.png",
-      side: baseUrl + "textures/blocks/stone_granite.png",
-      bottom: baseUrl + "textures/blocks/stone_granite.png",
-    });
-    await this._createPerFaceAtlasTemplate("minecraft:diorite", {
-      top: baseUrl + "textures/blocks/stone_diorite.png",
-      side: baseUrl + "textures/blocks/stone_diorite.png",
-      bottom: baseUrl + "textures/blocks/stone_diorite.png",
-    });
-    await this._createPerFaceAtlasTemplate("minecraft:andesite", {
-      top: baseUrl + "textures/blocks/stone_andesite.png",
-      side: baseUrl + "textures/blocks/stone_andesite.png",
-      bottom: baseUrl + "textures/blocks/stone_andesite.png",
-    });
-
-    // --- Additional wood variants ---
-    // Spruce log
-    await this._createPerFaceAtlasTemplate("minecraft:spruce_log", {
-      top: baseUrl + "textures/blocks/log_spruce_top.png",
-      side: baseUrl + "textures/blocks/log_spruce.png",
-      bottom: baseUrl + "textures/blocks/log_spruce_top.png",
-    });
-    // Birch log
-    await this._createPerFaceAtlasTemplate("minecraft:birch_log", {
-      top: baseUrl + "textures/blocks/log_birch_top.png",
-      side: baseUrl + "textures/blocks/log_birch.png",
-      bottom: baseUrl + "textures/blocks/log_birch_top.png",
-    });
-    // Spruce planks
-    await this._createPerFaceAtlasTemplate("minecraft:spruce_planks", {
-      top: baseUrl + "textures/blocks/planks_spruce.png",
-      side: baseUrl + "textures/blocks/planks_spruce.png",
-      bottom: baseUrl + "textures/blocks/planks_spruce.png",
-    });
-    // Birch planks
-    await this._createPerFaceAtlasTemplate("minecraft:birch_planks", {
-      top: baseUrl + "textures/blocks/planks_birch.png",
-      side: baseUrl + "textures/blocks/planks_birch.png",
-      bottom: baseUrl + "textures/blocks/planks_birch.png",
-    });
-    // Spruce leaves — fixed tint #619961
-    await this._createPerFaceAtlasTemplate(
-      "minecraft:spruce_leaves",
       {
-        top: baseUrl + "textures/blocks/leaves_spruce.png",
-        side: baseUrl + "textures/blocks/leaves_spruce.png",
-        bottom: baseUrl + "textures/blocks/leaves_spruce.png",
+        name: "minecraft:deepslate",
+        top: "deepslate/deepslate_top.png",
+        side: "deepslate/deepslate.png",
+        bottom: "deepslate/deepslate_top.png",
       },
-      new BABYLON.Color3(0.46, 0.7, 0.46) // Spruce foliage tint (brightened)
-    );
-    // Birch leaves — fixed tint #80A755
-    await this._createPerFaceAtlasTemplate(
-      "minecraft:birch_leaves",
       {
-        top: baseUrl + "textures/blocks/leaves_birch.png",
-        side: baseUrl + "textures/blocks/leaves_birch.png",
-        bottom: baseUrl + "textures/blocks/leaves_birch.png",
+        name: "minecraft:red_sandstone",
+        top: "red_sandstone_top.png",
+        side: "red_sandstone_normal.png",
+        bottom: "red_sandstone_bottom.png",
       },
-      new BABYLON.Color3(0.58, 0.75, 0.4) // Birch foliage tint (brightened)
+      {
+        name: "minecraft:oak_leaves",
+        top: "leaves_oak.png",
+        side: "leaves_oak.png",
+        bottom: "leaves_oak.png",
+        tint: new BABYLON.Color3(0.58, 0.82, 0.38),
+      },
+      {
+        name: "minecraft:spruce_leaves",
+        top: "leaves_spruce.png",
+        side: "leaves_spruce.png",
+        bottom: "leaves_spruce.png",
+        tint: new BABYLON.Color3(0.46, 0.7, 0.46),
+      },
+      {
+        name: "minecraft:birch_leaves",
+        top: "leaves_birch.png",
+        side: "leaves_birch.png",
+        bottom: "leaves_birch.png",
+        tint: new BABYLON.Color3(0.58, 0.75, 0.4),
+      },
+      {
+        name: "minecraft:water",
+        top: "water_placeholder.png",
+        side: "water_placeholder.png",
+        bottom: "water_placeholder.png",
+        tint: new BABYLON.Color3(0.24, 0.45, 0.85),
+      },
+    ];
+
+    // Build all atlas templates IN PARALLEL. Previously these were created with ~100
+    // sequential `await` calls (each fetching 3 PNGs), which serialized hundreds of
+    // texture loads and made the 3D world viewer take 15-35s to first render — the
+    // canvas appeared black ("Chunks: 0") until atlas init finished. Running the loads
+    // concurrently cuts atlas init to a few seconds. Block names that were declared more
+    // than once in the old code are deduplicated above (Map keys / last-wins values),
+    // which also avoids the previous non-deterministic last-writer race.
+    //
+    // Torch is intentionally NOT created here — it is rendered as a small billboard box
+    // by _getOrCreateTemplateMesh. A full-cube atlas template would make buildChunkMesh
+    // miss the billboard path and render it as an opaque 1x1x1 cube (the "black ceiling"
+    // bug when torches are inside a building).
+    const jobs: Promise<void>[] = [];
+    for (const blockName of Object.keys(uniform)) {
+      const file = tex(uniform[blockName]);
+      jobs.push(this._createPerFaceAtlasTemplate(blockName, { top: file, side: file, bottom: file }));
+    }
+    for (const m of multiFace) {
+      jobs.push(
+        this._createPerFaceAtlasTemplate(m.name, { top: tex(m.top), side: tex(m.side), bottom: tex(m.bottom) }, m.tint)
+      );
+    }
+    // Glass uses a procedural texture (vanilla glass.png is nearly fully transparent and
+    // renders black with thin instances), so it has its own builder.
+    jobs.push(this._createGlassAtlasTemplate());
+
+    await Promise.all(jobs);
+
+    Log.debug(
+      "ChunkMeshBuilder: Atlas templates created for " +
+        (Object.keys(uniform).length + multiFace.length + 1) +
+        " block types"
     );
-
-    // --- Common blocks ---
-    // Clay
-    await this._createPerFaceAtlasTemplate("minecraft:clay", {
-      top: baseUrl + "textures/blocks/clay.png",
-      side: baseUrl + "textures/blocks/clay.png",
-      bottom: baseUrl + "textures/blocks/clay.png",
-    });
-    // Soul sand
-    await this._createPerFaceAtlasTemplate("minecraft:soul_sand", {
-      top: baseUrl + "textures/blocks/soul_sand.png",
-      side: baseUrl + "textures/blocks/soul_sand.png",
-      bottom: baseUrl + "textures/blocks/soul_sand.png",
-    });
-    // Emerald block
-    await this._createPerFaceAtlasTemplate("minecraft:emerald_block", {
-      top: baseUrl + "textures/blocks/emerald_block.png",
-      side: baseUrl + "textures/blocks/emerald_block.png",
-      bottom: baseUrl + "textures/blocks/emerald_block.png",
-    });
-    // Mossy cobblestone
-    await this._createPerFaceAtlasTemplate("minecraft:mossy_cobblestone", {
-      top: baseUrl + "textures/blocks/cobblestone_mossy.png",
-      side: baseUrl + "textures/blocks/cobblestone_mossy.png",
-      bottom: baseUrl + "textures/blocks/cobblestone_mossy.png",
-    });
-
-    // --- Decorative/special blocks ---
-    // TNT (multi-face)
-    await this._createPerFaceAtlasTemplate("minecraft:tnt", {
-      top: baseUrl + "textures/blocks/tnt_top.png",
-      side: baseUrl + "textures/blocks/tnt_side.png",
-      bottom: baseUrl + "textures/blocks/tnt_bottom.png",
-    });
-    // Pumpkin (multi-face)
-    await this._createPerFaceAtlasTemplate("minecraft:pumpkin", {
-      top: baseUrl + "textures/blocks/pumpkin_top.png",
-      side: baseUrl + "textures/blocks/pumpkin_side.png",
-      bottom: baseUrl + "textures/blocks/pumpkin_top.png",
-    });
-    // Melon (multi-face)
-    await this._createPerFaceAtlasTemplate("minecraft:melon_block", {
-      top: baseUrl + "textures/blocks/melon_top.png",
-      side: baseUrl + "textures/blocks/melon_side.png",
-      bottom: baseUrl + "textures/blocks/melon_top.png",
-    });
-    // Hay block (multi-face)
-    await this._createPerFaceAtlasTemplate("minecraft:hay_block", {
-      top: baseUrl + "textures/blocks/hay_block_top.png",
-      side: baseUrl + "textures/blocks/hay_block_side.png",
-      bottom: baseUrl + "textures/blocks/hay_block_top.png",
-    });
-    // Sponge
-    await this._createPerFaceAtlasTemplate("minecraft:sponge", {
-      top: baseUrl + "textures/blocks/sponge.png",
-      side: baseUrl + "textures/blocks/sponge.png",
-      bottom: baseUrl + "textures/blocks/sponge.png",
-    });
-    // Moss block
-    await this._createPerFaceAtlasTemplate("minecraft:moss_block", {
-      top: baseUrl + "textures/blocks/moss_block.png",
-      side: baseUrl + "textures/blocks/moss_block.png",
-      bottom: baseUrl + "textures/blocks/moss_block.png",
-    });
-    // Mud
-    await this._createPerFaceAtlasTemplate("minecraft:mud", {
-      top: baseUrl + "textures/blocks/mud.png",
-      side: baseUrl + "textures/blocks/mud.png",
-      bottom: baseUrl + "textures/blocks/mud.png",
-    });
-    // Tuff
-    await this._createPerFaceAtlasTemplate("minecraft:tuff", {
-      top: baseUrl + "textures/blocks/tuff.png",
-      side: baseUrl + "textures/blocks/tuff.png",
-      bottom: baseUrl + "textures/blocks/tuff.png",
-    });
-    // Deepslate (multi-face, in subfolder)
-    await this._createPerFaceAtlasTemplate("minecraft:deepslate", {
-      top: baseUrl + "textures/blocks/deepslate/deepslate_top.png",
-      side: baseUrl + "textures/blocks/deepslate/deepslate.png",
-      bottom: baseUrl + "textures/blocks/deepslate/deepslate_top.png",
-    });
-    // Red sandstone (multi-face)
-    await this._createPerFaceAtlasTemplate("minecraft:red_sandstone", {
-      top: baseUrl + "textures/blocks/red_sandstone_top.png",
-      side: baseUrl + "textures/blocks/red_sandstone_normal.png",
-      bottom: baseUrl + "textures/blocks/red_sandstone_bottom.png",
-    });
-    // Dark prismarine
-    await this._createPerFaceAtlasTemplate("minecraft:dark_prismarine", {
-      top: baseUrl + "textures/blocks/prismarine_dark.png",
-      side: baseUrl + "textures/blocks/prismarine_dark.png",
-      bottom: baseUrl + "textures/blocks/prismarine_dark.png",
-    });
-
-    Log.debug("ChunkMeshBuilder: Atlas templates created for 101 block types");
   }
 
   /**
@@ -1344,6 +887,8 @@ export default class ChunkMeshBuilder {
     // Per-face exposure flags: [+X, -X, +Y, -Y, +Z, -Z]
     const blocksByType = new Map<string, { x: number; y: number; z: number; faces: boolean[] }[]>();
     let blockCount = 0;
+    let minBlockY = Infinity;
+    let maxBlockY = -Infinity;
 
     // Precompute graduated Y culling constants to avoid recalculation per block.
     const hasRadialCulling = this.maxRenderRadius < Infinity;
@@ -1358,11 +903,10 @@ export default class ChunkMeshBuilder {
       if (!subchunk) continue;
       const subchunkWorldY = minY + sci * 16;
 
-      // Performance: skip deep underground subchunks (below Y=40).
-      // These are mostly solid stone and cave walls — rendering them
-      // is wasteful since they're rarely visible from the surface.
-      // Y=40 safely keeps the surface layer (Y=48+, ground at Y=63).
-      if (subchunkWorldY < 40) continue;
+      // Skip subchunks entirely below the configured floor (default -64 = world
+      // bottom, i.e. no artificial floor). Raise minRenderY to skip deep
+      // underground subchunks for performance on large vanilla worlds.
+      if (subchunkWorldY + 16 <= this.minRenderY) continue;
 
       for (let ly = 0; ly < 16; ly++) {
         for (let lz = 0; lz < 16; lz++) {
@@ -1378,6 +922,8 @@ export default class ChunkMeshBuilder {
 
             const worldY = subchunkWorldY + ly;
 
+            // Skip blocks outside the configured vertical render window.
+            if (worldY < this.minRenderY) continue;
             // Skip blocks above maxRenderY (eliminates natural terrain above cleared area)
             if (worldY > this.maxRenderY) continue;
 
@@ -1432,6 +978,8 @@ export default class ChunkMeshBuilder {
             }
             list.push({ x: worldX, y: worldY, z: worldZ, faces });
             blockCount++;
+            if (worldY < minBlockY) minBlockY = worldY;
+            if (worldY > maxBlockY) maxBlockY = worldY;
           }
         }
       }
@@ -1522,7 +1070,7 @@ export default class ChunkMeshBuilder {
       }
     }
 
-    return { chunkX: chunk.x, chunkZ: chunk.z, meshes, blockCount };
+    return { chunkX: chunk.x, chunkZ: chunk.z, meshes, blockCount, minBlockY, maxBlockY };
   }
 
   /**
@@ -3224,91 +2772,21 @@ export default class ChunkMeshBuilder {
   private _isNonRenderable(blockName: string): boolean {
     if (!blockName || blockName === "minecraft:air" || blockName === "") return true;
     const short = blockName.startsWith("minecraft:") ? blockName.substring(10) : blockName;
+    // Only skip blocks that are genuinely invisible or technical/collision-only.
+    // Everything else — including ground cover (grass/ferns/flowers), carpets,
+    // rails, signs, banners, etc. — is rendered: billboard/cross-plane blocks go
+    // through the billboard path in _getOrCreateTemplateMesh, and anything without
+    // dedicated geometry falls back to a textured or colored cube. Previously this
+    // list filtered out most decorative + ground-cover blocks, which made real
+    // worlds (e.g. detailed city scans) render with large empty/bare regions.
     return (
       short === "air" ||
-      short.includes("redstone_wire") ||
       short === "structure_void" ||
       short === "barrier" ||
       short === "light_block" ||
-      short.includes("fire") ||
       short === "moving_block" ||
       short === "piston_arm_collision" ||
-      short === "sticky_piston_arm_collision" ||
-      // Small plants/mushrooms that render as ugly colored cubes — skip for cleaner terrain.
-      // These blocks need billboard/cross-mesh rendering which we don't yet support.
-      short === "red_mushroom" ||
-      short === "brown_mushroom" ||
-      short === "dead_bush" ||
-      short === "fern" ||
-      short === "large_fern" ||
-      short === "sweet_berry_bush" ||
-      short === "cave_vines" ||
-      short === "cave_vines_body_with_berries" ||
-      short === "cave_vines_head_with_berries" ||
-      short === "hanging_roots" ||
-      short === "spore_blossom" ||
-      short === "moss_carpet" ||
-      short === "sculk_vein" ||
-      short === "glow_lichen" ||
-      short === "cobweb" ||
-      short === "tripwire" ||
-      short.includes("candle") ||
-      short.includes("carpet") ||
-      short === "snow_layer" ||
-      short.includes("coral_fan") ||
-      short.includes("sea_pickle") ||
-      short.includes("turtle_egg") ||
-      short.includes("frog_spawn") ||
-      short.includes("skull") ||
-      short.includes("head") ||
-      short.includes("flower_pot") ||
-      // Flowers — render as ugly solid cubes without proper billboard support
-      short === "poppy" ||
-      short === "dandelion" ||
-      short === "red_flower" ||
-      short === "yellow_flower" ||
-      short.includes("tulip") ||
-      short === "allium" ||
-      short === "azure_bluet" ||
-      short === "oxeye_daisy" ||
-      short === "cornflower" ||
-      short === "lily_of_the_valley" ||
-      short === "blue_orchid" ||
-      short === "wither_rose" ||
-      short === "torchflower" ||
-      short === "pitcher_plant" ||
-      short === "sunflower" ||
-      short === "lilac" ||
-      short === "rose_bush" ||
-      short === "peony" ||
-      // Grass/plant overlays
-      short === "short_grass" ||
-      short === "tall_grass" ||
-      short === "double_plant" ||
-      short === "seagrass" ||
-      short === "kelp" ||
-      short === "bamboo" ||
-      short === "bamboo_sapling" ||
-      // Small decorative blocks
-      short === "lever" ||
-      short.includes("button") ||
-      short.includes("pressure_plate") ||
-      short === "rail" ||
-      short === "powered_rail" ||
-      short === "activator_rail" ||
-      short === "detector_rail" ||
-      short === "ladder" ||
-      short === "vine" ||
-      short.includes("sign") ||
-      short.includes("banner") ||
-      short === "end_rod" ||
-      short === "lightning_rod" ||
-      short.includes("chain") ||
-      short === "pointed_dripstone" ||
-      // Liquids that appear as floating rectangles in cleared areas
-      short === "lava" ||
-      short === "flowing_lava" ||
-      short === "flowing_water"
+      short === "sticky_piston_arm_collision"
     );
   }
 

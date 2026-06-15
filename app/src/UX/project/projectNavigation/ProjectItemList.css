@@ -172,6 +172,23 @@
   padding-right: 4px;
 }
 
+/*
+ * Per-category quick-add "+" button. Lives in an implicit trailing grid track
+ * (line 5) so it sits flush right of the header without reserving space when
+ * the category isn't creatable. Dimmed by default; brightened on header hover
+ * or focus so it stays discoverable but unobtrusive.
+ */
+.pil-headerAddButton {
+  grid-column: 5;
+  opacity: 0.55;
+  transition: opacity 0.12s ease-in-out;
+}
+
+.pil-itemTypeHeader:hover .pil-headerAddButton,
+.pil-headerAddButton:focus-visible {
+  opacity: 1;
+}
+
 .pil-pathHeader {
   display: grid;
   height: 36px;

@@ -481,11 +481,18 @@ export default abstract class FolderBase implements IFolder {
       Log.throwIsDisposed();
     }
 
+    const failedPaths: string[] = [];
+
     for (const fileName in this.files) {
       const file = this.files[fileName];
 
       if (file !== undefined && (file.needsSave || force)) {
-        await file.saveContent(force);
+        try {
+          await file.saveContent(force);
+        } catch (e) {
+          Log.error("Failed to save file '" + file.storageRelativePath + "': " + e);
+          failedPaths.push(file.storageRelativePath);
+        }
       }
     }
 
@@ -493,8 +500,19 @@ export default abstract class FolderBase implements IFolder {
       const folder = this.folders[folderName];
 
       if (folder !== undefined && !folder.errorStatus) {
-        await folder.saveAll(force);
+        try {
+          await folder.saveAll(force);
+        } catch (e) {
+          Log.error("Failed to save folder '" + folder.storageRelativePath + "': " + e);
+          failedPaths.push(folder.storageRelativePath);
+        }
       }
+    }
+
+    if (failedPaths.length > 0) {
+      throw new Error(
+        "Failed to save " + failedPaths.length + " item(s): " + failedPaths.join(", ")
+      );
     }
 
     return true;

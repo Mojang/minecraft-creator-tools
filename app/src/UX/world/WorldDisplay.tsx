@@ -54,7 +54,7 @@ import StorageUtilities from "../../storage/StorageUtilities";
 import "./WorldDisplay.css";
 import AppServiceProxy, { AppServiceProxyCommands } from "../../core/AppServiceProxy";
 import { OpenInMinecraftLabel, TeleportInMinecraftLabel } from "../../UX/shared/components/feedback/labels/Labels";
-import CreatorTools from "../../app/CreatorTools";
+import CreatorTools, { CreatorToolsMinecraftState } from "../../app/CreatorTools";
 import BlockLocation from "../../minecraft/BlockLocation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
@@ -172,7 +172,7 @@ export default class WorldDisplay extends Component<IWorldDisplayProps, IWorldDi
 
   static getDerivedStateFromProps(props: IWorldDisplayProps, state: IWorldDisplayState) {
     if (state === undefined || state === null) {
-      Log.message(`[WorldDisplay] getDerivedStateFromProps: initial state, folder=${props.folder?.fullPath}`);
+      Log.debug(`[WorldDisplay] getDerivedStateFromProps: initial state, folder=${props.folder?.fullPath}`);
       state = {
         activeWorld: props.world,
         activeFile: props.file,
@@ -194,7 +194,7 @@ export default class WorldDisplay extends Component<IWorldDisplayProps, IWorldDi
 
     // Update activeFolder/activeFile/activeWorld if props changed
     if (props.folder !== state.activeFolder || props.file !== state.activeFile || props.world !== state.activeWorld) {
-      Log.message(
+      Log.debug(
         `[WorldDisplay] getDerivedStateFromProps: props changed, folder=${props.folder?.fullPath}, file=${props.file?.fullPath}`
       );
       return {
@@ -222,17 +222,18 @@ export default class WorldDisplay extends Component<IWorldDisplayProps, IWorldDi
 
   private _setActiveMap(map: WorldMap) {
     this._activeMap = map;
+    Log.debug(`[WorldDisplay] _setActiveMap: map instance set`);
   }
 
   private _updateManager() {
-    Log.message(
+    Log.debug(
       `[WorldDisplay] _updateManager: activeFile=${this.state?.activeFile?.fullPath}, activeFolder=${this.state?.activeFolder?.fullPath}`
     );
 
     if (this.state !== undefined && this.state.activeFile !== undefined) {
       if (this.state.activeFile !== this._lastFileViewed) {
         this._lastFileViewed = this.state.activeFile;
-        Log.message(`[WorldDisplay] _updateManager: calling ensureOnFile for ${this.state.activeFile.fullPath}`);
+        Log.debug(`[WorldDisplay] _updateManager: calling ensureOnFile for ${this.state.activeFile.fullPath}`);
         MCWorld.ensureOnFile(this.state.activeFile, this.props.project, this._handleMcworldLoaded);
       }
     }
@@ -240,7 +241,7 @@ export default class WorldDisplay extends Component<IWorldDisplayProps, IWorldDi
     if (this.state !== undefined && this.state.activeFolder !== undefined) {
       if (this.state.activeFolder !== this._lastFolderViewed) {
         this._lastFolderViewed = this.state.activeFolder;
-        Log.message(
+        Log.debug(
           `[WorldDisplay] _updateManager: calling ensureMCWorldOnFolder for ${this.state.activeFolder.fullPath}`
         );
         MCWorld.ensureMCWorldOnFolder(this.state.activeFolder, this.props.project, this._handleMcworldLoaded);
@@ -467,7 +468,7 @@ export default class WorldDisplay extends Component<IWorldDisplayProps, IWorldDi
   }
 
   async _handleMcworldLoaded(world: MCWorld, worldA: MCWorld) {
-    Log.message(`[WorldDisplay] _handleMcworldLoaded called, world=${world ? "exists" : "null"}`);
+    Log.debug(`[WorldDisplay] _handleMcworldLoaded called, world=${world ? "exists" : "null"}`);
 
     // Unsubscribe from previous world if any
     if (this._subscribedWorld && this._subscribedWorld !== world) {
@@ -590,8 +591,6 @@ export default class WorldDisplay extends Component<IWorldDisplayProps, IWorldDi
   _handleCameraUpdate(x: number, y: number, z: number, yaw: number) {
     if (this._activeMap) {
       this._activeMap.setCameraPosition(x, y, z, yaw);
-    } else {
-      Log.debug(`[WorldDisplay] _handleCameraUpdate: _activeMap is null`);
     }
   }
 
@@ -814,11 +813,17 @@ export default class WorldDisplay extends Component<IWorldDisplayProps, IWorldDi
         </Button>
       );
 
-      toolbarItems.push(
-        <Button key="teleportInMC" onClick={this._teleportInMinecraft} title="Teleport in Minecraft" size="small">
-          <TeleportInMinecraftLabel />
-        </Button>
-      );
+      const isMinecraftConnected =
+        this.props.creatorTools.activeMinecraft !== undefined &&
+        this.props.creatorTools.activeMinecraftState === CreatorToolsMinecraftState.started;
+
+      if (isMinecraftConnected) {
+        toolbarItems.push(
+          <Button key="teleportInMC" onClick={this._teleportInMinecraft} title="Teleport in Minecraft" size="small">
+            <TeleportInMinecraftLabel />
+          </Button>
+        );
+      }
     }
 
     toolbarItems.push(
@@ -960,12 +965,18 @@ export default class WorldDisplay extends Component<IWorldDisplayProps, IWorldDi
       }
     }
 
+    const isWorldViewer3DMode =
+      this.state.viewMode === WorldViewMode.fullWorldView ||
+      this.state.viewMode === WorldViewMode.worldViewer3D ||
+      this.state.viewMode === WorldViewMode.worldViewerMapOnLeft;
+
     const worldMap = (
       <WorldMap
         creatorTools={this.props.creatorTools}
         world={worldToRender}
         activeDimension={this.state.activeDimension}
         onSetActiveMap={this._setActiveMap}
+        has3DViewer={isWorldViewer3DMode}
         heightOffset={this.props.heightOffset + 33}
         onSelectionChange={this._handleSelectionChange}
         onEntitySelect={this._handleEntitySelect}
@@ -975,11 +986,6 @@ export default class WorldDisplay extends Component<IWorldDisplayProps, IWorldDi
     );
 
     let threeDView = <></>;
-
-    const isWorldViewer3DMode =
-      this.state.viewMode === WorldViewMode.fullWorldView ||
-      this.state.viewMode === WorldViewMode.worldViewer3D ||
-      this.state.viewMode === WorldViewMode.worldViewerMapOnLeft;
 
     if (isWorldViewer3DMode && worldToRender) {
       // Use WorldViewer for full 3D world rendering with textured chunks

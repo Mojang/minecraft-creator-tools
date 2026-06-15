@@ -40,6 +40,8 @@ import { HashCatalog } from "../core/HashUtilities";
 import IFile from "../storage/IFile";
 import TerrainTextureCatalogDefinition from "./TerrainTextureCatalogDefinition";
 import BlocksCatalogDefinition from "./BlocksCatalogDefinition";
+import { IBlockResource } from "./IBlocksCatalog";
+import { ITerrainTextureDataItem } from "./ITerrainTextureCatalog";
 import AppServiceProxy, { AppServiceProxyCommands } from "../core/AppServiceProxy";
 import IContentSource from "../app/IContentSource";
 import { ScriptModuleInfoProvider } from "../langcore/javascript/ScriptModuleInfo";
@@ -76,6 +78,26 @@ export default class Database {
 
   static blocksCatalog: BlocksCatalogDefinition | undefined = undefined;
   static terrainTextureCatalog: TerrainTextureCatalogDefinition | undefined = undefined;
+
+  /**
+   * Custom (project/world) resource pack catalogs. These are populated by
+   * `loadCustomResourcePackFolders()` and consulted as a secondary lookup
+   * after the vanilla catalogs by `BlockType.catalogResource` and
+   * `ProjectDefinitionUtilities.getVanillaBlockTexture[WithOverlay]`.
+   *
+   * Keys for both maps are canonicalised (vanilla `minecraft:` prefix stripped),
+   * so a custom block named `contoso:dragon` and a vanilla block named
+   * `stone` will both look up by their short id.
+   *
+   * `customTextureFiles` keys are texture *paths* (no leading slash, no `.png`
+   * extension) as referenced by `terrain_texture.json`, e.g.
+   *   "textures/blocks/contoso/dragon"
+   * The value is the source IFile in the custom RP folder. BlockMeshFactory
+   * lazily converts these to blob: URLs on first use.
+   */
+  static customBlocksCatalog: { [id: string]: IBlockResource } = {};
+  static customTerrainTextureCatalog: { [id: string]: ITerrainTextureDataItem } = {};
+  static customTextureFiles: Map<string, IFile> = new Map();
 
   static previewVanillaInfoData: IProjectInfoData | null = null;
   static previewVanillaContentIndex: ContentIndex | null = null;
@@ -1949,6 +1971,120 @@ export default class Database {
     }
   }
 
+  /**
+   * Discover and register custom block / terrain-texture definitions and texture
+   * PNG files from a set of resource pack folders.
+   *
+   * Used by the 3D renderers (WorldRenderer / VolumeEditor) so that custom
+   * blocks defined by a Project or embedded in an .mcworld show up with their
+   * real textures instead of falling back to plain gray cubes.
+   *
+   * Safe to call repeatedly; later calls merge into the existing maps. To
+   * reset state when switching projects/worlds, call `clearCustomResources()`.
+   */
+  static async loadCustomResourcePackFolders(folders: (IFolder | undefined | null)[]): Promise<void> {
+    for (const folder of folders) {
+      if (!folder) continue;
+      try {
+        await this._loadCustomResourcePackFolder(folder);
+      } catch (e) {
+        Log.debug("Database.loadCustomResourcePackFolders: failed to load " + folder.fullPath + ": " + e);
+      }
+    }
+  }
+
+  private static async _loadCustomResourcePackFolder(folder: IFolder): Promise<void> {
+    await folder.load();
+
+    // Merge blocks.json (block-name → texture-id map per face)
+    const blocksFile = await folder.getFileFromRelativePath("/blocks.json");
+    if (blocksFile) {
+      if (!blocksFile.isContentLoaded) {
+        await blocksFile.loadContent();
+      }
+      const data = StorageUtilities.getJsonObject(blocksFile);
+      if (data && typeof data === "object") {
+        for (const key of Object.keys(data)) {
+          if (key === "format_version") continue;
+          const value = (data as any)[key];
+          if (value && typeof value === "object") {
+            this.customBlocksCatalog[key] = value as IBlockResource;
+            const colon = key.indexOf(":");
+            if (colon >= 0) {
+              this.customBlocksCatalog[key.substring(colon + 1)] = value as IBlockResource;
+            }
+          }
+        }
+      }
+    }
+
+    // Merge terrain_texture.json (texture-id → file-path map)
+    const ttFile = await folder.getFileFromRelativePath("/textures/terrain_texture.json");
+    if (ttFile) {
+      if (!ttFile.isContentLoaded) {
+        await ttFile.loadContent();
+      }
+      const data = StorageUtilities.getJsonObject(ttFile);
+      const textureData = data && (data as any).texture_data;
+      if (textureData && typeof textureData === "object") {
+        for (const key of Object.keys(textureData)) {
+          const value = textureData[key];
+          if (value && typeof value === "object") {
+            this.customTerrainTextureCatalog[key] = value as ITerrainTextureDataItem;
+          }
+        }
+      }
+    }
+
+    // Index every PNG under textures/ so BlockMeshFactory can look them up
+    // by the canonical key terrain_texture.json uses (path with no extension).
+    const texturesFolder = await folder.getFolderFromRelativePath("/textures");
+    if (texturesFolder) {
+      await this._indexCustomTextureFolder(texturesFolder, folder);
+    }
+  }
+
+  private static async _indexCustomTextureFolder(folder: IFolder, rpRoot: IFolder): Promise<void> {
+    await folder.load();
+    const loadPromises: Promise<unknown>[] = [];
+    for (const fileName of Object.keys(folder.files)) {
+      const file = folder.files[fileName];
+      if (!file) continue;
+      const lower = fileName.toLowerCase();
+      if (!(lower.endsWith(".png") || lower.endsWith(".tga"))) continue;
+      const rel = file.getFolderRelativePath(rpRoot);
+      if (!rel) continue;
+      // Strip leading slash + file extension to match terrain_texture.json paths
+      const key = rel.replace(/^\/+/, "").replace(/\.(png|tga)$/i, "");
+      this.customTextureFiles.set(key, file);
+      // Eagerly load the PNG bytes so BlockMeshFactory can synchronously
+      // construct a blob: URL. The IFile contract is that `content` is null
+      // until `loadContent()` resolves, and the texture URL resolver is
+      // synchronous (Babylon.Texture takes a URL string up front).
+      if (!file.isContentLoaded) {
+        loadPromises.push(file.loadContent().catch(() => undefined));
+      }
+    }
+    if (loadPromises.length > 0) {
+      await Promise.all(loadPromises);
+    }
+    for (const subName of Object.keys(folder.folders)) {
+      const sub = folder.folders[subName];
+      if (sub) await this._indexCustomTextureFolder(sub, rpRoot);
+    }
+  }
+
+  /**
+   * Clears all custom resource-pack catalog state. Call when the active
+   * project or world changes so we don't keep stale custom-block lookups
+   * around from a previously-loaded project.
+   */
+  static clearCustomResources(): void {
+    this.customBlocksCatalog = {};
+    this.customTerrainTextureCatalog = {};
+    this.customTextureFiles = new Map();
+  }
+
   static async loadPreviewVanillaInfoData() {
     if (Database.previewVanillaContentIndex) {
       return;
@@ -1970,6 +2106,7 @@ export default class Database {
         if (typeof window !== "undefined") {
           const response = await axios.get(CreatorToolsHost.contentWebRoot + "data/mci/preview.mci.json.zip", {
             responseType: "arraybuffer",
+            timeout: 30000,
             headers: {
               Accept: "application/octet-stream, application/json, text/plain, */*",
             },

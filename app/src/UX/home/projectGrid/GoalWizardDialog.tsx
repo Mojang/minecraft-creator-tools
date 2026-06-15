@@ -40,7 +40,7 @@ export default function GoalWizardDialog({
   close,
   onNewProject,
 }: GoalWizardDialogProps) {
-  const [creatorTools] = useCreatorTools();
+  const [creatorTools, isCreatorToolsReady] = useCreatorTools();
   const theme = useMemo(
     () => (CreatorToolsHost.theme === CreatorToolsThemeStyle.dark ? minecraftToolDarkTheme : minecraftToolLightTheme),
     []
@@ -91,6 +91,10 @@ export default function GoalWizardDialog({
   );
 
   const wizardType = goalToWizardType(goalAction);
+
+  if (!isCreatorToolsReady) {
+    return null;
+  }
 
   return (
     <Dialog

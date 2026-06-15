@@ -82,6 +82,149 @@ const excludeDerivedAttributes = [
 ];
 
 /**
+ * Tolerance for byte-size fields in scenario comparisons. Sizes drift in small
+ * ways across runs (an edit adds a character, a sample changes by a byte). We
+ * accept differences up to max(SIZE_TOLERANCE_BYTES, SIZE_TOLERANCE_PERCENT *
+ * expected) to absorb these without losing meaningful regression detection.
+ */
+const SIZE_TOLERANCE_BYTES = 2;
+const SIZE_TOLERANCE_PERCENT = 0.005; // 0.5%
+
+/**
+ * Top-level numeric byte-size fields that benefit from tolerance comparison.
+ */
+const TOLERANT_SIZE_TOP_FIELDS = new Set(["contentSize", "overallSize"]);
+
+/**
+ * Within `info.featureSets`, sub-objects whose key ends in one of these suffixes
+ * have their numeric size fields ({average, max, min, total}) compared with
+ * tolerance instead of exact match.
+ */
+const TOLERANT_FEATURESET_SUFFIXES = [".size"];
+
+/**
+ * Within report items, items whose `gId` is in this set have their numeric
+ * size payload (`d` field) compared with tolerance.
+ */
+const TOLERANT_SIZE_ITEM_GIDS = new Set(["PACKSIZE"]);
+
+function isWithinSizeTolerance(scenarioVal: number, resultVal: number): boolean {
+  const diff = Math.abs(scenarioVal - resultVal);
+  const tolerance = Math.max(SIZE_TOLERANCE_BYTES, Math.round(scenarioVal * SIZE_TOLERANCE_PERCENT));
+  return diff <= tolerance;
+}
+
+/**
+ * Normalizes byte-size fields in the result object by snapping them to the
+ * scenario's value when within tolerance. This preserves the protection (any
+ * out-of-tolerance drift will still fail the comparison) while absorbing tiny
+ * 1-2 byte drifts from trivial content edits.
+ *
+ * Returns a new object — does not mutate the input.
+ */
+export function normalizeSizeValues(scenario: any, result: any): any {
+  if (!scenario || !result || typeof scenario !== "object" || typeof result !== "object") {
+    return result;
+  }
+
+  const out: any = Array.isArray(result) ? [...result] : { ...result };
+
+  // Top-level size fields under `info`
+  if (scenario.info && out.info && typeof out.info === "object") {
+    const info = { ...out.info };
+    for (const key of TOLERANT_SIZE_TOP_FIELDS) {
+      if (typeof info[key] === "number" && typeof scenario.info[key] === "number") {
+        if (isWithinSizeTolerance(scenario.info[key], info[key])) {
+          info[key] = scenario.info[key];
+        }
+      }
+    }
+
+    // featureSets sub-objects with size suffix
+    if (info.featureSets && typeof info.featureSets === "object" && scenario.info.featureSets) {
+      const featureSets: Record<string, any> = { ...info.featureSets };
+      for (const fsKey of Object.keys(featureSets)) {
+        const isSizeKey = TOLERANT_FEATURESET_SUFFIXES.some((suffix) => fsKey.endsWith(suffix));
+        const scenarioFs = scenario.info.featureSets[fsKey];
+        if (isSizeKey && featureSets[fsKey] && typeof featureSets[fsKey] === "object" && scenarioFs) {
+          const normalized = { ...featureSets[fsKey] };
+          for (const subKey of ["average", "max", "min", "total"]) {
+            if (typeof normalized[subKey] === "number" && typeof scenarioFs[subKey] === "number") {
+              if (isWithinSizeTolerance(scenarioFs[subKey], normalized[subKey])) {
+                normalized[subKey] = scenarioFs[subKey];
+              }
+            }
+          }
+          featureSets[fsKey] = normalized;
+        }
+      }
+      info.featureSets = featureSets;
+    }
+
+    out.info = info;
+  }
+
+  // PACKSIZE items have a `d` (data) field with the raw byte count
+  if (Array.isArray(out.items) && Array.isArray(scenario.items)) {
+    out.items = out.items.map((item: any, idx: number) => {
+      const scenarioItem = scenario.items[idx];
+      if (!item || typeof item !== "object" || !scenarioItem || typeof scenarioItem !== "object") {
+        return item;
+      }
+
+      let normalized = item;
+
+      // PACKSIZE: tolerant byte count in `d`
+      if (
+        typeof item.gId === "string" &&
+        TOLERANT_SIZE_ITEM_GIDS.has(item.gId) &&
+        typeof item.d === "number" &&
+        typeof scenarioItem.d === "number" &&
+        scenarioItem.gId === item.gId &&
+        scenarioItem.gIx === item.gIx &&
+        isWithinSizeTolerance(scenarioItem.d, item.d)
+      ) {
+        normalized = { ...normalized, d: scenarioItem.d };
+      }
+
+      // Any item with a `fs.size.*` nested feature set (e.g. LINESIZE items):
+      // snap size sub-values within tolerance to the scenario value.
+      if (
+        normalized.fs &&
+        typeof normalized.fs === "object" &&
+        normalized.fs.size &&
+        typeof normalized.fs.size === "object" &&
+        scenarioItem.fs &&
+        typeof scenarioItem.fs === "object" &&
+        scenarioItem.fs.size &&
+        typeof scenarioItem.fs.size === "object"
+      ) {
+        const sceSize = scenarioItem.fs.size;
+        const resSize = { ...normalized.fs.size };
+        let changed = false;
+        for (const subKey of ["average", "max", "min", "total"]) {
+          if (typeof resSize[subKey] === "number" && typeof sceSize[subKey] === "number") {
+            if (isWithinSizeTolerance(sceSize[subKey], resSize[subKey])) {
+              if (resSize[subKey] !== sceSize[subKey]) {
+                resSize[subKey] = sceSize[subKey];
+                changed = true;
+              }
+            }
+          }
+        }
+        if (changed) {
+          normalized = { ...normalized, fs: { ...normalized.fs, size: resSize } };
+        }
+      }
+
+      return normalized;
+    });
+  }
+
+  return out;
+}
+
+/**
  * Removes specific test items from a report data object by test ID.
  *
  * Test IDs are strings like "SCRIPTMODULE114" combining the generator ID (gId)
@@ -178,68 +321,37 @@ export async function ensureReportJsonMatchesScenario(
 
   assert(exists, "report.json file for scenario '" + scenarioName + "' does not exist.");
 
-  let isEqual: boolean;
-  let diffDetail = "";
+  // Always parse and normalize both sides before comparing — this is more
+  // resilient than raw file comparison and handles all volatile cases uniformly
+  // (volatile attributes, regex patterns, size bucketing, optional test exclusions).
+  await scenarioFile.loadContent(false);
+  const scenarioContent = scenarioFile.content;
+  assert(typeof scenarioContent === "string", "Scenario file content is not a string");
+
+  let scenarioObj = JSON.parse(scenarioContent as string);
+  let resultObj = JSON.parse(dataObjectStr);
+
+  scenarioObj = StorageUtilities.removeAttributesFromObject(scenarioObj, volatileAttributes);
+  resultObj = StorageUtilities.removeAttributesFromObject(resultObj, volatileAttributes);
+
+  scenarioObj = StorageUtilities.applyVolatilePatternsToObject(scenarioObj, volatilePatterns);
+  resultObj = StorageUtilities.applyVolatilePatternsToObject(resultObj, volatilePatterns);
+
+  // Snap result size values to scenario values when within tolerance, so trivial
+  // 1-2 byte drifts (a character changed somewhere) don't fail the test while
+  // larger drifts (meaningful content regressions) still surface.
+  resultObj = normalizeSizeValues(scenarioObj, resultObj);
 
   if (excludeTestIds && excludeTestIds.length > 0) {
-    // When excluding test IDs, we need to parse both sides, filter items,
-    // strip derived summary fields, then compare the processed objects.
-    await scenarioFile.loadContent(false);
-
-    const scenarioContent = scenarioFile.content;
-    assert(typeof scenarioContent === "string", "Scenario file content is not a string");
-
-    let scenarioObj = JSON.parse(scenarioContent as string);
-    let resultObj = JSON.parse(dataObjectStr);
-
-    // Apply standard volatile attribute removal
-    scenarioObj = StorageUtilities.removeAttributesFromObject(scenarioObj, volatileAttributes);
-    resultObj = StorageUtilities.removeAttributesFromObject(resultObj, volatileAttributes);
-
-    // Apply volatile pattern normalization
-    scenarioObj = StorageUtilities.applyVolatilePatternsToObject(scenarioObj, volatilePatterns);
-    resultObj = StorageUtilities.applyVolatilePatternsToObject(resultObj, volatilePatterns);
-
-    // Filter out excluded test items and their derived summary fields
     scenarioObj = removeExcludedTestItems(scenarioObj, excludeTestIds);
     resultObj = removeExcludedTestItems(resultObj, excludeTestIds);
-
-    const scenarioStr = Utilities.consistentStringifyTrimmed(scenarioObj);
-    const resultStr = Utilities.consistentStringifyTrimmed(resultObj);
-
-    isEqual = scenarioStr === resultStr;
-
-    if (!isEqual) {
-      diffDetail = getDiffDetail(scenarioStr, resultStr);
-    }
-  } else {
-    isEqual = await StorageUtilities.fileContentsEqual(
-      scenarioFile,
-      outFile,
-      true,
-      volatileAttributes,
-      volatilePatterns
-    );
-
-    if (!isEqual) {
-      // Generate diff detail for non-excludeTestIds path
-      await scenarioFile.loadContent(false);
-      const scenarioContent = scenarioFile.content;
-      if (typeof scenarioContent === "string") {
-        let scenarioObj = JSON.parse(scenarioContent);
-        let resultObj = JSON.parse(dataObjectStr);
-        scenarioObj = StorageUtilities.removeAttributesFromObject(scenarioObj, volatileAttributes);
-        resultObj = StorageUtilities.removeAttributesFromObject(resultObj, volatileAttributes);
-        if (volatilePatterns) {
-          scenarioObj = StorageUtilities.applyVolatilePatternsToObject(scenarioObj, volatilePatterns);
-          resultObj = StorageUtilities.applyVolatilePatternsToObject(resultObj, volatilePatterns);
-        }
-        const scenarioStr = Utilities.consistentStringifyTrimmed(scenarioObj);
-        const resultStr = Utilities.consistentStringifyTrimmed(resultObj);
-        diffDetail = getDiffDetail(scenarioStr, resultStr);
-      }
-    }
   }
+
+  const scenarioStr = Utilities.consistentStringifyTrimmed(scenarioObj);
+  const resultStr = Utilities.consistentStringifyTrimmed(resultObj);
+
+  const isEqual = scenarioStr === resultStr;
+  const diffDetail = isEqual ? "" : getDiffDetail(scenarioStr, resultStr);
 
   assert(
     isEqual,

@@ -112,6 +112,7 @@ import Database from "../../minecraft/Database";
 import { ProjectDefinitionUtilities } from "../../core/ProjectDefinitionUtilities";
 import BoxMaterialAndUv, { BoxSide, BoxMaterialStrategy } from "./BoxMaterialAndUv";
 import { BlockShape } from "../../minecraft/IBlockBaseTypeData";
+import Utilities from "../../core/Utilities";
 
 export default class BlockMeshFactory {
   _materials: Map<string, BABYLON.StandardMaterial> = new Map();
@@ -119,6 +120,21 @@ export default class BlockMeshFactory {
   _boundingMesh: BABYLON.Mesh | undefined;
   _scene: BABYLON.Scene;
   _bounds: IBlockVolumeBounds;
+
+  /**
+   * Lazy `data:` URI cache for custom resource pack textures registered via
+   * `Database.customTextureFiles`. Keys are texture paths without extension
+   * (e.g. "textures/blocks/contoso/dragon"). Generated once per blockPath
+   * on first request, then reused so we don't repeat base64 encoding.
+   *
+   * **Why data: URIs and not blob: URLs?** The web app runs under a strict
+   * Content Security Policy of `img-src 'self' data:`. Blob URLs (the original
+   * implementation) are blocked by that CSP, so every custom-block texture
+   * load failed silently and the renderer fell back to the gray placeholder.
+   * data: URIs are explicitly allowed and load identically once the bytes are
+   * inlined.
+   */
+  private _customTextureUrls: Map<string, string> = new Map();
 
   /**
    * When true, uses standard textures (with alpha holes for leaves/vines) instead
@@ -2548,11 +2564,7 @@ export default class BlockMeshFactory {
     const uvs: number[] = [];
     const normals: number[] = [];
 
-    const addPlane = (
-      ax: number, az: number,
-      bx: number, bz: number,
-      nx: number, nz: number
-    ) => {
+    const addPlane = (ax: number, az: number, bx: number, bz: number, nx: number, nz: number) => {
       const baseIdx = positions.length / 3;
       // Top-left, Top-right, Bottom-right, Bottom-left
       positions.push(ax, +0.5, az);
@@ -2614,7 +2626,7 @@ export default class BlockMeshFactory {
     const mat = new BABYLON.StandardMaterial("bbmat." + blockPath, this._scene);
     mat.alpha = 1.0;
 
-    const path = CreatorToolsHost.getVanillaContentRoot() + "res/latest/van/serve/resource_pack/" + blockPath + ".png";
+    const path = this._resolveTextureUrl(blockPath);
 
     const texture = new BABYLON.Texture(path, this._scene, true, false, BABYLON.Texture.NEAREST_SAMPLINGMODE);
     texture.anisotropicFilteringLevel = 1;
@@ -3146,6 +3158,48 @@ export default class BlockMeshFactory {
     return mat;
   }
 
+  /**
+   * Resolves a `blockPath` (e.g. "textures/blocks/stone") to a URL Babylon.js
+   * can load. Custom resource pack files registered via
+   * `Database.customTextureFiles` are preferred so that project / world
+   * textures override vanilla; otherwise the vanilla HTTP path is returned.
+   *
+   * Custom files are converted to `data:` URIs (base64) on first request and
+   * cached. We deliberately do NOT use `blob:` URLs here: the web app's CSP
+   * (`img-src 'self' data:`) blocks blob URLs, so every custom texture load
+   * silently failed and triggered the gray fallback.
+   */
+  private _resolveTextureUrl(blockPath: string): string {
+    // Strip any leading slash so keys match the way terrain_texture.json paths
+    // come through (and the way Database indexes them).
+    const key = blockPath.replace(/^\/+/, "");
+
+    const cachedUrl = this._customTextureUrls.get(key);
+    if (cachedUrl) return cachedUrl;
+
+    const file = Database.customTextureFiles.get(key);
+    if (file && file.content instanceof Uint8Array) {
+      try {
+        const lowerName = file.name.toLowerCase();
+        // TGA isn't browser-decodable — let the vanilla HTTP fallback handle
+        // it (or, more likely, fail and use the gray fallback color). Most
+        // resource packs use PNG.
+        if (lowerName.endsWith(".tga")) {
+          return CreatorToolsHost.getVanillaContentRoot() + "res/latest/van/serve/resource_pack/" + key + ".png";
+        }
+        const mime = lowerName.endsWith(".jpg") || lowerName.endsWith(".jpeg") ? "image/jpeg" : "image/png";
+        const base64 = Utilities.uint8ArrayToBase64(file.content as Uint8Array);
+        const url = `data:${mime};base64,${base64}`;
+        this._customTextureUrls.set(key, url);
+        return url;
+      } catch (e) {
+        Log.debug("[BlockMeshFactory] Failed to create data URI for " + key + ": " + e);
+      }
+    }
+
+    return CreatorToolsHost.getVanillaContentRoot() + "res/latest/van/serve/resource_pack/" + key + ".png";
+  }
+
   _ensureMaterialFromPath(blockPath: string) {
     let mat = this._materials.get(blockPath);
 
@@ -3156,25 +3210,39 @@ export default class BlockMeshFactory {
     if (!mat) {
       mat = new BABYLON.StandardMaterial("mat." + blockPath, this._scene);
       mat.alpha = 1.0;
+      // Pre-set a neutral diffuse color so that if the texture fails to load
+      // (common for custom blocks whose textures don't live under the vanilla
+      // resource_pack root), the block renders as muted gray instead of the
+      // StandardMaterial default of pure white.
+      mat.diffuseColor = new BABYLON.Color3(0.55, 0.55, 0.6);
 
-      let path = CreatorToolsHost.getVanillaContentRoot() + "res/latest/van/serve/resource_pack/" + blockPath + ".png";
+      let path = this._resolveTextureUrl(blockPath);
 
       Log.verbose("[BlockMeshFactory] Loading texture: " + blockPath);
 
-      const texture = new BABYLON.Texture(path, this._scene, true, false, BABYLON.Texture.NEAREST_SAMPLINGMODE);
-      texture.anisotropicFilteringLevel = 1;
-      texture.hasAlpha = false;
-      texture.uScale = 1;
-      texture.vScale = -1;
-
-      // Handle missing textures — fallback to diffuse color instead of red-black checkerboard
       const boundMat = mat;
-      texture.onLoadObservable.addOnce(() => {});
-      (texture as any)._onError = () => {
+      // Use Babylon's onError constructor parameter — the previous code set
+      // `(texture as any)._onError` after construction, which never fires.
+      const onTextureError = () => {
+        Log.verbose("[BlockMeshFactory] Texture failed to load, using fallback color: " + blockPath);
         boundMat.unfreeze();
         boundMat.diffuseTexture = null;
         boundMat.freeze();
       };
+
+      const texture = new BABYLON.Texture(
+        path,
+        this._scene,
+        true,
+        false,
+        BABYLON.Texture.NEAREST_SAMPLINGMODE,
+        undefined,
+        onTextureError
+      );
+      texture.anisotropicFilteringLevel = 1;
+      texture.hasAlpha = false;
+      texture.uScale = 1;
+      texture.vScale = -1;
 
       mat.diffuseTexture = texture;
       mat.backFaceCulling = true;
@@ -3236,9 +3304,20 @@ export default class BlockMeshFactory {
    * and re-upload the correct pixel data directly to the existing WebGL texture handle.
    * Uses gl.texImage2D with the ImageBitmap directly (bypasses Canvas 2D which would
    * re-premultiply). Falls back gracefully if the fixup fails.
+   *
+   * Skipped for `blob:` URLs (the web app's CSP blocks `fetch(blob:...)`) and
+   * for `data:` URIs that haven't reached the fetch-friendly size threshold —
+   * the user-visible artifact (TNT-style heightmap channels showing through as
+   * black) is uncommon for custom blocks, so it's safer to skip than to fail
+   * loudly with a CSP violation in the console.
    */
   private _fixTexturePremultiply(path: string, texture: BABYLON.Texture, mat: BABYLON.StandardMaterial): void {
     if (typeof createImageBitmap === "undefined" || typeof fetch === "undefined") {
+      return;
+    }
+
+    // Skip blob: URLs — blocked by the web CSP (`connect-src 'self'`).
+    if (path.startsWith("blob:")) {
       return;
     }
 

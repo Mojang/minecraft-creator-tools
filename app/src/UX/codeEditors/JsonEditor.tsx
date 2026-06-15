@@ -48,6 +48,7 @@ import Utilities from "../../core/Utilities";
 import IProjectTheme from "../types/IProjectTheme";
 import type { IProjectItemEditorNavigationTarget } from "../project/ProjectItemEditor";
 import { WithLocalizationProps, withLocalization } from "../withLocalization";
+import MonacoErrorBoundary from "./MonacoErrorBoundary";
 
 // Minimum widths for resizable panes
 const MIN_EDITOR_WIDTH = 300;
@@ -379,7 +380,12 @@ class JsonEditor extends Component<IJsonEditorProps, IJsonEditorState> {
       if (model === null || model === undefined) {
         content = file.content as string;
 
-        model = monacoInstance.editor.createModel(content, lang, modelUri);
+        try {
+          monacoInstance.editor.createModel(content, lang, modelUri);
+        } catch (e) {
+          Log.debug("JsonEditor: createModel failed: " + e);
+          return;
+        }
       } else {
         let existingContent = model.getValue();
 
@@ -1431,6 +1437,7 @@ class JsonEditor extends Component<IJsonEditorProps, IJsonEditorState> {
               <div className="jse-diffLabel">{coreUri || this.props.intl.formatMessage({ id: "project_editor.json_ed.current_file" })}</div>
             </div>
             <div>
+              <MonacoErrorBoundary>
               <DiffEditor
                 height={editorHeight}
                 theme={theme}
@@ -1449,6 +1456,7 @@ class JsonEditor extends Component<IJsonEditorProps, IJsonEditorState> {
                 beforeMount={this._handleEditorWillMount}
                 onMount={this._handleDiffEditorDidMount}
               />
+              </MonacoErrorBoundary>
             </div>
           </div>
         );
@@ -1472,6 +1480,7 @@ class JsonEditor extends Component<IJsonEditorProps, IJsonEditorState> {
               <div className="jse-diffLabel">{diffUri}</div>
             </div>
             <div>
+              <MonacoErrorBoundary>
               <DiffEditor
                 height={editorHeight}
                 theme={theme}
@@ -1490,6 +1499,7 @@ class JsonEditor extends Component<IJsonEditorProps, IJsonEditorState> {
                 beforeMount={this._handleEditorWillMount}
                 onMount={this._handleDiffEditorDidMount}
               />
+              </MonacoErrorBoundary>
             </div>
           </div>
         );
@@ -1504,6 +1514,7 @@ class JsonEditor extends Component<IJsonEditorProps, IJsonEditorState> {
               : undefined;
 
           interior = (
+            <MonacoErrorBoundary>
             <Editor
               height={editorHeight}
               theme={theme}
@@ -1536,9 +1547,11 @@ class JsonEditor extends Component<IJsonEditorProps, IJsonEditorState> {
               onMount={this._handleEditorDidMount}
               onChange={this._handleContentUpdated}
             />
+            </MonacoErrorBoundary>
           );
         } else if (this.state.content) {
           interior = (
+            <MonacoErrorBoundary>
             <Editor
               height={editorHeight}
               theme={theme}
@@ -1570,6 +1583,7 @@ class JsonEditor extends Component<IJsonEditorProps, IJsonEditorState> {
               onMount={this._handleEditorDidMount}
               onChange={this._handleContentUpdated}
             />
+            </MonacoErrorBoundary>
           );
         }
       }

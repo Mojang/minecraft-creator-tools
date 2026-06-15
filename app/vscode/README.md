@@ -46,6 +46,6 @@ The **Minecraft Creator Tools** view in the Explorer surfaces your add-on projec
 
 1. Open a folder that contains (or will contain) a Minecraft Bedrock add-on project.
 2. Open the Copilot Chat view and try `@minecraft /validate`, or switch to **Agent** mode and ask for something like _"Create a new Minecraft add-on project called my_addon"_ or _"Add a custom block called rainbow_ore."_
-3. For full MCP setup details (including using MCT from outside VS Code), see the [Getting Started with MCP](https://github.com/Mojang/minecraft-creator-tools-internal/blob/main/docs/McpGettingStarted.md) guide.
+3. For full MCP setup details (including using MCT from outside VS Code), see the [Getting Started with MCP](https://github.com/Mojang/minecraft-creator-tools/blob/main/docs/McpGettingStarted.md) guide.
 
 **Good luck, have fun!**

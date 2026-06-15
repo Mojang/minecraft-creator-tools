@@ -53,6 +53,7 @@ export enum TaskType {
   docsGenerateJsonSchema = 37,
   setup = 38,
   generateSchemaPackage = 39,
+  renderBatch = 40,
 }
 
 export enum OutputType {

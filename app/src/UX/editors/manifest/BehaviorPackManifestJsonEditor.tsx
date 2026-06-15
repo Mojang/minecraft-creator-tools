@@ -209,10 +209,17 @@ class BehaviorPackManifestJsonEditor extends Component<
   }
 
   _handleDataFormPropertyChange(props: IDataFormProps, property: IProperty, newValue: any) {
-    if (props.tagData && props.directObject) {
-      const file = props.tagData as IFile;
-
-      file.setObjectContentIfSemanticallyDifferent(props.directObject);
+    // Note: FormPropertyManager mutates the directObject (def or def.header) in place,
+    // so by the time we get here the in-memory definition already reflects the edit.
+    // We still need to flush that change to the underlying file so the editor is marked
+    // dirty and Raw Mode / persist() see the updated JSON. Always write the FULL
+    // definition (not props.directObject, which may be just def.header for the header
+    // form), via the manifest manager's persist() so the write path is identical to
+    // Ctrl+S. (Previously this method was gated on props.tagData, which is never
+    // supplied here, so every edit was silently dropped — see BUG-01.)
+    if (this.state && this.state.fileToEdit && this.state.fileToEdit.manager) {
+      const manager = this.state.fileToEdit.manager as BehaviorManifestDefinition;
+      manager.persist();
     }
   }
 
@@ -289,7 +296,9 @@ class BehaviorPackManifestJsonEditor extends Component<
               className="bpme-header-uuid"
               title={this.props.intl.formatMessage({ id: "project_editor.bp_manifest.uuid_tooltip" })}
             >
-              <span className="bpme-header-uuid-label">{this.props.intl.formatMessage({ id: "project_editor.bp_manifest.uuid_label" })}</span>
+              <span className="bpme-header-uuid-label">
+                {this.props.intl.formatMessage({ id: "project_editor.bp_manifest.uuid_label" })}
+              </span>
               <span className="bpme-header-uuid-value">{behaviorPackUuid}</span>
             </div>
           )}

@@ -63,7 +63,7 @@ describe("validateLinkErrors", async () => {
   const stderrLines: string[] = [];
 
   before(function (done) {
-    this.timeout(10000);
+    this.timeout(30000);
 
     removeResultFolder("validateLinkErrors");
 

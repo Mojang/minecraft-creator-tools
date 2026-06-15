@@ -170,7 +170,7 @@ interface IProjectItemEditorProps extends IAppProps, WithLocalizationProps {
   onNewVariantRequested?: (newVariant: string | undefined) => void;
   onVariantChangeRequested?: (newVariant: string | undefined) => void;
   setActivePersistable?: (persistObject: IPersistable) => void;
-  onOpenProjectItem?: (projectPath: string) => void;
+  onOpenProjectItem?: (projectPath: string, lineNumber?: number, column?: number) => void;
 }
 
 export interface IProjectItemEditorNavigationTarget {
@@ -641,6 +641,7 @@ class ProjectItemEditor extends Component<IProjectItemEditorProps, IProjectItemE
             file={file}
             navigationTarget={navigationTarget}
             setActivePersistable={this._handleNewChildPersistable}
+            onOpenProjectItem={this.props.onOpenProjectItem}
           />
         );
       } else if (file !== null && file.isContentLoaded && file.content !== null) {

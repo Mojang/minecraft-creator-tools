@@ -12,6 +12,41 @@ import {
   collectLines,
 } from "./CommandLineTestHelpers";
 
+const SERVER_STARTUP_TIMEOUT_MS = 15000;
+
+async function waitForServerStartup(
+  stdoutLines: string[],
+  stderrLines: string[],
+  serverProcess: ChildProcessWithoutNullStreams,
+  port: number,
+  timeoutMs: number = SERVER_STARTUP_TIMEOUT_MS
+): Promise<void> {
+  const start = Date.now();
+  const expectedHostPort = `localhost:${port}`;
+
+  while (Date.now() - start < timeoutMs) {
+    const hasStartupSignal = stdoutLines.some(
+      (line) => line.includes("Web UI available at:") && line.includes(expectedHostPort)
+    );
+
+    if (hasStartupSignal) {
+      return;
+    }
+
+    if (serverProcess.exitCode !== null || serverProcess.killed) {
+      throw new Error(
+        `Server exited before startup signal. exitCode=${serverProcess.exitCode}; stdout=${stdoutLines.slice(-10).join(" | ")}; stderr=${stderrLines.slice(-10).join(" | ")}`
+      );
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+
+  throw new Error(
+    `Timed out waiting for startup signal on ${expectedHostPort}. stdout=${stdoutLines.slice(-10).join(" | ")}; stderr=${stderrLines.slice(-10).join(" | ")}`
+  );
+}
+
 /**
  * Creates a standard serve command validation test suite.
  * Reduces duplication across the 5 serveCommand* test suites.
@@ -58,7 +93,7 @@ function createServeValidationTest(
       await sampleFile.loadContent();
       const content = sampleFile.content;
 
-      await Utilities.sleep(3000);
+      await waitForServerStartup(stdoutLines, stderrLines, serverProcess, port);
 
       const headers: Record<string, string> = {
         mctpc: passcode,

@@ -62,6 +62,26 @@
   grid-template-rows: 1fr 1fr;
 }
 
+.pe-dragDismiss {
+  position: fixed;
+  top: 22px;
+  right: 22px;
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.25);
+  color: #fff;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 10001;
+}
+
+.pe-dragDismiss:hover {
+  background: rgba(0, 0, 0, 0.4);
+}
+
 .pe-dragZone1 {
   grid-row: 1;
   background-color: rgba(48, 96, 48, 0.8);

@@ -4,8 +4,11 @@ import CreatorToolsHost, { HostType } from "../app/CreatorToolsHost";
 import CommandRegistry from "../app/CommandRegistry";
 import { MinecraftFlavor } from "../app/ICreatorToolsData";
 import IMinecraft, { IMinecraftMessage } from "../app/IMinecraft";
-import Log, { LogItem } from "../core/Log";
+import Log from "../core/Log";
 import ExtensionManager from "./ExtensionManager";
+import PseudoTerminalLogger from "../core/logging/PseudoTerminalLogger";
+import LogFilter from "../core/logging/LogFilter";
+import ILogger from "../core/logging/ILogger";
 
 export default class MinecraftTaskTerminal implements vscode.Pseudoterminal {
   private writeEmitter = new vscode.EventEmitter<string>();
@@ -19,6 +22,7 @@ export default class MinecraftTaskTerminal implements vscode.Pseudoterminal {
   private _promptLength = 7;
   private _taskDescription: string;
   private _isSolicitingCommands = false;
+  private _logger: ILogger | undefined;
 
   constructor(
     private extensionManager: ExtensionManager,
@@ -28,7 +32,6 @@ export default class MinecraftTaskTerminal implements vscode.Pseudoterminal {
     private setSharedState: (state: string) => void
   ) {
     this.output = this.output.bind(this);
-    this.handleLog = this.handleLog.bind(this);
     this.closeServerOnStart = this.closeServerOnStart.bind(this);
 
     this._extensionManager = extensionManager;
@@ -55,16 +58,25 @@ export default class MinecraftTaskTerminal implements vscode.Pseudoterminal {
         break;
     }
   }
-
   close(): void {
-    // The terminal has been closed. Shutdown the build.
-    Log.onItemAdded.unsubscribe(this.handleLog);
+    this.unregisterLogger();
+  }
+  closeTerminal(): void {
+    this.unregisterLogger();
+    this.closeEmitter.fire(0);
   }
 
-  closeTerminal(): void {
-    Log.onItemAdded.unsubscribe(this.handleLog);
+  private registerLogger(logger: PseudoTerminalLogger): void {
+    this.unregisterLogger();
+    this._logger = logger;
+    Log.registerLogger(logger);
+  }
 
-    this.closeEmitter.fire(0);
+  private unregisterLogger(): void {
+    if (this._logger) {
+      Log.unregisterLogger(this._logger);
+      this._logger = undefined;
+    }
   }
 
   output(message: string) {
@@ -145,7 +157,7 @@ export default class MinecraftTaskTerminal implements vscode.Pseudoterminal {
 
   private async deployToRemote(): Promise<void> {
     this.renderHeader("Starting deployment to remote server...", "");
-    Log.onItemAdded.subscribe(this.handleLog);
+    this.registerLogger(new PseudoTerminalLogger(this, LogFilter.createPermissiveFilter()));
 
     const folders = vscode.workspace.workspaceFolders;
 
@@ -228,11 +240,7 @@ export default class MinecraftTaskTerminal implements vscode.Pseudoterminal {
     this.closeTerminal();
   }
 
-  private handleLog(log: Log, item: LogItem) {
-    this.printLine(item.message);
-  }
-
-  private printLine(message: string) {
+  public printLine(message: string) {
     if (this._isSolicitingCommands) {
       // remove existing line of input.
       const promptLength = this._promptLength + this._activeInput.length;
@@ -311,7 +319,7 @@ export default class MinecraftTaskTerminal implements vscode.Pseudoterminal {
 
   private async startRegular(message: string) {
     this.renderHeader(message, "\x1b[37mType 'help' for more commands.\x1b[0m");
-    Log.onItemAdded.subscribe(this.handleLog);
+    this.registerLogger(new PseudoTerminalLogger(this, LogFilter.createPermissiveFilter()));
 
     const folders = vscode.workspace.workspaceFolders;
 

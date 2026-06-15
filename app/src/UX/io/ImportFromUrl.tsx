@@ -2,7 +2,7 @@ import { Component } from "react";
 import "./ImportFromUrl.css";
 import { Button, Snackbar } from "@mui/material";
 import IAppProps from "../appShell/IAppProps";
-import { AppMode } from "../appShell/App";
+import { AppMode } from "../appShell/AppMode";
 import Project from "../../app/Project";
 import HomeFooter from "../home/HomeFooter";
 import HomeHeader from "../home/HomeHeader";
@@ -169,8 +169,7 @@ export default class ImportFromUrl extends Component<IImportFromUrlProps, IImpor
             <code>#open=gp/&lt;gallery-id&gt;</code> — open a gallery sample by id
           </li>
           <li>
-            <code>#view=gp/&lt;gallery-id&gt;&amp;updates=&lt;json&gt;</code> — view a sample with
-            update content
+            <code>#view=gp/&lt;gallery-id&gt;&amp;updates=&lt;json&gt;</code> — view a sample with update content
           </li>
           <li>
             Example: <code>?open=gp/starter.manifest.json</code>

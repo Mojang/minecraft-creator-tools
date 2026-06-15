@@ -1,43 +1,82 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import CreatorTools from "../../../app/CreatorTools";
+import Log from "../../../core/Log";
+import { ensureCreatorToolsReady } from "../../appShell/CreatorToolsReady";
 
-const CreatorToolsContext = createContext<CreatorTools | undefined>(undefined);
-
-/* provides a shared context where all child components can access the same instance of carto */
-export function CreatorToolsProvider({
-  children,
-  creatorTools: carto,
-}: {
+interface CreatorToolsProviderProps {
   children: ReactNode;
-  creatorTools: CreatorTools;
-}) {
-  return <CreatorToolsContext.Provider value={carto}>{children}</CreatorToolsContext.Provider>;
+  creatorTools?: CreatorTools;
 }
 
-/* 
-  used to access shared instance from children components 
-*/
-export function useCreatorTools(): [CreatorTools, boolean] {
-  const creatorTools = useContext(CreatorToolsContext);
-  const [loading, setLoading] = useState(true);
+interface CreatorToolsContextValue {
+  creatorTools: CreatorTools | undefined;
+  isReady: boolean;
+}
 
-  //a valid instance should always be passed into CartoProvider
-  if (!creatorTools) {
-    throw new Error("[CartoContext:useCarto] Unexpected null value for carto");
-  }
+const CreatorToolsContext = createContext<CreatorToolsContextValue>({ creatorTools: undefined, isReady: false });
+
+/**
+ * Provides the shared CreatorTools instance to the component tree.
+ *
+ * Non-blocking: children render immediately. Pages that don't need CreatorTools
+ * (e.g. About, 404) are unaffected. Pages that do need it should check `isReady`
+ * from `useCreatorTools()` before accessing the instance.
+ *
+ * - If a `creatorTools` prop is provided, it is used directly (and loaded if needed).
+ * - Otherwise falls back to the shared `ensureCreatorToolsReady()` singleton path.
+ */
+export function CreatorToolsProvider({ children, creatorTools }: CreatorToolsProviderProps) {
+  const [resolvedCreatorTools, setResolvedCreatorTools] = useState<CreatorTools | undefined>(creatorTools);
+  const [isReady, setIsReady] = useState<boolean>(!!creatorTools);
 
   useEffect(() => {
-    // this isn't strictly necessary - the existing logic effectively blocks on initial load
-    // however, this is provides a path forward for a more async approach and can otherwise be ignored
-    async function onLoad() {
-      if (creatorTools) {
-        await creatorTools.load();
-        setLoading(false);
+    let isCancelled = false;
+
+    async function resolveCreatorTools() {
+      try {
+        const tools = creatorTools ?? (await ensureCreatorToolsReady());
+
+        if (!tools.isLoaded) {
+          await tools.load();
+        }
+
+        if (!isCancelled) {
+          setResolvedCreatorTools(tools);
+          setIsReady(true);
+        }
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        Log.error("CreatorToolsProvider failed to resolve creator tools: " + message);
       }
     }
 
-    onLoad();
+    resolveCreatorTools();
+
+    return () => {
+      isCancelled = true;
+    };
   }, [creatorTools]);
 
-  return [creatorTools, loading];
+  return (
+    <CreatorToolsContext.Provider value={{ creatorTools: resolvedCreatorTools, isReady }}>
+      {children}
+    </CreatorToolsContext.Provider>
+  );
+}
+
+/**
+ * Returns the CreatorTools instance and whether it has finished loading.
+ *
+ * Usage:
+ *   const [creatorTools, isReady] = useCreatorTools();
+ *   if (!isReady) return <Loading />;
+ *   creatorTools.doSomething();
+ *
+ * Pages that don't need CreatorTools should simply not call this hook.
+ * If called outside of a CreatorToolsProvider, this hook returns `[undefined, false]`;
+ * callers should not rely on an exception for missing provider wiring.
+ */
+export function useCreatorTools(): [tools: CreatorTools, isReady: true] | [tools: undefined, isReady: false] {
+  const { creatorTools, isReady } = useContext(CreatorToolsContext);
+  return creatorTools && isReady ? [creatorTools, true] : [undefined, false];
 }

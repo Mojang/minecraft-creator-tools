@@ -292,7 +292,7 @@ import * as vscode from "vscode";
 import CreatorToolsHost, { HostType } from "../app/CreatorToolsHost";
 import Database from "../minecraft/Database";
 import MementoStorage from "./MementoStorage";
-import Log, { LogItem, LogItemLevel } from "../core/Log";
+import Log, { LogItem } from "../core/Log";
 import Utilities from "../core/Utilities";
 import VsLocalUtilities from "./VsLocalUtilities";
 import StructureEditorProvider from "./StructureEditorProvider";
@@ -328,6 +328,10 @@ import {
   McToolsLmTools,
 } from "./providers";
 import McPreviewPanel from "./McPreviewPanel";
+import { LogMask } from "../core/logging/LogLevel";
+import VSCodeLogger from "../core/logging/VSCodeLogger";
+import LogFilter from "../core/logging/LogFilter";
+import ILogger from "../core/logging/ILogger";
 
 export default class ExtensionManager {
   public activeProjectPath: string = "";
@@ -354,6 +358,7 @@ export default class ExtensionManager {
   _extensionStorageProxy: StorageProxy | undefined;
   _packStorageProxy: StorageProxy | undefined;
   _minecraftTaskProviderDisposable: vscode.Disposable | undefined;
+  _logger: ILogger | undefined;
 
   // Language providers for enhanced IntelliSense
   _diagnosticProvider: McDiagnosticProvider | undefined;
@@ -427,7 +432,8 @@ export default class ExtensionManager {
 
     Utilities.setIsDebug(context.extensionMode === vscode.ExtensionMode.Development);
 
-    Log.onItemAdded.subscribe(this.handleNewLogMessage);
+    this._logger = new VSCodeLogger(vscode, new LogFilter(LogMask.important));
+    Log.registerLogger(this._logger);
 
     LogItem.alertFunction = this.logAsAlert;
 
@@ -1448,6 +1454,11 @@ export default class ExtensionManager {
     this.isActivated = false;
     Log.verbose("Deactivating Minecraft Creator Tools @ " + new Date().toTimeString());
 
+    if (this._logger) {
+      Log.unregisterLogger(this._logger);
+      this._logger = undefined;
+    }
+
     if (this._minecraftTaskProviderDisposable) {
       this._minecraftTaskProviderDisposable.dispose();
     }
@@ -1731,27 +1742,6 @@ export default class ExtensionManager {
     Log.verbose("Done with publish");
 
     return true;
-  }
-
-  handleNewLogMessage(log: Log, item: LogItem) {
-    if (item.level === LogItemLevel.debug) {
-      return;
-    }
-
-    try {
-      if (item.level === LogItemLevel.error || item.level === LogItemLevel.important) {
-        vscode.window.showInformationMessage(item.message);
-      }
-      /*
-    const sbi = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 1);
-
-    sbi.text =message;
-
-    sbi.show();
-*/
-    } catch (e) {
-      Log.debug("Unable to show error: " + e + " " + item.message);
-    }
   }
 
   getWebviewContent(webview: vscode.Webview, mode: string, documentUri?: string, projectPath?: string) {

@@ -3,9 +3,12 @@
 
 import IAppServiceChannel from "./IAppServiceChannel";
 import Utilities from "./../core/Utilities";
-import Log, { LogItem } from "./../core/Log";
 import { EventDispatcher } from "ste-events";
 import CreatorToolsHost, { HostType } from "../app/CreatorToolsHost";
+import LogFilter from "./logging/LogFilter";
+import AppLogger from "./logging/AppLogger";
+import Log from "./Log";
+import { LogMask } from "./logging/LogLevel";
 
 export enum AppServiceProxyCommands {
   fsExists = "fsExists",
@@ -62,6 +65,7 @@ export enum AppServiceProxyCommands {
 
 export default class AppServiceProxy {
   static _api: IAppServiceChannel | undefined;
+  static _appLogger: AppLogger | undefined;
   static _pendingStringPromiseResolvers: ((value: string | PromiseLike<string> | undefined) => void)[] = [];
   static _pendingArrayBufferPromiseResolvers: ((value: ArrayBuffer | PromiseLike<ArrayBuffer> | undefined) => void)[] =
     [];
@@ -104,16 +108,15 @@ export default class AppServiceProxy {
 
     if (AppServiceProxy._api !== undefined) {
       AppServiceProxy._api.receive("appsvc", AppServiceProxy._handleNewMessage);
-      Log.onItemAdded.subscribe(AppServiceProxy._handleLog);
+
+      if (AppServiceProxy._appLogger === undefined) {
+        AppServiceProxy._appLogger = new AppLogger(LogFilter.fromMask(LogMask.important));
+        Log.registerLogger(AppServiceProxy._appLogger);
+      }
+    } else if (AppServiceProxy._appLogger !== undefined) {
+      Log.unregisterLogger(AppServiceProxy._appLogger);
+      AppServiceProxy._appLogger = undefined;
     }
-  }
-
-  static _handleLog(log: Log, item: LogItem) {
-    AppServiceProxy.logToConsole(item.message + " " + Log.getStack().replace("Error\n", ""));
-  }
-
-  static async logToConsole(message: string) {
-    await AppServiceProxy.sendAsync(AppServiceProxyCommands.logToConsole, message);
   }
 
   static send(commandName: AppServiceProxyCommands | string, data: any) {

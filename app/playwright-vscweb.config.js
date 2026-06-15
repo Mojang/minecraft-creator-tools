@@ -13,7 +13,7 @@ import { defineConfig, devices } from "@playwright/test";
  *
  * Prerequisites:
  *   1. Build the extension: npm run vscbuild
- *   2. The test will automatically start vscode-test-web server on port 3041
+ *   2. The test will automatically start the @vscode/test-web server on port 3041
  */
 export default defineConfig({
   testDir: "./src/testvscweb",
@@ -70,14 +70,18 @@ export default defineConfig({
     },
   ],
 
-  /* Start vscode-test-web server before running tests */
+  /* Start @vscode/test-web server before running tests */
   // NOTE: Pinned to VS Code 1.113.0 (commit cfbea10c5ffb233ea9177d34726e6056e89913dc)
   // to work around upstream breakage in 1.114.0+.
   // See https://github.com/microsoft/vscode-test-web/issues/203 and /issues/204.
   // Remove --commit (and restore plain --quality=stable) once @vscode/test-web is updated.
+  //
+  // SECURITY: Always invoke via `--package=@vscode/test-web` so npx can only ever
+  // resolve to the scoped package. The unscoped `vscode-test-web` name was unpublished
+  // from npm and must never be fetched by npx.
   webServer: {
     command:
-      "npx vscode-test-web --browserType=none --esm --quality=stable --commit=cfbea10c5ffb233ea9177d34726e6056e89913dc --port=3041 --extensionDevelopmentPath=./toolbuild/vsc/ ../samplecontent/diverse_content/",
+      "npx --package=@vscode/test-web -- vscode-test-web --browserType=none --esm --quality=stable --commit=cfbea10c5ffb233ea9177d34726e6056e89913dc --port=3041 --extensionDevelopmentPath=./toolbuild/vsc/ ../samplecontent/diverse_content/",
     url: "http://localhost:3041",
     reuseExistingServer: !process.env.CI,
     timeout: 120000, // 2 minutes to start

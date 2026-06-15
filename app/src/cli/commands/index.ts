@@ -49,6 +49,7 @@ import { eulaCommand } from "./server/EulaCommand";
 // Render commands
 // ============================================================================
 import { renderModelCommand } from "./render/RenderModelCommand";
+import { renderBatchCommand } from "./render/RenderBatchCommand";
 import { renderVanillaCommand } from "./render/RenderVanillaCommand";
 import { renderStructureCommand } from "./render/RenderStructureCommand";
 import { buildStructureCommand } from "./render/BuildStructureCommand";
@@ -109,6 +110,7 @@ const allCommands: ICommand[] = [
 
   // Render commands
   renderModelCommand,
+  renderBatchCommand,
   renderVanillaCommand,
   renderStructureCommand,
   buildStructureCommand,

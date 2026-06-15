@@ -17,6 +17,8 @@ import LocalEnvironment from "../local/LocalEnvironment";
 import ProjectUtilities from "../app/ProjectUtilities";
 import ZipStorage from "../storage/ZipStorage";
 import ImageCodecNode from "../local/ImageCodecNode";
+import ProfilerWrapper from "./ProfilerWrapper";
+import { ProjectItemType } from "../app/IProjectItemData";
 
 let creatorTools: CreatorTools | undefined;
 let localEnv: LocalEnvironment | undefined;
@@ -86,15 +88,65 @@ export async function executeTask(task: ITask) {
 if (!isMainThread) {
   if (parentPort) {
     // Native Node.js worker_threads
-    parentPort.on("message", async (task) => {
+    parentPort.on("message", async (task: ITask) => {
       try {
-        const result = await executeTask(task);
+        const result = await runTaskWithOptionalProfile(task);
         parentPort!.postMessage(result);
       } catch (error: any) {
         parentPort!.postMessage(error.toString());
       }
     });
   }
+}
+
+/**
+ * Wrap `executeTask` in V8 inspector profiling when the incoming task
+ * requests it. All profile output lands in `<cwd>/debugoutput/`.
+ *
+ * The wrapping happens here (inside the worker) intentionally — validation
+ * runs on a worker_thread, so a profile taken on the main thread would
+ * miss the actual work.
+ */
+async function runTaskWithOptionalProfile(task: ITask) {
+  const mode = task.profileMode;
+  if (!mode) {
+    return await executeTask(task);
+  }
+
+  const profileName =
+    task.profileName ||
+    (task.project?.ctorProjectName
+      ? task.project.ctorProjectName.replace(/[^a-z0-9._-]+/gi, "_").slice(0, 60)
+      : "task");
+  const traceBase = `worker-${TaskType[task.task] ?? task.task}-${profileName}`;
+
+  let result: unknown;
+  if (mode === "cpu") {
+    await ProfilerWrapper.generateCpuTrace(traceBase, async () => {
+      result = await executeTask(task);
+    });
+  } else if (mode === "memory") {
+    await ProfilerWrapper.generateMemoryProfile(traceBase, async () => {
+      result = await executeTask(task);
+    });
+  } else if (mode === "all") {
+    // Run the work once under the heap sampler (which also collects mem stats),
+    // then write a final heap snapshot for retention analysis. We can't run two
+    // inspector samplers concurrently reliably, so we don't also start a CPU
+    // trace here — for combined CPU+memory analysis use a second `cpu` run.
+    await ProfilerWrapper.generateMemoryProfile(traceBase, async () => {
+      result = await executeTask(task);
+    });
+    try {
+      ProfilerWrapper.generateHeapSnapshot(traceBase + "-final");
+    } catch (e) {
+      console.warn("Failed to write final heap snapshot:", e);
+    }
+  } else {
+    result = await executeTask(task);
+  }
+
+  return result;
 }
 
 async function validate(
@@ -334,9 +386,84 @@ async function validateAndDisposeProject(
     }
   }
 
+  // MEMORY: Belt-and-suspenders cleanup. Even though WorldDataInfoGenerator
+  // calls `mcworld.clearAllData()` in aggressive-cleanup mode, walk every
+  // world-type ProjectItem here and clear any MCWorld manager that's still
+  // holding data. Catches cases where a generator threw, an item was missed,
+  // or a new generator forgot to opt in. Also drops MCStructure managers
+  // (same memory class).
+  releaseHeavyItemManagers(project);
+
   project.dispose();
 
   return resultStates;
+}
+
+/**
+ * Walk world-type project items and release the heavy parsed data hanging off
+ * their managers. After this returns, the per-item references on `project`
+ * are still intact (so `project.dispose()` can do its own cleanup), but the
+ * LevelDB keys, decompressed block buffers, chunk caches, and any inner
+ * ZipStorage payloads they reference are gone.
+ *
+ * Memory profiling of a 179 MB world template showed that without this:
+ *  - ~3 GB of "external" memory remained at the end of validation, held by
+ *    JSZip instances inside per-pack `ZipStorage`s (each caching the
+ *    decompressed bytes of every entry that had been read).
+ *  - The original world `.zip` (179 MB compressed) stayed pinned via the
+ *    project's containerFile -> fileContainerStorage edge.
+ *
+ * Project.dispose() walks the project folder tree and disposes every file;
+ * FileBase.dispose() now cascades into `fileContainerStorage?.dispose()`,
+ * which (for ZipStorage) nulls out the JSZip instance and breaks the
+ * container/file reference cycle. This helper handles the in-memory parsed
+ * structures that hang off project items (MCWorld chunk maps, LevelDb keys)
+ * which Project.dispose() doesn't know about.
+ *
+ * Safe to call multiple times — `clearAllData()` is idempotent.
+ */
+function releaseHeavyItemManagers(project: Project) {
+  for (const item of project.items) {
+    if (
+      item.itemType !== ProjectItemType.MCWorld &&
+      item.itemType !== ProjectItemType.MCTemplate &&
+      item.itemType !== ProjectItemType.worldFolder
+    ) {
+      continue;
+    }
+
+    const file = item.primaryFile;
+    const folder = item.defaultFolder;
+
+    // 1. Drop parsed world data (chunks, LevelDb keys, etc.).
+    const manager = (folder && folder.manager) || (file && file.manager);
+    if (manager && typeof (manager as { clearAllData?: () => void }).clearAllData === "function") {
+      try {
+        (manager as { clearAllData: () => void }).clearAllData();
+      } catch (e) {
+        Log.debug("releaseHeavyItemManagers: clearAllData failed: " + (e as Error).message);
+      }
+    }
+
+    // 2. If the world's primary file is a container (e.g., a .mcworld /
+    //    .mctemplate is a zip), drop the JSZip instance + cached
+    //    decompressed entries. The file-level dispose hooks in
+    //    Project.dispose() will catch the project's outer cabinet file,
+    //    but per-item container files have to be released here because
+    //    Project.dispose() doesn't walk individual items' primaryFile.
+    if (file) {
+      const fileWithContainer = file as { fileContainerStorage?: { dispose?: () => void } | null };
+      const inner = fileWithContainer.fileContainerStorage;
+      if (inner && typeof inner.dispose === "function") {
+        try {
+          inner.dispose();
+        } catch (e) {
+          Log.debug("releaseHeavyItemManagers: inner storage dispose failed: " + (e as Error).message);
+        }
+        fileWithContainer.fileContainerStorage = null;
+      }
+    }
+  }
 }
 
 async function outputResults(

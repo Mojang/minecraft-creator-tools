@@ -3,7 +3,7 @@
   "header": {
     "name": "Sample Add-on Pack",
     "description": "Sample Add-on Resource Pack",
-    "uuid": "9405c6b3-81dd-4eba-8f0d-36f4c58ea51b",
+    "uuid": "28ab0e9e-bf6f-41a6-9aa3-d3505e8b0dd3",
     "version": [
       1,
       0,
@@ -29,7 +29,7 @@
   ],
   "dependencies": [
     {
-      "uuid": "e1a34acf-365a-42d9-83f4-6db0412b8fa6",
+      "uuid": "2128861f-c041-444f-9102-877a3e757574",
       "version": [
         1,
         0,

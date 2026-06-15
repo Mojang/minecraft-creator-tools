@@ -861,17 +861,22 @@ export default class ProjectEditorUtilities {
     } else if (extension === "json") {
       const operId = await project.creatorTools.notifyOperationStarted("Saving new JSON file '" + file.name + "'");
 
-      const jsonContentStr = await file.text();
+      try {
+        const jsonContentStr = await file.text();
 
-      const item = await ProjectUtilities.ensureJsonItem(project, jsonContentStr, fileName);
+        const item = await ProjectUtilities.ensureJsonItem(project, jsonContentStr, fileName);
 
-      let description = "";
+        let description = "";
 
-      if (item) {
-        description = " as " + ProjectItemUtilities.getDescriptionForType(item.itemType) + " to " + item.projectPath;
+        if (item) {
+          description = " as " + ProjectItemUtilities.getDescriptionForType(item.itemType) + " to " + item.projectPath;
+        }
+
+        await project.creatorTools.notifyOperationEnded(operId, "New JSON file '" + file.name + "' added" + description);
+      } catch (e) {
+        await project.creatorTools.notifyOperationEnded(operId, "Failed to add JSON file '" + file.name + "'");
+        throw e;
       }
-
-      await project.creatorTools.notifyOperationEnded(operId, "New JSON file '" + file.name + "' added" + description);
     } else if (extension === "bbmodel") {
       const operId = await project.creatorTools.notifyOperationStarted("Integrating bbmodel file '" + file.name + "'");
 

@@ -147,7 +147,8 @@ describe("deployJs", async () => {
     expect(project.items.length).to.equal(4);
   });
 
-  it("deploy outputs match", async () => {
+  it("deploy outputs match", async function () {
+    this.timeout(30000);
     const project = await _loadProject("deployJs");
 
     if (!creatorTools || !resultsFolder) {

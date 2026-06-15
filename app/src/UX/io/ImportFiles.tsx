@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./ImportFiles.css";
 import { Button, FormControlLabel, RadioGroup, Radio } from "@mui/material";
 import IAppProps from "../appShell/IAppProps";
-import { AppMode } from "../appShell/App";
+import { AppMode } from "../appShell/AppMode";
 import Project from "../../app/Project";
 import HomeFooter from "../home/HomeFooter";
 import HomeHeader from "../home/HomeHeader";

@@ -103,7 +103,7 @@
 .wv-toolBar {
   display: grid;
   grid-template-columns: 490px 1fr;
-  height: 36px;
+  height: 40px;
   flex-shrink: 0;
   background: rgba(0, 0, 0, 0.15);
   border-bottom: 1px solid rgba(128, 128, 128, 0.3);
@@ -111,14 +111,16 @@
 
 .wv-tools {
   grid-column: 1;
-  padding-top: 3px;
-  padding-bottom: 0px;
+  display: flex;
+  align-items: center;
+  padding-left: 4px;
 }
 
 .wv-anchors {
   grid-column: 2;
-  padding-top: 2px;
-  padding-bottom: 2px;
+  display: flex;
+  align-items: center;
+  padding-right: 4px;
 }
 
 /* Layout containers - now single row since details float */

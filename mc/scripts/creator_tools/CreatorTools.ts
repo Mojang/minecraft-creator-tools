@@ -15,6 +15,7 @@
   world,
 } from "@minecraft/server";
 import AnchorManager from "./AnchorManager";
+import { ChunkLoader } from "./ChunkLoader";
 import PackStorage from "../files/PackStorage";
 
 import forms_index_init from "../data/forms/forms_index";
@@ -74,15 +75,18 @@ export class CreatorTools {
   private _psRoot: IFolder;
   private _packInfo: IPackInfo | undefined;
   private _curItemIndex = 0;
+  private _chunkLoader: ChunkLoader;
 
   constructor() {
     this._anchorManager = new AnchorManager();
     this._psRoot = PackStorage.current.rootFolder;
+    this._chunkLoader = new ChunkLoader();
     this.startup = this.startup.bind(this);
     this.init = this.init.bind(this);
     this._handleRunActionSet = this._handleRunActionSet.bind(this);
     this._handleGetState = this._handleGetState.bind(this);
     this._handleEval = this._handleEval.bind(this);
+    this._handleLoad = this._handleLoad.bind(this);
     this._processScriptEvent = this._processScriptEvent.bind(this);
   }
 
@@ -130,6 +134,22 @@ export class CreatorTools {
       ],
     };
     init.customCommandRegistry.registerCommand(evalCommand, this._handleEval);
+
+    const loadCommand: CustomCommand = {
+      name: "mct:load",
+      description:
+        "Forces a rectangular region to load and persist by ticking each chunk and rewriting its topmost block.",
+      permissionLevel: CommandPermissionLevel.GameDirectors,
+      mandatoryParameters: [
+        { type: CustomCommandParamType.Integer, name: "fromX" },
+        { type: CustomCommandParamType.Integer, name: "fromZ" },
+      ],
+      optionalParameters: [
+        { type: CustomCommandParamType.Integer, name: "toX" },
+        { type: CustomCommandParamType.Integer, name: "toZ" },
+      ],
+    };
+    init.customCommandRegistry.registerCommand(loadCommand, this._handleLoad);
   }
 
   _processScriptEvent(data: ScriptEventCommandMessageAfterEvent) {
@@ -222,6 +242,56 @@ export class CreatorTools {
 
         const result = this._evalCode(codeData);
         console.log("evl|" + instanceToken + "|" + result);
+        return;
+      }
+    }
+    // mct:load scriptevent — pipe-delimited args: "<token>|<fromX>,<fromZ>[,<toX>,<toZ>]"
+    if (data.id === "mct:load") {
+      let firstPipe = data.message.indexOf("|");
+
+      if (firstPipe >= 0) {
+        const instanceToken = data.message.substring(0, firstPipe);
+        const argText = data.message.substring(firstPipe + 1).trim();
+        const parts = argText.split(",").map((p) => parseInt(p.trim(), 10));
+
+        if (parts.length < 2 || parts.some((n) => Number.isNaN(n))) {
+          console.log(
+            `ldb|${instanceToken}|Invalid args. Expected "fromX,fromZ" or "fromX,fromZ,toX,toZ".`
+          );
+          return;
+        }
+
+        const fromX = parts[0];
+        const fromZ = parts[1];
+        const toX = parts.length >= 4 ? parts[2] : fromX + 15;
+        const toZ = parts.length >= 4 ? parts[3] : fromZ + 15;
+
+        let dimension: Dimension;
+        if (data.sourceEntity?.dimension) {
+          dimension = data.sourceEntity.dimension;
+        } else {
+          dimension = world.getDimension("overworld");
+        }
+
+        if (this._chunkLoader.isLoading(dimension)) {
+          console.log(`ldb|${instanceToken}|A chunk load is already in progress for ${dimension.id}.`);
+          return;
+        }
+
+        system.run(() => {
+          this._chunkLoader
+            .loadRegion(dimension, fromX, fromZ, toX, toZ, (msg) => {
+              console.log(`ldb|${instanceToken}|${msg}`);
+            })
+            .then((stats) => {
+              console.log(`ldb|${instanceToken}|${JSON.stringify(stats)}`);
+            })
+            .catch((err: Error) => {
+              console.log(`ldb|${instanceToken}|error: ${err.message}`);
+            });
+        });
+
+        console.log(`ldb|${instanceToken}|started ${fromX},${fromZ} -> ${toX},${toZ}`);
         return;
       }
     }
@@ -399,6 +469,71 @@ export class CreatorTools {
       message: "evl|" + instance + "|" + result,
       status: isError ? CustomCommandStatus.Failure : CustomCommandStatus.Success,
     };
+  }
+
+  /**
+   * Handles the mct:load custom command. Defaults to a single chunk (16x16)
+   * starting at (fromX, fromZ) when toX/toZ are omitted. Kicks off the loader
+   * asynchronously and returns immediately; progress is broadcast to chat.
+   */
+  _handleLoad(
+    origin: CustomCommandOrigin,
+    fromX: number,
+    fromZ: number,
+    toX?: number,
+    toZ?: number
+  ): CustomCommandResult {
+    const resolvedToX = toX ?? fromX + 15;
+    const resolvedToZ = toZ ?? fromZ + 15;
+
+    let dimension: Dimension;
+    if (origin.sourceEntity?.dimension) {
+      dimension = origin.sourceEntity.dimension;
+    } else {
+      dimension = world.getDimension("overworld");
+    }
+
+    if (this._chunkLoader.isLoading(dimension)) {
+      return {
+        message: `ldb|${dimension.id}|A chunk load is already in progress for ${dimension.id}.`,
+        status: CustomCommandStatus.Failure,
+      };
+    }
+
+    system.run(() => {
+      this._chunkLoader
+        .loadRegion(dimension, fromX, fromZ, resolvedToX, resolvedToZ)
+        .catch((err: Error) => {
+          world.sendMessage(`mct:load failed: ${err.message}`);
+        });
+    });
+
+    return {
+      message: `ldb|${dimension.id}|started ${fromX},${fromZ} -> ${resolvedToX},${resolvedToZ}`,
+      status: CustomCommandStatus.Success,
+    };
+  }
+
+  /**
+   * Pass-through used by the pliers wand in main.ts so callers don't need to
+   * import ChunkLoader directly.
+   */
+  loadRegion(
+    dimension: Dimension,
+    fromX: number,
+    fromZ: number,
+    toX: number,
+    toZ: number,
+    onMessage?: (message: string) => void
+  ): Promise<{ chunksLoaded: number; tilesProcessed: number; durationMs: number }> {
+    return this._chunkLoader.loadRegion(dimension, fromX, fromZ, toX, toZ, onMessage);
+  }
+
+  /**
+   * Returns true if a chunk load is currently in progress for the dimension.
+   */
+  isLoading(dimension: Dimension): boolean {
+    return this._chunkLoader.isLoading(dimension);
   }
 
   _handleRunActionSet(origin: CustomCommandOrigin, instance: string, actionSetData: string): CustomCommandResult {

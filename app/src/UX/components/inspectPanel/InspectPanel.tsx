@@ -21,7 +21,7 @@ interface InspectPanelProps {
   openAppFolder: () => void;
 }
 export default function InspectPanel({ onFilesSubmitted, editFolder, openAppFolder }: InspectPanelProps) {
-  const [handleFileUpload, loading] = useProjectUploads(onFilesSubmitted);
+  const [handleFileUpload, isReady] = useProjectUploads(onFilesSubmitted);
   const { trackEvent } = useTelemetry();
   const intl = useIntl();
   const isApp = AppServiceProxy.hasAppServiceOrSim;
@@ -77,7 +77,7 @@ export default function InspectPanel({ onFilesSubmitted, editFolder, openAppFold
             : `linear-gradient(180deg, #ffffff 0%, ${mcColors.gray1} 100%)`,
       })}
     >
-      {loading ? (
+      {!isReady ? (
         <LoadingSpinner minHeight="6em" />
       ) : (
         <>

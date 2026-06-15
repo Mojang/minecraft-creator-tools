@@ -9,7 +9,7 @@
  * - Language model tools integration
  *
  * NOTE: These features require VS Code with GitHub Copilot extension and may not be
- * fully functional in vscode-test-web environment. Tests focus on registration verification.
+ * fully functional in the @vscode/test-web environment. Tests focus on registration verification.
  *
  * Prerequisites:
  * - VS Code extension built: npm run vscbuild

@@ -850,7 +850,7 @@ export default class Project {
     }
 
     if (this.#projectFolder === undefined || this.#projectFolder === null) {
-      throw new Error("Unexpectedly could not create project folder");
+      return undefined;
     }
 
     return this.#projectFolder.folders["scripts"];
@@ -4023,7 +4023,20 @@ export default class Project {
         if (
           fileUpdate.updateType === FileUpdateType.versionRestorationRetainCurrent ||
           fileUpdate.updateType === FileUpdateType.versionRestoration ||
-          fileUpdate.updateType === FileUpdateType.externalChange
+          fileUpdate.updateType === FileUpdateType.externalChange ||
+          // Code-editor edits (Monaco / JSON / function / Molang editors) must also
+          // invalidate the file's manager. Without this, switching from Raw view to
+          // Focused / Full view re-mounts the form editor which then calls
+          // `manager.persist()` with its *stale* in-memory definition (loaded before
+          // the user's Monaco edit), silently overwriting the user's edits in
+          // `file.content`. Code editors publish a sourceId starting with their
+          // editor class name (e.g. "JSONEditor|<path>"), so we can recognize them
+          // here and trigger the same invalidation the externalChange path does.
+          // The corresponding form-editor / manager save paths set no sourceId, so
+          // the check is asymmetric on purpose.
+          (fileUpdate.updateType === FileUpdateType.regularEdit &&
+            typeof fileUpdate.sourceId === "string" &&
+            /^[A-Z][A-Za-z]*Editor\|/.test(fileUpdate.sourceId))
         ) {
           item.invalidateContentProcessedState();
         }

@@ -7,7 +7,7 @@ import { TelemetryEvents, TelemetryProperties, TelemetryMeasurements } from "../
 import WebUtilities from "../../utils/WebUtilities";
 
 export default function useProjectUploads(onFilesSubmitted?: FilesSubmittedEvent) {
-  const [creatorTools, loading] = useCreatorTools();
+  const [creatorTools, isReady] = useCreatorTools();
   const { trackEvent } = useTelemetry();
 
   const getFileExtension = (fileName: string): string => {
@@ -52,7 +52,7 @@ export default function useProjectUploads(onFilesSubmitted?: FilesSubmittedEvent
 
   const getFilesFromEvent = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      if (!creatorTools.packStorage) {
+      if (!creatorTools?.packStorage) {
         return;
       }
 
@@ -71,5 +71,5 @@ export default function useProjectUploads(onFilesSubmitted?: FilesSubmittedEvent
     [processIncomingFile, getFilesFromEvent]
   );
 
-  return [handleFileUpload, loading] as const;
+  return [handleFileUpload, isReady] as const;
 }
