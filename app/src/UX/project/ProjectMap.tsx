@@ -202,6 +202,7 @@ class ProjectMap extends Component<IProjectMapProps, IProjectMapState> {
             projectItem: ProjectItemNode,
           }}
           nodesDraggable
+          deleteKeyCode={null}
           edgesFocusable={false}
           edgesReconnectable={false}
           nodesConnectable={false}

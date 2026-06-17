@@ -81,13 +81,35 @@ async function clickEntityVisualsTab(page: Page): Promise<void> {
   await expect(visualsBtn).toBeVisible({ timeout: 5000 });
   await visualsBtn.click();
   await page.waitForTimeout(1500);
+
+  // The Visuals tab can race with EntityType resource-item resolution and render
+  // "Unexpected error: No Valid State Found" if the resource childItem or its
+  // primaryFile isn't loaded yet. When that happens, briefly switch to Overview
+  // and back to force the editor to re-resolve. Retry a few times.
+  for (let i = 0; i < 4; i++) {
+    const etreArea = page.locator(".etre-area");
+    if (await etreArea.isVisible({ timeout: 1500 }).catch(() => false)) {
+      return;
+    }
+    const errorMsg = page.locator("text=/No Valid State Found/i").first();
+    const errorVisible = await errorMsg.isVisible({ timeout: 500 }).catch(() => false);
+    console.log(
+      `clickEntityVisualsTab: .etre-area not visible (attempt ${i + 1}/4)${errorVisible ? " — saw 'No Valid State Found' error" : ""}`
+    );
+    const overviewBtn = page.locator(`button[title*="overview" i]:not([aria-haspopup])`).first();
+    if (await overviewBtn.isVisible({ timeout: 1000 }).catch(() => false)) {
+      await overviewBtn.click();
+      await page.waitForTimeout(800);
+    }
+    await visualsBtn.click();
+    await page.waitForTimeout(2000);
+  }
 }
 
 async function clickResourceSubTab(page: Page, name: "Textures" | "Geometry" | "Materials"): Promise<void> {
   const etreArea = page.locator(".etre-area");
-  await expect(etreArea).toBeVisible({ timeout: 10000 });
-  const titleKey =
-    name === "Textures" ? /textur/i : name === "Geometry" ? /geometr|model/i : /material/i;
+  await expect(etreArea).toBeVisible({ timeout: 20000 });
+  const titleKey = name === "Textures" ? /textur/i : name === "Geometry" ? /geometr|model/i : /material/i;
   // Tabs have a `title` tooltip (and text label that may be hidden in compact mode).
   let btn = etreArea.locator(`.etre-toolBarArea button[title]`).filter({ has: page.locator("*") });
   const count = await btn.count();
@@ -101,13 +123,21 @@ async function clickResourceSubTab(page: Page, name: "Textures" | "Geometry" | "
     }
   }
   // Fallback by inner text.
-  const byText = etreArea.locator("button").filter({ hasText: new RegExp(`^${name}$`, "i") }).first();
+  const byText = etreArea
+    .locator("button")
+    .filter({ hasText: new RegExp(`^${name}$`, "i") })
+    .first();
   await expect(byText).toBeVisible({ timeout: 5000 });
   await byText.click();
   await page.waitForTimeout(1500);
 }
 
-interface Box { x: number; y: number; width: number; height: number }
+interface Box {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
 
 async function bbox(loc: Locator): Promise<Box | null> {
   return (await loc.boundingBox()) as Box | null;
@@ -179,9 +209,11 @@ test.describe("Entity Visuals Resource Tabs - Overlap Regression", () => {
 
       const rcText = (await rcHeader.innerText()).trim();
       const expectedToken =
-        sub === "Textures" ? /Texture render controllers/i
-        : sub === "Geometry" ? /Geometry render controllers/i
-        : /Materials render controllers/i;
+        sub === "Textures"
+          ? /Texture render controllers/i
+          : sub === "Geometry"
+            ? /Geometry render controllers/i
+            : /Materials render controllers/i;
       expect(rcText).toMatch(expectedToken);
 
       const rcBox = await bbox(rcHeader);

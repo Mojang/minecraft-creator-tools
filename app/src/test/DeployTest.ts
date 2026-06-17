@@ -453,6 +453,15 @@ describe("deploy-syncFlatPackRefWorld", async () => {
 });
 
 describe("deploy-worldId-uniqueness", async () => {
+  before((done) => {
+    // Each test in this block uses fixed deployWorldId values so the result-folder names
+    // are deterministic across runs. We do not folderMatches() against scenarios here
+    // (these tests verify behavior, not byte-equivalent output), but stable folder names
+    // prevent committed-by-mistake leftover GUID folders from accumulating in git.
+    removeResultFolder("syncFlatWorld");
+    done();
+  });
+
   it("different projects get different deployWorldIds", async function () {
     this.timeout(30000);
 
@@ -490,6 +499,12 @@ describe("deploy-worldId-uniqueness", async () => {
       assert.fail("Not properly initialized");
       return;
     }
+
+    // Use fixed deployWorldIds so the result-folder names are deterministic across runs.
+    // The test's purpose is to verify that two distinct projects deploy into two distinct
+    // folders — the actual ID values are immaterial.
+    projectA.deployWorldId = "worldsUniqueness-projectA";
+    projectB.deployWorldId = "worldsUniqueness-projectB";
 
     const worldsFolder = resultsFolder.ensureFolder("syncFlatWorld").ensureFolder("worldsUniqueness");
     await worldsFolder.ensureExists();
@@ -538,6 +553,12 @@ describe("deploy-worldId-uniqueness", async () => {
 });
 
 describe("deploy-worldId-persistence", async () => {
+  before((done) => {
+    // See note in deploy-worldId-uniqueness: fixed IDs + cleanup keep result-folder names stable.
+    removeResultFolder("syncFlatWorld");
+    done();
+  });
+
   it("deployWorldId is stable across multiple accesses", async function () {
     this.timeout(10000);
 
@@ -571,6 +592,11 @@ describe("deploy-worldId-persistence", async () => {
       assert.fail("Not properly initialized");
       return;
     }
+
+    // Use a fixed deployWorldId so the result-folder name is deterministic across runs.
+    // The test verifies that the SAME id is reused on the second deploy, which is
+    // unaffected by whether the id is random or fixed.
+    project.deployWorldId = "worldsPersistence-deployJs";
 
     const worldsFolder = resultsFolder.ensureFolder("syncFlatWorld").ensureFolder("worldsPersistence");
     await worldsFolder.ensureExists();

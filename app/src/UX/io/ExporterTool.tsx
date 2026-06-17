@@ -2,7 +2,7 @@ import { Component } from "react";
 import "./ExporterTool.css";
 import { Stack, Button, TextField, RadioGroup, FormControlLabel, Radio } from "@mui/material";
 import IAppProps from "../appShell/IAppProps";
-import { AppMode } from "../appShell/App";
+import { AppMode } from "../appShell/AppMode";
 import Log from "../../core/Log";
 import Project from "../../app/Project";
 

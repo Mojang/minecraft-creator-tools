@@ -259,7 +259,10 @@ export function createMcTheme(mode: ThemeMode): Theme {
           root: {
             color: isDark ? mcColors.gray3 : mcColors.gray4,
             "&.Mui-focused": {
-              color: mcColors.green4,
+              // In light mode the shrunk label sits on a white background; green4 (#52a535)
+              // only achieves 3.09:1 contrast which fails WCAG 2 AA for 14px text.
+              // green6 (#2a641c) gives ~7.1:1. Dark mode keeps green4 on offBlack (~12:1).
+              color: isDark ? mcColors.green4 : mcColors.green6,
             },
             "&.MuiInputLabel-shrink": {
               backgroundColor: isDark ? mcColors.offBlack : mcColors.white,

@@ -36,11 +36,6 @@ gt.register("MyProject", "basicTest", basicTest).structureName("gametests:basic"
 `;
 
   static emptyJavaScript = `import { world, system } from "@minecraft/server";
-        
-function myFunction() 
-{
-
-}
 `;
 
   static emptyActionSet = `{
@@ -120,11 +115,7 @@ function myFunction()
   }
 
   static getEmptyJavaScript(projectName: string, testName: string) {
-    let content = ProjectContent.emptyJavaScript;
-
-    content = content.replace("myFunction", ProjectContent.getItemName(projectName) + "Action");
-
-    return content;
+    return ProjectContent.emptyJavaScript;
   }
 
   static getEmptyTypeScript(projectName: string, testName: string) {

@@ -77,7 +77,7 @@ export default class TableMarkdownDocumentationGenerator {
   public async generateEntityListTable(outputFolder: IFolder) {
     const entitiesNode = await LegacyDocumentationDefinition.loadNode("addons", "/Entities/", true);
 
-    if (!entitiesNode) {
+    if (!entitiesNode || !entitiesNode.nodes) {
       return;
     }
     const addonEntityLines: string[] = [];
@@ -147,7 +147,7 @@ export default class TableMarkdownDocumentationGenerator {
   public async generateEntityDamageSourcesListTable(outputFolder: IFolder) {
     const entitiesNode = await LegacyDocumentationDefinition.loadNode("addons", "/Entity Damage Source/", true);
 
-    if (!entitiesNode) {
+    if (!entitiesNode || !entitiesNode.nodes) {
       return;
     }
     const addonEntityLines: string[] = [];
@@ -182,7 +182,7 @@ export default class TableMarkdownDocumentationGenerator {
   public async generateItemListTable(outputFolder: IFolder) {
     const itemsNode = await LegacyDocumentationDefinition.loadNode("addons", "/Items/", true);
 
-    if (!itemsNode) {
+    if (!itemsNode || !itemsNode.nodes) {
       return;
     }
     const addonItemLines: string[] = [];

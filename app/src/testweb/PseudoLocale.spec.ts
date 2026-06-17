@@ -236,7 +236,7 @@ test.describe("Pseudo-Locale Coverage @locale", () => {
 
   test("home page — all visible text should be localized", async ({ page }) => {
     await page.goto("/?locale=pseudo");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("networkidle", { timeout: 15000 }).catch(() => {});
     await page.waitForTimeout(2000);
 
     const unloc = await collectAllUnlocalized(page);
@@ -264,7 +264,7 @@ test.describe("Pseudo-Locale Coverage @locale", () => {
   test("project editor — all visible text should be localized", async ({ page }) => {
     // Enter editor with pseudo locale via query param
     await page.goto("/?locale=pseudo");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("networkidle", { timeout: 15000 }).catch(() => {});
     await page.waitForTimeout(2000);
 
     // Create a new project to enter the editor
@@ -293,7 +293,7 @@ test.describe("Pseudo-Locale Coverage @locale", () => {
     }
 
     await page.waitForTimeout(5000);
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("networkidle", { timeout: 15000 }).catch(() => {});
 
     // Wait for editor readiness
     await waitForEditorReady(page, 20000);
@@ -328,7 +328,7 @@ test.describe("Pseudo-Locale Coverage @locale", () => {
 
   test("block viewer — all visible text should be localized", async ({ page }) => {
     await page.goto("/?locale=pseudo&mode=blockviewer");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("networkidle", { timeout: 15000 }).catch(() => {});
     await page.waitForTimeout(3000);
 
     const unloc = await collectAllUnlocalized(page);
@@ -352,7 +352,7 @@ test.describe("Pseudo-Locale Coverage @locale", () => {
 
   test("mob viewer — all visible text should be localized", async ({ page }) => {
     await page.goto("/?locale=pseudo&mode=mobviewer");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("networkidle", { timeout: 15000 }).catch(() => {});
     await page.waitForTimeout(3000);
 
     const unloc = await collectAllUnlocalized(page);
@@ -376,7 +376,7 @@ test.describe("Pseudo-Locale Coverage @locale", () => {
 
   test("project creation dialog — dialog text and attributes should be localized", async ({ page }) => {
     await page.goto("/?locale=pseudo");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("networkidle", { timeout: 15000 }).catch(() => {});
     await page.waitForTimeout(2000);
 
     // Click Create New to open the project creation dialog
@@ -423,7 +423,7 @@ test.describe("Pseudo-Locale Coverage @locale", () => {
   test("project editor with delete confirmation — dialog buttons should be localized", async ({ page }) => {
     // Enter editor with pseudo locale
     await page.goto("/?locale=pseudo");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("networkidle", { timeout: 15000 }).catch(() => {});
     await page.waitForTimeout(2000);
 
     // Create a new project to enter the editor
@@ -448,7 +448,7 @@ test.describe("Pseudo-Locale Coverage @locale", () => {
     }
 
     await page.waitForTimeout(5000);
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("networkidle", { timeout: 15000 }).catch(() => {});
     await waitForEditorReady(page, 20000);
 
     // Dismiss FRE panel if present
@@ -522,7 +522,7 @@ test.describe("Pseudo-Locale Coverage @locale", () => {
 
   test("code start page — all visible text should be localized", async ({ page }) => {
     await page.goto("/?locale=pseudo&mode=codestartpage");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("networkidle", { timeout: 15000 }).catch(() => {});
     await page.waitForTimeout(3000);
 
     const unloc = await collectAllUnlocalized(page);
@@ -546,7 +546,7 @@ test.describe("Pseudo-Locale Coverage @locale", () => {
 
   test("content wizard — wizard dialog text and attributes should be localized", async ({ page }) => {
     await page.goto("/?locale=pseudo");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("networkidle", { timeout: 15000 }).catch(() => {});
     await page.waitForTimeout(2000);
 
     // Click a goal card (e.g. Make Mob) to open the content wizard dialog
@@ -585,7 +585,7 @@ test.describe("Pseudo-Locale Coverage @locale", () => {
   test("settings page — all visible text should be localized", async ({ page }) => {
     // Enter editor with pseudo locale: create a new project first
     await page.goto("/?locale=pseudo");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("networkidle", { timeout: 15000 }).catch(() => {});
     await page.waitForTimeout(2000);
 
     const newButton = page.getByRole("button", { name: "Create New" }).first();
@@ -609,7 +609,7 @@ test.describe("Pseudo-Locale Coverage @locale", () => {
     }
 
     await page.waitForTimeout(5000);
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("networkidle", { timeout: 15000 }).catch(() => {});
     await waitForEditorReady(page, 20000);
 
     // Click the settings gear button

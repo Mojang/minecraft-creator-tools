@@ -33,9 +33,9 @@ export default function ProjectGrid({ onAppGalleryAction, onSetProject, onProjec
 
   const gallery = useGallery({ query: searchQuery, initialSize: 8, pageSize: 20 });
   const [onOpenSnippet, onNewProject] = useGalleryActions(onAppGalleryAction);
-  const [creatorTools, creatorToolsLoading] = useCreatorTools();
+  const [creatorTools, isCreatorToolsReady] = useCreatorTools();
   const [isRefreshingTemplates, setIsRefreshingTemplates] = useState(false);
-  const [showGettingStarted, setShowGettingStarted] = useState(!creatorTools.disableFirstRun);
+  const [showGettingStarted, setShowGettingStarted] = useState(!creatorTools?.disableFirstRun);
   const [goalDialogOpen, setGoalDialogOpen] = useState(false);
   const [goalDialogMounted, setGoalDialogMounted] = useState(false);
   const [pendingGoalAction, setPendingGoalAction] = useState<PostCreateAction | undefined>();
@@ -56,10 +56,10 @@ export default function ProjectGrid({ onAppGalleryAction, onSetProject, onProjec
   // Re-evaluate the banner once creatorTools finishes loading persisted settings.
   // The initial useState may read disableFirstRun before data is available.
   useEffect(() => {
-    if (!creatorToolsLoading && creatorTools.disableFirstRun) {
+    if (isCreatorToolsReady && creatorTools.disableFirstRun) {
       setShowGettingStarted(false);
     }
-  }, [creatorToolsLoading, creatorTools.disableFirstRun]);
+  }, [isCreatorToolsReady, creatorTools]);
 
   useEffect(() => {
     trackPageView({ name: "ProjectGrid" });
@@ -75,8 +75,10 @@ export default function ProjectGrid({ onAppGalleryAction, onSetProject, onProjec
   };
 
   const handleUseOfflineTemplates = async () => {
-    creatorTools.contentRoot = CreatorToolsHost.contentWebRoot || "";
-    await handleRefreshTemplates();
+    if (creatorTools) {
+      creatorTools.contentRoot = CreatorToolsHost.contentWebRoot || "";
+      await handleRefreshTemplates();
+    }
   };
 
   const handleGoalSelected = useCallback((action: PostCreateAction) => {
@@ -173,7 +175,7 @@ export default function ProjectGrid({ onAppGalleryAction, onSetProject, onProjec
           {intl.formatMessage({ id: "home.project_grid.starters_description" })}
         </Typography>
         <Grid direction="row" container spacing={{ xs: 2, md: 2.5, lg: 3 }}>
-          {templates.length === 0 ? (
+          {templates.length === 0 && !galleryData ? (
             <Grid item xs={12}>
               <Card variant="outlined" sx={{ minHeight: 12 }}>
                 <CardContent>
@@ -207,6 +209,16 @@ export default function ProjectGrid({ onAppGalleryAction, onSetProject, onProjec
                       {intl.formatMessage({ id: "home.project_grid.use_offline_templates" })}
                     </Button>
                   </Box>
+                </CardContent>
+              </Card>
+            </Grid>
+          ) : templates.length === 0 ? (
+            <Grid item xs={12}>
+              <Card variant="outlined" sx={{ minHeight: 12 }}>
+                <CardContent>
+                  <Typography textAlign="center">
+                    {intl.formatMessage({ id: "home.project_grid.no_templates" })}
+                  </Typography>
                 </CardContent>
               </Card>
             </Grid>

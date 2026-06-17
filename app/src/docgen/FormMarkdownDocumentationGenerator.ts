@@ -10,6 +10,7 @@ import IField, { FieldDataType } from "../dataform/IField";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import { ComparisonType } from "../dataform/ICondition";
 import FieldUtilities from "../dataform/FieldUtilities";
+import Database from "../minecraft/Database";
 import Log from "../core/Log";
 import ValidationRulesMarkdownGenerator from "./ValidationRulesMarkdownGenerator";
 
@@ -843,34 +844,30 @@ export default class FormMarkdownDocumentationGenerator {
       "- name: Command Type List\n  href: ../CommandTypeList.md"
     );
 
-    // Jigsaw Structures documentation
+    // Jigsaw Structures documentation. Only the four top-level form types
+    // (jigsaw_structure, processor_list, template_pool, structure_set) emit
+    // pages; the remaining ~26 form files in /jigsaw/ are sub-forms that get
+    // inlined via subFormId references and are filtered out below. Output
+    // lands directly in WorldgenReference/Examples/ alongside the hand-
+    // authored JigsawJigsawStructures.md intro, so no list page or TOC.yml
+    // is generated for this set.
     await this.exportMarkdownCatalogDocs(
       formsByPath,
       outputFolder,
       ExportMode.jigsaw,
-      "/JigsawReference/Examples/JigsawComponents/",
+      "/WorldgenReference/Examples/",
       "/jigsaw/",
       "Jigsaw Structures",
-      "Jigsaw Component"
-    );
-
-    await this.exportMarkdownDocListPage(
-      formsByPath,
-      outputFolder,
-      ExportMode.jigsaw,
-      "/JigsawReference/Examples/JigsawList.md",
-      "/jigsaw/",
-      "Jigsaw Structures",
-      "JigsawComponents"
-    );
-
-    await this.exportListYml(
-      formsByPath,
-      outputFolder,
-      ExportMode.jigsaw,
-      "/JigsawReference/Examples/JigsawComponents/TOC.yml",
-      "/jigsaw/",
-      "- name: Jigsaw List\n  href: ../JigsawList.md"
+      "Jigsaw JSON",
+      [
+        "/jigsaw/jigsawblockmetadata",
+        "/jigsaw/jigsawstructure",
+        "/jigsaw/jigsaw_vertical",
+        "/jigsaw/jigsaw_block_",
+        "/jigsaw/jigsaw_position_",
+        "/jigsaw/minecraft_jigsaw",
+        "/jigsaw/scatter_",
+      ]
     );
 
     // Dimensions documentation
@@ -1159,6 +1156,34 @@ export default class FormMarkdownDocumentationGenerator {
       fileName = "minecraftBiomes_" + baseName.substring(10);
     } else if (exportMode === ExportMode.commands && fileName.startsWith("cmd_")) {
       fileName = baseName.substring(4);
+    } else if (exportMode === ExportMode.jigsaw) {
+      // Jigsaw top-level forms are emitted alongside hand-authored Worldgen reference
+      // pages, so use the same Pascal-case filename pattern as those siblings.
+      if (baseName.startsWith("pool_element_")) {
+        // pool_element_feature -> JigsawPoolElementFeature
+        const suffix = baseName.substring("pool_element_".length);
+        fileName =
+          "JigsawPoolElement" +
+          suffix
+            .split("_")
+            .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+            .join("");
+      } else {
+        switch (baseName) {
+          case "jigsaw_structure":
+            fileName = "JigsawJigsawStructureJson";
+            break;
+          case "processor_list":
+            fileName = "JigsawProcessors";
+            break;
+          case "template_pool":
+            fileName = "JigsawTemplatePools";
+            break;
+          case "structure_set":
+            fileName = "JigsawStructureSets";
+            break;
+        }
+      }
     }
 
     fileName = fileName.replace("_horse_", "_horse.");
@@ -1945,10 +1970,7 @@ export default class FormMarkdownDocumentationGenerator {
               )
             );
             content.push(
-              this.getRequiresLinkLine(
-                { id: "minecraft:behavior.hurt_by_target", type: "entity_component" },
-                pageMode
-              )
+              this.getRequiresLinkLine({ id: "minecraft:behavior.hurt_by_target", type: "entity_component" }, pageMode)
             );
           } else if (
             dep.type === "entity_component" ||
@@ -2755,12 +2777,7 @@ export default class FormMarkdownDocumentationGenerator {
 
     if (dep.type === "item_component") {
       const canon = this.getFileNameFromJsonKey(name);
-      const path = this.getRelativeRefPath(
-        pageMode,
-        "ItemReference",
-        "ItemComponents",
-        "minecraft_" + canon + ".md"
-      );
+      const path = this.getRelativeRefPath(pageMode, "ItemReference", "ItemComponents", "minecraft_" + canon + ".md");
       return "> * [" + label + "](" + path + ")";
     }
 
@@ -2856,6 +2873,22 @@ export default class FormMarkdownDocumentationGenerator {
         if (jsonO) {
           FieldUtilities.normalizeFormFieldDataTypes(jsonO);
           formsByPath[file.storageRelativePath] = jsonO;
+
+          // Seed Database.uxCatalog so subFormId lookups during rendering hit
+          // this fresh copy instead of falling back to the stale snapshot on
+          // https://mctools.dev/ when the relative storage path doesn't
+          // resolve under Database.local for the running CLI.
+          const relPath = file.storageRelativePath.replace(/^\/+/, "");
+          const lastSlash = relPath.lastIndexOf("/");
+          const subFolder = lastSlash >= 0 ? relPath.substring(0, lastSlash) : "";
+          let leaf = lastSlash >= 0 ? relPath.substring(lastSlash + 1) : relPath;
+          if (leaf.endsWith(".form.json")) {
+            leaf = leaf.substring(0, leaf.length - ".form.json".length);
+          } else if (leaf.endsWith(".json")) {
+            leaf = leaf.substring(0, leaf.length - ".json".length);
+          }
+          const cacheKey = Database.getFormName(subFolder, leaf);
+          (Database as unknown as { uxCatalog: { [key: string]: IFormDefinition } }).uxCatalog[cacheKey] = jsonO;
         }
 
         // Unload file content after extracting JSON to save memory during bulk processing

@@ -77,6 +77,8 @@ import { StatusTopic } from "../app/Status";
 import { IErrorMessage, IErrorable } from "../core/IErrorable";
 import ProjectItem from "../app/ProjectItem";
 import WorldChunkCache from "./WorldChunkCache";
+import IWorldScanCache from "./IWorldScanCache";
+import CommandBlockActor from "./blockActors/CommandBlockActor";
 
 const BEHAVIOR_PACKS_RELPATH = "/world_behavior_packs.json";
 const BEHAVIOR_PACK_HISTORY_RELPATH = "/world_behavior_pack_history.json";
@@ -175,6 +177,29 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
 
   private _isLoaded = false;
   private _isDataLoaded = false;
+  /**
+   * True when `processWorldData` returned early because it hit
+   * `maxNumberOfRecordsToProcess`. The world is still considered loaded
+   * (raw LevelDB keys parsed, partial chunk index built), but callers like
+   * WorldDataInfoGenerator can emit an info item to flag that downstream
+   * stats (chunk counts, block counts) only reflect a partial scan.
+   *
+   * MEMORY HISTORY: prior to this flag, hitting the record cap returned
+   * `false` from `processWorldData` → `loadFromLevelDb` → `loadLevelDb`,
+   * which prevented `_isDataLoaded` from ever flipping true. The very
+   * next call into `getDimensionInfo` / `loadLevelDb(skipFullProcessing)`
+   * therefore re-entered `_loadLevelDbInternal` and instantiated a brand
+   * new LevelDb from the 26 .ldb files all over again.
+   */
+  private _wasLoadTruncated = false;
+  /**
+   * In-flight (non-forced) loadLevelDb promise, used to coalesce concurrent loads.
+   * The 2D WorldMap and 3D WorldViewer share a single MCWorld instance; without
+   * this, both can kick off a full LevelDB parse + chunk-index build at the same
+   * time (before _isDataLoaded flips true), paying twice and racing on shared
+   * state. Concurrent non-forced callers await this same promise instead.
+   */
+  private _loadLevelDbPromise: Promise<boolean> | undefined;
   private _onLoaded = new EventDispatcher<MCWorld, MCWorld>();
   private _onDataLoaded = new EventDispatcher<MCWorld, MCWorld>();
   private _onChunkUpdated = new EventDispatcher<MCWorld, WorldChunk>();
@@ -234,6 +259,17 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
 
   /** Whether the DimensionNameIdTable key exists in the LevelDB */
   private _hasDimensionNameIdTable = false;
+
+  /**
+   * Per-world cached output of a single full chunk scan, reusable across
+   * subsequent ProjectInfoSet suite passes (defaultInDevelopment,
+   * cooperativeAddOn, currentPlatformVersions). The first pass that runs
+   * `WorldDataInfoGenerator` populates this; later passes consume it and
+   * skip the (expensive) per-chunk iteration.
+   *
+   * See IWorldScanCache for the data shape and rationale.
+   */
+  worldScanCache?: IWorldScanCache;
 
   /** LRU cache for chunk data - manages memory by evicting old chunks */
   private _chunkCache?: WorldChunkCache;
@@ -298,6 +334,43 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     }
 
     return undefined;
+  }
+
+  /**
+   * Returns the folders for every resource pack embedded in this world's
+   * `resource_packs/` directory (a common shape for Marketplace worlds). The
+   * 3D world renderer uses these to discover custom block textures so that
+   * worlds bundling their own resource packs render with their real art
+   * instead of the gray missing-texture fallback.
+   */
+  public async getEmbeddedResourcePackFolders(): Promise<IFolder[]> {
+    const root = this.effectiveRootFolder;
+    if (!root) return [];
+
+    const result: IFolder[] = [];
+
+    // Most marketplace worlds put each resource pack at `resource_packs/<pack_name>/`.
+    const rpsFolder = await root.getFolderFromRelativePath("/resource_packs");
+    if (rpsFolder) {
+      await rpsFolder.load();
+      for (const name of Object.keys(rpsFolder.folders)) {
+        const sub = rpsFolder.folders[name];
+        if (sub) result.push(sub);
+      }
+    }
+
+    // World template layout puts the world's content under world_template/. The
+    // embedded RPs live under world_template/resource_packs/ in that case.
+    const wtRpsFolder = await root.getFolderFromRelativePath("/world_template/resource_packs");
+    if (wtRpsFolder) {
+      await wtRpsFolder.load();
+      for (const name of Object.keys(wtRpsFolder.folders)) {
+        const sub = wtRpsFolder.folders[name];
+        if (sub) result.push(sub);
+      }
+    }
+
+    return result;
   }
 
   public get manifest() {
@@ -624,6 +697,16 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     return this._isLoaded;
   }
 
+  /**
+   * True when the most recent `loadLevelDb` / `processWorldData` pass hit
+   * `maxNumberOfRecordsToProcess` and stopped iterating early. The LevelDB
+   * is still considered loaded (subsequent calls reuse the existing state),
+   * but per-chunk stats are only partial. Cleared by `clearAllData`.
+   */
+  get wasLoadTruncated() {
+    return this._wasLoadTruncated;
+  }
+
   get spawnX(): number | undefined {
     if (this.levelData === undefined) {
       return undefined;
@@ -735,19 +818,19 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
 
     // Subscribe to file content updates
     storage.onFileContentsUpdated.subscribe((sender, event) => {
-      Log.message(`[MCWorld] Received onFileContentsUpdated: ${event.file.storageRelativePath}`);
+      Log.verbose(`[MCWorld] Received onFileContentsUpdated: ${event.file.storageRelativePath}`);
       this._handleStorageFileUpdate(event.file.storageRelativePath, event);
     });
 
     // Subscribe to file additions
     storage.onFileAdded.subscribe((sender, file) => {
-      Log.message(`[MCWorld] Received onFileAdded: ${file.storageRelativePath}`);
+      Log.verbose(`[MCWorld] Received onFileAdded: ${file.storageRelativePath}`);
       this._handleStorageFileAdded(file.storageRelativePath);
     });
 
     // Subscribe to file removals
     storage.onFileRemoved.subscribe((sender, path) => {
-      Log.message(`[MCWorld] Received onFileRemoved: ${path}`);
+      Log.verbose(`[MCWorld] Received onFileRemoved: ${path}`);
       this._handleStorageFileRemoved(path);
     });
 
@@ -2555,6 +2638,30 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
       return true;
     }
 
+    // Coalesce concurrent, non-forced loads. In the combined 3D + 2D map view the
+    // WorldViewer and WorldMap share this MCWorld instance and both call loadLevelDb
+    // during their async init. Returning the in-flight promise guarantees the
+    // LevelDB files are parsed and the chunk index built exactly once.
+    if (!force && this._loadLevelDbPromise) {
+      return await this._loadLevelDbPromise;
+    }
+
+    const loadPromise = this._loadLevelDbInternal(force, options);
+
+    if (!force) {
+      this._loadLevelDbPromise = loadPromise;
+    }
+
+    try {
+      return await loadPromise;
+    } finally {
+      if (this._loadLevelDbPromise === loadPromise) {
+        this._loadLevelDbPromise = undefined;
+      }
+    }
+  }
+
+  private async _loadLevelDbInternal(force: boolean = false, options?: IWorldProcessingOptions): Promise<boolean> {
     const useLazyLoad = options?.lazyLoad === true;
     this._isLazyLoadMode = useLazyLoad;
 
@@ -2701,6 +2808,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     this._onDataLoaded.dispatch(this, this);
 
     this._isDataLoaded = true;
+
     return true;
   }
 
@@ -2727,6 +2835,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     this._dimensionIdsInChunks = new Set();
     this._dimensionNameIdTable = undefined;
     this._hasDimensionNameIdTable = false;
+    this._wasLoadTruncated = false;
 
     const processOper = await this._project?.creatorTools.notifyOperationStarted(
       "Building minimal index for '" + this.name + "' world",
@@ -3051,6 +3160,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     options?: {
       clearCacheAfterProcess?: boolean;
       clearAllAfterProcess?: boolean;
+      dropChunkAfterProcess?: boolean;
       dimensionFilter?: number;
       progressCallback?: (processed: number, total: number) => Promise<void>;
     }
@@ -3058,6 +3168,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     // Handle legacy option name
     const clearCacheAfterProcess = options?.clearCacheAfterProcess ?? false;
     const clearAllAfterProcess = options?.clearAllAfterProcess ?? false;
+    const dropChunkAfterProcess = options?.dropChunkAfterProcess ?? false;
     const dimensionFilter = options?.dimensionFilter;
     let processedCount = 0;
 
@@ -3073,14 +3184,14 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
         continue;
       }
 
-      const xKeys = dim.keys();
+      const xKeys = Array.from(dim.keys()); // snapshot so we can delete during iteration
       for (const chunkSliverIndex of xKeys) {
         const chunkSliver = dim.get(chunkSliverIndex);
         if (!chunkSliver) {
           continue;
         }
 
-        const zKeys = chunkSliver.keys();
+        const zKeys = Array.from(chunkSliver.keys()); // snapshot for deletion safety
         for (const chunkZ of zKeys) {
           const chunk = chunkSliver.get(chunkZ);
           if (!chunk) {
@@ -3091,7 +3202,14 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
           processedCount++;
 
           // Clear data after processing based on options
-          if (clearAllAfterProcess) {
+          if (dropChunkAfterProcess) {
+            // Most aggressive: clear chunk data AND remove from the parent
+            // map so the WorldChunk object itself can be collected. Use this
+            // when collapsing per-chunk facts into a scan summary and the
+            // chunk objects will never be needed again.
+            chunk.clearAllData();
+            chunkSliver.delete(chunkZ);
+          } else if (clearAllAfterProcess) {
             chunk.clearAllData();
           } else if (clearCacheAfterProcess) {
             chunk.clearCachedData();
@@ -3103,6 +3221,28 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
           if (options?.progressCallback && processedCount % progressInterval === 0) {
             await options.progressCallback(processedCount, this.chunkCount);
           }
+
+          // When dropping chunks, yield periodically so V8 can actually
+          // run a GC pass and reclaim the dropped WorldChunk + its
+          // LevelKeyValue references between batches. Without the yield,
+          // a single synchronous-looking loop can pin the entire scan in
+          // young-gen even though we've nulled every reference.
+          if (dropChunkAfterProcess && processedCount % 2000 === 0) {
+            await new Promise((resolve) => setImmediate(resolve));
+          }
+        }
+
+        // Drop the now-empty xPlane bucket too.
+        if (dropChunkAfterProcess && chunkSliver.size === 0) {
+          dim.delete(chunkSliverIndex);
+        }
+      }
+
+      // And the now-empty dimension bucket.
+      if (dropChunkAfterProcess) {
+        const dimRef = this.chunks.get(dimIndex);
+        if (dimRef && dimRef.size === 0) {
+          this.chunks.delete(dimIndex);
         }
       }
     }
@@ -3138,6 +3278,157 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
         }
       }
     }
+  }
+
+  /**
+   * Idempotent, project-scoped lookup of "what dimensions does this world
+   * touch?" — without paying for a full chunk parse.
+   *
+   * Use this from validators (e.g. CustomDimensionWorldDataInfoGenerator)
+   * that need dimension ids / the DimensionNameIdTable but don't need
+   * per-chunk block / actor data. If full chunk data has already been
+   * loaded (e.g. WorldDataInfoGenerator ran first), the cached fields are
+   * returned immediately. If not, we load via `skipFullProcessing: true`,
+   * which walks the LevelDB key names without instantiating WorldChunk
+   * objects — orders of magnitude cheaper than a full load on large worlds.
+   *
+   * MEMORY HISTORY: prior to this method, CustomDimensionWorldDataInfoGenerator
+   * called raw `loadLevelDb(false)` with no options, forcing a full
+   * processWorldData even though it only ever reads dimension ids.
+   */
+  async getDimensionInfo(): Promise<{
+    ids: ReadonlySet<number>;
+    nameIdTable: ReadonlyMap<string, number> | undefined;
+    hasNameIdTable: boolean;
+  }> {
+    if (!this._isDataLoaded) {
+      // Cheapest path: walk LevelDB key names only. Populates
+      // `_dimensionIdsInChunks` + `_dimensionNameIdTable` exactly the same
+      // way `processWorldData` does, but without ever parsing chunk
+      // payloads or instantiating WorldChunk objects.
+      await this.loadLevelDb(false, { skipFullProcessing: true });
+    }
+
+    return {
+      ids: this._dimensionIdsInChunks,
+      nameIdTable: this._dimensionNameIdTable,
+      hasNameIdTable: this._hasDimensionNameIdTable,
+    };
+  }
+
+  /**
+   * Idempotent, project-scoped chunk-scan summary.
+   *
+   * Why this lives on MCWorld
+   * --------------------------
+   * Multiple validation generators (WorldDataInfoGenerator,
+   * CustomDimensionWorldDataInfoGenerator, future suite-specific generators)
+   * need the same per-chunk facts (block counts, block-actor ids, command
+   * block contents). Previously, generators called `forEachChunk` directly
+   * with `clearAllAfterProcess: true` and then `clearAllData()` at the end
+   * of their pass — which broke the contract for any later generator that
+   * also wanted to read chunks.
+   *
+   * The new contract: validators NEVER mutate world state. They call
+   * `getOrBuildScanSummary()` and get the same canonical answer regardless
+   * of call order or how many times it's invoked within a single project
+   * lifetime. The first caller pays for the chunk walk; subsequent callers
+   * get the cached summary in O(1).
+   *
+   * Memory: the chunk walk freezes parsed chunk data into a small primitive
+   * snapshot (counts, ids, command strings) and then drops the heavy
+   * per-chunk ArrayBuffers via `clearAllAfterProcess: true`. Only the
+   * compact summary survives.
+   *
+   * @param options.progressCallback Optional progress reporter, called by
+   *   `forEachChunk` with (processed, total).
+   * @returns The (possibly newly built, possibly cached) scan summary.
+   */
+  async getOrBuildScanSummary(options?: {
+    progressCallback?: (processed: number, total: number) => Promise<void>;
+  }): Promise<IWorldScanCache> {
+    if (this.worldScanCache) {
+      return this.worldScanCache;
+    }
+
+    const blockTypeCounts = new Map<string, number>();
+    const blockActorCounts = new Map<string, number>();
+    const commandBlockActors: IWorldScanCache["commandBlockActors"] = [];
+
+    let blockCount = 0;
+    let chunkCount = 0;
+    let subchunkLessChunkCount = 0;
+
+    await this.forEachChunk(
+      async (chunk) => {
+        chunkCount++;
+
+        if (chunk.subChunks.length <= 0) {
+          subchunkLessChunkCount++;
+        }
+
+        // Block-actor facts: ids (cheap), plus a compact copy of every
+        // CommandBlockActor's command/version/coords. We deliberately copy
+        // ONLY primitive fields — the source `BlockActor` objects retain
+        // NBT-backed buffers that we want to release as soon as
+        // `clearAllAfterProcess` frees the chunk.
+        const blockActors = chunk.blockActors;
+        for (let i = 0; i < blockActors.length; i++) {
+          const ba = blockActors[i];
+          if (ba.id) {
+            blockActorCounts.set(ba.id, (blockActorCounts.get(ba.id) ?? 0) + 1);
+          }
+          if (ba instanceof CommandBlockActor) {
+            commandBlockActors.push({
+              id: ba.id,
+              command: ba.command,
+              version: ba.version,
+              x: ba.x,
+              y: ba.y,
+              z: ba.z,
+            });
+          }
+        }
+
+        // Block-type counts — `countBlockTypes` already returns primitive
+        // strings + numbers, no chunk-data retention.
+        const counts = chunk.countBlockTypes();
+        for (const [typeName, count] of counts) {
+          blockCount += count;
+          blockTypeCounts.set(typeName, (blockTypeCounts.get(typeName) ?? 0) + count);
+        }
+      },
+      {
+        // Drop per-chunk parsed caches as we go (raw LevelKeyValue bytes
+        // preserved so the WorldMap can re-parse on demand in browser hosts).
+        clearCacheAfterProcess: true,
+        // Aggressively free the chunk's underlying ArrayBuffers immediately.
+        // Safe to do here because we're collapsing the chunk into the
+        // primitive `scanCache` summary in this same loop — no future
+        // generator should walk chunks directly.
+        clearAllAfterProcess: true,
+        // Most aggressive: remove the WorldChunk object from `this.chunks`
+        // entirely after we've extracted its facts. With ~100K chunks this
+        // is the difference between holding 2+ GB of WorldChunk +
+        // LevelKeyValue retainers across the entire scan vs. letting V8
+        // collect them in batches as we go. The scan is one-shot and the
+        // canonical answer lives in `worldScanCache`, so there's no future
+        // caller that needs the chunks back.
+        dropChunkAfterProcess: true,
+        progressCallback: options?.progressCallback,
+      }
+    );
+
+    this.worldScanCache = {
+      chunkCount,
+      subchunkLessChunkCount,
+      blockCount,
+      blockTypeCounts,
+      blockActorCounts,
+      commandBlockActors,
+    };
+
+    return this.worldScanCache;
   }
 
   /**
@@ -3191,11 +3482,17 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
 
     // Reset state
     this._isDataLoaded = false;
+    this._wasLoadTruncated = false;
     this.chunkCount = 0;
     this._minX = undefined;
     this._maxX = undefined;
     this._minZ = undefined;
     this._maxZ = undefined;
+
+    // Drop any cached chunk-scan summary: once `_isDataLoaded` flips back to
+    // false the next `loadLevelDb` will rebuild chunks from scratch, and a
+    // stale cache would lie about what's in the world.
+    this.worldScanCache = undefined;
   }
 
   /**
@@ -3339,6 +3636,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     this._dimensionIdsInChunks = new Set();
     this._dimensionNameIdTable = undefined;
     this._hasDimensionNameIdTable = false;
+    this._wasLoadTruncated = false;
 
     const processOper = await this._project?.creatorTools.notifyOperationStarted(
       "Starting second-pass load of '" + this.name + "' world",
@@ -3382,7 +3680,28 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
       }
 
       if (options?.maxNumberOfRecordsToProcess && processedKeys > options.maxNumberOfRecordsToProcess) {
-        return false;
+        // Mark the load as truncated but treat the partial-pass results as
+        // "loaded". Bailing out with `return false` here would force
+        // `loadFromLevelDb` to skip setting `_isDataLoaded = true`, which
+        // in turn causes the very next `loadLevelDb` / `getDimensionInfo`
+        // call to re-parse all .ldb files from scratch — a 5-6 GB RSS
+        // regression we don't want.
+        this._wasLoadTruncated = true;
+        // Aggressively drop any LevelKeyValue.value buffers we'll never
+        // read. The remaining keys in `this.levelDb.keys` carry the
+        // decompressed bytes for hundreds of thousands of records and
+        // pin ~hundreds of MB of external memory through the rest of
+        // validation. We don't need them — by definition we've bailed.
+        if (clearKeysAfterProcess && this.levelDb) {
+          for (const remainingKey of this.levelDb.keys.keys()) {
+            const kv = this.levelDb.keys.get(remainingKey);
+            if (kv && typeof kv !== "boolean") {
+              kv.clearAllData();
+            }
+            this.levelDb.keys.delete(remainingKey);
+          }
+        }
+        break;
       }
 
       if (keyname.startsWith("AutonomousEntities")) {

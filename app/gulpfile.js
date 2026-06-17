@@ -212,7 +212,7 @@ function compileElectronBuild(done) {
 function compileLibBuild(done) {
   // Use direct tsc invocation instead of gulp-typescript for TypeScript 5.x compatibility
   try {
-    execSync("npx tsc -p tsconfig.lib.json", { stdio: "inherit" });
+    execSync("npx --package=typescript -- tsc -p tsconfig.lib.json", { stdio: "inherit" });
     done();
   } catch (err) {
     done(err);
@@ -796,7 +796,7 @@ gulp.task("vscfullbuild", gulp.series("clean-vscbuild", "vscbuild"));
 function compileWebJsBuild(done) {
   // Use direct tsc invocation instead of gulp-typescript for TypeScript 5.x compatibility
   try {
-    execSync("npx tsc -p tsconfig.webbuild.json", { stdio: "inherit" });
+    execSync("npx --package=typescript -- tsc -p tsconfig.webbuild.json", { stdio: "inherit" });
     done();
   } catch (err) {
     done(err);

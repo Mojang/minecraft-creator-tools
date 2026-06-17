@@ -73,7 +73,6 @@ import ProjectGrid from "./projectGrid/ProjectGrid";
 import Layout from "../components/layout/Layout";
 import useHomeMonolith from "../hooks/home/UseHomeMonolith";
 import HomeProps from "./HomeProps";
-import { CreatorToolsProvider } from "../contexts/creatorToolsContext/CreatorToolsContext";
 import ProjectPanel from "../components/projectPanel/ProjectPanel";
 import AppServiceProxy from "../../core/AppServiceProxy";
 
@@ -97,64 +96,62 @@ export default function Home({ creatorTools, ...props }: HomeProps) {
   } = monolith;
 
   return (
-    <CreatorToolsProvider creatorTools={creatorTools}>
-      <Layout isApp={AppServiceProxy.hasAppServiceOrSim} onSaveBackups={onExportBackup}>
-        <Box>
-          {errorMessageContainer}
-          <Grid container spacing={{ xs: 2, md: 3, lg: 4 }} sx={{ width: "auto" }}>
-            <Grid
-              item
-              xs={12}
-              md={3}
-              // On mobile (xs) the file-picker column previously stacked above
-              // the templates/educational content, which buried "What is an
-              // Add-On?" and "Create your first mob" below "Reopen Your Work"
-              // and "Recent Projects" — bad first impression for new users on
-              // phones. Flip the order on xs so educational content appears
-              // first; restore the original two-column layout from md upward.
-              order={{ xs: 2, md: 1 }}
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
-              <InspectPanel
-                onFilesSubmitted={props.onFilesSubmitted}
-                editFolder={onEditFolder}
-                openAppFolder={handleOpenLocalFolderClick}
-              />
-              {onEditFolder && (
-                <Box
-                  sx={{
-                    mt: { xs: 2, md: 3, lg: 4 },
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                >
-                  <ProjectPanel
-                    projectList={recentProjects || []}
-                    editFolder={onEditFolder}
-                    exportBackup={onExportBackup}
-                    openProject={handleProjectClicked}
-                    onRemoveProject={handleRemoveProject}
-                    onDeleteProject={handleDeleteProject}
-                  />
-                </Box>
-              )}
-            </Grid>
-
-            <Grid item xs={12} md={9} order={{ xs: 1, md: 2 }}>
-              <div id="templates">
-                <ProjectGrid
-                  onAppGalleryAction={props.onGalleryItemCommand}
-                  onSetProject={props.onSetProject}
-                  onProjectsChanged={handleProjectsChanged}
+    <Layout isApp={AppServiceProxy.hasAppServiceOrSim} onSaveBackups={onExportBackup}>
+      <Box>
+        {errorMessageContainer}
+        <Grid container spacing={{ xs: 2, md: 3, lg: 4 }} sx={{ width: "auto" }}>
+          <Grid
+            item
+            xs={12}
+            md={3}
+            // On mobile (xs) the file-picker column previously stacked above
+            // the templates/educational content, which buried "What is an
+            // Add-On?" and "Create your first mob" below "Reopen Your Work"
+            // and "Recent Projects" — bad first impression for new users on
+            // phones. Flip the order on xs so educational content appears
+            // first; restore the original two-column layout from md upward.
+            order={{ xs: 2, md: 1 }}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <InspectPanel
+              onFilesSubmitted={props.onFilesSubmitted}
+              editFolder={onEditFolder}
+              openAppFolder={handleOpenLocalFolderClick}
+            />
+            {onEditFolder && (
+              <Box
+                sx={{
+                  mt: { xs: 2, md: 3, lg: 4 },
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                <ProjectPanel
+                  projectList={recentProjects || []}
+                  editFolder={onEditFolder}
+                  exportBackup={onExportBackup}
+                  openProject={handleProjectClicked}
+                  onRemoveProject={handleRemoveProject}
+                  onDeleteProject={handleDeleteProject}
                 />
-              </div>
-            </Grid>
+              </Box>
+            )}
           </Grid>
-        </Box>
-      </Layout>
-    </CreatorToolsProvider>
+
+          <Grid item xs={12} md={9} order={{ xs: 1, md: 2 }}>
+            <div id="templates">
+              <ProjectGrid
+                onAppGalleryAction={props.onGalleryItemCommand}
+                onSetProject={props.onSetProject}
+                onProjectsChanged={handleProjectsChanged}
+              />
+            </div>
+          </Grid>
+        </Grid>
+      </Box>
+    </Layout>
   );
 }

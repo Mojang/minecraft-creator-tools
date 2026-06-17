@@ -81,22 +81,38 @@ async function addFeatureViaWizard(page: Page): Promise<boolean> {
 
 /**
  * Dismiss the new-item name dialog by clicking "Add".
+ *
+ * The wizard flow renders the Content Wizard as a plain `.cwiz-launcher-wrapper`
+ * div (NOT an MUI Dialog). After picking "Feature", the wizard closes and a
+ * `SetNamespacedId` MUI Dialog opens with title "Add new feature" containing
+ * pre-filled Name + Namespace fields. We wait for that specific dialog
+ * (rather than the first dialog we find — which could be a stale wizard
+ * portal) and click its green "Add" McButton.
  */
 async function dismissNameDialog(page: Page): Promise<boolean> {
-  const dialog = page.locator(".MuiDialog-root, dialog, [role='dialog']").first();
-  if (!(await dialog.isVisible({ timeout: 3000 }).catch(() => false))) {
-    return true; // No dialog, item created immediately
+  // Wait for the wizard launcher to close before checking for the name dialog —
+  // otherwise we may match the wrong dialog (or click before the name dialog mounts).
+  const wizardLauncher = page.locator(".cwiz-launcher-wrapper").first();
+  await wizardLauncher.waitFor({ state: "hidden", timeout: 5000 }).catch(() => undefined);
+
+  // Locate the SetNamespacedId dialog by its title pattern. This is more
+  // robust than `.MuiDialog-root.first()` which could pick a different open
+  // dialog if React hasn't fully unmounted the wizard portal.
+  const namedDialog = page
+    .locator('.MuiDialog-root:has(.MuiDialogTitle-root:has-text("Add new"))')
+    .first();
+  if (!(await namedDialog.isVisible({ timeout: 5000 }).catch(() => false))) {
+    return true; // No name dialog, item created immediately
   }
 
-  // Wait for gallery items to pre-load
-  const galleryItem = dialog.locator(".itbi-outer").first();
-  await galleryItem.isVisible({ timeout: 8000 }).catch(() => false);
-  await page.waitForTimeout(500);
-
-  const addButton = dialog.locator('button:has-text("Add")').first();
+  // The pre-filled name/namespace inputs are present, so we can click Add directly.
+  // Use `:visible` to avoid clicking buttons inside hidden dialogs portaled elsewhere.
+  const addButton = namedDialog.locator('button:visible:has-text("Add")').last();
   if (await addButton.isVisible({ timeout: 2000 })) {
     await addButton.click();
     await page.waitForTimeout(1000);
+    // Wait for dialog to close
+    await namedDialog.waitFor({ state: "hidden", timeout: 5000 }).catch(() => undefined);
     return true;
   }
   await page.keyboard.press("Enter");
@@ -137,6 +153,19 @@ async function pickFeatureType(page: Page, featureType: string): Promise<boolean
 
   console.log(`pickFeatureType: Could not find type button for "${featureType}"`);
   return false;
+}
+
+/**
+ * Wait for the Feature Editor pipeline to finish loading.
+ *
+ * The editor shows a "Loading feature pipeline..." placeholder while the
+ * project's item relations are still being processed in the background.
+ * Relation processing for sample content can take a while, so we wait for
+ * the loading placeholder to disappear before interacting with the form.
+ */
+async function waitForFeatureEditorLoaded(page: Page, timeout = 30000): Promise<void> {
+  const loading = page.locator(".fe-loading");
+  await loading.waitFor({ state: "hidden", timeout }).catch(() => undefined);
 }
 
 // ---------------------------------------------------------------------------
@@ -184,7 +213,9 @@ test.describe("Feature Editor Input @focused", () => {
       await takeScreenshot(page, `${SCREENSHOT_DIR}/03-type-picked`);
     }
 
-    // Step 4 — locate the Feature Editor Tree view
+    // Step 4 — wait for the pipeline to finish loading, then locate the Tree view
+    await waitForFeatureEditorLoaded(page);
+
     const treeTab = page.locator('button:has-text("Tree")').first();
     if (await treeTab.isVisible({ timeout: 3000 }).catch(() => false)) {
       await treeTab.click();
@@ -322,6 +353,16 @@ test.describe("Feature Editor Input @focused", () => {
     }
 
     await takeScreenshot(page, `${SCREENSHOT_DIR}/focus-01-before-find`);
+
+    // Wait for the pipeline to finish loading before looking for the form
+    await waitForFeatureEditorLoaded(page);
+
+    // Ensure the Tree view is active so the detail panel (with the form) mounts
+    const treeTab = page.locator('button:has-text("Tree")').first();
+    if (await treeTab.isVisible({ timeout: 3000 }).catch(() => false)) {
+      await treeTab.click();
+      await page.waitForTimeout(500);
+    }
 
     // Find identifier input — use the actual <input> inside the MUI TextField
     const inputField = page.locator('input#identifier').first();

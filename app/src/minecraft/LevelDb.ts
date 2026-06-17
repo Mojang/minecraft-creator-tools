@@ -1039,7 +1039,12 @@ export default class LevelDb implements IErrorable {
           index += dataLength.byteLength;
 
           if (dataLength.value + index <= content.buffer.byteLength) {
-            const data = new Uint8Array(content.buffer, index, dataLength.value);
+            // slice() (not subarray / new Uint8Array(content.buffer, ...))
+            // makes a tightly-sized copy with its own ArrayBuffer, so V8 can
+            // GC each log-file buffer as keys become unreachable. A view
+            // would pin the whole multi-MB log file alive — see the
+            // memory-retention note in LevelKeyValue.loadFromLdb.
+            const data = content.slice(index, index + dataLength.value);
             index += dataLength.value;
 
             const kv = new LevelKeyValue();

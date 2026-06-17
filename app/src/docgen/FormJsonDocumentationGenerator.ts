@@ -42,6 +42,18 @@ export default class FormJsonDocumentationGenerator {
    */
   containerAliasFormPaths: { [refIdAndProp: string]: string } = {};
 
+  /**
+   * Bare basenames (without `minecraft_` prefix, without `.form.json`) of block-component
+   * form files that already exist on disk as `minecraft_<x>.form.json`. Populated at the
+   * start of `updateFormSource` from the prior run's `forms/block/` directory. When the
+   * schema-derived path would write `forms/block/<x>.form.json` and this set contains `x`,
+   * the write is redirected to `forms/block/minecraft_<x>.form.json` so a single file holds
+   * the union of legacy-HTML `generated_doNotEdit` and schema `generatedFromSchema_doNotEdit`
+   * content. `getFormPathForJsonSchemaForm` consults the same set so parent container
+   * subFormId references point at the merged file.
+   */
+  blockMinecraftPairedNames: Set<string> = new Set();
+
   public async updateFormSource(folder: IFolder, isPreview?: boolean) {
     this.defsById = {};
     this.defsByTitle = {};
@@ -64,6 +76,20 @@ export default class FormJsonDocumentationGenerator {
 
     const formJsonFolder = folder.ensureFolder("forms");
     await formJsonFolder.ensureExists();
+
+    // Pre-scan the existing block forms folder to learn which components already have a
+    // legacy-HTML `minecraft_<x>.form.json` file. Used to redirect schema-derived writes
+    // and subFormId references onto the merged file (see `blockMinecraftPairedNames`).
+    this.blockMinecraftPairedNames = new Set();
+    const blockFolder = formJsonFolder.ensureFolder("block");
+    if (await blockFolder.exists()) {
+      await blockFolder.load();
+      for (const fn in blockFolder.files) {
+        if (fn.startsWith("minecraft_") && fn.endsWith(".form.json")) {
+          this.blockMinecraftPairedNames.add(fn.substring("minecraft_".length, fn.length - ".form.json".length));
+        }
+      }
+    }
 
     // Run the container-component alias/marker pass FIRST so that the alias-form path map is
     // populated before `exportJsonSchemaForms` produces the parent container forms (e.g.
@@ -1413,6 +1439,11 @@ export default class FormJsonDocumentationGenerator {
 
     const category = this.defCategories[schemaKey];
     if (category) {
+      // Keep parent-container subFormId references in sync with the block-component
+      // merge redirect performed in `mergeToFile`.
+      if (category === "block" && !name.startsWith("minecraft_") && this.blockMinecraftPairedNames.has(name)) {
+        name = "minecraft_" + name;
+      }
       name = category + "/" + name;
     }
 
@@ -1755,6 +1786,9 @@ export default class FormJsonDocumentationGenerator {
     node: ILegacyDocumentationNode,
     prefix?: string
   ) {
+    if (!node.nodes) {
+      return;
+    }
     for (const childNode of node.nodes) {
       if (childNode.name) {
         const name = this.getFormFileName(childNode.name);
@@ -1800,6 +1834,18 @@ export default class FormJsonDocumentationGenerator {
 
     name = name.toLowerCase();
     name = name.replace(/ /gi, "_");
+
+    // For schema-derived block components paired with a legacy-HTML `minecraft_<name>.form.json`
+    // (see `blockMinecraftPairedNames`), write into the merged file so a single form holds
+    // the union of `generated_doNotEdit` (HTML) and `generatedFromSchema_doNotEdit` (schema).
+    if (
+      isSchema &&
+      categoryName === "block" &&
+      !name.startsWith("minecraft_") &&
+      this.blockMinecraftPairedNames.has(name)
+    ) {
+      name = "minecraft_" + name;
+    }
 
     const file = formJsonFolder.ensureFile(name + ".form.json");
 
@@ -3183,6 +3229,17 @@ export default class FormJsonDocumentationGenerator {
     // fix up bone visibility
     if (name === "bone_visibility") {
       name = "minecraft_bone_visibility";
+    }
+
+    // Some schema definitions title themselves without the `minecraft:`
+    // prefix (the `minecraft:` only appears on the outer property key, not on
+    // the `title` of the referenced `#/definitions/*` node). The schema-to-form
+    // pipeline keys off the title, so without a patch these forms land at
+    // `<category>/<bare_name>.form.json` instead of the required
+    // `<category>/minecraft_<name>.form.json`, and the markdown catalog filter
+    // (`/block/minecraft_`, `/item/minecraft_`, etc.) silently drops them.
+    if (name === "block_entity") {
+      name = "minecraft_block_entity";
     }
 
     if (dataVersion) {

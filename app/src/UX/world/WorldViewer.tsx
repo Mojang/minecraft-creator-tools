@@ -33,6 +33,7 @@ import EntityManager from "../../minecraft/client/EntityManager";
 import Log from "../../core/Log";
 import type { IChunkColumn, ISubChunk } from "../../minecraft/client/LiveWorldState";
 import LiveWorldState from "../../minecraft/client/LiveWorldState";
+import AcceleratingKeyboardInput from "./AcceleratingKeyboardInput";
 
 import "./WorldViewer.css";
 
@@ -49,6 +50,12 @@ interface IWorldViewerProps {
   cameraX?: number;
   cameraY?: number;
   cameraZ?: number;
+  /**
+   * Lowest world Y to render. Defaults to the world bottom (-64) so all content
+   * renders. Exposed primarily so the Y-floor regression test can force a high
+   * floor and confirm low content is culled / restored as expected.
+   */
+  minRenderY?: number;
   /** Called periodically with the camera's Minecraft X, Y, Z and yaw (degrees, 0=south, 90=west) */
   onCameraUpdate?: (x: number, y: number, z: number, yaw: number) => void;
 }
@@ -71,6 +78,34 @@ export default class WorldViewer extends Component<IWorldViewerProps, IWorldView
   private _loadedWorld: MCWorld | null = null;
   private _animFrameId: number = 0;
   private _disposed: boolean = false;
+  private _retryCount: number = 0;
+  private _lastConvertedCount: number = 0;
+
+  // Chunk streaming state. The viewer only holds a window of chunks around the
+  // camera; as the camera moves into a new chunk we feed the newly-visible
+  // chunks and advance the renderer's cull center. Without this the viewer only
+  // ever loaded a fixed region around the spawn/initial position, so moving away
+  // (e.g. toward the lower-right) ran off the loaded area into empty space.
+  private _loadedChunkKeys: Set<string> = new Set();
+  private _lastStreamChunkX: number | undefined = undefined;
+  private _lastStreamChunkZ: number | undefined = undefined;
+
+  // Y level that distant terrain renders up to at the edge of the render radius.
+  // The graduated Y-cull interpolates the effective max height from maxRenderY
+  // (full height, near the camera) down to this value at maxRenderRadius. It must
+  // be ABOVE the terrain surface (~Y=63) so distant ground stays visible — passing
+  // the world floor here would cull every block beyond nearRenderRadius, leaving
+  // distant chunks empty (they would only "fill in" when the camera moved).
+  private static readonly DISTANT_GROUND_Y = 80;
+
+  // Last camera pose emitted via onCameraUpdate, used to suppress redundant
+  // updates. Without this, the update loop fires every ~250ms even when the
+  // camera is stationary, and each call re-centers the tracking map (setView),
+  // which re-requests tiles and produces a perpetual "refreshing" loop.
+  private _lastEmittedCamX: number | undefined = undefined;
+  private _lastEmittedCamY: number | undefined = undefined;
+  private _lastEmittedCamZ: number | undefined = undefined;
+  private _lastEmittedCamYaw: number | undefined = undefined;
 
   // Block name ↔ runtime ID mapping for the adapter
   private _blockNameToId: Map<string, number> = new Map();
@@ -88,6 +123,7 @@ export default class WorldViewer extends Component<IWorldViewerProps, IWorldView
   }
 
   async componentDidMount() {
+    this._disposed = false; // Reset in case of React Strict Mode remount
     try {
       // Register air as runtime ID 0
       this._blockNameToId.set("minecraft:air", 0);
@@ -95,6 +131,7 @@ export default class WorldViewer extends Component<IWorldViewerProps, IWorldView
 
       await this._loadWorld();
     } catch (err) {
+      Log.debug("[WorldViewer] componentDidMount error: " + (err instanceof Error ? err.message : String(err)));
       this.setState({
         isLoading: false,
         errorMessage: "Failed to load world: " + (err instanceof Error ? err.message : String(err)),
@@ -111,6 +148,7 @@ export default class WorldViewer extends Component<IWorldViewerProps, IWorldView
       this._worldRenderer.dispose();
       this._worldRenderer = null;
     }
+    this._canvasRef = null;
   }
 
   private async _loadWorld() {
@@ -126,14 +164,28 @@ export default class WorldViewer extends Component<IWorldViewerProps, IWorldView
       this.setState({ loadingMessage: "Parsing world data..." });
       world = new MCWorld();
       await world.loadFromBytes(bytes);
-
-      this.setState({ loadingMessage: "Loading block database..." });
-      await world.loadLevelDb();
     }
 
     if (!world) {
       throw new Error("No world data available");
     }
+
+    // Always ensure LevelDB chunk data is loaded. When `world` is passed in as
+    // a prop from WorldDisplay (embedded mode), the parent may not have called
+    // loadLevelDb yet — the 2D WorldMap loads it lazily on its own. Without
+    // this call, _convertAndFeedChunks finds chunks but they contain no blocks,
+    // and the 3D viewer renders only the ground plane / sky. loadLevelDb is
+    // idempotent (early-returns when _isDataLoaded).
+    //
+    // IMPORTANT: pass the same lazy-load options the 2D WorldMap uses. In the
+    // combined 3D+map view both share a single MCWorld instance and whichever
+    // mounts first wins (the second call early-returns). Using the lazy options
+    // here ensures we never trigger a heavyweight full-world processing pass
+    // when the viewer happens to load first — chunks are created on demand via
+    // getOrCreateChunk (which works against the pre-built chunk key index) and
+    // memory stays bounded by the LRU cache.
+    this.setState({ loadingMessage: "Loading block database..." });
+    await world.loadLevelDb(false, { lazyLoad: true, skipFullProcessing: true, maxChunksInCache: 20000 });
 
     this.setState({ world, loadingMessage: "Loading textures..." });
     this._loadedWorld = world;
@@ -148,8 +200,9 @@ export default class WorldViewer extends Component<IWorldViewerProps, IWorldView
   private _setCanvas = (canvas: HTMLCanvasElement | null) => {
     if (!canvas || canvas === this._canvasRef) return;
     this._canvasRef = canvas;
+    Log.debug("[WorldViewer] _setCanvas: canvas mounted, starting renderer init");
     this._initializeRenderer(canvas).catch((err) => {
-      Log.debug("[WorldViewer] Renderer init error: " + err);
+      Log.error("[WorldViewer] Renderer init error: " + (err instanceof Error ? err.message : String(err)));
       this.setState({ errorMessage: "Renderer failed: " + (err instanceof Error ? err.message : String(err)) });
     });
   };
@@ -168,9 +221,15 @@ export default class WorldViewer extends Component<IWorldViewerProps, IWorldView
     const entityManager = new EntityManager();
     this._worldRenderer = new WorldRenderer(canvas, this._worldState, entityManager);
 
-    // Initialize textured rendering
+    // Initialize textured rendering — pass world so any embedded resource
+    // packs (custom block textures) are registered before the first chunk
+    // mesh is built. Also pass the owning project (if MCWorld has one) so that
+    // custom blocks defined in the active project's behavior+resource packs
+    // render with their real textures instead of the gray fallback. Without
+    // the project, project-level custom blocks render white/gray.
     Log.debug("[WorldViewer] Calling initializeDatabase...");
-    await this._worldRenderer.initializeDatabase();
+    const project = world.project;
+    await this._worldRenderer.initializeDatabase({ world, project: project ?? undefined });
 
     // Set camera position — look down at terrain from above spawn
     const spawnX = world.getProperty("spawnx") ?? 0;
@@ -190,9 +249,21 @@ export default class WorldViewer extends Component<IWorldViewerProps, IWorldView
     // Look slightly forward and down from camera position
     this._worldRenderer.setCameraOverride(camX, camY, camZ, camX + 5, camY - 10, camZ + 15);
 
-    // Set render center and culling — don't be too aggressive
-    this._worldRenderer.setRenderCenter(camX, camZ, 128, 40, 50);
+    // Position the ground plane at the world's minimum Y so it never obscures
+    // actual terrain. Modern worlds (1.18+) use minY=-64, older worlds use 0.
+    const worldMinY = world.chunkMinY ?? -64;
+    this._worldRenderer.setGroundPlaneY(worldMinY);
+
+    // Set render center and culling — distant terrain tapers down to
+    // DISTANT_GROUND_Y (surface level), NOT the world floor, so far chunks still
+    // render their ground surface instead of culling to nothing.
+    // 192-block radius keeps the visible edge just inside the ~200-block fog-cull
+    // distance so culled chunks are hidden by fog rather than popping at a hard edge.
+    this._worldRenderer.setRenderCenter(camX, camZ, 192, 80, WorldViewer.DISTANT_GROUND_Y);
     this._worldRenderer.maxRenderY = 256;
+    if (this.props.minRenderY !== undefined) {
+      this._worldRenderer.minRenderY = this.props.minRenderY;
+    }
 
     // Add WASD camera controls
     this._setupCameraControls(this._worldRenderer);
@@ -200,10 +271,37 @@ export default class WorldViewer extends Component<IWorldViewerProps, IWorldView
     // Convert MCWorld chunks → LiveWorldState IChunkColumns
     this._convertAndFeedChunks(world);
 
+    // If no chunks were found yet (LevelDB may still be loading), retry after a delay.
+    // The retryConvert function tracks its own count instead of relying on async setState.
+    let totalFound = this._lastConvertedCount;
+    const retryConvert = () => {
+      if (this._disposed || !this._worldRenderer || !this._worldState) return;
+      this._convertAndFeedChunks(world);
+      totalFound = this._lastConvertedCount;
+      if (totalFound > 0) {
+        this._worldRenderer.rebuildAllDirtyChunks();
+        Log.debug("[WorldViewer] Retry succeeded: " + totalFound + " chunks loaded");
+      } else {
+        // Keep retrying every 2s for up to 30s
+        if (this._retryCount < 15) {
+          this._retryCount++;
+          Log.debug("[WorldViewer] Retry #" + this._retryCount + ": still 0 chunks, will retry...");
+          setTimeout(retryConvert, 2000);
+        } else {
+          Log.error("[WorldViewer] Gave up retrying chunk conversion after 15 attempts");
+        }
+      }
+    };
+    if (totalFound === 0) {
+      this._retryCount = 0;
+      setTimeout(retryConvert, 2000);
+    }
+
     // Force-build ALL dirty chunk meshes synchronously before starting the render loop.
     // This ensures blocks are visible on the first rendered frame.
     const rebuilt = this._worldRenderer.rebuildAllDirtyChunks();
     Log.debug("WorldViewer: Rebuilt " + rebuilt + " chunk meshes");
+    this._publishRenderStats();
 
     // Start render loop
     this._worldRenderer.startRenderLoop();
@@ -215,40 +313,54 @@ export default class WorldViewer extends Component<IWorldViewerProps, IWorldView
   /**
    * Convert MCWorld's file-based WorldChunk data into IChunkColumn format
    * and feed into LiveWorldState for ChunkMeshBuilder to process.
+   *
+   * Loads the LOAD_RADIUS window of chunks around the given center (defaults to
+   * the initial camera/spawn position). Chunks already streamed in are tracked
+   * in `_loadedChunkKeys` and skipped, so repeated calls while the camera moves
+   * only pay for the newly-visible chunks. Returns the number of NEW chunks fed.
    */
-  private _convertAndFeedChunks(world: MCWorld) {
-    if (!this._worldState) return;
+  private _convertAndFeedChunks(world: MCWorld, centerChunkX?: number, centerChunkZ?: number): number {
+    if (!this._worldState) return 0;
 
     const dim = 0; // Overworld
-    const dimChunks = world.chunks.get(dim);
-    if (!dimChunks) {
-      Log.debug("WorldViewer: No overworld chunks found");
-      return;
-    }
+    let newChunks = 0;
+    // Default the center to the initial camera/spawn position when no explicit
+    // chunk center is supplied (initial load + retries).
+    const defaultCenterX = (this.props.cameraX ?? (world.getProperty("spawnx") as number) ?? 0) as number;
+    const defaultCenterZ = (this.props.cameraZ ?? (world.getProperty("spawnz") as number) ?? 0) as number;
+    const camChunkX = centerChunkX ?? defaultCenterX >> 4;
+    const camChunkZ = centerChunkZ ?? defaultCenterZ >> 4;
+    // Load a chunk radius that covers the ~192-block render radius (12 chunks = 192 blocks)
+    // so streamed terrain is available before it enters the visible/fog region.
+    const LOAD_RADIUS = 12;
 
-    let totalChunks = 0;
-    const camX = this.props.cameraX ?? world.getProperty("spawnx") ?? 0;
-    const camZ = this.props.cameraZ ?? world.getProperty("spawnz") ?? 0;
-    const camChunkX = camX >> 4;
-    const camChunkZ = camZ >> 4;
-    const LOAD_RADIUS = 6; // Load chunks within 6 chunk radius (~96 blocks)
+    // Load chunks directly from the world near the camera position.
+    // We use getOrCreateChunk() which loads from LevelDB on demand,
+    // rather than world.chunks which may not be populated yet.
+    for (let cx = camChunkX - LOAD_RADIUS; cx <= camChunkX + LOAD_RADIUS; cx++) {
+      for (let cz = camChunkZ - LOAD_RADIUS; cz <= camChunkZ + LOAD_RADIUS; cz++) {
+        const chunkKey = `${dim}_${cx}_${cz}`;
+        // Skip chunks we've already converted and fed.
+        if (this._loadedChunkKeys.has(chunkKey)) continue;
 
-    for (const [chunkX, zMap] of dimChunks) {
-      for (const [chunkZ, worldChunk] of zMap) {
-        // Only load chunks near camera
-        if (Math.abs(chunkX - camChunkX) > LOAD_RADIUS || Math.abs(chunkZ - camChunkZ) > LOAD_RADIUS) {
-          continue;
-        }
+        // Check if this chunk exists in the world's index
+        if (world.hasChunkData(dim, cx, cz) === false) continue;
 
-        const col = this._convertWorldChunk(worldChunk, chunkX, chunkZ);
+        const worldChunk = world.getOrCreateChunk(dim, cx, cz);
+        if (!worldChunk) continue;
+
+        const col = this._convertWorldChunk(worldChunk, cx, cz);
         if (col) {
           this._worldState.setChunkColumn(col);
-          totalChunks++;
+          this._loadedChunkKeys.add(chunkKey);
+          newChunks++;
         }
       }
     }
 
-    Log.debug(`WorldViewer: Converted ${totalChunks} chunks, ${this._nextRuntimeId - 1} unique block types`);
+    Log.verbose(
+      `WorldViewer: Converted ${newChunks} new chunks near (${camChunkX},${camChunkZ}), ${this._loadedChunkKeys.size} loaded total, ${this._nextRuntimeId - 1} block types`
+    );
 
     // Register all block names in LiveWorldState's palette so getBlockName() works
     const paletteEntries: { rid: number; name: string }[] = [];
@@ -257,7 +369,43 @@ export default class WorldViewer extends Component<IWorldViewerProps, IWorldView
     }
     this._worldState.handleBlockPalette(paletteEntries);
 
-    this.setState({ chunkCount: totalChunks });
+    this._lastConvertedCount = this._loadedChunkKeys.size;
+    this.setState({ chunkCount: this._loadedChunkKeys.size });
+    return newChunks;
+  }
+
+  /**
+   * Stream chunks around the camera's current position. Called periodically from
+   * the update loop. When the camera crosses into a new chunk, feeds the newly
+   * visible chunks and advances the renderer's cull center so they aren't culled.
+   */
+  private _streamChunksAroundCamera() {
+    if (this._disposed || !this._worldRenderer || !this._worldState || !this._loadedWorld) return;
+
+    const cam = this._worldRenderer.camera;
+    const camChunkX = Math.floor(cam.position.x) >> 4;
+    const camChunkZ = Math.floor(cam.position.z) >> 4;
+
+    // Only do work when the camera has moved into a different chunk.
+    if (camChunkX === this._lastStreamChunkX && camChunkZ === this._lastStreamChunkZ) return;
+
+    this._lastStreamChunkX = camChunkX;
+    this._lastStreamChunkZ = camChunkZ;
+
+    // Advance the renderer's cull center to the camera so distant-from-spawn
+    // chunks remain within the render radius.
+    this._worldRenderer.setRenderCenter(cam.position.x, cam.position.z, 192, 80, WorldViewer.DISTANT_GROUND_Y);
+
+    // Re-dirty any in-range chunks whose meshes were trimmed by the mesh cap
+    // (e.g., after moving back toward a previously-visited area) so terrain
+    // reappears. Runs only on chunk-cross, so it adds no per-frame churn.
+    this._worldRenderer.ensureNearbyChunkMeshes();
+
+    this._convertAndFeedChunks(this._loadedWorld, camChunkX, camChunkZ);
+
+    // Build both the newly-streamed chunks and any re-dirtied ones immediately
+    // so the leading edge of terrain fills in as the camera moves.
+    this._worldRenderer.rebuildAllDirtyChunks();
   }
 
   /**
@@ -280,8 +428,11 @@ export default class WorldViewer extends Component<IWorldViewerProps, IWorldView
       const targetIdx = (startY - MIN_Y) >> 4;
       if (targetIdx < 0 || targetIdx >= MAX_SUBCHUNKS) continue;
 
-      // Skip subchunks below Y=40 for performance (underground)
-      if (startY + SUBCHUNK_SIZE < 40) continue;
+      // Convert every subchunk the world actually contains. (Previously this
+      // skipped everything below Y=40, which deleted the lower floors and ground
+      // of creator/custom worlds whose baseplate sits below Y=40. Vertical render
+      // limiting is now handled by ChunkMeshBuilder.minRenderY, which defaults to
+      // the world bottom so nothing is dropped here.)
 
       const blocks = new Int32Array(4096);
       let hasAnyBlocks = false;
@@ -298,8 +449,14 @@ export default class WorldViewer extends Component<IWorldViewerProps, IWorldView
             }
             if (!block) continue;
 
-            const typeId = block.typeName || "minecraft:air";
-            if (typeId === "minecraft:air") continue;
+            // A block object with typeName "minecraft:air" is genuinely empty space
+            // (both the palette and legacy getBlock paths return air with that exact
+            // name). A block whose typeName is empty/undefined is an UNRESOLVED block —
+            // a real block we couldn't map to a name. Render those via a placeholder so
+            // they show up as a fallback colored cube instead of silently vanishing.
+            const rawType = block.typeName;
+            if (rawType === "minecraft:air") continue;
+            const typeId = rawType && rawType.length > 0 ? rawType : "minecraft:unknown_block";
 
             let runtimeId = this._blockNameToId.get(typeId);
             if (runtimeId === undefined) {
@@ -341,14 +498,17 @@ export default class WorldViewer extends Component<IWorldViewerProps, IWorldView
   private _setupCameraControls(renderer: WorldRenderer) {
     const camera = renderer.camera;
 
-    // Enable WASD keyboard movement
-    const kbd = new BABYLON.FreeCameraKeyboardMoveInput();
+    // Enable WASD keyboard movement with acceleration on hold
+    const kbd = new AcceleratingKeyboardInput();
     kbd.keysUp = [87]; // W
     kbd.keysDown = [83]; // S
     kbd.keysLeft = [65]; // A
     kbd.keysRight = [68]; // D
     kbd.keysUpward = [69]; // E - up
     kbd.keysDownward = [81]; // Q - down
+    kbd.baseSpeed = 0.3;
+    kbd.maxSpeed = 3.0;
+    kbd.rampDurationMs = 2000;
     camera.inputs.add(kbd);
 
     // Enable mouse look
@@ -370,6 +530,18 @@ export default class WorldViewer extends Component<IWorldViewerProps, IWorldView
   /**
    * Frame update loop: process dirty chunks, update stats, and emit camera position.
    */
+  /**
+   * Publish cumulative render stats to `window.__mctWorldRenderStats` so Playwright
+   * tests (notably the Y-floor regression guard) can assert that low-elevation
+   * content actually rendered (minRenderedY) instead of being silently culled.
+   */
+  private _publishRenderStats() {
+    if (!this._worldRenderer || typeof window === "undefined") {
+      return;
+    }
+    (window as any).__mctWorldRenderStats = this._worldRenderer.getRenderStats();
+  }
+
   private _startUpdateLoop() {
     let frameCount = 0;
     const intervalId = setInterval(() => {
@@ -380,19 +552,50 @@ export default class WorldViewer extends Component<IWorldViewerProps, IWorldView
 
       if (this._worldRenderer) {
         this._worldRenderer.updateChunkMeshes();
+        this._publishRenderStats();
 
         // Emit camera position every ~250ms (every 15 frames at 16ms interval)
         frameCount++;
-        if (this.props.onCameraUpdate && frameCount % 15 === 0) {
-          const cam = this._worldRenderer.camera;
-          // Convert Babylon rotation.y back to Minecraft yaw degrees
-          const yawDeg = (cam.rotation.y * 180) / Math.PI - 180;
-          if (frameCount % 60 === 0) {
-            Log.verbose(
-              `[WorldViewer] camera update: x=${cam.position.x.toFixed(1)} y=${cam.position.y.toFixed(1)} z=${cam.position.z.toFixed(1)} yaw=${yawDeg.toFixed(1)}`
-            );
+        if (frameCount % 15 === 0) {
+          // Stream in chunks around the camera as it moves so the view keeps
+          // filling in instead of running into empty space. No-op while the
+          // camera stays within the same chunk it last streamed for.
+          this._streamChunksAroundCamera();
+
+          if (this.props.onCameraUpdate) {
+            const cam = this._worldRenderer.camera;
+            // Convert Babylon rotation.y to Minecraft yaw degrees.
+            // The scene is RIGHT-handed (see WorldRenderer handedness/mirror fix), so
+            // the camera's horizontal forward = (-sin(rotation.y), -cos(rotation.y)).
+            // Minecraft yaw = atan2(-Δx, Δz) = atan2(sin ry, -cos ry) = 180° - rotation.y°.
+            // (In the old left-handed scene this was simply yaw = -rotation.y°.)
+            const yawDeg = 180 - (cam.rotation.y * 180) / Math.PI;
+            // Only emit when the camera pose actually changed beyond a small
+            // threshold. Emitting every tick re-pans the tracking map on each
+            // call (setView), causing an endless tile-refresh loop.
+            const POS_EPSILON = 0.05; // blocks
+            const YAW_EPSILON = 0.1; // degrees
+            const moved =
+              this._lastEmittedCamX === undefined ||
+              Math.abs(cam.position.x - this._lastEmittedCamX) > POS_EPSILON ||
+              Math.abs(cam.position.y - (this._lastEmittedCamY as number)) > POS_EPSILON ||
+              Math.abs(cam.position.z - (this._lastEmittedCamZ as number)) > POS_EPSILON ||
+              Math.abs(yawDeg - (this._lastEmittedCamYaw as number)) > YAW_EPSILON;
+
+            if (moved) {
+              this._lastEmittedCamX = cam.position.x;
+              this._lastEmittedCamY = cam.position.y;
+              this._lastEmittedCamZ = cam.position.z;
+              this._lastEmittedCamYaw = yawDeg;
+
+              if (frameCount % 60 === 0) {
+                Log.verbose(
+                  `[WorldViewer] camera update: x=${cam.position.x.toFixed(1)} y=${cam.position.y.toFixed(1)} z=${cam.position.z.toFixed(1)} yaw=${yawDeg.toFixed(1)}`
+                );
+              }
+              this.props.onCameraUpdate(cam.position.x, cam.position.y, cam.position.z, yawDeg);
+            }
           }
-          this.props.onCameraUpdate(cam.position.x, cam.position.y, cam.position.z, yawDeg);
         }
       }
     }, 16);

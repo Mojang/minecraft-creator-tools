@@ -1,5 +1,5 @@
 import IProjectSeed from "../../app/IProjectSeed";
-import { NewProjectTemplateType } from "../appShell/App";
+import { NewProjectTemplateType } from "../appShell/AppMain";
 import { ProjectEditorMode } from "../project/ProjectEditorUtilities";
 import { GalleryProjectCommand } from "./CodeProjectGallery";
 

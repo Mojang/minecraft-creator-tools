@@ -66,6 +66,42 @@ async function waitForAnyCanvas(page: Page, timeoutMs: number = 15000): Promise<
   }
 }
 
+/**
+ * Render statistics published by WorldViewer onto `window.__mctWorldRenderStats`.
+ * - renderedBlockCount: total blocks that survived culling and were meshed.
+ * - minRenderedY / maxRenderedY: lowest / highest world Y of any rendered block.
+ * - minRenderY: the configured vertical floor (default -64 = world bottom).
+ */
+interface IWorldRenderStats {
+  renderedBlockCount: number;
+  minRenderedY: number;
+  maxRenderedY: number;
+  minRenderY: number;
+}
+
+/**
+ * Wait for the world viewer to publish render stats with a non-zero block count.
+ * Polls `window.__mctWorldRenderStats` until blocks are rendered or it times out.
+ */
+async function readWorldRenderStats(page: Page, timeoutMs: number = 45000): Promise<IWorldRenderStats> {
+  const canvas = page.locator('[data-testid="world-viewer-canvas"]');
+  await expect(canvas).toBeVisible({ timeout: timeoutMs });
+
+  const deadline = Date.now() + timeoutMs;
+  let stats: IWorldRenderStats | undefined;
+  while (Date.now() < deadline) {
+    stats = await page.evaluate(
+      () => (window as unknown as { __mctWorldRenderStats?: IWorldRenderStats }).__mctWorldRenderStats
+    );
+    if (stats && stats.renderedBlockCount > 0) {
+      return stats;
+    }
+    await page.waitForTimeout(500);
+  }
+
+  throw new Error("Timed out waiting for non-zero world render stats");
+}
+
 test.describe("WorldView Integration Tests", () => {
   const consoleErrors: { url: string; error: string }[] = [];
   const consoleWarnings: { url: string; error: string }[] = [];
@@ -141,5 +177,59 @@ test.describe("WorldView Integration Tests", () => {
     expect(canvasVisible).toBe(true);
 
     await page.screenshot({ path: `${SCREENSHOT_DIR}/ground-level.png` });
+  });
+});
+
+/**
+ * Y-floor regression guard.
+ *
+ * History: the world renderer once imposed an artificial vertical floor (~Y=40)
+ * that silently dropped all content below it. The fix removed that floor so the
+ * default `minRenderY` is the world bottom (-64) and ALL exposed content renders.
+ *
+ * These tests assert against the render-stats hook
+ * (`window.__mctWorldRenderStats`) so a re-introduced floor would fail loudly:
+ *  1. By default, 2000world must render exposed content well below Y=40.
+ *  2. The `minRenderY` URL param must actually clip low content (proving the
+ *     floor mechanism still works, just defaulting to "no floor").
+ *
+ * 2000world.mcworld empirical baseline (default): ~306k blocks, minRenderedY=-64.
+ * With minRenderY=40: ~125k blocks, minRenderedY=40.
+ */
+test.describe("WorldViewer Y-floor regression guard", () => {
+  test("default render reaches content below Y=40", async ({ page }) => {
+    test.setTimeout(120000);
+
+    await page.goto(`/?mode=worldviewer&world=/res/test/2000world.mcworld&hideChrome=true`);
+    await page.waitForLoadState("networkidle");
+
+    const stats = await readWorldRenderStats(page);
+
+    // No artificial floor by default — the configured floor is the world bottom.
+    expect(stats.minRenderY).toBeLessThanOrEqual(-64);
+    // Exposed content below Y=40 must actually be rendered. A re-introduced
+    // vertical floor would push minRenderedY up and fail this assertion.
+    expect(stats.minRenderedY).toBeLessThan(40);
+    expect(stats.renderedBlockCount).toBeGreaterThan(0);
+  });
+
+  test("minRenderY param clips content below the floor", async ({ page }) => {
+    test.setTimeout(120000);
+
+    // First capture the default (no-floor) block count for comparison.
+    await page.goto(`/?mode=worldviewer&world=/res/test/2000world.mcworld&hideChrome=true`);
+    await page.waitForLoadState("networkidle");
+    const baseline = await readWorldRenderStats(page);
+
+    // Now apply an explicit Y=40 floor and confirm low content is clipped.
+    await page.goto(`/?mode=worldviewer&world=/res/test/2000world.mcworld&hideChrome=true&minRenderY=40`);
+    await page.waitForLoadState("networkidle");
+    const floored = await readWorldRenderStats(page);
+
+    expect(floored.minRenderY).toBe(40);
+    // Nothing below the floor should render.
+    expect(floored.minRenderedY).toBeGreaterThanOrEqual(40);
+    // Clipping low content must drop the block count relative to the default.
+    expect(floored.renderedBlockCount).toBeLessThan(baseline.renderedBlockCount);
   });
 });

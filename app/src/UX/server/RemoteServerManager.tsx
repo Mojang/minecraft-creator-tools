@@ -2,7 +2,7 @@ import { Component } from "react";
 import "./RemoteServerManager.css";
 import { Stack, Button, IconButton } from "@mui/material";
 import IAppProps from "../appShell/IAppProps";
-import { AppMode } from "../appShell/App";
+import { AppMode } from "../appShell/AppMode";
 import Project from "../../app/Project";
 import CreatorToolsHost from "../../app/CreatorToolsHost";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

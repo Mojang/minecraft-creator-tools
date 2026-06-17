@@ -13,6 +13,8 @@ import Log from "../../core/Log";
 import Database from "../../minecraft/Database";
 import TerrainTextureCatalogDefinition from "../../minecraft/TerrainTextureCatalogDefinition";
 import BlocksCatalogDefinition from "../../minecraft/BlocksCatalogDefinition";
+import Project from "../../app/Project";
+import ProjectUtilities from "../../app/ProjectUtilities";
 import { ModelMeshFactory } from "./ModelMeshFactory";
 import BlockTypePicker from "./BlockTypePicker";
 import VolumeEditorUndoManager, { VolumeActionType } from "./VolumeEditorUndoManager";
@@ -1829,6 +1831,27 @@ export default class VolumeEditor extends Component<IVolumeEditorProps, IVolumeE
       return;
     }
 
+    // Register the project's resource pack with the renderer so any custom
+    // blocks defined in this project show up with their real textures
+    // instead of the gray missing-texture fallback. Uses the project's own
+    // block-item enumeration (ProjectUtilities.loadCustomBlocksFromProject)
+    // so modern (1.20.60+) custom blocks whose textures live in BP
+    // `minecraft:material_instances` (rather than RP blocks.json) also render.
+    // Failure is non-fatal — the editor still works, custom blocks just stay gray.
+    try {
+      const project = (this.props as { project?: Project }).project;
+      if (project) {
+        Database.clearCustomResources();
+        const rp = await project.getDefaultResourcePackFolder();
+        if (rp) {
+          await Database.loadCustomResourcePackFolders([rp]);
+        }
+        await ProjectUtilities.loadCustomBlocksFromProject(project);
+      }
+    } catch (rpe) {
+      Log.debug("VolumeEditor: Custom resource pack registration failed (non-fatal): " + rpe);
+    }
+
     // Set up undo manager state change callback
     this._undoManager.setOnStateChanged((canUndo, canRedo) => {
       this.setState({ canUndo, canRedo });
@@ -2141,6 +2164,15 @@ export default class VolumeEditor extends Component<IVolumeEditorProps, IVolumeE
 
     // Use shared scene configuration with theme-aware clear color
     MinecraftEnvironment.configureScene(scene, { themeAwareClearColor: true });
+
+    // Don't auto-clear the depth buffer before rendering group 1 (block meshes).
+    // Entity meshes live in group 0 (so they share a depth buffer with the ground
+    // plane — required so the floor correctly occludes mobs from below, per Bug
+    // 1606488). Block meshes stay in group 1. Without this setting Babylon clears
+    // the depth buffer between groups, causing group-1 blocks to render on top of
+    // group-0 entity meshes regardless of actual depth — making the ground
+    // occlude block models at every camera angle.
+    scene.setRenderingAutoClearDepthStencil(1, false);
 
     if (this._camera == null) {
       this._camera = new BABYLON.FreeCamera("mainCam", new BABYLON.Vector3(1.5, 9, -9), scene);

@@ -59,7 +59,7 @@ export default function NewProjectDialog({ template, open, close, onNewProject }
     { value: MinecraftTrack.eduPreview, labelId: "home.new_project.target_edu_preview" },
   ];
 
-  const [tools] = useCreatorTools();
+  const [tools, isCreatorToolsReady] = useCreatorTools();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const isElectron = AppServiceProxy.hasAppService;
@@ -74,6 +74,12 @@ export default function NewProjectDialog({ template, open, close, onNewProject }
   const [creatorError, setCreatorError] = useState<string | null>(null);
   const { trackEvent } = useTelemetry();
   const intl = useIntl();
+
+  if (!isCreatorToolsReady || !tools) {
+    return null;
+  }
+
+  const creatorTools = tools;
 
   async function handleElectronPickFolder() {
     const result = await AppServiceProxy.sendAsync(AppServiceProxyCommands.openFolder, "");
@@ -122,7 +128,7 @@ export default function NewProjectDialog({ template, open, close, onNewProject }
     setCreatorError(null);
 
     const suggestedName = ProjectUtilities.getSuggestedProjectName(template);
-    const suggestedCreator = tools.creator ? tools.creator : DefaultCreatorName;
+    const suggestedCreator = creatorTools.creator ? creatorTools.creator : DefaultCreatorName;
     const suggestedShortName = ProjectUtilities.getSuggestedProjectShortName(suggestedCreator, suggestedName);
 
     const isTitleCustomized = formValues.title !== suggestedName;
@@ -151,7 +157,7 @@ export default function NewProjectDialog({ template, open, close, onNewProject }
       },
     });
 
-    const activeProject = tools.activeMinecraft?.activeProject;
+    const activeProject = creatorTools.activeMinecraft?.activeProject;
     if (activeProject && activeProject.hasUnsavedChanges()) {
       const projName = activeProject.simplifiedName || activeProject.name || "current project";
       const proceed = window.confirm(
@@ -182,7 +188,7 @@ export default function NewProjectDialog({ template, open, close, onNewProject }
   const showElectronFolderSelect = isElectron && projectStore === "custom";
 
   const suggestedName = ProjectUtilities.getSuggestedProjectName(template);
-  const suggestedCreator = tools.creator ? tools.creator : DefaultCreatorName;
+  const suggestedCreator = creatorTools.creator ? creatorTools.creator : DefaultCreatorName;
   const suggestedShortName = ProjectUtilities.getSuggestedProjectShortName(suggestedCreator, suggestedName);
   const suggestedDesc = suggestedName;
 

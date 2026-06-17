@@ -32,6 +32,7 @@ import { ScriptEditorRole } from "../utils/ScriptEditorRole";
 import IProjectTheme from "../types/IProjectTheme";
 import type { IProjectItemEditorNavigationTarget } from "../project/ProjectItemEditor";
 import { WithLocalizationProps, withLocalization } from "../withLocalization";
+import MonacoErrorBoundary from "./MonacoErrorBoundary";
 export { ScriptEditorRole };
 
 interface IJavaScriptEditorProps extends IAppProps, WithLocalizationProps {
@@ -43,6 +44,7 @@ interface IJavaScriptEditorProps extends IAppProps, WithLocalizationProps {
   navigationTarget?: IProjectItemEditorNavigationTarget;
   setActivePersistable?: (persistObject: IPersistable) => void;
   onUpdateContent?: (newContent: string) => void;
+  onOpenProjectItem?: (projectPath: string, lineNumber?: number, column?: number) => void;
 
   scriptLanguage: ProjectScriptLanguage;
   readOnly: boolean;
@@ -69,6 +71,12 @@ class JavaScriptEditor extends Component<IJavaScriptEditorProps, IJavaScriptEdit
   _isMounted: boolean = false;
   _navigationDecorations?: MonacoType.editor.IEditorDecorationsCollection;
   _lastNavigationRequestId?: number;
+  /** Maps a Monaco model URI (uri.toString()) to the storageRelativePath of the
+   *  file it represents, so cross-file Go to Definition can resolve a target
+   *  model back to a project item. */
+  _modelUriToProjectPath: Map<string, string> = new Map();
+  /** Disposable for the registered editor opener (cross-file navigation). */
+  _editorOpenerDisposable?: MonacoType.IDisposable;
   /** When true, suppresses onChange propagation to prevent programmatic model
    *  changes (e.g. setValue, line-ending normalization) from marking the file
    *  as edited. */
@@ -181,7 +189,10 @@ class JavaScriptEditor extends Component<IJavaScriptEditorProps, IJavaScriptEdit
 
     this._injectLibModels();
 
-    this._ensureModels(monacoInstance);
+    // Fire-and-forget: guard so a transient project-loading race can't surface as an unhandled rejection.
+    this._ensureModels(monacoInstance).catch((e) => {
+      Log.debug("JavaScriptEditor: Error in _ensureModels: " + e);
+    });
   }
 
   _injectLibModels() {
@@ -265,6 +276,12 @@ class JavaScriptEditor extends Component<IJavaScriptEditorProps, IJavaScriptEdit
 
   componentWillUnmount() {
     this._isMounted = false;
+
+    if (this._editorOpenerDisposable) {
+      this._editorOpenerDisposable.dispose();
+      this._editorOpenerDisposable = undefined;
+    }
+
     if (this._scriptsFolder) {
       this._trackingUpdates = false;
 
@@ -297,6 +314,12 @@ class JavaScriptEditor extends Component<IJavaScriptEditorProps, IJavaScriptEdit
 
       if (mainScriptsFolder) {
         scriptsFolder = mainScriptsFolder;
+      } else if (this.props.project.projectFolder === null) {
+        // The project's folder structure isn't available yet (e.g. the editor mounted while the
+        // project is still loading or is being reloaded). Bail gracefully rather than calling the
+        // ensure-style fallbacks below, which would throw "could not create project folder". A
+        // later file/folder event (or remount) will re-run _ensureModels once the folder exists.
+        return;
       } else {
         const bpScriptsFolder = await this.props.project.getBehaviorPackScriptsFolder();
 
@@ -385,7 +408,9 @@ class JavaScriptEditor extends Component<IJavaScriptEditorProps, IJavaScriptEdit
 
     this._modelReloadPending = false;
 
-    this._ensureModels(this._monaco);
+    this._ensureModels(this._monaco).catch((e) => {
+      Log.debug("JavaScriptEditor: Error in _ensureModels: " + e);
+    });
   }
 
   async _loadModelsFromFolder(monacoInstance: any, folder: IFolder) {
@@ -477,11 +502,21 @@ class JavaScriptEditor extends Component<IJavaScriptEditorProps, IJavaScriptEdit
     if (file.content !== undefined && typeof file.content === "string") {
       const modelUri = monacoInstance.Uri.parse(baseUri);
 
+      // Track URI -> storage path so cross-file Go to Definition can map a target
+      // model back to a project item.
+      this._modelUriToProjectPath.set(modelUri.toString(), file.storageRelativePath);
+
       let model = monacoInstance.editor.getModel(modelUri);
 
       if (model === null || model === undefined) {
         this._suppressOnChange = true;
-        model = monacoInstance.editor.createModel(content, lang, modelUri);
+        try {
+          monacoInstance.editor.createModel(content, lang, modelUri);
+        } catch (e) {
+          Log.debug("JavaScriptEditor: createModel failed: " + e);
+          this._suppressOnChange = false;
+          return;
+        }
         this._suppressOnChange = false;
       } else {
         let existingContent = model.getValue();
@@ -502,7 +537,63 @@ class JavaScriptEditor extends Component<IJavaScriptEditorProps, IJavaScriptEdit
       return;
     }
 
+    this._registerEditorOpener(monacoInstance);
+
     this._applyNavigationTarget(this.props.navigationTarget);
+  }
+
+  /**
+   * Registers a Monaco editor opener so that "Go to Definition" (and similar
+   * navigations) targeting a symbol defined in a *different* file routes through
+   * the app's project-item navigation instead of silently no-op'ing.
+   *
+   * Monaco's standalone editor only knows how to navigate within the currently
+   * attached model; for any other model URI it does nothing unless an opener is
+   * registered. We map the target model URI back to a project path and ask the
+   * host to open that item, positioned at the definition's line/column.
+   */
+  private _registerEditorOpener(monacoInstance: typeof MonacoType) {
+    if (this._editorOpenerDisposable) {
+      return;
+    }
+
+    this._editorOpenerDisposable = monacoInstance.editor.registerEditorOpener({
+      openCodeEditor: (source, resource, selectionOrPosition) => {
+        // Only handle navigations that originated from this editor instance.
+        if (source !== this.editor) {
+          return false;
+        }
+
+        // If the target is the current model, let Monaco handle it in-place.
+        const currentModel = this.editor?.getModel();
+        if (currentModel && currentModel.uri.toString() === resource.toString()) {
+          return false;
+        }
+
+        const projectPath = this._modelUriToProjectPath.get(resource.toString());
+
+        if (!projectPath || !this.props.onOpenProjectItem) {
+          return false;
+        }
+
+        let lineNumber: number | undefined;
+        let column: number | undefined;
+
+        if (selectionOrPosition) {
+          if ("startLineNumber" in selectionOrPosition) {
+            lineNumber = selectionOrPosition.startLineNumber;
+            column = selectionOrPosition.startColumn;
+          } else {
+            lineNumber = selectionOrPosition.lineNumber;
+            column = selectionOrPosition.column;
+          }
+        }
+
+        this.props.onOpenProjectItem(projectPath, lineNumber, column);
+
+        return true;
+      },
+    });
   }
 
   _handleContentUpdated(newValue: string | undefined, event: any) {
@@ -903,6 +994,7 @@ class JavaScriptEditor extends Component<IJavaScriptEditorProps, IJavaScriptEdit
 
       interior = (
         <div className="jse-editor" key="editor">
+          <MonacoErrorBoundary>
           <Editor
             height={editorHeight}
             theme={theme}
@@ -923,6 +1015,7 @@ class JavaScriptEditor extends Component<IJavaScriptEditorProps, IJavaScriptEdit
             onMount={this._handleEditorDidMount}
             onChange={this._handleContentUpdated}
           />
+          </MonacoErrorBoundary>
         </div>
       );
     }

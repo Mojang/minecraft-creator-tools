@@ -40,6 +40,61 @@ export default class ZipStorage extends StorageBase implements IStorage {
     this.rootFolder = new ZipFolder(this, this._jsz, null, "", "");
   }
 
+  /**
+   * Release the underlying JSZip instance, its internal file cache (which can
+   * easily reach gigabytes for large `.mcaddon` / `.mctemplate` / world-template
+   * zips), and break the `containerFile <-> ZipStorage` reference cycle so V8
+   * can GC both sides.
+   *
+   * MEMORY NOTE
+   * -----------
+   * JSZip retains the raw compressed bytes you handed to `loadAsync(...)` and
+   * caches the decompressed payload for every entry that has been read at
+   * least once (often as Node `Buffer`s, which Node accounts to the process's
+   * "external" memory bucket — not the JS heap). For a 179 MB world template
+   * we saw ~3 GB of external memory survive a full validation run because the
+   * `ZipStorage` kept the JSZip object alive.
+   *
+   * Also note the cycle: `ZipStorage.loadFromFile()` sets both
+   * `file.fileContainerStorage = zs` and `zs.containerFile = file`. The
+   * `file` is owned by the outer storage (e.g., NodeStorage) and outlives the
+   * validation run, so disposing the inner `ZipStorage` requires us to NULL
+   * out the back-pointer on the containing file.
+   *
+   * Safe to call multiple times.
+   */
+  dispose() {
+    // Break the back-pointer cycle. The outer `file` lives on its own storage
+    // and may be re-used; clearing `fileContainerStorage` lets the GC collect
+    // this ZipStorage (and the JSZip instance it owns) immediately.
+    if (this.containerFile) {
+      try {
+        if (this.containerFile.fileContainerStorage === this) {
+          this.containerFile.fileContainerStorage = null;
+        }
+      } catch {
+        // best-effort
+      }
+      this.containerFile = undefined;
+    }
+
+    // Recursively dispose the in-memory folder/file tree. This releases
+    // ZipFile.`_content` buffers we've already decoded plus their `_jszipo`
+    // references back to JSZip.
+    if (this.rootFolder) {
+      try {
+        this.rootFolder.dispose();
+      } catch {
+        // best-effort
+      }
+    }
+
+    // Finally null out JSZip itself. JSZip's `.files` map holds the raw
+    // compressed bytes plus per-entry decompressed payloads — once nobody
+    // references the JSZip object, V8 can free all of it.
+    this._jsz = undefined as unknown as JSZip;
+  }
+
   static zipFixup() {
     if (CreatorToolsHost.hostType === HostType.electronNodeJs || CreatorToolsHost.hostType === HostType.toolsNodejs) {
       // Fix CommonJS/ESM interop for JSZip without using eval

@@ -1,7 +1,7 @@
 import IProjectSeed from "../../app/IProjectSeed";
 import Project from "../../app/Project";
 import IFolder from "../../storage/IFolder";
-import { AppMode } from "../appShell/App";
+import { AppMode } from "../appShell/AppMode";
 import IAppProps from "../appShell/IAppProps";
 import { LocalGalleryCommand, LocalFolderType } from "../utils/LocalGalleryCommand";
 import { GalleryProjectCommand } from "./CodeProjectGallery";

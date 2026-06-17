@@ -233,6 +233,23 @@ export default abstract class FileBase implements IFile {
     this.lastLoadedOrSaved = null;
     this.commentJsonCache = undefined;
 
+    // If this file backs an inner storage (e.g., a `.zip`/`.mcaddon` opened
+    // through `ZipStorage.loadFromFile`), tear that storage down too. Without
+    // this hop, a disposed file may still pin gigabytes of JSZip-cached
+    // decompressed payloads via `fileContainerStorage`.
+    const inner = this.#fileContainerStorage;
+    if (inner) {
+      this.#fileContainerStorage = null;
+      const innerWithDispose = inner as IStorage & { dispose?: () => void };
+      if (typeof innerWithDispose.dispose === "function") {
+        try {
+          innerWithDispose.dispose();
+        } catch {
+          // best-effort
+        }
+      }
+    }
+
     this.isDisposed = true;
   }
 

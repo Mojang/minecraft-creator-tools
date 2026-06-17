@@ -49,9 +49,7 @@ async function switchSettingsEditMode(page: Page, modeLabel: "Focused" | "Full" 
   }
 }
 
-async function setAdvancedModeSwitchPayload(
-  page: Page
-): Promise<{ normalized: string; modelUri: string } | undefined> {
+async function setAdvancedModeSwitchPayload(page: Page): Promise<{ normalized: string; modelUri: string } | undefined> {
   return page.evaluate(() => {
     const sortDeep = (value: any): any => {
       if (Array.isArray(value)) {
@@ -77,21 +75,49 @@ async function setAdvancedModeSwitchPayload(
     };
 
     const monacoRef = (window as any).monaco;
-    const models = monacoRef?.editor?.getModels?.() || [];
-    let model: any | undefined;
-    let modelValue = "";
+    if (!monacoRef?.editor) return undefined;
 
-    for (const candidate of models) {
-      const value = candidate?.getValue?.() || "";
+    // Pick the EDITABLE editor whose model has the longest content. The
+    // JsonEditor mounts a read-only live-preview Monaco alongside the
+    // editable one — writes to the read-only editor's model fire onChange
+    // events but JsonEditor's `_handleContentUpdated` ignores them
+    // (`this.props.readOnly` is true), so the change is silently dropped
+    // from `file.content`. When the test subsequently switches edit modes,
+    // JsonEditor remounts and `_ensureModelForFile` reseeds the Monaco
+    // model from the *original* `file.content`, losing our payload.
+    const editors = monacoRef.editor.getEditors?.() || [];
+    const readOnlyId = monacoRef.editor?.EditorOption?.readOnly;
+    let targetEditor: any | undefined;
+    let modelValue = "";
+    // First pass: find the longest-content EDITABLE editor.
+    for (const candidate of editors) {
+      const model = candidate?.getModel?.();
+      if (!model) continue;
+      const isReadOnly =
+        typeof readOnlyId === "number" ? candidate.getOption?.(readOnlyId) : false;
+      if (isReadOnly) continue;
+      const value = model.getValue?.() || "";
       if (value.trim().length > modelValue.trim().length) {
-        model = candidate;
+        targetEditor = candidate;
         modelValue = value;
       }
     }
-
-    if (!model) {
-      return undefined;
+    // Fallback: longest-content editor regardless of read-only state.
+    if (!targetEditor) {
+      for (const candidate of editors) {
+        const model = candidate?.getModel?.();
+        if (!model) continue;
+        const value = model.getValue?.() || "";
+        if (value.trim().length > modelValue.trim().length) {
+          targetEditor = candidate;
+          modelValue = value;
+        }
+      }
     }
+    if (!targetEditor) return undefined;
+
+    const model = targetEditor.getModel?.();
+    if (!model) return undefined;
 
     const parsed = parseJsonLenient(modelValue);
     parsed.mode_switch_probe = {
@@ -132,7 +158,31 @@ async function setAdvancedModeSwitchPayload(
       },
     };
 
-    model.setValue(JSON.stringify(parsed, null, 2));
+    // Use `executeEdits` rather than `model.setValue`. The React Monaco
+    // wrapper (`@monaco-editor/react`) suppresses its `onChange` callback
+    // when the model value is updated via certain code paths (e.g. setValue
+    // with `isFlush=true`). Going through the editor's executeEdits command
+    // pipeline matches the path a real user takes — the diff goes through
+    // Monaco's standard edit flow and reliably fires the onChange listener
+    // that JsonEditor uses to push the new value into `file.setContent`.
+    // Without this, the underlying file model never receives our edit, and
+    // when a mode switch later remounts JsonEditor, `_ensureModelForFile`
+    // resets the Monaco model from the *original* (unmodified) file.content,
+    // losing the test payload.
+    const newText = JSON.stringify(parsed, null, 2);
+    targetEditor.focus?.();
+    const fullRange = model.getFullModelRange();
+    const success = targetEditor.executeEdits("editormodes-test", [
+      {
+        range: fullRange,
+        text: newText,
+        forceMoveMarkers: true,
+      },
+    ]);
+    targetEditor.pushUndoStop?.();
+    if (!success) {
+      model.setValue(newText);
+    }
     return {
       normalized: JSON.stringify(sortDeep(parsed)),
       modelUri: model.uri?.toString?.() || "",
@@ -178,15 +228,12 @@ async function getNormalizedMonacoJson(page: Page, preferredModelUri?: string): 
       }
     }
 
-    if (!selectedModel) {
-      for (const candidate of models) {
-        const value = candidate?.getValue?.() || "";
-        if (value.trim().length > modelValue.trim().length) {
-          selectedModel = candidate;
-          modelValue = value;
-        }
-      }
-    }
+    // Intentionally NO fallback to "longest content model": when the user
+    // re-opens a different file or a stale form-editor live-preview model
+    // remains in memory, falling back to longest-content silently reads the
+    // wrong file's content and produces a misleading "data was lost" failure.
+    // We'd rather fail loudly with "no content for tracked URI" so the test
+    // diagnostic clearly points at the missing model.
 
     if (modelValue.trim().length === 0) {
       return undefined;
@@ -703,23 +750,76 @@ test.describe("Lossless Mode Switching @full", () => {
     await enableAllFileTypes(page);
     await page.waitForTimeout(1000);
 
-    let targetPattern = "tsconfig";
-    let opened = await openFileInMonaco(page, targetPattern);
-    if (!opened) {
-      targetPattern = "package";
-      opened = await openFileInMonaco(page, targetPattern);
-    }
-    if (!opened) {
-      targetPattern = "manifest";
-      opened = await openFileInMonaco(page, targetPattern);
-    }
-    expect(opened).toBe(true);
-
+    // Switch to Raw preference FIRST so any opened file lands in Monaco regardless of file type.
+    // (Previously we tried to open tsconfig/package/manifest hoping it would auto-route to Monaco,
+    //  but in Full mode tsconfig.json sometimes opens in a form editor first.)
     const switchedToRawPreferenceInitial = await switchSettingsEditMode(page, "Raw");
     expect(switchedToRawPreferenceInitial).toBe(true);
 
-    const reopenedForRaw = await openFileInMonaco(page, targetPattern);
-    expect(reopenedForRaw).toBe(true);
+    // Try each candidate file and verify Monaco actually appears AND is
+    // editable before accepting it. Autogenerated config files (tsconfig.json,
+    // package.json, .vscode/launch.json) are intentionally rendered as
+    // read-only by ProjectItemEditor: any change written into Monaco will
+    // visibly appear in the model but JsonEditor's `_handleContentUpdated`
+    // silently drops it because `this.props.readOnly` is true. The first
+    // mode switch then reseeds the model from the *original* file.content,
+    // erasing the test payload — which is what made this test flap.
+    //
+    // We skip read-only Monaco editors and only accept a file we can
+    // actually round-trip through.
+    const candidatePatterns = ["manifest", "tsconfig", "package"];
+    let targetPattern = "";
+    let monacoVisible = false;
+    for (const pattern of candidatePatterns) {
+      const opened = await openFileInMonaco(page, pattern);
+      if (!opened) continue;
+      const monacoEditor = page.locator(".monaco-editor").first();
+      if (!(await monacoEditor.isVisible({ timeout: 3000 }).catch(() => false))) {
+        console.log(`Lossless test: pattern "${pattern}" opened but Monaco not visible; trying next`);
+        continue;
+      }
+      // Verify the editor we found is writable. Use the EditorOption enum
+      // from window.monaco to look up readOnly's numeric id rather than
+      // hard-coding it (the enum values shift between Monaco versions).
+      const isWritable = await page.evaluate(() => {
+        const monacoRef = (window as any).monaco;
+        const editors = monacoRef?.editor?.getEditors?.() || [];
+        const readOnlyId = monacoRef?.editor?.EditorOption?.readOnly;
+        if (typeof readOnlyId !== "number") return true; // can't tell — assume writable
+        for (const e of editors) {
+          if (!e.getOption?.(readOnlyId)) return true;
+        }
+        return false;
+      });
+      if (!isWritable) {
+        console.log(
+          `Lossless test: pattern "${pattern}" Monaco is read-only (autogenerated item); trying next`
+        );
+        continue;
+      }
+      targetPattern = pattern;
+      monacoVisible = true;
+      console.log(`Lossless test: editable Monaco editor visible for pattern "${pattern}"`);
+      break;
+    }
+    expect(
+      monacoVisible,
+      "Need at least one editable JSON file to round-trip through mode switches"
+    ).toBe(true);
+
+    // Wait for the JSON editor's loading placeholder to disappear. Until it
+    // does, JsonEditor hasn't finished `_ensureModelForFile`, meaning the
+    // Monaco onChange listener may not be wired through to `file.setContent`.
+    // Writing to the model in that window updates Monaco visibly but the
+    // change is silently dropped from the file model — and the first mode
+    // switch then reseeds the Monaco model from the original `file.content`,
+    // erasing our payload.
+    await page
+      .locator(".jse-loading-placeholder")
+      .first()
+      .waitFor({ state: "hidden", timeout: 30000 })
+      .catch(() => undefined);
+    await page.waitForTimeout(500);
 
     const beforeSnapshot = await setAdvancedModeSwitchPayload(page);
     expect(beforeSnapshot).toBeTruthy();
@@ -736,6 +836,35 @@ test.describe("Lossless Mode Switching @full", () => {
 
     const switchedToRawPreference = await switchSettingsEditMode(page, "Raw");
     expect(switchedToRawPreference).toBe(true);
+
+    // CRITICAL: switchSettingsEditMode leaves the user ON the Settings page,
+    // not back on the file we just edited. Without re-opening the file,
+    // getNormalizedMonacoJson finds whatever inmemory Monaco models survived
+    // the mode-switch churn (e.g. a stale form-editor live preview), which
+    // contain the *original* file content not our payload. Always re-open the
+    // file so the final read is from the JsonEditor's freshly mounted Monaco
+    // model, which loads from `file.content` (the source of truth).
+    //
+    // Caveat for `manifest`: a fresh Add-On Starter has two manifest.json
+    // files (BP + RP). After our edit, the BP entry renders as "manifest*"
+    // (dirty marker) while the untouched RP renders as plain "manifest".
+    // Playwright's `text="manifest"` selector does an EXACT text match and
+    // therefore prefers the RP (clean) entry — which never had our payload.
+    // Click the dirty entry first so we re-open the file we actually edited.
+    const dirtyEntry = page.locator(".pit-name").filter({ hasText: /\*$/ }).first();
+    if (await dirtyEntry.isVisible({ timeout: 2000 }).catch(() => false)) {
+      await dirtyEntry.scrollIntoViewIfNeeded().catch(() => {});
+      await dirtyEntry.click();
+      await page.waitForTimeout(800);
+    } else {
+      await openFileInMonaco(page, targetPattern);
+    }
+    await page
+      .locator(".jse-loading-placeholder")
+      .first()
+      .waitFor({ state: "hidden", timeout: 30000 })
+      .catch(() => undefined);
+    await page.waitForTimeout(500);
 
     let afterNormalized: string | undefined;
     for (let i = 0; i < 15; i++) {

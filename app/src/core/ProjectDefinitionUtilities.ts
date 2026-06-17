@@ -16,10 +16,13 @@ export class ProjectDefinitionUtilities {
   }
 
   static getVanillaBlockTexture(blockType: BlockType, side: string, useCarried: boolean = true): string | undefined {
-    // All three catalogs must be loaded to resolve textures.
-    // When skipVanillaResources is true (isolated rendering), these won't be loaded
-    // and we return undefined, triggering the magenta/fuchsia fallback material.
-    if (!Database.blocksCatalog || !Database.terrainTextureCatalog || !Database.vanillaCatalog) {
+    // Vanilla catalogs are required for vanilla block lookups; for project /
+    // world custom blocks we still need at least one of the custom catalogs.
+    const hasVanilla = !!Database.blocksCatalog && !!Database.terrainTextureCatalog && !!Database.vanillaCatalog;
+    const hasCustom =
+      Object.keys(Database.customBlocksCatalog).length > 0 ||
+      Object.keys(Database.customTerrainTextureCatalog).length > 0;
+    if (!hasVanilla && !hasCustom) {
       return undefined;
     }
 
@@ -55,7 +58,12 @@ export class ProjectDefinitionUtilities {
       return undefined;
     }
 
-    const texture = Database.terrainTextureCatalog.getTerrainTextureDefinition(textureOrId);
+    // Prefer custom terrain_texture.json entries (project / world RP) over
+    // vanilla so custom blocks that reuse a vanilla texture id can override it.
+    let texture: any = Database.customTerrainTextureCatalog[textureOrId];
+    if (!texture && Database.terrainTextureCatalog) {
+      texture = Database.terrainTextureCatalog.getTerrainTextureDefinition(textureOrId);
+    }
 
     if (!texture || !texture.textures) {
       return undefined;
@@ -98,7 +106,11 @@ export class ProjectDefinitionUtilities {
     side: string,
     useCarried: boolean = true
   ): { path: string; overlayColor?: string } | undefined {
-    if (!Database.blocksCatalog || !Database.terrainTextureCatalog || !Database.vanillaCatalog) {
+    const hasVanilla = !!Database.blocksCatalog && !!Database.terrainTextureCatalog && !!Database.vanillaCatalog;
+    const hasCustom =
+      Object.keys(Database.customBlocksCatalog).length > 0 ||
+      Object.keys(Database.customTerrainTextureCatalog).length > 0;
+    if (!hasVanilla && !hasCustom) {
       return undefined;
     }
 
@@ -121,7 +133,10 @@ export class ProjectDefinitionUtilities {
 
     if (!textureOrId || typeof textureOrId !== "string") return undefined;
 
-    const texture = Database.terrainTextureCatalog.getTerrainTextureDefinition(textureOrId);
+    let texture: any = Database.customTerrainTextureCatalog[textureOrId];
+    if (!texture && Database.terrainTextureCatalog) {
+      texture = Database.terrainTextureCatalog.getTerrainTextureDefinition(textureOrId);
+    }
     if (!texture || !texture.textures) return undefined;
 
     if (typeof texture.textures === "string") {

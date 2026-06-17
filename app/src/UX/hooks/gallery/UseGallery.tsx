@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import IGallery from "../../../app/IGallery";
 import IGalleryItem, { GalleryItemType } from "../../../app/IGalleryItem";
 import { useCreatorTools } from "../../contexts/creatorToolsContext/CreatorToolsContext";
@@ -12,7 +12,7 @@ type GalleryOptions = {
   maxSnippets?: number | undefined;
 };
 export default function useGallery({ query, pageSize, ...options }: GalleryOptions) {
-  const [creatorTools] = useCreatorTools();
+  const [creatorTools, isCreatorToolsReady] = useCreatorTools();
   const [gallery, setGallery] = useState<IGallery>();
 
   //set maxes to undefined will allow unlimited results
@@ -20,19 +20,17 @@ export default function useGallery({ query, pageSize, ...options }: GalleryOptio
   const [maxSnippets, setMaxSnippets] = useState<number | undefined>(options.initialSize);
 
   const refreshGallery = useCallback(async () => {
-    await creatorTools.load();
+    if (!isCreatorToolsReady) {
+      return;
+    }
 
     const loadedGallery = await creatorTools.loadGallery();
 
     setGallery(loadedGallery);
-  }, [creatorTools]);
+  }, [isCreatorToolsReady, creatorTools]);
 
-  const hasLoaded = useRef(false);
   useEffect(() => {
-    if (!hasLoaded.current) {
-      hasLoaded.current = true;
-      refreshGallery();
-    }
+    refreshGallery();
   }, [refreshGallery]);
 
   const queryMinLength = options.queryMinLength ?? 3;
@@ -52,7 +50,16 @@ export default function useGallery({ query, pageSize, ...options }: GalleryOptio
   const isMoreTemplates = maxTemplates && templates.length < allTemplates.length;
   const isMoreSnippets = maxSnippets && snippets.length < allSnippets.length;
 
-  return [templates, snippets, fetchTemplates, fetchSnippets, isMoreTemplates, isMoreSnippets, refreshGallery, gallery] as const;
+  return [
+    templates,
+    snippets,
+    fetchTemplates,
+    fetchSnippets,
+    isMoreTemplates,
+    isMoreSnippets,
+    refreshGallery,
+    gallery,
+  ] as const;
 }
 
 function isTemplate(item: IGalleryItem) {

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { MouseEvent, SyntheticEvent } from "react";
 import CreatorTools from "../../../app/CreatorTools";
 import IStorage from "../../../storage/IStorage";
-import { AppMode } from "../../appShell/App";
+import { AppMode } from "../../appShell/AppMode";
 import Log from "../../../core/Log";
 import Utilities from "../../../core/Utilities";
 import AppServiceProxy, { AppServiceProxyCommands } from "../../../core/AppServiceProxy";

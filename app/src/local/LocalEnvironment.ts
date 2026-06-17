@@ -10,8 +10,9 @@ import IFolder from "./../storage/IFolder";
 import * as fs from "fs";
 import Utilities from "../core/Utilities";
 import * as crypto from "crypto";
-import { threadId } from "worker_threads";
-import Log, { LogItem, LogItemLevel } from "../core/Log";
+import Log from "../core/Log";
+import LocalLogger from "./logging/LocalLogger";
+import VerboseFilter from "./logging/VerboseFilter";
 
 export const consoleText_reset = "\x1b[0m";
 export const consoleText_bright = "\x1b[1m";
@@ -52,9 +53,18 @@ export default class LocalEnvironment {
   #configFile: IFile;
   #worldContainerStorage: NodeStorage;
 
-  logToStdError: boolean = false;
+  #verboseFilter = new VerboseFilter();
+  #localLogger = new LocalLogger(this.#verboseFilter);
+
+  get logToStdError() {
+    return this.#localLogger.mcpMode;
+  }
+
+  set logToStdError(value: boolean) {
+    this.#localLogger.mcpMode = value;
+  }
+
   #displayInfo: boolean = false;
-  #displayVerbose: boolean = false;
 
   _inmemTokenEncryptionPassword?: string;
 
@@ -102,11 +112,12 @@ export default class LocalEnvironment {
   }
 
   public get displayVerbose() {
-    return this.#displayVerbose;
+    return this.#verboseFilter.verbose;
   }
 
   public set displayVerbose(newVerboseValue: boolean) {
-    this.#displayVerbose = newVerboseValue;
+    this.#verboseFilter.verbose = newVerboseValue;
+    this.#localLogger.showThreadId = newVerboseValue;
   }
 
   public get worldContainerStorage() {
@@ -291,10 +302,8 @@ export default class LocalEnvironment {
 
     this.utilities = new LocalUtilities();
 
-    this.handleNewLogMessage = this.handleNewLogMessage.bind(this);
-
     if (subscribeToLog) {
-      Log.onItemAdded.subscribe(this.handleNewLogMessage);
+      Log.registerLogger(this.#localLogger);
     }
 
     if (!fs.existsSync(this.utilities.serverWorkingPath)) {
@@ -339,52 +348,6 @@ export default class LocalEnvironment {
 
         this.#worldContainerStorage = new NodeStorage(newPath, "");
       }
-    }
-  }
-
-  handleNewLogMessage(log: Log, item: LogItem) {
-    if (item.level === LogItemLevel.verbose && !this.displayVerbose) {
-      return;
-    }
-
-    // In MCP/stdio mode, only send errors and important messages to stderr.
-    // Regular messages and debug output would show as [warning] in VS Code's
-    // MCP output panel, which is confusing for users.
-    if (this.logToStdError) {
-      let context = "";
-      if (item.context && item.context.length > 0) {
-        context = item.context + " ";
-      }
-
-      if (item.level === LogItemLevel.error) {
-        console.error(consoleText_fgRed + context + "Error: " + item.message + consoleText_reset);
-      } else if (item.level === LogItemLevel.important) {
-        console.error(consoleText_fgYellow + context + item.message + consoleText_reset);
-      }
-      // Suppress message/verbose/debug in MCP mode — they're not actionable
-      return;
-    }
-
-    let context = "";
-
-    if (this.displayVerbose) {
-      context = threadId + ": ";
-    }
-
-    if (item.context && item.context.length > 0) {
-      context = item.context + " ";
-    }
-
-    if (item.level === LogItemLevel.verbose) {
-      console.log(consoleText_fgGray + context + item.message + consoleText_reset);
-    } else if (item.level === LogItemLevel.error) {
-      console.error(consoleText_fgRed + context + "Error: " + item.message + consoleText_reset);
-    } else if (item.level === LogItemLevel.important) {
-      // NOTE: This is the Log framework's own output handler — using Log.important()
-      // here would cause infinite recursion. console.log with yellow coloring is intentional.
-      console.log(consoleText_fgYellow + context + "Important: " + item.message + consoleText_reset);
-    } else {
-      console.log(context + item.message);
     }
   }
 

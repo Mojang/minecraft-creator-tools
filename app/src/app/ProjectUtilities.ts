@@ -26,6 +26,8 @@ import ProjectAutogeneration from "./ProjectAutogeneration";
 import TypeScriptDefinition from "../minecraft/TypeScriptDefinition";
 import { constants } from "../core/Constants";
 import ProjectContent from "./ProjectContent";
+import TerrainTextureCatalogDefinition from "../minecraft/TerrainTextureCatalogDefinition";
+import { IBlockResource } from "../minecraft/IBlocksCatalog";
 
 const behaviorPackFolderHints = ["behavior_pack", "/bp/", "/bps/"];
 
@@ -569,6 +571,176 @@ export default class ProjectUtilities {
     }
 
     return false;
+  }
+
+  /**
+   * Discover and register every custom block in `project` so that the 3D
+   * renderer can resolve their textures.
+   *
+   * **Why this lives on ProjectUtilities (not Database):** the project model
+   * already enumerates block items via `getItemsByType(blockTypeBehavior)`
+   * and `BlockTypeDefinition.getTextureItems()` already follows the dependency
+   * graph (BP → RP terrain_texture.json → texture file). Re-implementing
+   * pack discovery on Database would duplicate that logic and would miss
+   * things the project model handles (linked sub-packs, project-specific
+   * layouts, etc.). This method is the thin glue that hands the resolved
+   * texture data to `Database.customBlocksCatalog` /
+   * `Database.customTerrainTextureCatalog` / `Database.customTextureFiles`
+   * for the 3D renderer to consume.
+   *
+   * For modern (1.20.60+) custom blocks the RP `blocks.json` typically only
+   * contains `{"sound":...}` with no `textures` field — the texture binding
+   * lives in the BP's `minecraft:material_instances`. This method synthesises
+   * a `customBlocksCatalog` entry with the resolved texture so that
+   * `ProjectDefinitionUtilities.getVanillaBlockTexture()` can return a path
+   * for those blocks. It also registers the resolved texture file bytes into
+   * `Database.customTextureFiles` for the BlockMeshFactory data-URI resolver.
+   *
+   * Existing entries (e.g. loaded by `Database.loadCustomResourcePackFolders`
+   * from an RP `blocks.json` that DID have `textures`) take priority — this
+   * method only fills in what's missing.
+   *
+   * Safe to call repeatedly; later calls merge into the existing maps.
+   */
+  static async loadCustomBlocksFromProject(project: Project): Promise<void> {
+    const blockItems = project.getItemsByType(ProjectItemType.blockTypeBehavior);
+
+    for (const item of blockItems) {
+      try {
+        await ProjectUtilities._registerCustomBlockFromProjectItem(item, project);
+      } catch (e) {
+        Log.debug("ProjectUtilities.loadCustomBlocksFromProject: failed for " + item.projectPath + ": " + e);
+      }
+    }
+  }
+
+  private static async _registerCustomBlockFromProjectItem(item: ProjectItem, project: Project): Promise<void> {
+    const file = item.primaryFile;
+    if (!file) return;
+
+    if (!item.isContentLoaded) {
+      await item.loadContent();
+    }
+    await item.ensureDependencies();
+
+    const blockDef = await BlockTypeDefinition.ensureOnFile(file);
+    if (!blockDef) return;
+
+    const blockTypeId = blockDef.id;
+    if (!blockTypeId) return;
+
+    // Synthesize a `textures` field on the customBlocksCatalog entry from the
+    // BP's material_instances component if the RP entry lacks one. This is the
+    // modern (1.20.60+) custom-block pattern: textures live in BP, RP just has
+    // `{"sound":...}`.
+    const existing = (Database.customBlocksCatalog[blockTypeId] as
+      | (IBlockResource & { textures?: unknown })
+      | undefined) ?? { sound: "stone" };
+
+    if (!(existing as { textures?: unknown }).textures) {
+      const matInstancesComponent = blockDef.getComponent("minecraft:material_instances");
+      const matInstancesData = matInstancesComponent?.getData();
+      if (matInstancesData && typeof matInstancesData === "object" && !Array.isArray(matInstancesData)) {
+        const mi = matInstancesData as unknown as { [face: string]: { texture?: string } | string };
+        const wildcardEntry = mi["*"];
+        const wildcardTex =
+          typeof wildcardEntry === "string"
+            ? wildcardEntry
+            : wildcardEntry && typeof wildcardEntry === "object"
+              ? (wildcardEntry as { texture?: string }).texture
+              : undefined;
+
+        const resolveFace = (face: string): string | undefined => {
+          const entry = mi[face];
+          if (!entry) return wildcardTex;
+          if (typeof entry === "string") return entry;
+          if (typeof entry === "object") {
+            return (entry as { texture?: string }).texture ?? wildcardTex;
+          }
+          return wildcardTex;
+        };
+
+        const upTex = resolveFace("up") ?? wildcardTex;
+        const downTex = resolveFace("down") ?? wildcardTex;
+        const sideTex = resolveFace("side") ?? resolveFace("north") ?? resolveFace("east") ?? wildcardTex;
+
+        if (upTex || downTex || sideTex) {
+          (existing as { textures?: unknown }).textures = {
+            up: upTex,
+            down: downTex,
+            side: sideTex,
+          };
+        }
+      }
+    }
+
+    Database.customBlocksCatalog[blockTypeId] = existing as IBlockResource;
+    const colon = blockTypeId.indexOf(":");
+    if (colon >= 0) {
+      Database.customBlocksCatalog[blockTypeId.substring(colon + 1)] = existing as IBlockResource;
+    }
+
+    // Register every texture this block resolves to in customTextureFiles so
+    // BlockMeshFactory._resolveTextureUrl can find the raw PNG bytes and turn
+    // them into a data: URI (the CSP forbids blob: URLs). Uses the project's
+    // own dependency-graph walker (BlockTypeDefinition.getTextureItems)
+    // rather than scanning the filesystem ourselves.
+    const textureItems = await blockDef.getTextureItems(item, project);
+
+    if (textureItems) {
+      for (const texturePath of Object.keys(textureItems)) {
+        const textureItem = textureItems[texturePath];
+        if (!textureItem) continue;
+
+        const textureFile = textureItem.primaryFile;
+        if (!textureFile) continue;
+
+        if (!textureFile.isContentLoaded) {
+          try {
+            await textureFile.loadContent();
+          } catch (_e) {
+            continue;
+          }
+        }
+
+        if (!(textureFile.content instanceof Uint8Array)) continue;
+
+        // `texturePath` from getTextureItems is the entry's path relative to
+        // the RP root, with no extension — exactly the key BlockMeshFactory
+        // looks up.
+        const key = texturePath.replace(/^\/+/, "").replace(/\.(png|tga|jpg|jpeg)$/i, "");
+        Database.customTextureFiles.set(key, textureFile);
+      }
+    }
+
+    // Register the project's terrain_texture.json entries so the texture IDs
+    // referenced by material_instances ("twqpeux", "xsxyhnv", etc.) resolve
+    // to a real path through ProjectDefinitionUtilities.getVanillaBlockTexture.
+    // We pull these from any terrainTextureCatalogResourceJson child items of
+    // the block item — same items getTextureItems already walked.
+    if (item.childItems) {
+      for (const childRef of item.childItems) {
+        const child = childRef.childItem;
+        if (child.itemType !== ProjectItemType.terrainTextureCatalogResourceJson) continue;
+        if (!child.isContentLoaded) {
+          try {
+            await child.loadContent();
+          } catch (_e) {
+            continue;
+          }
+        }
+        if (!child.primaryFile) continue;
+        const catalog = await TerrainTextureCatalogDefinition.ensureOnFile(child.primaryFile);
+        if (!catalog || !catalog.data || !catalog.data.texture_data) continue;
+        for (const textureId of Object.keys(catalog.data.texture_data)) {
+          // Merge — RP-loaded catalog entries take priority (set earlier in
+          // Database.loadCustomResourcePackFolders).
+          if (!Database.customTerrainTextureCatalog[textureId]) {
+            Database.customTerrainTextureCatalog[textureId] = catalog.data.texture_data[textureId];
+          }
+        }
+      }
+    }
   }
 
   static hasItems(project: Project) {

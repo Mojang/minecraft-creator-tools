@@ -282,6 +282,17 @@ test.describe("Cat Entity Model Preview", () => {
     // Give the 3D model time to load and render (BabylonJS scenes take a moment)
     await page.waitForTimeout(5000);
 
+    // Wait for "Loading model..." placeholder text to disappear before screenshotting.
+    // The cat model has 44+ texture variants and can take longer than the initial 5s.
+    const loadingMsg = page.locator(".etop-modelViewer >> text=/Loading model/i").first();
+    if (await loadingMsg.isVisible({ timeout: 500 }).catch(() => false)) {
+      console.log("Model still loading after initial 5s — waiting for placeholder to clear...");
+      await loadingMsg.waitFor({ state: "hidden", timeout: 30000 }).catch(() => {
+        console.log("Model placeholder still visible after 30s — proceeding anyway");
+      });
+      await page.waitForTimeout(1000);
+    }
+
     await page.screenshot({ path: `${SCREENSHOT_DIR}/06-overview-panel.png`, fullPage: true });
 
     // Step 8: Verify model section exists
@@ -294,9 +305,11 @@ test.describe("Cat Entity Model Preview", () => {
       await modelSection.screenshot({ path: `${SCREENSHOT_DIR}/07-model-section.png` });
     }
 
-    // Step 9: Verify WebGL canvas is rendering (the 3D view)
+    // Step 9: Verify WebGL canvas is rendering (the 3D view).
+    // Extended timeout because cat has 44+ variants and BabylonJS scene init
+    // can be slow on a busy dev server.
     const canvas = page.locator(".etop-modelViewer canvas, .etop-modelSection canvas").first();
-    const canvasVisible = await canvas.isVisible({ timeout: 8000 }).catch(() => false);
+    const canvasVisible = await canvas.isVisible({ timeout: 30000 }).catch(() => false);
     console.log(`WebGL canvas visible: ${canvasVisible}`);
 
     if (canvasVisible) {

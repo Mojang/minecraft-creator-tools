@@ -271,246 +271,255 @@ export default class CreatorToolsHost {
 
     CreatorToolsHost._initializing = true;
 
-    //@ts-ignore
-    if (typeof g_contentRoot !== "undefined") {
+    try {
+
       //@ts-ignore
-      CreatorToolsHost.contentWebRoot = StorageUtilities.ensureEndsWithDelimiter(g_contentRoot);
-    }
-
-    //@ts-ignore
-    if (typeof g_vanillaContentRoot !== "undefined") {
-      //@ts-ignore
-      CreatorToolsHost.vanillaContentRoot = StorageUtilities.ensureEndsWithDelimiter(g_vanillaContentRoot);
-    }
-
-    //@ts-ignore
-    if (typeof g_initialMode !== "undefined") {
-      //@ts-ignore
-      CreatorToolsHost.initialMode = g_initialMode;
-    }
-
-    //@ts-ignore
-    if (typeof g_modeParameter !== "undefined") {
-      //@ts-ignore
-      CreatorToolsHost.modeParameter = g_modeParameter;
-    }
-
-    //@ts-ignore
-    if (typeof g_isVsCodeMain !== "undefined") {
-      //@ts-ignore
-      if (g_isVsCodeMain) {
-        CreatorToolsHost.hostType = HostType.vsCodeMainWeb;
-      }
-    }
-
-    //@ts-ignore
-    if (typeof g_isVsCodeWeb !== "undefined") {
-      //@ts-ignore
-      if (g_isVsCodeWeb) {
-        CreatorToolsHost.hostType = HostType.vsCodeWebWeb;
-      }
-    }
-
-    //@ts-ignore
-    if (typeof g_projectPath !== "undefined") {
-      //@ts-ignore
-      CreatorToolsHost.projectPath = g_projectPath;
-    }
-
-    //@ts-ignore
-    if (typeof g_baseUrl !== "undefined") {
-      //@ts-ignore
-      CreatorToolsHost.baseUrl = g_baseUrl;
-    }
-
-    //@ts-ignore
-    if (typeof g_contentUrl !== "undefined") {
-      //@ts-ignore
-      CreatorToolsHost.contentUrl = g_contentUrl;
-    }
-
-    //@ts-ignore
-    if (typeof g_readOnly !== "undefined") {
-      //@ts-ignore
-      CreatorToolsHost.readOnly = g_readOnly === true;
-    }
-
-    AppServiceProxy.init();
-
-    Database.loadVanillaCatalog();
-
-    CreatorToolsCommands.registerCommonCommands();
-
-    CreatorToolsHost.generateCryptoRandomNumber = (toVal) => {
-      const ct = CreatorToolsHost.getCreatorTools();
-
-      if (!ct || !ct.local) {
-        throw new Error("Could not generate key.");
+      if (typeof g_contentRoot !== "undefined") {
+        //@ts-ignore
+        CreatorToolsHost.contentWebRoot = StorageUtilities.ensureEndsWithDelimiter(g_contentRoot);
       }
 
-      return ct.local.generateCryptoRandomNumber(toVal);
-    };
-
-    CreatorToolsHost.generateUuid = () => {
-      const ct = CreatorToolsHost.getCreatorTools();
-
-      if (!ct || !ct.local) {
-        throw new Error("Could not generate UUID.");
+      //@ts-ignore
+      if (typeof g_vanillaContentRoot !== "undefined") {
+        //@ts-ignore
+        CreatorToolsHost.vanillaContentRoot = StorageUtilities.ensureEndsWithDelimiter(g_vanillaContentRoot);
       }
 
-      return ct.local.generateUuid();
-    };
-
-    // Set up image codec thunks for Node.js environments
-    CreatorToolsHost.decodePng = (data: Uint8Array) => {
-      const ct = CreatorToolsHost.getCreatorTools();
-      if (!ct || !ct.local) {
-        return undefined;
+      //@ts-ignore
+      if (typeof g_initialMode !== "undefined") {
+        //@ts-ignore
+        CreatorToolsHost.initialMode = g_initialMode;
       }
-      return ct.local.decodePng(data);
-    };
 
-    CreatorToolsHost.encodeToPng = (pixels: Uint8Array, width: number, height: number) => {
-      const ct = CreatorToolsHost.getCreatorTools();
-      if (!ct || !ct.local) {
-        return undefined;
+      //@ts-ignore
+      if (typeof g_modeParameter !== "undefined") {
+        //@ts-ignore
+        CreatorToolsHost.modeParameter = g_modeParameter;
       }
-      return ct.local.encodeToPng(pixels, width, height);
-    };
 
-    // @ts-ignore
-    if (typeof window !== "undefined" && window.crypto) {
-      CreatorToolsHost.generateCryptoRandomNumber = (toVal) => {
-        // Use rejection sampling to avoid modulo bias when generating random numbers
-        // from a cryptographically secure source
-        const maxUint32 = 0xffffffff;
-        const limit = maxUint32 - (maxUint32 % toVal);
-        let randomValue: number;
-        do {
-          // @ts-ignore
-          randomValue = window.crypto.getRandomValues(new Uint32Array(1))[0];
-        } while (randomValue >= limit);
-        return randomValue % toVal;
-      };
-
-      // @ts-ignore
-      if (window.crypto.randomUUID) {
-        CreatorToolsHost.generateUuid = () => {
-          // @ts-ignore
-          return window.crypto.randomUUID();
-        };
-      } else {
-        // Fallback for older browsers using crypto.getRandomValues
-        CreatorToolsHost.generateUuid = () => {
-          // @ts-ignore
-          const bytes = window.crypto.getRandomValues(new Uint8Array(16));
-          // Set version 4 (random) UUID bits
-          bytes[6] = (bytes[6] & 0x0f) | 0x40;
-          bytes[8] = (bytes[8] & 0x3f) | 0x80;
-          const hex = Array.from(bytes, (b: number) => b.toString(16).padStart(2, "0")).join("");
-          return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20, 32)}`;
-        };
-      }
-    }
-
-    if (CreatorToolsHost.projectsStorage !== null && CreatorToolsHost.prefsStorage !== null) {
-    } else if (AppServiceProxy.hasAppService) {
-      let ls = new ElectronStorage("<DOCP>", "prefs");
-      ls.rootFolder.ensureExists();
-      CreatorToolsHost.prefsStorage = ls;
-
-      ls = new ElectronStorage("<DOCP>", "working");
-      ls.rootFolder.ensureExists();
-      CreatorToolsHost.workingStorage = ls;
-
-      ls = new ElectronStorage("<DOCP>", "projects");
-      ls.rootFolder.ensureExists();
-      CreatorToolsHost.projectsStorage = ls;
-
-      ls = new ElectronStorage("<DOCP>", "worlds");
-      ls.rootFolder.ensureExists();
-      CreatorToolsHost.worldStorage = ls;
-
-      ls = new ElectronStorage("<DOCP>", "packs");
-      ls.rootFolder.ensureExists();
-      CreatorToolsHost.packStorage = ls;
-
-      // @ts-ignore
-      if (typeof window !== "undefined") {
-        // @ts-ignore
-        let basePath = window.location.href;
-        const lastSlash = basePath.lastIndexOf("/");
-
-        if (lastSlash >= 0) {
-          CreatorToolsHost.contentWebRoot = basePath.substring(0, lastSlash + 1);
+      //@ts-ignore
+      if (typeof g_isVsCodeMain !== "undefined") {
+        //@ts-ignore
+        if (g_isVsCodeMain) {
+          CreatorToolsHost.hostType = HostType.vsCodeMainWeb;
         }
       }
 
-      let minecraftPath = "<BDRK>";
-
-      ls = new ElectronStorage(minecraftPath, "");
-      ls.getAvailable();
-      CreatorToolsHost.deploymentStorage[DeploymentTargetType.bedrock] = ls;
-
-      let minecraftPreviewPath = "<BDPV>";
-
-      ls = new ElectronStorage(minecraftPreviewPath, "");
-      ls.getAvailable();
-
-      CreatorToolsHost.deploymentStorage[DeploymentTargetType.bedrockPreview] = ls;
-
       //@ts-ignore
-    } else if (typeof window !== "undefined") {
-      // Guard: If we're in Electron context but AppServiceProxy isn't ready, that's an initialization error.
-      // Electron renderer should NEVER use BrowserStorage - it should use ElectronStorage which proxies to NodeJS.
-      // @ts-ignore
-      if (typeof window.api !== "undefined") {
-        throw new Error(
-          "BrowserStorage initialization attempted in Electron context. " +
-            "Electron renderer must use ElectronStorage. " +
-            "Ensure AppServiceProxy.hasAppService is true before CreatorToolsHost.init() is called."
-        );
+      if (typeof g_isVsCodeWeb !== "undefined") {
+        //@ts-ignore
+        if (g_isVsCodeWeb) {
+          CreatorToolsHost.hostType = HostType.vsCodeWebWeb;
+        }
       }
 
-      CreatorToolsHost.prefsStorage = new BrowserStorage("mctprefs");
-      CreatorToolsHost.projectsStorage = new BrowserStorage("mctprojects");
+      //@ts-ignore
+      if (typeof g_projectPath !== "undefined") {
+        //@ts-ignore
+        CreatorToolsHost.projectPath = g_projectPath;
+      }
 
-      CreatorToolsHost.deploymentStorage[DeploymentTargetType.bedrock] = new BrowserStorage("mctdeploy");
-      CreatorToolsHost.workingStorage = new BrowserStorage("mctworking");
-      CreatorToolsHost.worldStorage = new BrowserStorage("mctworlds");
-      CreatorToolsHost.packStorage = new BrowserStorage("mctpacks");
+      //@ts-ignore
+      if (typeof g_baseUrl !== "undefined") {
+        //@ts-ignore
+        CreatorToolsHost.baseUrl = g_baseUrl;
+      }
+
+      //@ts-ignore
+      if (typeof g_contentUrl !== "undefined") {
+        //@ts-ignore
+        CreatorToolsHost.contentUrl = g_contentUrl;
+      }
+
+      //@ts-ignore
+      if (typeof g_readOnly !== "undefined") {
+        //@ts-ignore
+        CreatorToolsHost.readOnly = g_readOnly === true;
+      }
+
+      AppServiceProxy.init();
+
+      Database.loadVanillaCatalog();
+
+      CreatorToolsCommands.registerCommonCommands();
+
+      CreatorToolsHost.generateCryptoRandomNumber = (toVal) => {
+        const ct = CreatorToolsHost.getCreatorTools();
+
+        if (!ct || !ct.local) {
+          throw new Error("Could not generate key.");
+        }
+
+        return ct.local.generateCryptoRandomNumber(toVal);
+      };
+
+      CreatorToolsHost.generateUuid = () => {
+        const ct = CreatorToolsHost.getCreatorTools();
+
+        if (!ct || !ct.local) {
+          throw new Error("Could not generate UUID.");
+        }
+
+        return ct.local.generateUuid();
+      };
+
+      // Set up image codec thunks for Node.js environments
+      CreatorToolsHost.decodePng = (data: Uint8Array) => {
+        const ct = CreatorToolsHost.getCreatorTools();
+        if (!ct || !ct.local) {
+          return undefined;
+        }
+        return ct.local.decodePng(data);
+      };
+
+      CreatorToolsHost.encodeToPng = (pixels: Uint8Array, width: number, height: number) => {
+        const ct = CreatorToolsHost.getCreatorTools();
+        if (!ct || !ct.local) {
+          return undefined;
+        }
+        return ct.local.encodeToPng(pixels, width, height);
+      };
+
+      // @ts-ignore
+      if (typeof window !== "undefined" && window.crypto) {
+        CreatorToolsHost.generateCryptoRandomNumber = (toVal) => {
+          // Use rejection sampling to avoid modulo bias when generating random numbers
+          // from a cryptographically secure source
+          const maxUint32 = 0xffffffff;
+          const limit = maxUint32 - (maxUint32 % toVal);
+          let randomValue: number;
+          do {
+            // @ts-ignore
+            randomValue = window.crypto.getRandomValues(new Uint32Array(1))[0];
+          } while (randomValue >= limit);
+          return randomValue % toVal;
+        };
+
+        // @ts-ignore
+        if (window.crypto.randomUUID) {
+          CreatorToolsHost.generateUuid = () => {
+            // @ts-ignore
+            return window.crypto.randomUUID();
+          };
+        } else {
+          // Fallback for older browsers using crypto.getRandomValues
+          CreatorToolsHost.generateUuid = () => {
+            // @ts-ignore
+            const bytes = window.crypto.getRandomValues(new Uint8Array(16));
+            // Set version 4 (random) UUID bits
+            bytes[6] = (bytes[6] & 0x0f) | 0x40;
+            bytes[8] = (bytes[8] & 0x3f) | 0x80;
+            const hex = Array.from(bytes, (b: number) => b.toString(16).padStart(2, "0")).join("");
+            return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20, 32)}`;
+          };
+        }
+      }
+
+      if (CreatorToolsHost.projectsStorage !== null && CreatorToolsHost.prefsStorage !== null) {
+      } else if (AppServiceProxy.hasAppService) {
+        let ls = new ElectronStorage("<DOCP>", "prefs");
+        ls.rootFolder.ensureExists();
+        CreatorToolsHost.prefsStorage = ls;
+
+        ls = new ElectronStorage("<DOCP>", "working");
+        ls.rootFolder.ensureExists();
+        CreatorToolsHost.workingStorage = ls;
+
+        ls = new ElectronStorage("<DOCP>", "projects");
+        ls.rootFolder.ensureExists();
+        CreatorToolsHost.projectsStorage = ls;
+
+        ls = new ElectronStorage("<DOCP>", "worlds");
+        ls.rootFolder.ensureExists();
+        CreatorToolsHost.worldStorage = ls;
+
+        ls = new ElectronStorage("<DOCP>", "packs");
+        ls.rootFolder.ensureExists();
+        CreatorToolsHost.packStorage = ls;
+
+        // @ts-ignore
+        if (typeof window !== "undefined") {
+          // @ts-ignore
+          let basePath = window.location.href;
+          const lastSlash = basePath.lastIndexOf("/");
+
+          if (lastSlash >= 0) {
+            CreatorToolsHost.contentWebRoot = basePath.substring(0, lastSlash + 1);
+          }
+        }
+
+        let minecraftPath = "<BDRK>";
+
+        ls = new ElectronStorage(minecraftPath, "");
+        ls.getAvailable();
+        CreatorToolsHost.deploymentStorage[DeploymentTargetType.bedrock] = ls;
+
+        let minecraftPreviewPath = "<BDPV>";
+
+        ls = new ElectronStorage(minecraftPreviewPath, "");
+        ls.getAvailable();
+
+        CreatorToolsHost.deploymentStorage[DeploymentTargetType.bedrockPreview] = ls;
+
+        //@ts-ignore
+      } else if (typeof window !== "undefined") {
+        // Guard: If we're in Electron context but AppServiceProxy isn't ready, that's an initialization error.
+        // Electron renderer should NEVER use BrowserStorage - it should use ElectronStorage which proxies to NodeJS.
+        // @ts-ignore
+        if (typeof window.api !== "undefined") {
+          throw new Error(
+            "BrowserStorage initialization attempted in Electron context. " +
+              "Electron renderer must use ElectronStorage. " +
+              "Ensure AppServiceProxy.hasAppService is true before CreatorToolsHost.init() is called."
+          );
+        }
+
+        CreatorToolsHost.prefsStorage = new BrowserStorage("mctprefs");
+        CreatorToolsHost.projectsStorage = new BrowserStorage("mctprojects");
+
+        CreatorToolsHost.deploymentStorage[DeploymentTargetType.bedrock] = new BrowserStorage("mctdeploy");
+        CreatorToolsHost.workingStorage = new BrowserStorage("mctworking");
+        CreatorToolsHost.worldStorage = new BrowserStorage("mctworlds");
+        CreatorToolsHost.packStorage = new BrowserStorage("mctpacks");
+      }
+
+      if (CreatorToolsHost.prefsStorage === null || CreatorToolsHost.projectsStorage === null) {
+        throw new Error("Unexpected uninitialized storage.");
+      }
+
+      CreatorToolsHost._creatorTools = new CreatorTools(
+        CreatorToolsHost.prefsStorage,
+        CreatorToolsHost.projectsStorage,
+        CreatorToolsHost.deploymentStorage,
+        CreatorToolsHost.worldStorage,
+        CreatorToolsHost.packStorage,
+        CreatorToolsHost.workingStorage,
+        CreatorToolsHost.contentWebRoot
+      );
+
+      if (CreatorToolsHost.ensureLocalFolder) {
+        CreatorToolsHost._creatorTools.ensureLocalFolder = CreatorToolsHost.ensureLocalFolder;
+        CreatorToolsHost._creatorTools.localFolderExists = CreatorToolsHost.localFolderExists;
+        CreatorToolsHost._creatorTools.localFileExists = CreatorToolsHost.localFileExists;
+      } else if (CreatorToolsHost.hostType === HostType.electronWeb) {
+        CreatorToolsHost._creatorTools.ensureLocalFolder = CreatorToolsHost._ensureElectronLocalFolder;
+        CreatorToolsHost._creatorTools.localFolderExists = CreatorToolsHost._localFolderExists;
+        CreatorToolsHost._creatorTools.localFileExists = CreatorToolsHost._localFileExists;
+      }
+
+      CreatorToolsHost._creatorTools.createMinecraft = CreatorToolsHost.createMinecraft;
+      CreatorToolsHost._creatorTools.canCreateMinecraft = CreatorToolsHost.canCreateMinecraft;
+
+      CreatorToolsHost._initialized = true;
+      CreatorToolsHost._initializing = false;
+
+      this._onInitialized.dispatch(CreatorToolsHost._creatorTools, CreatorToolsHost._creatorTools);
+    } catch (err) {
+      CreatorToolsHost._creatorTools = undefined;
+      CreatorToolsHost._initialized = false;
+      CreatorToolsHost._initializing = false;
+      throw err;
     }
-
-    if (CreatorToolsHost.prefsStorage === null || CreatorToolsHost.projectsStorage === null) {
-      throw new Error("Unexpected uninitialized storage.");
-    }
-
-    CreatorToolsHost._creatorTools = new CreatorTools(
-      CreatorToolsHost.prefsStorage,
-      CreatorToolsHost.projectsStorage,
-      CreatorToolsHost.deploymentStorage,
-      CreatorToolsHost.worldStorage,
-      CreatorToolsHost.packStorage,
-      CreatorToolsHost.workingStorage,
-      CreatorToolsHost.contentWebRoot
-    );
-
-    if (CreatorToolsHost.ensureLocalFolder) {
-      CreatorToolsHost._creatorTools.ensureLocalFolder = CreatorToolsHost.ensureLocalFolder;
-      CreatorToolsHost._creatorTools.localFolderExists = CreatorToolsHost.localFolderExists;
-      CreatorToolsHost._creatorTools.localFileExists = CreatorToolsHost.localFileExists;
-    } else if (CreatorToolsHost.hostType === HostType.electronWeb) {
-      CreatorToolsHost._creatorTools.ensureLocalFolder = CreatorToolsHost._ensureElectronLocalFolder;
-      CreatorToolsHost._creatorTools.localFolderExists = CreatorToolsHost._localFolderExists;
-      CreatorToolsHost._creatorTools.localFileExists = CreatorToolsHost._localFileExists;
-    }
-
-    CreatorToolsHost._creatorTools.createMinecraft = CreatorToolsHost.createMinecraft;
-    CreatorToolsHost._creatorTools.canCreateMinecraft = CreatorToolsHost.canCreateMinecraft;
-
-    CreatorToolsHost._initialized = true;
-
-    this._onInitialized.dispatch(CreatorToolsHost._creatorTools, CreatorToolsHost._creatorTools);
   }
 
   static async _localFolderExists(path: string) {

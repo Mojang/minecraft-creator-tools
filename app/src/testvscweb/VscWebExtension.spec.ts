@@ -6,14 +6,14 @@
  * OVERVIEW:
  * ---------
  * These tests validate the MCTools extension running in VS Code for the Web.
- * This environment uses vscode-test-web to run a browser-based VS Code with the
+ * This environment uses @vscode/test-web to run a browser-based VS Code with the
  * extension loaded from the local toolbuild/vsc directory.
  *
  * TEST INFRASTRUCTURE:
  * --------------------
  * - Configuration: playwright-vscweb.config.js
  * - Port: 3001 (separate from main web app on 3000)
- * - Server: vscode-test-web with --browserType=none (Playwright controls the browser)
+ * - Server: @vscode/test-web with --browserType=none (Playwright controls the browser)
  * - Sample Content: ../samplecontent/simple/ folder is mounted as workspace
  *
  * VS CODE FOR WEB UI STRUCTURE:

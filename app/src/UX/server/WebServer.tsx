@@ -1,7 +1,7 @@
 import { Component } from "react";
 import "./WebServer.css";
 import IAppProps from "../appShell/IAppProps";
-import { AppMode } from "../appShell/App";
+import { AppMode } from "../appShell/AppMode";
 import Project from "../../app/Project";
 import MinecraftDisplay from "./MinecraftDisplay";
 import IProjectTheme from "../types/IProjectTheme";

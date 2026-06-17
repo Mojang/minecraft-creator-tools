@@ -105,13 +105,14 @@ export default class FileSystemFile extends FileBase implements IFile {
               create: true,
             });
           } catch (e) {
-            Log.debugAlert("File r/w retrieval: " + e);
+            Log.error(
+              "Could not obtain write handle for file '" + this.storageRelativePath + "': " + e
+            );
+            throw e;
           }
         }
       }
     }
-
-    Log.assert(this._writeHandle !== undefined, "No folder handle.");
 
     return this._writeHandle;
   }
@@ -273,6 +274,8 @@ export default class FileSystemFile extends FileBase implements IFile {
     return true;
   }
 
+  private static readonly MAX_SAVE_ATTEMPTS = 3;
+
   async saveContent(force?: boolean): Promise<Date> {
     if (this.parentFolder.storage.readOnly) {
       throw new Error("Can't save read-only file.");
@@ -282,17 +285,71 @@ export default class FileSystemFile extends FileBase implements IFile {
       Log.assert(this.content !== null, "Null content found.");
 
       if (this.content !== null) {
-        const handle = await this.ensureWriteHandle();
+        let handle = await this.ensureWriteHandle();
 
         if (handle) {
-          const writable = await handle.createWritable();
+          let lastError: unknown;
 
-          await writable.write(this.content as FileSystemWriteChunkType);
+          for (let attempt = 1; attempt <= FileSystemFile.MAX_SAVE_ATTEMPTS; attempt++) {
+            try {
+              const writable = await handle.createWritable();
 
-          await writable.close();
+              await writable.write(this.content as FileSystemWriteChunkType);
 
-          const readableFile = await handle.getFile();
-          this._localPersistDateTime = new Date(readableFile.lastModified);
+              await writable.close();
+
+              const readableFile = await handle.getFile();
+              this._localPersistDateTime = new Date(readableFile.lastModified);
+              lastError = undefined;
+              break;
+            } catch (e) {
+              lastError = e;
+              if (attempt < FileSystemFile.MAX_SAVE_ATTEMPTS) {
+                Log.debug(
+                  "Transient failure saving '" +
+                    this.storageRelativePath +
+                    "' (attempt " +
+                    attempt +
+                    "/" +
+                    FileSystemFile.MAX_SAVE_ATTEMPTS +
+                    "): " +
+                    e
+                );
+                // Brief delay before retry
+                await new Promise((resolve) => setTimeout(resolve, 100 * attempt));
+
+                // Invalidate the cached handle so ensureWriteHandle re-creates it
+                this._writeHandle = undefined;
+                const retryHandle = await this.ensureWriteHandle();
+                if (!retryHandle) {
+                  break;
+                }
+                handle = retryHandle;
+              }
+            }
+          }
+
+          if (lastError !== undefined) {
+            Log.error(
+              "Failed to save file '" +
+                this.storageRelativePath +
+                "' after " +
+                FileSystemFile.MAX_SAVE_ATTEMPTS +
+                " attempt(s): " +
+                lastError
+            );
+            throw new Error(
+              "Failed to save file '" +
+                this.storageRelativePath +
+                "': " +
+                (lastError instanceof Error ? lastError.message : String(lastError))
+            );
+          }
+        } else {
+          const message =
+            "Could not obtain write handle for file '" + this.storageRelativePath + "'; file was not saved.";
+          Log.error(message);
+          throw new Error(message);
         }
 
         this._parentFolder.saveAndGetDate(false);

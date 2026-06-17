@@ -4,7 +4,19 @@ import Project from "../../../app/Project";
 import { ProjectItemType } from "../../../app/IProjectItemData";
 import ProjectItem from "../../../app/ProjectItem";
 import { ProjectEditorMode, ProjectItemEditorView } from "../ProjectEditorUtilities";
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, MenuItem, Select, TextField, FormControl, InputLabel, Alert } from "@mui/material";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  MenuItem,
+  Select,
+  TextField,
+  FormControl,
+  InputLabel,
+  Alert,
+} from "@mui/material";
 
 import { GitHubPropertyType } from "../ProjectPropertyEditor";
 import NewEntityType from "../../editors/entityType/NewEntityType";
@@ -95,6 +107,67 @@ export enum ProjectAddButtonDialogType {
 
 export const PROJECT_ADD_BUTTON_QUICK_ACTION_EVENT = "mct-project-add-quick-action";
 export type ProjectAddButtonQuickAction = "entityType" | "blockType" | "itemType";
+
+/**
+ * Detail payload for {@link PROJECT_ADD_BUTTON_QUICK_ACTION_EVENT}. Callers may
+ * either request a named quick action (entity/block/item type) or, more
+ * generally, request the add experience for a specific {@link ProjectItemType}
+ * via `itemType`. The latter is used by the per-category "+" affordance and
+ * right-click "Add new …" menu on the item-list group headers.
+ */
+export interface IProjectAddButtonQuickActionDetail {
+  action?: ProjectAddButtonQuickAction;
+  itemType?: ProjectItemType;
+}
+
+/**
+ * Dispatches a quick-action request that the mounted {@link ProjectAddButton}
+ * picks up via its window event listener. Decouples the project item list (and
+ * other surfaces) from the add-button instance.
+ */
+export function requestProjectAddItemOfType(itemType: ProjectItemType) {
+  window.dispatchEvent(
+    new CustomEvent<IProjectAddButtonQuickActionDetail>(PROJECT_ADD_BUTTON_QUICK_ACTION_EVENT, {
+      detail: { itemType },
+    })
+  );
+}
+
+/**
+ * Display-group item types that {@link ProjectAddButton.addItemOfType} can
+ * launch an add experience for. Used to decide which item-list category headers
+ * get a "+" affordance / "Add new …" context menu. (JS is intentionally
+ * omitted — it normalizes to TS in `addItemOfType` / `canAddProjectItemType`.)
+ */
+const addableProjectItemTypes: ReadonlySet<ProjectItemType> = new Set([
+  ProjectItemType.ts,
+  ProjectItemType.MCFunction,
+  ProjectItemType.entityTypeBehavior,
+  ProjectItemType.blockTypeBehavior,
+  ProjectItemType.itemTypeBehavior,
+  ProjectItemType.lootTableBehavior,
+  ProjectItemType.spawnRuleBehavior,
+  ProjectItemType.biomeBehavior,
+  ProjectItemType.featureBehavior,
+  ProjectItemType.featureRuleBehavior,
+  ProjectItemType.texture,
+  ProjectItemType.audio,
+  ProjectItemType.designTexture,
+  ProjectItemType.structure,
+  ProjectItemType.worldTest,
+  ProjectItemType.dataForm,
+  ProjectItemType.actionSet,
+]);
+
+/**
+ * Whether the given item type has a dedicated add experience reachable via
+ * {@link requestProjectAddItemOfType}. Pass either JS or TS for scripts — JS is
+ * folded into TS. Kept in sync with the switch in `ProjectAddButton.addItemOfType`.
+ */
+export function canAddProjectItemType(itemType: ProjectItemType): boolean {
+  const displayType = itemType === ProjectItemType.js ? ProjectItemType.ts : itemType;
+  return addableProjectItemTypes.has(displayType);
+}
 
 class ProjectAddButton extends Component<IProjectAddButtonProps, IProjectAddButtonState> {
   tentativeGitHubMode: string = "existing";
@@ -212,7 +285,12 @@ class ProjectAddButton extends Component<IProjectAddButtonProps, IProjectAddButt
   }
 
   _handleQuickActionRequest(event: Event) {
-    const customEvent = event as CustomEvent<{ action?: ProjectAddButtonQuickAction }>;
+    const customEvent = event as CustomEvent<IProjectAddButtonQuickActionDetail>;
+
+    if (customEvent.detail?.itemType !== undefined) {
+      this.addItemOfType(customEvent.detail.itemType);
+      return;
+    }
 
     switch (customEvent.detail?.action) {
       case "entityType":
@@ -224,6 +302,78 @@ class ProjectAddButton extends Component<IProjectAddButtonProps, IProjectAddButt
       case "itemType":
         this._handleNewItemTypeClick();
         break;
+    }
+  }
+
+  /**
+   * Routes a {@link ProjectItemType} to the appropriate "add" experience —
+   * e.g. the New Mob wizard for entity types, a name/folder picker for scripts,
+   * or a namespaced-definition dialog for spawn rules. Returns `true` when the
+   * type is creatable (and a flow was launched), `false` otherwise.
+   *
+   * Keep {@link ProjectAddButton.canAddItemType} in sync with the cases here so
+   * that the item-list group headers only render the "+" affordance for types
+   * that this method actually handles.
+   */
+  addItemOfType(itemType: ProjectItemType): boolean {
+    // JS and TS share the "Scripts" category; normalize so either lands on the
+    // script flow (which honors the project's preferred script language).
+    const displayType = itemType === ProjectItemType.js ? ProjectItemType.ts : itemType;
+
+    switch (displayType) {
+      case ProjectItemType.ts:
+        this._handleNewScriptClick();
+        return true;
+      case ProjectItemType.MCFunction:
+        this._handleNewFunctionClick();
+        return true;
+      case ProjectItemType.entityTypeBehavior:
+        this._handleNewEntityTypeClick();
+        return true;
+      case ProjectItemType.blockTypeBehavior:
+        this._handleNewBlockTypeClick();
+        return true;
+      case ProjectItemType.itemTypeBehavior:
+        this._handleNewItemTypeClick();
+        return true;
+      case ProjectItemType.lootTableBehavior:
+        this._handleNewLootTableClick();
+        return true;
+      case ProjectItemType.spawnRuleBehavior:
+        this.launchNewNamespacedDefinition(ProjectItemType.spawnRuleBehavior, "spawn_rule");
+        return true;
+      case ProjectItemType.biomeBehavior:
+        this._handleNewBiomeClick();
+        return true;
+      case ProjectItemType.featureBehavior:
+        this._handleNewFeatureClick();
+        return true;
+      case ProjectItemType.featureRuleBehavior:
+        this._handleNewFeatureRuleClick();
+        return true;
+      case ProjectItemType.texture:
+        this._handleNewTextureClick();
+        return true;
+      case ProjectItemType.audio:
+        this._handleNewAudioClick();
+        return true;
+      case ProjectItemType.designTexture:
+        this._handleNewDesignTextureClick();
+        return true;
+      case ProjectItemType.structure:
+        this._handleNewStructureClick();
+        return true;
+      case ProjectItemType.worldTest:
+        this._handleNewWorldTestClick();
+        return true;
+      case ProjectItemType.dataForm:
+        this._handleNewFormClick();
+        return true;
+      case ProjectItemType.actionSet:
+        this._handleNewActionSetClick();
+        return true;
+      default:
+        return false;
     }
   }
 
@@ -1564,7 +1714,13 @@ class ProjectAddButton extends Component<IProjectAddButtonProps, IProjectAddButt
     const selectedTypeOption = emptyFileTypeOptions.find((o) => o.value === selectedEmptyFileType);
 
     const emptyFileDialog = (
-      <Dialog open={emptyFileDialogOpen} key="pab-emptyFileOuter" onClose={this._handleEmptyFileCancel} maxWidth="sm" fullWidth>
+      <Dialog
+        open={emptyFileDialogOpen}
+        key="pab-emptyFileOuter"
+        onClose={this._handleEmptyFileCancel}
+        maxWidth="sm"
+        fullWidth
+      >
         {emptyFileDialogOpen && (
           <>
             <DialogTitle>Add empty file</DialogTitle>
@@ -1596,9 +1752,9 @@ class ProjectAddButton extends Component<IProjectAddButtonProps, IProjectAddButt
                 />
                 {this.state.emptyFileError && <Alert severity="error">{this.state.emptyFileError}</Alert>}
                 <div style={{ fontSize: 12, opacity: 0.7 }}>
-                  Drops a minimally-valid stub at the conventional folder for this content type
-                  (e.g. <code>behavior_packs/&lt;pack&gt;/{selectedTypeOption?.folder || "..."}</code>).
-                  You can edit it freely — the wizards aren&rsquo;t involved.
+                  Drops a minimally-valid stub at the conventional folder for this content type (e.g.{" "}
+                  <code>behavior_packs/&lt;pack&gt;/{selectedTypeOption?.folder || "..."}</code>). You can edit it
+                  freely — the wizards aren&rsquo;t involved.
                 </div>
               </div>
             </DialogContent>

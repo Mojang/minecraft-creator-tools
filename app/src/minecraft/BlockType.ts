@@ -110,6 +110,20 @@ export default class BlockType implements IManagedComponentSetItem {
       }
     }
 
+    // Custom (project / world) resource pack fallback. Lets blocks defined
+    // by a project's blocks.json render with their real textures instead of
+    // the plain-gray missing-texture fallback. 
+    if (!this._blockResource) {
+      const id = this.id;
+      const shortId = this.shortId;
+      const custom =
+        Database.customBlocksCatalog[id] ??
+        (shortId && shortId !== id ? Database.customBlocksCatalog[shortId] : undefined);
+      if (custom) {
+        this._blockResource = custom;
+      }
+    }
+
     return this._blockResource;
   }
 

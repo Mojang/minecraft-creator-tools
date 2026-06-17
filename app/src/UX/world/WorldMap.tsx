@@ -74,6 +74,8 @@ interface IWorldMapProps {
   activeDimension?: number;
   displayObjects?: WorldDisplayObject[];
   onSetActiveMap?: (map: WorldMap) => void;
+  /** Whether a 3D WorldViewer is active alongside this map (enables Track Camera) */
+  has3DViewer?: boolean;
   onSelectionChange?: (from: BlockLocation, to: BlockLocation) => void;
   onYChange?: (newY: number) => void;
   onDisplayModeChange?: (newMapDisplayMode: WorldMapDisplayMode) => void;
@@ -137,6 +139,7 @@ export default class WorldMap extends Component<IWorldMapProps, IWorldMapState> 
   _spawnLocationMarker: L.Marker | undefined;
   _playerMarker: L.Marker | undefined;
   _cameraMarker: L.Marker | undefined;
+  _cameraFrustum: L.Polygon | undefined;
   _trackCamera = false;
   _trackCameraBtn: HTMLButtonElement | undefined;
   _hasCenteredOnPlayer = false;
@@ -165,6 +168,9 @@ export default class WorldMap extends Component<IWorldMapProps, IWorldMapState> 
   _tileCache: Map<string, HTMLCanvasElement> = new Map();
   _tileCacheMaxSize = 500; // Maximum number of tiles to cache
   _tileCacheVersion = 0; // Increment this to invalidate entire cache
+
+  // Tracks chunks loaded since last tile refresh — used for selective invalidation
+  _dirtyChunkKeys: Set<string> = new Set();
 
   // Memory management for large worlds
   // Tracks chunks that were recently accessed for rendering, used to clear distant chunk data
@@ -203,6 +209,12 @@ export default class WorldMap extends Component<IWorldMapProps, IWorldMapState> 
 
   // Cache for loaded texture images (HTMLImageElement) ready for canvas drawing
   _customBlockImageCache: { [blockTypeId: string]: HTMLImageElement | undefined } = {};
+
+  // Debounce timer for layer redraw after custom-block textures load.
+  // Without this, each of N loaded textures triggers a full layer.redraw() that
+  // re-requests every visible tile — at low zoom this floods setTimeout(0) with so many
+  // _renderTile calls that the browser can't catch up, leaving many tiles stuck blank.
+  _textureRedrawTimeout: ReturnType<typeof setTimeout> | undefined;
 
   // Slider Y-range tracking for click/drag handling
   _sliderViewMinY: number = -64; // WorldMap.MIN_Y
@@ -414,20 +426,37 @@ export default class WorldMap extends Component<IWorldMapProps, IWorldMapState> 
     const img = new Image();
     img.onload = () => {
       this._customBlockImageCache[blockTypeId] = img;
-      // Trigger a redraw when the image loads
-      if (this._curLayer) {
-        (this._curLayer as L.GridLayer).redraw();
-      }
+      // Debounce the layer redraw so loading N textures triggers ONE redraw, not N.
+      // A single redraw() re-requests every visible tile; flooding the setTimeout queue
+      // with N redraws can leave tiles stuck blank because the queue can't drain.
+      this._scheduleTextureRedraw();
     };
-    img.onerror = (e) => {
-      // Mark as failed - the 'in' check will prevent retrying
-      // Keep it as undefined which was set before loading started
-      Log.debugAlert("Failed to load custom block texture for: " + blockTypeId);
+    img.onerror = (_e) => {
+      // Mark as failed - the 'in' check will prevent retrying.
+      // Use Log.debug (not debugAlert) so missing/invalid textures don't show alert prompts
+      // in debug builds when the map has many custom blocks with bad textures.
+      Log.debug("Failed to load custom block texture for: " + blockTypeId);
     };
     img.src = info.textureDataUrl;
 
     // Return undefined for now - image will be available after load
     return undefined;
+  }
+
+  /**
+   * Debounced trigger for a layer redraw after custom block textures finish loading.
+   * Coalesces many image-load events into a single redraw to avoid main-thread thrashing.
+   */
+  _scheduleTextureRedraw() {
+    if (this._textureRedrawTimeout) return;
+    this._textureRedrawTimeout = setTimeout(() => {
+      this._textureRedrawTimeout = undefined;
+      if (this._curLayer) {
+        // Invalidate cached tiles so they re-render with the now-loaded textures.
+        this._invalidateTileCache();
+        (this._curLayer as L.GridLayer).redraw();
+      }
+    }, 400);
   }
 
   componentWillUnmount() {
@@ -448,6 +477,12 @@ export default class WorldMap extends Component<IWorldMapProps, IWorldMapState> 
     if (this._chunkLoadBatchTimeout) {
       clearTimeout(this._chunkLoadBatchTimeout);
       this._chunkLoadBatchTimeout = undefined;
+    }
+
+    // Clear any pending texture redraw timeout
+    if (this._textureRedrawTimeout) {
+      clearTimeout(this._textureRedrawTimeout);
+      this._textureRedrawTimeout = undefined;
     }
 
     // Clear pending chunk load state
@@ -676,6 +711,13 @@ export default class WorldMap extends Component<IWorldMapProps, IWorldMapState> 
       return;
     }
 
+    // Don't let the queue grow beyond the cap — reject ALL new work when full.
+    // Visible chunks will be re-queued naturally when tiles redraw after existing loads complete.
+    const MAX_QUEUE_SIZE = 100;
+    if (this._chunksToLoad.length >= MAX_QUEUE_SIZE) {
+      return;
+    }
+
     // Mark as pending and queue for loading with priority
     this._pendingChunkLoads.add(key);
     this._chunksToLoad.push({ dim, x, z, priority });
@@ -683,11 +725,12 @@ export default class WorldMap extends Component<IWorldMapProps, IWorldMapState> 
 
     // Update progress state (throttled)
     const now = Date.now();
-    if (now - this._lastProgressUpdate > 100) {
+    if (now - this._lastProgressUpdate > 500) {
       this._lastProgressUpdate = now;
+      const displayTotal = Math.max(this._chunksLoadedThisSession, this._chunksTotalThisSession);
       this.setState({
         chunksLoading: this._chunksLoadedThisSession,
-        chunksTotal: this._chunksTotalThisSession,
+        chunksTotal: displayTotal,
       });
     }
 
@@ -702,17 +745,38 @@ export default class WorldMap extends Component<IWorldMapProps, IWorldMapState> 
 
   /**
    * Process queued chunk loads asynchronously, yielding to browser frequently.
-   * Uses requestAnimationFrame to keep UI responsive.
+   * Uses setTimeout(0) to yield to pending user input between chunks.
+   * Only processes ONE chunk per tick at low zoom to avoid UI jank.
    * Skips chunks that are no longer in the visible viewport.
-   * Prioritizes chunks by priority value (lower = higher priority).
    */
   _processChunksAsync() {
     if (this._isProcessingChunks) return;
     this._isProcessingChunks = true;
 
-    const processNextChunk = () => {
+    const processNextBatch = () => {
       // Update visible bounds to check which chunks are still needed
       this._updateVisibleBounds();
+
+      // Purge non-visible chunks from the queue to avoid wasted work
+      if (this._chunksToLoad.length > 50) {
+        const before = this._chunksToLoad.length;
+        const removedEntries: { dim: number; x: number; z: number }[] = [];
+        this._chunksToLoad = this._chunksToLoad.filter((c) => {
+          const visible = this._isChunkVisible(c.x, c.z);
+          if (!visible) removedEntries.push(c);
+          return visible;
+        });
+        // Also clear the pending set entries for purged chunks so they can be
+        // re-queued later if they become visible again (otherwise _queueChunkLoad
+        // early-returns and the tile stays permanently empty after a pan/zoom).
+        for (const c of removedEntries) {
+          this._pendingChunkLoads.delete(`${c.dim}_${c.x}_${c.z}`);
+        }
+        const removed = before - this._chunksToLoad.length;
+        if (removed > 0) {
+          Log.verbose("[WorldMap] Purged " + removed + " non-visible chunks from queue");
+        }
+      }
 
       // Check if we're done (both queue empty AND no pending loads)
       if (this._chunksToLoad.length === 0 && this._pendingChunkLoads.size === 0) {
@@ -752,111 +816,111 @@ export default class WorldMap extends Component<IWorldMapProps, IWorldMapState> 
         return;
       }
 
-      // Sort by priority (lower = higher priority), then by visibility
-      // Only sort occasionally to avoid performance overhead
-      if (this._chunksToLoad.length > 1 && this._chunksLoadedThisSession % 10 === 0) {
-        this._chunksToLoad.sort((a, b) => {
-          // First by visibility (visible chunks first)
-          const aVisible = this._isChunkVisible(a.x, a.z) ? 0 : 1;
-          const bVisible = this._isChunkVisible(b.x, b.z) ? 0 : 1;
-          if (aVisible !== bVisible) return aVisible - bVisible;
+      // At low zoom, process only 1 chunk per tick and use a longer yield.
+      // At high zoom, process up to 4ms worth of chunks per tick.
+      const currentZoom = this._map?.getZoom() ?? 7;
+      const maxChunksPerTick = currentZoom >= 7 ? 10 : currentZoom >= 5 ? 3 : 1;
+      const yieldMs = currentZoom >= 7 ? 0 : currentZoom >= 5 ? 4 : 16;
+      let chunksProcessedThisTick = 0;
 
-          // Then by priority (lower = higher priority)
-          return a.priority - b.priority;
-        });
+      // Re-sort by priority (lower = higher priority) so that visible chunks
+      // are processed before the periphery. _queueChunkLoad records a priority
+      // but new entries can be appended out of order, so the queue is not
+      // self-sorted; sort here on each tick.
+      if (this._chunksToLoad.length > 1) {
+        this._chunksToLoad.sort((a, b) => a.priority - b.priority);
       }
 
-      // Process multiple chunks per frame within a time budget (8ms target for 60fps)
-      const frameStartTime = performance.now();
-      const frameBudgetMs = 8;
-      let chunksProcessedThisFrame = 0;
-
-      while (this._chunksToLoad.length > 0 && performance.now() - frameStartTime < frameBudgetMs) {
-        // Get the highest priority visible chunk, or just the highest priority chunk
-        let chunkToProcess: { dim: number; x: number; z: number; priority: number } | undefined;
-
-        // First, try to find a visible chunk with good priority
-        for (let i = 0; i < Math.min(this._chunksToLoad.length, 20); i++) {
-          const chunk = this._chunksToLoad[i];
-          if (this._isChunkVisible(chunk.x, chunk.z)) {
-            chunkToProcess = chunk;
-            this._chunksToLoad.splice(i, 1);
-            break;
-          }
-        }
-
-        // If no visible chunks, just take the first one (highest priority)
-        if (!chunkToProcess && this._chunksToLoad.length > 0) {
-          chunkToProcess = this._chunksToLoad.shift();
-        }
-
+      while (this._chunksToLoad.length > 0 && chunksProcessedThisTick < maxChunksPerTick) {
+        // Take the highest-priority chunk (lowest priority value)
+        const chunkToProcess = this._chunksToLoad.shift();
         if (!chunkToProcess) break;
 
         const { dim, x, z } = chunkToProcess;
         const key = `${dim}_${x}_${z}`;
 
+        // Skip if no longer visible
+        if (!this._isChunkVisible(x, z)) {
+          this._pendingChunkLoads.delete(key);
+          continue;
+        }
+
         const chunk = this.props.world.getOrCreateChunk(dim, x, z);
         this._pendingChunkLoads.delete(key);
         this._chunksLoadedThisSession++;
-        chunksProcessedThisFrame++;
+        chunksProcessedThisTick++;
+
+        // Track this chunk as dirty so only affected tiles get re-rendered
+        this._dirtyChunkKeys.add(key);
 
         // Track whether chunk has content or is empty
-        // A chunk has content if it has any subchunks defined
         const hasContent = chunk && chunk.subChunks && chunk.subChunks.some((sc) => sc !== undefined);
 
+        // Pre-compute block tops eagerly so the expensive O(98K) scan happens here
+        // in the throttled load loop, not during synchronous tile rendering.
+        if (hasContent && chunk && this._isTops) {
+          try {
+            chunk.determineBlockTops();
+          } catch (_e) {
+            // Non-critical — will be computed lazily during render if needed
+          }
+        }
+
         if (hasContent) {
-          // Chunk has content - mark as non-empty and queue neighbors with higher priority
           this._nonEmptyChunks.add(key);
 
-          // Queue immediate neighbors with medium priority (5)
-          // This implements "expand from non-empty" strategy
-          const neighbors = [
-            { dx: -1, dz: 0 },
-            { dx: 1, dz: 0 },
-            { dx: 0, dz: -1 },
-            { dx: 0, dz: 1 },
-          ];
-          for (const { dx, dz } of neighbors) {
-            const nx = x + dx;
-            const nz = z + dz;
-            const nkey = `${dim}_${nx}_${nz}`;
-            // Only queue if not already processed and visible
-            if (
-              !this._pendingChunkLoads.has(nkey) &&
-              !this._emptyChunks.has(nkey) &&
-              !this._nonEmptyChunks.has(nkey) &&
-              !this.props.world.getChunkAt(dim, nx, nz) &&
-              this._isChunkVisible(nx, nz)
-            ) {
-              this._queueChunkLoad(dim, nx, nz, 5); // Medium priority for neighbors
+          // Expand to neighbors only at zoom >= 6 to prevent cascade at low zoom
+          if (currentZoom >= 6) {
+            const neighbors = [
+              { dx: -1, dz: 0 },
+              { dx: 1, dz: 0 },
+              { dx: 0, dz: -1 },
+              { dx: 0, dz: 1 },
+            ];
+            for (const { dx, dz } of neighbors) {
+              const nx = x + dx;
+              const nz = z + dz;
+              const nkey = `${dim}_${nx}_${nz}`;
+              if (
+                !this._pendingChunkLoads.has(nkey) &&
+                !this._emptyChunks.has(nkey) &&
+                !this._nonEmptyChunks.has(nkey) &&
+                !this.props.world.getChunkAt(dim, nx, nz) &&
+                this._isChunkVisible(nx, nz)
+              ) {
+                this._queueChunkLoad(dim, nx, nz, 5);
+              }
             }
           }
         } else {
-          // Chunk is empty or has no data
           this._emptyChunks.add(key);
         }
       }
 
       // Update progress state (throttled to avoid too many renders)
       const now = Date.now();
-      if (now - this._lastProgressUpdate > 100) {
+      if (now - this._lastProgressUpdate > 200) {
         this._lastProgressUpdate = now;
+
+        // Ensure loaded never exceeds total in the display
+        const displayTotal = Math.max(this._chunksLoadedThisSession, this._chunksTotalThisSession);
 
         this.setState({
           chunksLoading: this._chunksLoadedThisSession,
-          chunksTotal: this._chunksTotalThisSession,
+          chunksTotal: displayTotal,
         });
 
         // Schedule a tile refresh (batched)
         this._scheduleTileRefresh();
       }
 
-      // Yield to browser and continue on next frame
-      requestAnimationFrame(processNextChunk);
+      // Yield to browser — setTimeout(0) lets pending input events run before we continue.
+      // At low zoom, use a longer delay to keep the UI fully responsive.
+      setTimeout(processNextBatch, yieldMs);
     };
 
     // Start processing
-    requestAnimationFrame(processNextChunk);
+    setTimeout(processNextBatch, 0);
   }
 
   /**
@@ -925,12 +989,12 @@ export default class WorldMap extends Component<IWorldMapProps, IWorldMapState> 
 
   /**
    * Gently refresh tiles without causing flicker.
-   * Redraws tile canvases in place using their coordinates.
+   * Only re-renders tiles that overlap with recently loaded chunks (selective invalidation).
+   * Staggers rendering across animation frames to avoid blocking the main thread.
    */
   _refreshTilesGently() {
     if (!this._map || !this._curLayer) return;
 
-    // Access internal Leaflet GridLayer methods
     const layer = this._curLayer as L.GridLayer & {
       _update?: () => void;
       _tiles?: Record<string, { el?: HTMLElement; coords?: { x: number; y: number; z: number } }>;
@@ -938,24 +1002,84 @@ export default class WorldMap extends Component<IWorldMapProps, IWorldMapState> 
 
     if (!layer._tiles) return;
 
-    // Clear tile cache so we get fresh renders (not cached versions with loading patterns)
-    this._tileCache.clear();
+    // If no chunks loaded since last refresh, nothing to do
+    if (this._dirtyChunkKeys.size === 0) return;
 
-    // Re-render tiles in place by copying new rendered content
+    const dirtyChunks = this._dirtyChunkKeys;
+    this._dirtyChunkKeys = new Set(); // Reset for next cycle
+
+    const dim = this.props.activeDimension ?? 0;
+
+    // Collect tiles that overlap with dirty chunks — only these need re-rendering
+    const tilesToRefresh: Array<{ el: HTMLCanvasElement; coords: { x: number; y: number; z: number } }> = [];
+
     for (const tileKey of Object.keys(layer._tiles)) {
       const tile = layer._tiles[tileKey];
-      if (tile && tile.el && tile.el instanceof HTMLCanvasElement && tile.coords) {
-        // Create a fresh render for this tile
-        const newCanvas = this._renderTile(tile.coords);
+      if (!tile || !tile.el || !(tile.el instanceof HTMLCanvasElement) || !tile.coords) continue;
 
-        // Copy the new content to the existing canvas
-        const ctx = tile.el.getContext("2d");
-        if (ctx && newCanvas) {
-          ctx.clearRect(0, 0, tile.el.width, tile.el.height);
-          ctx.drawImage(newCanvas, 0, 0);
+      const chunkRange = this._getTileChunkRange(tile.coords.z, tile.coords.x, tile.coords.y);
+
+      // Check if any dirty chunk falls within this tile's range
+      let isDirty = false;
+      for (const chunkKey of dirtyChunks) {
+        const parts = chunkKey.split("_");
+        const chunkDim = parseInt(parts[0], 10);
+        if (chunkDim !== dim) continue;
+        const chunkX = parseInt(parts[1], 10);
+        const chunkZ = parseInt(parts[2], 10);
+
+        if (
+          chunkX >= chunkRange.minX &&
+          chunkX <= chunkRange.maxX &&
+          chunkZ >= chunkRange.minZ &&
+          chunkZ <= chunkRange.maxZ
+        ) {
+          isDirty = true;
+          break;
         }
       }
+
+      if (isDirty) {
+        // Invalidate cache for this tile
+        const cacheKey = this._getTileCacheKey(tile.coords);
+        this._tileCache.delete(cacheKey);
+        tilesToRefresh.push({ el: tile.el, coords: tile.coords });
+      }
     }
+
+    if (tilesToRefresh.length === 0) return;
+
+    // Stagger tile re-renders: process a few per animation frame to avoid blocking
+    const MAX_TILES_PER_FRAME = 3;
+    let idx = 0;
+
+    const renderBatch = () => {
+      try {
+        const end = Math.min(idx + MAX_TILES_PER_FRAME, tilesToRefresh.length);
+        for (; idx < end; idx++) {
+          try {
+            const { el, coords } = tilesToRefresh[idx];
+            const newCanvas = this._renderTile(coords);
+            const ctx = el.getContext("2d");
+            if (ctx && newCanvas) {
+              ctx.clearRect(0, 0, el.width, el.height);
+              ctx.drawImage(newCanvas, 0, 0);
+            }
+          } catch (tileErr) {
+            // Per-tile errors must not break the batch loop or the rAF chain.
+            // Without this, a single failing tile would prevent all subsequent tiles
+            // from refreshing — leaving them stuck with stale loading patterns.
+            Log.debug("Refresh tile error: " + tileErr);
+          }
+        }
+      } finally {
+        if (idx < tilesToRefresh.length) {
+          requestAnimationFrame(renderBatch);
+        }
+      }
+    };
+
+    requestAnimationFrame(renderBatch);
   }
 
   /**
@@ -1002,6 +1126,68 @@ export default class WorldMap extends Component<IWorldMapProps, IWorldMapState> 
       ctx.beginPath();
       ctx.arc(centerX + dotSize * 2, centerY, dotSize, 0, Math.PI * 2);
       ctx.fill();
+    }
+  }
+
+  /**
+   * Draw tile coordinate label in the top-left corner with a dark outline for contrast.
+   * Used by both successful renders and the error/fallback path so every tile has at least
+   * some visible content.
+   */
+  _drawTileCoordinateText(ctx: CanvasRenderingContext2D, label: string) {
+    ctx.font = "bold 10px Arial";
+    // Draw dark outline/shadow for contrast
+    ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
+    ctx.fillText(label, 3, 13);
+    ctx.fillText(label, 1, 13);
+    ctx.fillText(label, 2, 14);
+    ctx.fillText(label, 2, 12);
+    // Draw white text on top
+    ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+    ctx.fillText(label, 2, 13);
+  }
+
+  /**
+   * Invoke `callback(chunkX, chunkZ, chunkKey)` for every known chunk that falls inside the
+   * given tile bounds. Adaptively chooses between O(chunksInTile²) bounded iteration and
+   * O(knownChunks) full-set iteration depending on which is smaller — this is critical for
+   * tile render performance on complex worlds with tens of thousands of chunks, where the
+   * full-set iteration would otherwise dominate `_renderTile` and block the main thread.
+   */
+  _forEachKnownChunkInBounds(
+    dim: number,
+    tX: number,
+    tY: number,
+    chunksInTile: number,
+    callback: (chunkX: number, chunkZ: number, chunkKey: string) => void
+  ) {
+    const knownChunks = this.props.world.knownChunkKeys;
+    const numToScan = chunksInTile * chunksInTile;
+    if (numToScan <= knownChunks.size) {
+      // Bounded iteration: probe the set for every potential position in this tile.
+      // Wins when the world has many chunks and the tile is small (mid-zoom large worlds).
+      for (let cx = tX; cx < tX + chunksInTile; cx++) {
+        for (let cz = tY; cz < tY + chunksInTile; cz++) {
+          const key = `${dim}_${cx}_${cz}`;
+          if (knownChunks.has(key)) {
+            callback(cx, cz, key);
+          }
+        }
+      }
+    } else {
+      // Full-set iteration with bounds filtering.
+      // Wins when the world has few chunks but the tile covers a large area (very low zoom).
+      for (const key of knownChunks) {
+        const parts = key.split("_");
+        if (parts.length !== 3) continue;
+        const chunkDim = parseInt(parts[0], 10);
+        if (chunkDim !== dim) continue;
+        const cx = parseInt(parts[1], 10);
+        const cz = parseInt(parts[2], 10);
+        if (cx < tX || cx >= tX + chunksInTile) continue;
+        if (cz < tY || cz >= tY + chunksInTile) continue;
+        callback(cx, cz, key);
+      }
     }
   }
 
@@ -1152,6 +1338,7 @@ export default class WorldMap extends Component<IWorldMapProps, IWorldMapState> 
             const trackBtn = L.DomUtil.create("button", "wm-nav-btn wm-track-camera", div);
             trackBtn.textContent = "📷 Track Camera";
             trackBtn.title = "Keep map centered on 3D camera position";
+            trackBtn.style.display = me.props.has3DViewer ? "" : "none";
             trackBtn.onclick = (e) => {
               e.stopPropagation();
               me._toggleTrackCamera();
@@ -1795,23 +1982,34 @@ export default class WorldMap extends Component<IWorldMapProps, IWorldMapState> 
     this._cameraZ = z;
     this._cameraYaw = yaw;
     this._updateCameraMarker();
+
+    // Update coordinate display with camera info when tracking
+    if (this._trackCamera && this._coordsStatusElt) {
+      this._coordsStatusElt.textContent = `📷 X: ${Math.round(x)}, Z: ${Math.round(z)}, Y: ${Math.round(y)}`;
+    }
   }
 
   _toggleTrackCamera() {
     this._trackCamera = !this._trackCamera;
     Log.verbose(`[WorldMap] Track camera: ${this._trackCamera}, hasCamera: ${this._cameraX !== undefined}`);
-    if (this._trackCamera) {
-      this._updateCameraMarker();
+    if (this._trackCamera && this._cameraX !== undefined && this._cameraZ !== undefined && this._map) {
+      // Immediately center on last known camera position
+      const lat = -this._cameraZ / this._posToCoordDivisor;
+      const lng = this._cameraX / this._posToCoordDivisor;
+      this._map.setView([lat, lng], this._map.getZoom(), { animate: false });
     }
+    this._updateCameraMarker();
   }
 
   /**
-   * Update or create the camera marker on the map based on current camera props.
-   * Uses a CSS-rotated arrow as a direction indicator.
+   * Update or create the camera marker and view frustum cone on the map.
+   *
+   * The camera marker is a CSS-rotated arrow indicating position and direction.
+   * The frustum cone is a Leaflet polygon showing an approximate top-down FOV wedge
+   * based on the camera's yaw and a fixed ~70° horizontal field of view.
    */
   _updateCameraMarker() {
     if (!this._map) {
-      Log.debug(`[WorldMap] _updateCameraMarker: no map`);
       return;
     }
 
@@ -1819,7 +2017,6 @@ export default class WorldMap extends Component<IWorldMapProps, IWorldMapState> 
     const cameraZ = this._cameraZ;
     const cameraYaw = this._cameraYaw;
     if (cameraX === undefined || cameraZ === undefined) {
-      Log.debug(`[WorldMap] _updateCameraMarker: no camera position`);
       return;
     }
 
@@ -1832,11 +2029,12 @@ export default class WorldMap extends Component<IWorldMapProps, IWorldMapState> 
     const cssAngle = (cameraYaw ?? 0) + 180;
 
     if (!this._cameraMarker) {
+      Log.debug(`[WorldMap] _updateCameraMarker: CREATING marker at lat=${lat.toFixed(2)} lng=${lng.toFixed(2)}`);
       const icon = L.divIcon({
         className: "wm-camera-icon",
         html: `<div class="wm-camera-arrow" style="transform: rotate(${cssAngle}deg)">&#x25B2;</div>`,
-        iconSize: [32, 32],
-        iconAnchor: [16, 16],
+        iconSize: [40, 40],
+        iconAnchor: [20, 20],
       });
       this._cameraMarker = L.marker(latLng, { icon, interactive: false, zIndexOffset: 1000 });
       this._cameraMarker.addTo(this._map);
@@ -1847,6 +2045,48 @@ export default class WorldMap extends Component<IWorldMapProps, IWorldMapState> 
       if (arrow) {
         arrow.style.transform = `rotate(${cssAngle}deg)`;
       }
+    }
+
+    // Draw a view frustum cone (wedge) showing the camera's approximate FOV.
+    // Convert Minecraft yaw to a math angle for the cone direction:
+    //   Minecraft: 0=south(+Z), 90=west(-X), 180=north(-Z), 270=east(+X)
+    //   Map: lat = -Z, lng = X → south is -lat, east is +lng
+    //   Math angle (radians, 0=+lng/east, π/2=+lat/north):
+    //     yaw 0 (south, -lat) → -π/2
+    //     yaw 90 (west, -lng) → π
+    //     yaw 180 (north, +lat) → π/2
+    //     yaw 270 (east, +lng) → 0
+    //   Formula: mathAngle = -(yaw * π / 180) + 3π/2 → simplified: π/2 * (3 - yaw/90)
+    const yawRad = ((cameraYaw ?? 0) * Math.PI) / 180;
+    const dirAngle = -yawRad + (3 * Math.PI) / 2;
+
+    // Frustum cone: 70° FOV → ±35° from center direction
+    const halfFov = (35 * Math.PI) / 180;
+    // Cone length in map CRS units (~60 blocks / 8 = 7.5 CRS units)
+    const coneLength = 60 / this._posToCoordDivisor;
+
+    // Compute the two edges of the frustum cone
+    const leftAngle = dirAngle + halfFov;
+    const rightAngle = dirAngle - halfFov;
+
+    const conePts: L.LatLngExpression[] = [
+      [lat, lng], // apex at camera position
+      [lat + Math.sin(leftAngle) * coneLength, lng + Math.cos(leftAngle) * coneLength],
+      [lat + Math.sin(rightAngle) * coneLength, lng + Math.cos(rightAngle) * coneLength],
+    ];
+
+    if (!this._cameraFrustum) {
+      this._cameraFrustum = L.polygon(conePts, {
+        color: "#ff4444",
+        weight: 1.5,
+        opacity: 0.7,
+        fillColor: "#ff4444",
+        fillOpacity: 0.12,
+        interactive: false,
+      });
+      this._cameraFrustum.addTo(this._map);
+    } else {
+      this._cameraFrustum.setLatLngs(conePts);
     }
 
     if (this._trackCamera) {
@@ -2671,8 +2911,74 @@ export default class WorldMap extends Component<IWorldMapProps, IWorldMapState> 
       this._map.removeLayer(this._curLayer);
     }
 
+    const me = this;
     const MCLayer = L.GridLayer.extend({
-      createTile: this._renderTile,
+      createTile: function (
+        coords: { x: number; y: number; z: number },
+        done: (err: Error | null, tile: HTMLElement) => void
+      ) {
+        // Leaflet shows tiles via the `leaflet-tile-loaded` CSS class, which is added
+        // by Leaflet's `_tileReady` callback when `done()` fires.
+        //
+        // Two earlier bugs we needed to avoid:
+        // 1. Calling done() inside a deferred setTimeout — when the event loop got
+        //    saturated by chunk loading those callbacks were starved, so the
+        //    `leaflet-tile-loaded` class was never added and tiles stayed invisible
+        //    (pure blank, no coord label).
+        // 2. Calling done() synchronously inside createTile — Leaflet hasn't finished
+        //    attaching the tile to the DOM yet, so the loaded-class wiring runs against
+        //    an element that isn't part of the visible grid, and again no tiles appear.
+        //
+        // Correct approach: render the tile content SYNCHRONOUSLY (so the canvas always
+        // has a visible loading pattern + coord label at minimum), but defer the done()
+        // call to a microtask via Promise.resolve so Leaflet finishes attaching the
+        // tile to the DOM first. As chunks load in the background, _scheduleTileRefresh
+        // repaints the tile in place.
+        const tile = L.DomUtil.create("canvas", "leaflet-tile") as HTMLCanvasElement;
+        tile.width = 256;
+        tile.height = 256;
+
+        // Check tile cache synchronously for instant hit
+        const cacheKey = me._getTileCacheKey(coords);
+        const cachedTile = me._tileCache.get(cacheKey);
+        if (cachedTile) {
+          try {
+            const ctx = tile.getContext("2d");
+            if (ctx) ctx.drawImage(cachedTile, 0, 0);
+          } catch (err) {
+            Log.debug("Tile cache draw error at " + coords.x + "," + coords.y + "," + coords.z + ": " + err);
+          }
+          Promise.resolve().then(() => done(null, tile));
+          return tile;
+        }
+
+        // Render the actual tile content synchronously. This guarantees the canvas
+        // always has visible content (loading pattern + coords at minimum) before
+        // Leaflet displays the tile.
+        try {
+          const rendered = me._renderTile(coords);
+          const ctx = tile.getContext("2d");
+          if (ctx && rendered) ctx.drawImage(rendered, 0, 0);
+        } catch (err) {
+          Log.debug("Tile render error at " + coords.x + "," + coords.y + "," + coords.z + ": " + err);
+          // Fallback: draw loading pattern + coord text so the tile is at least visible.
+          try {
+            const ctx = tile.getContext("2d");
+            if (ctx) {
+              me._drawLoadingPattern(ctx, 0, 0, 256, 256);
+              me._drawTileCoordinateText(ctx, `${coords.x}, ${coords.y} (err)`);
+            }
+          } catch (_ignored) {
+            // Canvas operations should never fail, but be defensive
+          }
+        }
+
+        // Defer done() to a microtask so Leaflet's createTile loop can attach this
+        // element to the DOM before _tileReady runs. Microtask (not setTimeout) means
+        // it fires reliably before any rendered frame — never starved by other work.
+        Promise.resolve().then(() => done(null, tile));
+        return tile;
+      },
       options: {
         updateWhenZooming: false, // Don't update tiles during zoom animation
         updateWhenIdle: true, // Update when zoom animation ends
@@ -2716,6 +3022,16 @@ export default class WorldMap extends Component<IWorldMapProps, IWorldMapState> 
 
   componentDidUpdate(prevProps: IWorldMapProps, prevState: IWorldMapState) {
     this._applyNewWorld();
+
+    // Show/hide Track Camera button when 3D viewer availability changes
+    if (prevProps.has3DViewer !== this.props.has3DViewer && this._trackCameraBtn) {
+      this._trackCameraBtn.style.display = this.props.has3DViewer ? "" : "none";
+      if (!this.props.has3DViewer && this._trackCamera) {
+        this._trackCamera = false;
+        this._trackCameraBtn.classList.remove("wm-track-camera-on");
+        this._trackCameraBtn.textContent = "📷 Track Camera";
+      }
+    }
 
     // Retry GameStateManager subscription if it wasn't available during initial load.
     // activeMinecraft and its gameStateManager may initialize after the map first renders.
@@ -2797,536 +3113,554 @@ export default class WorldMap extends Component<IWorldMapProps, IWorldMapState> 
     const dim = this.props.activeDimension ? this.props.activeDimension : 0;
 
     if (ctx) {
-      // Disable image smoothing for crisp pixelated textures (Minecraft style)
-      ctx.imageSmoothingEnabled = false;
+      // Wrap the entire body in a try/catch so an exception in any rendering step
+      // doesn't leave the tile completely blank. Without this, an error would propagate
+      // up to createTile, which would fail to call done() and leave Leaflet showing
+      // the empty placeholder canvas forever — producing pure black tiles with no
+      // coordinate text or content.
+      try {
+        // Disable image smoothing for crisp pixelated textures (Minecraft style)
+        ctx.imageSmoothingEnabled = false;
 
-      // At very low zoom levels, skip chunks to reduce memory pressure
-      // This samples representative chunks instead of iterating all of them
-      let chunkIncrement = 1;
-      if (chunksInTile >= 64) {
-        chunkIncrement = 8; // At 64+ chunks per tile, sample every 8th chunk
-      } else if (chunksInTile >= 32) {
-        chunkIncrement = 4; // At 32+ chunks per tile, sample every 4th chunk
-      } else if (chunksInTile >= 16) {
-        chunkIncrement = 2; // At 16+ chunks per tile, sample every 2nd chunk
-      }
+        // At very low zoom levels, skip chunks to reduce memory pressure
+        // This samples representative chunks instead of iterating all of them.
+        // At low zoom, each sampled chunk represents a larger area (chunkFillSize x chunkFillSize).
+        // The sample chunk's colors are painted across its neighbors on the canvas.
+        let chunkIncrement = 1;
+        if (chunksInTile >= 128) {
+          chunkIncrement = 6;
+        } else if (chunksInTile >= 64) {
+          chunkIncrement = 4;
+        } else if (chunksInTile >= 16) {
+          chunkIncrement = 3;
+        } else if (chunksInTile >= 4) {
+          chunkIncrement = 2;
+        }
+        const chunkFillSize = chunkIncrement;
 
-      // Track if this tile has any incomplete/loading chunks
-      // Tiles with loading indicators should NOT be cached
-      let tileHasLoadingChunks = false;
+        // Track if this tile has any incomplete/loading chunks
+        // Tiles with loading indicators should NOT be cached
+        let tileHasLoadingChunks = false;
 
-      // First pass: queue missing chunks for loading using sparse sampling strategy
-      // When zoomed out, we use a two-phase approach:
-      // 1. First queue "sparse sample" chunks at regular intervals (high priority)
-      // 2. The processing loop will expand from non-empty chunks to fill in neighbors
-      for (let chunkInTileX = 0; chunkInTileX < chunksInTile; chunkInTileX += chunkIncrement) {
-        for (let chunkInTileZ = 0; chunkInTileZ < chunksInTile; chunkInTileZ += chunkIncrement) {
-          const chunkX = tX + chunkInTileX;
-          const chunkZ = tY + chunkInTileZ;
-          const chunkKey = `${dim}_${chunkX}_${chunkZ}`;
+        // Limit how many chunks each tile can queue to prevent flooding.
+        // At low zoom with many tiles visible, each tile should queue very few.
+        const maxQueuePerTile = chunksInTile >= 16 ? 2 : chunksInTile >= 4 ? 4 : 8;
+        let queuedThisTile = 0;
 
-          // Skip if we already know this chunk is empty
-          if (this._emptyChunks.has(chunkKey)) {
-            continue;
-          }
+        // First pass: queue missing chunks for loading using sparse sampling strategy
+        // When zoomed out, we use a two-phase approach:
+        // 1. First queue "sparse sample" chunks at regular intervals (high priority)
+        // 2. The processing loop will expand from non-empty chunks to fill in neighbors
+        for (let chunkInTileX = 0; chunkInTileX < chunksInTile; chunkInTileX += chunkIncrement) {
+          for (let chunkInTileZ = 0; chunkInTileZ < chunksInTile; chunkInTileZ += chunkIncrement) {
+            const chunkX = tX + chunkInTileX;
+            const chunkZ = tY + chunkInTileZ;
+            const chunkKey = `${dim}_${chunkX}_${chunkZ}`;
 
-          // Check if chunk exists
-          const chunk = this.props.world.getChunkAt(dim, chunkX, chunkZ);
+            // Skip if we already know this chunk is empty
+            if (this._emptyChunks.has(chunkKey)) {
+              continue;
+            }
 
-          if (!chunk) {
-            // Check if world has bounds that include this chunk
-            const worldMinX = this.props.world.minX ?? -1000000;
-            const worldMaxX = this.props.world.maxX ?? 1000000;
-            const worldMinZ = this.props.world.minZ ?? -1000000;
-            const worldMaxZ = this.props.world.maxZ ?? 1000000;
+            // Check if chunk exists
+            const chunk = this.props.world.getChunkAt(dim, chunkX, chunkZ);
 
-            const chunkWorldX = chunkX * 16;
-            const chunkWorldZ = chunkZ * 16;
+            if (!chunk) {
+              // Check if world has bounds that include this chunk
+              const worldMinX = this.props.world.minX ?? -1000000;
+              const worldMaxX = this.props.world.maxX ?? 1000000;
+              const worldMinZ = this.props.world.minZ ?? -1000000;
+              const worldMaxZ = this.props.world.maxZ ?? 1000000;
 
-            if (
-              chunkWorldX >= worldMinX - 16 &&
-              chunkWorldX <= worldMaxX + 16 &&
-              chunkWorldZ >= worldMinZ - 16 &&
-              chunkWorldZ <= worldMaxZ + 16
-            ) {
-              // Determine priority based on sparse sampling position and neighbors
-              // Chunks at sparse sample points get high priority (0)
-              // Chunks near known non-empty chunks also get higher priority
-              let priority = 10; // Default normal priority
+              const chunkWorldX = chunkX * 16;
+              const chunkWorldZ = chunkZ * 16;
 
-              // Is this a sparse sample point? (first chunk in each sample grid cell)
-              const isSparsePoint =
-                chunkInTileX % (chunkIncrement * 2) === 0 && chunkInTileZ % (chunkIncrement * 2) === 0;
-              if (isSparsePoint) {
-                priority = 0; // High priority for sparse samples
-              } else {
-                // Check if any neighbor is known to be non-empty
-                const hasNonEmptyNeighbor =
-                  this._nonEmptyChunks.has(`${dim}_${chunkX - 1}_${chunkZ}`) ||
-                  this._nonEmptyChunks.has(`${dim}_${chunkX + 1}_${chunkZ}`) ||
-                  this._nonEmptyChunks.has(`${dim}_${chunkX}_${chunkZ - 1}`) ||
-                  this._nonEmptyChunks.has(`${dim}_${chunkX}_${chunkZ + 1}`);
+              if (
+                chunkWorldX >= worldMinX - 16 &&
+                chunkWorldX <= worldMaxX + 16 &&
+                chunkWorldZ >= worldMinZ - 16 &&
+                chunkWorldZ <= worldMaxZ + 16
+              ) {
+                // Determine priority based on sparse sampling position and neighbors
+                // Chunks at sparse sample points get high priority (0)
+                // Chunks near known non-empty chunks also get higher priority
+                let priority = 10; // Default normal priority
 
-                if (hasNonEmptyNeighbor) {
-                  priority = 5; // Medium priority for neighbors of non-empty
+                // Is this a sparse sample point? (first chunk in each sample grid cell)
+                const isSparsePoint =
+                  chunkInTileX % (chunkIncrement * 2) === 0 && chunkInTileZ % (chunkIncrement * 2) === 0;
+                if (isSparsePoint) {
+                  priority = 0; // High priority for sparse samples
+                } else {
+                  // Check if any neighbor is known to be non-empty
+                  const hasNonEmptyNeighbor =
+                    this._nonEmptyChunks.has(`${dim}_${chunkX - 1}_${chunkZ}`) ||
+                    this._nonEmptyChunks.has(`${dim}_${chunkX + 1}_${chunkZ}`) ||
+                    this._nonEmptyChunks.has(`${dim}_${chunkX}_${chunkZ - 1}`) ||
+                    this._nonEmptyChunks.has(`${dim}_${chunkX}_${chunkZ + 1}`);
+
+                  if (hasNonEmptyNeighbor) {
+                    priority = 5; // Medium priority for neighbors of non-empty
+                  }
                 }
-              }
 
-              // Queue this chunk for loading with appropriate priority
-              this._queueChunkLoad(dim, chunkX, chunkZ, priority);
-              tileHasLoadingChunks = true;
+                // Queue this chunk for loading with appropriate priority
+                if (queuedThisTile < maxQueuePerTile) {
+                  this._queueChunkLoad(dim, chunkX, chunkZ, priority);
+                  queuedThisTile++;
+                }
+                tileHasLoadingChunks = true;
+              }
             }
           }
         }
-      }
 
-      // If tile has missing chunks, draw a single loading pattern for the entire tile
-      // This looks cleaner than per-chunk patterns, especially when zoomed out
-      if (tileHasLoadingChunks) {
-        this._drawLoadingPattern(ctx, 0, 0, 256, 256);
-      }
-
-      // For sparse worlds at zoomed-out levels, the sparse sampling grid above may
-      // miss isolated chunks. To fix this, iterate ALL known chunks in the world index
-      // and queue/render any that fall within this tile's bounds but were skipped.
-      // This is O(N) over the world's chunk count, which is fast even for large worlds.
-      if (chunkIncrement > 1) {
-        const knownChunks = this.props.world.knownChunkKeys;
-        for (const chunkKey of knownChunks) {
-          // Parse "dim_x_z" format
-          const parts = chunkKey.split("_");
-          if (parts.length !== 3) continue;
-          const chunkDim = parseInt(parts[0], 10);
-          if (chunkDim !== dim) continue;
-          const chunkX = parseInt(parts[1], 10);
-          const chunkZ = parseInt(parts[2], 10);
-
-          // Check if this chunk falls within this tile's chunk bounds
-          if (chunkX < tX || chunkX >= tX + chunksInTile) continue;
-          if (chunkZ < tY || chunkZ >= tY + chunksInTile) continue;
-
-          // Skip if already known empty or loaded
-          const ck = `${dim}_${chunkX}_${chunkZ}`;
-          if (this._emptyChunks.has(ck)) continue;
-          if (this.props.world.getChunkAt(dim, chunkX, chunkZ)) continue;
-
-          // Queue this chunk for loading
-          this._queueChunkLoad(dim, chunkX, chunkZ, 2); // High priority — known to exist
-          tileHasLoadingChunks = true;
+        // If tile has missing chunks, draw a single loading pattern for the entire tile
+        // This looks cleaner than per-chunk patterns, especially when zoomed out
+        if (tileHasLoadingChunks) {
+          this._drawLoadingPattern(ctx, 0, 0, 256, 256);
         }
-      }
 
-      // Second pass: render chunks we have on top of the loading pattern.
-      // Build a list of (chunkX, chunkZ, chunkInTileX, chunkInTileZ, isGridChunk) to render.
-      // For the normal sampling grid we use chunkIncrement-aligned positions;
-      // for known chunks from the world index we compute positions exactly.
-      const chunksToRender: Array<{
-        chunkX: number;
-        chunkZ: number;
-        inTileX: number;
-        inTileZ: number;
-        isGridChunk: boolean;
-      }> = [];
-      const renderedChunkKeys = new Set<string>();
+        // For sparse worlds at zoomed-out levels, the sparse sampling grid above may
+        // miss isolated chunks. To fix this, find any known chunks that fall within
+        // this tile's bounds but were skipped by the sampling grid.
+        // The 32-chunk cap keeps the bounded iteration small at low zoom; for very low
+        // zoom levels, _forEachKnownChunkInBounds will adaptively choose the cheaper
+        // O(knownChunks) path if needed.
+        if (chunkIncrement > 1 && chunksInTile < 32) {
+          this._forEachKnownChunkInBounds(dim, tX, tY, chunksInTile, (chunkX, chunkZ, ck) => {
+            // Skip if already known empty or loaded
+            if (this._emptyChunks.has(ck)) return;
+            if (this.props.world.getChunkAt(dim, chunkX, chunkZ)) return;
 
-      // Normal sampling grid
-      for (let chunkInTileX = 0; chunkInTileX < chunksInTile; chunkInTileX += chunkIncrement) {
-        for (let chunkInTileZ = 0; chunkInTileZ < chunksInTile; chunkInTileZ += chunkIncrement) {
-          const chunkX = tX + chunkInTileX;
-          const chunkZ = tY + chunkInTileZ;
-          const key = `${dim}_${chunkX}_${chunkZ}`;
-          if (this.props.world.getChunkAt(dim, chunkX, chunkZ)) {
-            chunksToRender.push({ chunkX, chunkZ, inTileX: chunkInTileX, inTileZ: chunkInTileZ, isGridChunk: true });
-            renderedChunkKeys.add(key);
+            // Queue this chunk for loading
+            if (queuedThisTile < maxQueuePerTile) {
+              this._queueChunkLoad(dim, chunkX, chunkZ, 2);
+              queuedThisTile++;
+            }
+            tileHasLoadingChunks = true;
+          });
+        }
+
+        // Second pass: render chunks we have on top of the loading pattern.
+        // Build a list of (chunkX, chunkZ, chunkInTileX, chunkInTileZ, isGridChunk) to render.
+        // For the normal sampling grid we use chunkIncrement-aligned positions;
+        // for known chunks from the world index we compute positions exactly.
+        const chunksToRender: Array<{
+          chunkX: number;
+          chunkZ: number;
+          inTileX: number;
+          inTileZ: number;
+          isGridChunk: boolean;
+        }> = [];
+        const renderedChunkKeys = new Set<string>();
+
+        // Normal sampling grid
+        for (let chunkInTileX = 0; chunkInTileX < chunksInTile; chunkInTileX += chunkIncrement) {
+          for (let chunkInTileZ = 0; chunkInTileZ < chunksInTile; chunkInTileZ += chunkIncrement) {
+            const chunkX = tX + chunkInTileX;
+            const chunkZ = tY + chunkInTileZ;
+            const key = `${dim}_${chunkX}_${chunkZ}`;
+            if (this.props.world.getChunkAt(dim, chunkX, chunkZ)) {
+              chunksToRender.push({ chunkX, chunkZ, inTileX: chunkInTileX, inTileZ: chunkInTileZ, isGridChunk: true });
+              renderedChunkKeys.add(key);
+            }
           }
         }
-      }
 
-      // Add known chunks from world index that were missed by the sampling grid
-      if (chunkIncrement > 1) {
-        const knownChunks = this.props.world.knownChunkKeys;
-        for (const chunkKey of knownChunks) {
-          if (renderedChunkKeys.has(chunkKey)) continue;
-          const parts = chunkKey.split("_");
-          if (parts.length !== 3) continue;
-          const chunkDim = parseInt(parts[0], 10);
-          if (chunkDim !== dim) continue;
-          const chunkX = parseInt(parts[1], 10);
-          const chunkZ = parseInt(parts[2], 10);
-          if (chunkX < tX || chunkX >= tX + chunksInTile) continue;
-          if (chunkZ < tY || chunkZ >= tY + chunksInTile) continue;
-          if (!this.props.world.getChunkAt(dim, chunkX, chunkZ)) continue;
-          chunksToRender.push({ chunkX, chunkZ, inTileX: chunkX - tX, inTileZ: chunkZ - tY, isGridChunk: false });
-        }
-      }
-
-      for (const { chunkX, chunkZ, inTileX, inTileZ, isGridChunk } of chunksToRender) {
-        const chunk = this.props.world.getChunkAt(dim, chunkX, chunkZ);
-        if (!chunk) continue;
-
-        const chunkInTileX = inTileX;
-        const chunkInTileZ = inTileZ;
-
-        // Track this chunk as recently accessed for memory management
-        const chunkKey = `${dim}_${chunkX}_${chunkZ}`;
-        this._recentlyAccessedChunks.add(chunkKey);
-
-        let increment = 1;
-
-        // performance optimization: at very broad zoom levels, use only the increment-nth block as a placeholder for a larger sub-area
-        if (chunksInTile >= 64) {
-          increment = 16;
-        } else if (chunksInTile >= 32) {
-          increment = 8;
-        } else if (chunksInTile >= 16) {
-          increment = 4;
-        } else if (chunksInTile >= 8) {
-          increment = 2;
+        // Add known chunks from world index that were missed by the sampling grid.
+        // Without this, sparse worlds (or maps with single-chunk islands of content)
+        // would have those chunks left out of the visual at low zoom.
+        // _forEachKnownChunkInBounds adaptively chooses bounded vs full-set iteration.
+        if (chunkIncrement > 1) {
+          this._forEachKnownChunkInBounds(dim, tX, tY, chunksInTile, (chunkX, chunkZ, key) => {
+            if (renderedChunkKeys.has(key)) return;
+            if (!this.props.world.getChunkAt(dim, chunkX, chunkZ)) return;
+            chunksToRender.push({ chunkX, chunkZ, inTileX: chunkX - tX, inTileZ: chunkZ - tY, isGridChunk: false });
+          });
         }
 
-        // For zoom > 7, only render the portion of the chunk that this tile covers
-        const startBX = coords.z > 7 ? blockOffsetX : 0;
-        const endBX = coords.z > 7 ? blockOffsetX + blocksPerTile : 16;
-        const startBZ = coords.z > 7 ? blockOffsetZ : 0;
-        const endBZ = coords.z > 7 ? blockOffsetZ + blocksPerTile : 16;
+        for (const { chunkX, chunkZ, inTileX, inTileZ, isGridChunk } of chunksToRender) {
+          // Wrap the per-chunk render so a single bad chunk doesn't blank the entire tile.
+          // The inner block-level loop already has its own try/catch, but exceptions thrown
+          // outside that (e.g. during the elevation-shading neighbor lookups, increment math,
+          // or other setup) could otherwise bubble all the way out of _renderTile.
+          try {
+            const chunk = this.props.world.getChunkAt(dim, chunkX, chunkZ);
+            if (!chunk) continue;
 
-        // Precalculate values used in inner loop
-        // Grid chunks represent chunkIncrement chunks visually (each sample stands in for neighbors).
-        // Sparse-world chunks (from knownChunkKeys) represent only themselves, so use effectiveIncrement=1.
-        const effectiveChunkIncrement = isGridChunk ? chunkIncrement : 1;
-        const chunkPixelOffset = chunkInTileX * (256 / chunksInTile);
-        const chunkPixelOffsetZ = chunkInTileZ * (256 / chunksInTile);
-        const blockWidthBase = (16 / (chunksInTile / increment)) * effectiveChunkIncrement;
-        const pixelScale = blockWidthBase / increment;
-        const isHighZoom = coords.z > 7;
-        const isLowZoom = coords.z < 4; // For performance optimizations at far out zoom levels
-        const showTextures = blockWidthBase >= 8 || isHighZoom;
-        const useColorShading = blockWidthBase <= 8 && !isHighZoom;
+            const chunkInTileX = inTileX;
+            const chunkInTileZ = inTileZ;
 
-        for (let bX = startBX; bX < endBX; bX += increment) {
-          for (let bZ = startBZ; bZ < endBZ; bZ += increment) {
-            try {
-              let block = undefined;
-              let blockY = this._yLevel;
+            // Track this chunk as recently accessed for memory management
+            const chunkKey = `${dim}_${chunkX}_${chunkZ}`;
+            this._recentlyAccessedChunks.add(chunkKey);
 
-              if (this._isTops) {
-                const topBlockY = chunk.getTopBlockY(bX, bZ);
+            let increment = 1;
 
-                // Check for valid Y value (not the uninitialized -32768 sentinel)
-                // and also handle Y=0 correctly (which is falsy but valid)
-                if (topBlockY !== undefined && topBlockY > -1000) {
-                  blockY = topBlockY;
-                  block = chunk.getBlock(bX, topBlockY, bZ);
-                } else {
-                  block = undefined;
-                }
-              } else {
-                block = chunk.getBlock(bX, this._yLevel, bZ);
-              }
+            // performance optimization: at very broad zoom levels, use only the increment-nth block as a placeholder for a larger sub-area
+            if (chunksInTile >= 64) {
+              increment = 16;
+            } else if (chunksInTile >= 32) {
+              increment = 8;
+            } else if (chunksInTile >= 16) {
+              increment = 4;
+            } else if (chunksInTile >= 8) {
+              increment = 2;
+            }
 
-              // Track if we're showing a "floor" block (block below current Y level)
-              let isFloorBlock = false;
-              let floorBlockY = this._yLevel;
+            // For zoom > 7, only render the portion of the chunk that this tile covers
+            const startBX = coords.z > 7 ? blockOffsetX : 0;
+            const endBX = coords.z > 7 ? blockOffsetX + blocksPerTile : 16;
+            const startBZ = coords.z > 7 ? blockOffsetZ : 0;
+            const endBZ = coords.z > 7 ? blockOffsetZ + blocksPerTile : 16;
 
-              // If in fixed Y mode and block is air/undefined, find the floor block below
-              // Only do this expensive search when zoomed in enough to see detail
-              if (
-                !this._isTops &&
-                chunksInTile <= 4 && // Skip floor search at zoomed-out levels
-                (!block ||
-                  !block.blockType ||
-                  block.blockType.shortId === "air" ||
-                  block.blockType.shortId === "void_air" ||
-                  block.blockType.shortId === "cave_air")
-              ) {
-                // Look for the topmost solid block below current Y level
-                // Limit search depth for performance
-                const maxSearchDepth = 32;
-                for (
-                  let searchY = this._yLevel - 1;
-                  searchY >= Math.max(-64, this._yLevel - maxSearchDepth);
-                  searchY--
-                ) {
-                  const belowBlock = chunk.getBlock(bX, searchY, bZ);
-                  if (belowBlock && belowBlock.blockType) {
-                    const belowId = belowBlock.blockType.shortId;
-                    if (belowId !== "air" && belowId !== "void_air" && belowId !== "cave_air") {
-                      block = belowBlock;
-                      blockY = searchY;
-                      isFloorBlock = true;
-                      floorBlockY = searchY;
-                      break;
+            // Precalculate values used in inner loop
+            // Grid chunks represent chunkIncrement chunks visually (each sample stands in for neighbors).
+            // Sparse-world chunks (from knownChunkKeys) represent only themselves, so use effectiveIncrement=1.
+            const effectiveChunkIncrement = isGridChunk ? chunkIncrement : 1;
+            const chunkPixelOffset = chunkInTileX * (256 / chunksInTile);
+            const chunkPixelOffsetZ = chunkInTileZ * (256 / chunksInTile);
+            const blockWidthBase = (16 / (chunksInTile / increment)) * effectiveChunkIncrement;
+            const pixelScale = blockWidthBase / increment;
+            const isHighZoom = coords.z > 7;
+            const isLowZoom = coords.z < 4; // For performance optimizations at far out zoom levels
+            const showTextures = blockWidthBase >= 8 || isHighZoom;
+            const useColorShading = blockWidthBase <= 8 && !isHighZoom;
+
+            for (let bX = startBX; bX < endBX; bX += increment) {
+              for (let bZ = startBZ; bZ < endBZ; bZ += increment) {
+                try {
+                  let block = undefined;
+                  let blockY = this._yLevel;
+
+                  if (this._isTops) {
+                    const topBlockY = chunk.getTopBlockY(bX, bZ);
+
+                    // Check for valid Y value (not the uninitialized -32768 sentinel)
+                    // and also handle Y=0 correctly (which is falsy but valid)
+                    if (topBlockY !== undefined && topBlockY > -1000) {
+                      blockY = topBlockY;
+                      block = chunk.getBlock(bX, topBlockY, bZ);
+                    } else {
+                      block = undefined;
                     }
+                  } else {
+                    block = chunk.getBlock(bX, this._yLevel, bZ);
                   }
-                }
-              }
 
-              if (block && block.blockType) {
-                const btype = block.blockType;
-                const shortId = btype.shortId;
+                  // Track if we're showing a "floor" block (block below current Y level)
+                  let isFloorBlock = false;
+                  let floorBlockY = this._yLevel;
 
-                let color: string | undefined = undefined;
-                let customBlockTexture: HTMLImageElement | undefined = undefined;
-
-                // Check for custom blocks first - use project definitions if available
-                if (btype.isCustom) {
-                  const customBlockInfo = this._getCustomBlockInfo(btype.id);
-                  if (customBlockInfo?.mapColor) {
-                    color = customBlockInfo.mapColor;
-                  }
-                  // Try to get the texture image for high zoom levels
-                  if (customBlockInfo?.textureDataUrl && showTextures) {
-                    customBlockTexture = this._getCustomBlockImage(btype.id);
-                  }
-                  // Fallback color for custom blocks without defined map_color
-                  // Uses keyword hints or hash-based color generation for variety
-                  if (!color && !customBlockTexture) {
-                    color = BlockTypeUtilities.getCustomBlockFallbackColor(btype.id);
-                  }
-                } else if (shortId === "air" || shortId === "void_air" || shortId === "cave_air") {
-                  color = "#101010";
-                } else if (shortId === "water" || shortId === "flowing_water") {
-                  // Water depth visualization - performance optimized
-                  // At zoomed-out levels (many chunks per tile), skip depth calculation entirely
-                  if (this._isTops && chunksInTile <= 4) {
-                    // Only check depth when zoomed in enough to see detail
-                    // Limit depth check to 5 blocks for performance
-                    let waterDepth = 0;
-                    const maxDepthCheck = 5;
-                    for (let dy = 1; dy <= maxDepthCheck; dy++) {
-                      const belowBlock = chunk.getBlock(bX, blockY - dy, bZ);
-                      if (belowBlock?.blockType) {
+                  // If in fixed Y mode and block is air/undefined, find the floor block below
+                  // Only do this expensive search when zoomed in enough to see detail
+                  if (
+                    !this._isTops &&
+                    chunksInTile <= 4 && // Skip floor search at zoomed-out levels
+                    (!block ||
+                      !block.blockType ||
+                      block.blockType.shortId === "air" ||
+                      block.blockType.shortId === "void_air" ||
+                      block.blockType.shortId === "cave_air")
+                  ) {
+                    // Look for the topmost solid block below current Y level
+                    // Limit search depth for performance
+                    const maxSearchDepth = 32;
+                    for (
+                      let searchY = this._yLevel - 1;
+                      searchY >= Math.max(-64, this._yLevel - maxSearchDepth);
+                      searchY--
+                    ) {
+                      const belowBlock = chunk.getBlock(bX, searchY, bZ);
+                      if (belowBlock && belowBlock.blockType) {
                         const belowId = belowBlock.blockType.shortId;
-                        if (belowId === "water" || belowId === "flowing_water") {
-                          waterDepth++;
-                        } else {
+                        if (belowId !== "air" && belowId !== "void_air" && belowId !== "cave_air") {
+                          block = belowBlock;
+                          blockY = searchY;
+                          isFloorBlock = true;
+                          floorBlockY = searchY;
                           break;
                         }
-                      } else {
-                        break;
                       }
                     }
-                    color = WATER_DEPTH_COLORS[Math.min(waterDepth, WATER_DEPTH_COLORS.length - 1)];
-                  } else {
-                    // Use simple water color when zoomed out or in fixed-Y mode
-                    color = btype.mapColor || "#3f76e4";
                   }
-                } else if (shortId === "lava" || shortId === "flowing_lava") {
-                  color = btype.mapColor || "#cf5a00";
-                } else {
-                  // Use the block type's map color from mccat.json (via BlockBaseType)
-                  color = btype.mapColor;
 
-                  // Pattern-based fallback for blocks without defined colors
-                  if (!color) {
-                    if (shortId.includes("stone") || shortId.includes("ore")) {
-                      color = "#7d7d7d";
-                    } else if (shortId.includes("dirt") || shortId.includes("mud")) {
-                      color = "#866043";
-                    } else if (shortId.includes("sand")) {
-                      color = "#dbd3a0";
-                    } else if (shortId.includes("grass") || shortId.includes("leaves")) {
-                      color = "#7cbd6b";
-                    } else if (shortId.includes("log") || shortId.includes("wood") || shortId.includes("plank")) {
-                      color = "#6b5637";
-                    } else if (shortId.includes("ice") || shortId.includes("snow")) {
-                      color = "#f0fafa";
+                  if (block && block.blockType) {
+                    const btype = block.blockType;
+                    const shortId = btype.shortId;
+
+                    let color: string | undefined = undefined;
+                    let customBlockTexture: HTMLImageElement | undefined = undefined;
+
+                    // Check for custom blocks first - use project definitions if available
+                    if (btype.isCustom) {
+                      const customBlockInfo = this._getCustomBlockInfo(btype.id);
+                      if (customBlockInfo?.mapColor) {
+                        color = customBlockInfo.mapColor;
+                      }
+                      // Try to get the texture image for high zoom levels
+                      if (customBlockInfo?.textureDataUrl && showTextures) {
+                        customBlockTexture = this._getCustomBlockImage(btype.id);
+                      }
+                      // Fallback color for custom blocks without defined map_color
+                      // Uses keyword hints or hash-based color generation for variety
+                      if (!color && !customBlockTexture) {
+                        color = BlockTypeUtilities.getCustomBlockFallbackColor(btype.id);
+                      }
+                    } else if (shortId === "air" || shortId === "void_air" || shortId === "cave_air") {
+                      color = "#101010";
+                    } else if (shortId === "water" || shortId === "flowing_water") {
+                      // Water depth visualization - performance optimized
+                      // At zoomed-out levels (many chunks per tile), skip depth calculation entirely
+                      if (this._isTops && chunksInTile <= 4) {
+                        // Only check depth when zoomed in enough to see detail
+                        // Limit depth check to 5 blocks for performance
+                        let waterDepth = 0;
+                        const maxDepthCheck = 5;
+                        for (let dy = 1; dy <= maxDepthCheck; dy++) {
+                          const belowBlock = chunk.getBlock(bX, blockY - dy, bZ);
+                          if (belowBlock?.blockType) {
+                            const belowId = belowBlock.blockType.shortId;
+                            if (belowId === "water" || belowId === "flowing_water") {
+                              waterDepth++;
+                            } else {
+                              break;
+                            }
+                          } else {
+                            break;
+                          }
+                        }
+                        color = WATER_DEPTH_COLORS[Math.min(waterDepth, WATER_DEPTH_COLORS.length - 1)];
+                      } else {
+                        // Use simple water color when zoomed out or in fixed-Y mode
+                        color = btype.mapColor || "#3f76e4";
+                      }
+                    } else if (shortId === "lava" || shortId === "flowing_lava") {
+                      color = btype.mapColor || "#cf5a00";
                     } else {
-                      color = "#808080"; // Neutral gray default
+                      // Use the block type's map color from mccat.json (via BlockBaseType)
+                      color = btype.mapColor;
+
+                      // Pattern-based fallback for blocks without defined colors
+                      if (!color) {
+                        if (shortId.includes("stone") || shortId.includes("ore")) {
+                          color = "#7d7d7d";
+                        } else if (shortId.includes("dirt") || shortId.includes("mud")) {
+                          color = "#866043";
+                        } else if (shortId.includes("sand")) {
+                          color = "#dbd3a0";
+                        } else if (shortId.includes("grass") || shortId.includes("leaves")) {
+                          color = "#7cbd6b";
+                        } else if (shortId.includes("log") || shortId.includes("wood") || shortId.includes("plank")) {
+                          color = "#6b5637";
+                        } else if (shortId.includes("ice") || shortId.includes("snow")) {
+                          color = "#f0fafa";
+                        } else {
+                          color = "#808080"; // Neutral gray default
+                        }
+                      }
                     }
-                  }
-                }
 
-                // Calculate elevation shading factor for tops mode
-                // Skip elevation shading at low zoom levels for performance
-                let shadeFactor = 1.0;
-                if (this._isTops && this._showElevationShading && !isLowZoom) {
-                  // Get neighboring block heights for shading
-                  let northY = blockY;
-                  let westY = blockY;
+                    // Calculate elevation shading factor for tops mode
+                    // Skip elevation shading at low zoom levels for performance
+                    let shadeFactor = 1.0;
+                    if (this._isTops && this._showElevationShading && !isLowZoom) {
+                      // Get neighboring block heights for shading
+                      let northY = blockY;
+                      let westY = blockY;
 
-                  // Look at north neighbor (bZ - 1)
-                  if (bZ > 0) {
-                    const ny = chunk.getTopBlockY(bX, bZ - 1);
-                    if (ny !== undefined && ny > -1000) northY = ny;
-                  } else {
-                    // At chunk boundary - look at previous chunk
-                    const northChunk = this.props.world.getChunkAt(dim, chunkX, chunkZ - 1);
-                    if (northChunk) {
-                      const ny = northChunk.getTopBlockY(bX, 15);
-                      if (ny !== undefined && ny > -1000) northY = ny;
+                      // Look at north neighbor (bZ - 1)
+                      if (bZ > 0) {
+                        const ny = chunk.getTopBlockY(bX, bZ - 1);
+                        if (ny !== undefined && ny > -1000) northY = ny;
+                      } else {
+                        // At chunk boundary - look at previous chunk
+                        const northChunk = this.props.world.getChunkAt(dim, chunkX, chunkZ - 1);
+                        if (northChunk) {
+                          const ny = northChunk.getTopBlockY(bX, 15);
+                          if (ny !== undefined && ny > -1000) northY = ny;
+                        }
+                      }
+
+                      // Look at west neighbor (bX - 1)
+                      if (bX > 0) {
+                        const wy = chunk.getTopBlockY(bX - 1, bZ);
+                        if (wy !== undefined && wy > -1000) westY = wy;
+                      } else {
+                        // At chunk boundary - look at previous chunk
+                        const westChunk = this.props.world.getChunkAt(dim, chunkX - 1, chunkZ);
+                        if (westChunk) {
+                          const wy = westChunk.getTopBlockY(15, bZ);
+                          if (wy !== undefined && wy > -1000) westY = wy;
+                        }
+                      }
+
+                      // Calculate shade factor based on height difference
+                      const heightDiff = (blockY - northY + (blockY - westY)) / 2;
+
+                      if (heightDiff > 0) {
+                        // Higher than neighbors = lighter (sun-facing)
+                        shadeFactor = Math.min(1.3, 1.0 + heightDiff * 0.05);
+                      } else if (heightDiff < 0) {
+                        // Lower than neighbors = darker (shadow)
+                        shadeFactor = Math.max(0.7, 1.0 + heightDiff * 0.05);
+                      }
+
+                      // Apply shading to color if we have one and using color mode
+                      if (color && useColorShading) {
+                        color = this._adjustColorBrightness(color, shadeFactor);
+                      }
                     }
-                  }
 
-                  // Look at west neighbor (bX - 1)
-                  if (bX > 0) {
-                    const wy = chunk.getTopBlockY(bX - 1, bZ);
-                    if (wy !== undefined && wy > -1000) westY = wy;
-                  } else {
-                    // At chunk boundary - look at previous chunk
-                    const westChunk = this.props.world.getChunkAt(dim, chunkX - 1, chunkZ);
-                    if (westChunk) {
-                      const wy = westChunk.getTopBlockY(15, bZ);
-                      if (wy !== undefined && wy > -1000) westY = wy;
-                    }
-                  }
-
-                  // Calculate shade factor based on height difference
-                  const heightDiff = (blockY - northY + (blockY - westY)) / 2;
-
-                  if (heightDiff > 0) {
-                    // Higher than neighbors = lighter (sun-facing)
-                    shadeFactor = Math.min(1.3, 1.0 + heightDiff * 0.05);
-                  } else if (heightDiff < 0) {
-                    // Lower than neighbors = darker (shadow)
-                    shadeFactor = Math.max(0.7, 1.0 + heightDiff * 0.05);
-                  }
-
-                  // Apply shading to color if we have one and using color mode
-                  if (color && useColorShading) {
-                    color = this._adjustColorBrightness(color, shadeFactor);
-                  }
-                }
-
-                // Calculate block position in tile
-                let posX: number, posZ: number;
-                if (isHighZoom) {
-                  // For zoom > 7: position relative to the block offset
-                  posX = (bX - startBX) * pixelsPerBlock;
-                  posZ = (bZ - startBZ) * pixelsPerBlock;
-                } else {
-                  posX = chunkPixelOffset + bX * pixelScale;
-                  posZ = chunkPixelOffsetZ + bZ * pixelScale;
-                }
-
-                // For zoom > 7, blockWidth should be pixelsPerBlock
-                const renderWidth = isHighZoom ? pixelsPerBlock : blockWidthBase;
-
-                if (color) {
-                  ctx.fillStyle = color;
-                  ctx.fillRect(posX, posZ, renderWidth, renderWidth);
-
-                  // Apply shading overlay to color fills when not using color-baked shading
-                  // (useColorShading bakes shading into the color; otherwise we need an overlay)
-                  if (!useColorShading && Math.abs(shadeFactor - 1.0) > 0.01) {
-                    if (shadeFactor > 1.0) {
-                      const alpha = Math.min(0.35, (shadeFactor - 1.0) * 1.0);
-                      ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
-                      ctx.fillRect(posX, posZ, renderWidth, renderWidth);
+                    // Calculate block position in tile
+                    let posX: number, posZ: number;
+                    if (isHighZoom) {
+                      // For zoom > 7: position relative to the block offset
+                      posX = (bX - startBX) * pixelsPerBlock;
+                      posZ = (bZ - startBZ) * pixelsPerBlock;
                     } else {
-                      const alpha = Math.min(0.35, (1.0 - shadeFactor) * 1.0);
-                      ctx.fillStyle = `rgba(0, 0, 0, ${alpha})`;
+                      posX = chunkPixelOffset + bX * pixelScale;
+                      posZ = chunkPixelOffsetZ + bZ * pixelScale;
+                    }
+
+                    // For zoom > 7, blockWidth should be pixelsPerBlock
+                    const renderWidth = isHighZoom ? pixelsPerBlock : blockWidthBase;
+
+                    if (color) {
+                      ctx.fillStyle = color;
                       ctx.fillRect(posX, posZ, renderWidth, renderWidth);
-                    }
-                  }
-                }
 
-                // At zoomed-in levels, optionally show textures for larger blocks
-                if (!color || showTextures) {
-                  // For custom blocks, use the loaded texture image if available
-                  if (customBlockTexture) {
-                    ctx.drawImage(customBlockTexture, posX, posZ, renderWidth, renderWidth);
-
-                    // Apply shading overlay after drawing custom texture
-                    if (Math.abs(shadeFactor - 1.0) > 0.01) {
-                      if (shadeFactor > 1.0) {
-                        const alpha = Math.min(0.35, (shadeFactor - 1.0) * 1.0);
-                        ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
-                        ctx.fillRect(posX, posZ, renderWidth, renderWidth);
-                      } else {
-                        const alpha = Math.min(0.35, (1.0 - shadeFactor) * 1.0);
-                        ctx.fillStyle = `rgba(0, 0, 0, ${alpha})`;
-                        ctx.fillRect(posX, posZ, renderWidth, renderWidth);
+                      // Apply shading overlay to color fills when not using color-baked shading
+                      // (useColorShading bakes shading into the color; otherwise we need an overlay)
+                      if (!useColorShading && Math.abs(shadeFactor - 1.0) > 0.01) {
+                        if (shadeFactor > 1.0) {
+                          const alpha = Math.min(0.35, (shadeFactor - 1.0) * 1.0);
+                          ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+                          ctx.fillRect(posX, posZ, renderWidth, renderWidth);
+                        } else {
+                          const alpha = Math.min(0.35, (1.0 - shadeFactor) * 1.0);
+                          ctx.fillStyle = `rgba(0, 0, 0, ${alpha})`;
+                          ctx.fillRect(posX, posZ, renderWidth, renderWidth);
+                        }
                       }
                     }
-                  } else if (!btype.isCustom) {
-                    // For vanilla blocks, use the standard texture path
-                    const iconStr = block.blockType.getIcon();
 
-                    let imageManager = this._mapTiles[iconStr];
+                    // At zoomed-in levels, optionally show textures for larger blocks
+                    if (!color || showTextures) {
+                      // For custom blocks, use the loaded texture image if available
+                      if (customBlockTexture) {
+                        ctx.drawImage(customBlockTexture, posX, posZ, renderWidth, renderWidth);
 
-                    if (!imageManager) {
-                      imageManager = new ImageLoadManager();
-                      imageManager.source =
-                        CreatorToolsHost.contentWebRoot +
-                        "res/latest/van/serve/resource_pack/textures/blocks/" +
-                        iconStr +
-                        ".png";
+                        // Apply shading overlay after drawing custom texture
+                        if (Math.abs(shadeFactor - 1.0) > 0.01) {
+                          if (shadeFactor > 1.0) {
+                            const alpha = Math.min(0.35, (shadeFactor - 1.0) * 1.0);
+                            ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+                            ctx.fillRect(posX, posZ, renderWidth, renderWidth);
+                          } else {
+                            const alpha = Math.min(0.35, (1.0 - shadeFactor) * 1.0);
+                            ctx.fillStyle = `rgba(0, 0, 0, ${alpha})`;
+                            ctx.fillRect(posX, posZ, renderWidth, renderWidth);
+                          }
+                        }
+                      } else if (!btype.isCustom) {
+                        // For vanilla blocks, use the standard texture path
+                        const iconStr = block.blockType.getIcon();
 
-                      this._mapTiles[iconStr] = imageManager;
+                        let imageManager = this._mapTiles[iconStr];
+
+                        if (!imageManager) {
+                          imageManager = new ImageLoadManager();
+                          imageManager.source =
+                            CreatorToolsHost.contentWebRoot +
+                            "res/latest/van/serve/resource_pack/textures/blocks/" +
+                            iconStr +
+                            ".png";
+
+                          this._mapTiles[iconStr] = imageManager;
+                        }
+                        imageManager.use(ctx, posX, posZ, renderWidth, renderWidth, shadeFactor);
+
+                        // Draw shading overlay directly here after image for consistent shading at all zoom levels
+                        if (Math.abs(shadeFactor - 1.0) > 0.01) {
+                          if (shadeFactor > 1.0) {
+                            // Lightening effect
+                            const alpha = Math.min(0.35, (shadeFactor - 1.0) * 1.0);
+                            ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+                            ctx.fillRect(posX, posZ, renderWidth, renderWidth);
+                          } else {
+                            // Darkening effect - more subtle
+                            const alpha = Math.min(0.35, (1.0 - shadeFactor) * 1.0);
+                            ctx.fillStyle = `rgba(0, 0, 0, ${alpha})`;
+                            ctx.fillRect(posX, posZ, renderWidth, renderWidth);
+                          }
+                        }
+                      }
                     }
-                    imageManager.use(ctx, posX, posZ, renderWidth, renderWidth, shadeFactor);
 
-                    // Draw shading overlay directly here after image for consistent shading at all zoom levels
-                    if (Math.abs(shadeFactor - 1.0) > 0.01) {
-                      if (shadeFactor > 1.0) {
-                        // Lightening effect
-                        const alpha = Math.min(0.35, (shadeFactor - 1.0) * 1.0);
-                        ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
-                        ctx.fillRect(posX, posZ, renderWidth, renderWidth);
-                      } else {
-                        // Darkening effect - more subtle
-                        const alpha = Math.min(0.35, (1.0 - shadeFactor) * 1.0);
-                        ctx.fillStyle = `rgba(0, 0, 0, ${alpha})`;
-                        ctx.fillRect(posX, posZ, renderWidth, renderWidth);
+                    // Apply fade overlay for floor blocks (blocks below current Y level)
+                    if (isFloorBlock) {
+                      // Calculate depth-based fade (deeper = more faded)
+                      const depth = this._yLevel - floorBlockY;
+                      const depthFade = Math.min(0.85, 0.5 + depth * 0.03); // 0.5 base + 0.03 per block depth, max 0.85
+
+                      // Dark semi-transparent overlay with depth-based opacity
+                      ctx.fillStyle = `rgba(0, 0, 15, ${depthFade})`;
+                      ctx.fillRect(posX, posZ, renderWidth, renderWidth);
+
+                      // Add dithered pattern for clear "below ground" indication
+                      ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
+                      // Draw checkerboard dither pattern
+                      const ditherSize = Math.max(2, Math.floor(renderWidth / 8));
+                      for (let dx = 0; dx < renderWidth; dx += ditherSize * 2) {
+                        for (let dz = 0; dz < renderWidth; dz += ditherSize * 2) {
+                          // Checkerboard pattern
+                          ctx.fillRect(posX + dx, posZ + dz, ditherSize, ditherSize);
+                          ctx.fillRect(posX + dx + ditherSize, posZ + dz + ditherSize, ditherSize, ditherSize);
+                        }
                       }
                     }
                   }
-                }
-
-                // Apply fade overlay for floor blocks (blocks below current Y level)
-                if (isFloorBlock) {
-                  // Calculate depth-based fade (deeper = more faded)
-                  const depth = this._yLevel - floorBlockY;
-                  const depthFade = Math.min(0.85, 0.5 + depth * 0.03); // 0.5 base + 0.03 per block depth, max 0.85
-
-                  // Dark semi-transparent overlay with depth-based opacity
-                  ctx.fillStyle = `rgba(0, 0, 15, ${depthFade})`;
-                  ctx.fillRect(posX, posZ, renderWidth, renderWidth);
-
-                  // Add dithered pattern for clear "below ground" indication
-                  ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
-                  // Draw checkerboard dither pattern
-                  const ditherSize = Math.max(2, Math.floor(renderWidth / 8));
-                  for (let dx = 0; dx < renderWidth; dx += ditherSize * 2) {
-                    for (let dz = 0; dz < renderWidth; dz += ditherSize * 2) {
-                      // Checkerboard pattern
-                      ctx.fillRect(posX + dx, posZ + dz, ditherSize, ditherSize);
-                      ctx.fillRect(posX + dx + ditherSize, posZ + dz + ditherSize, ditherSize, ditherSize);
-                    }
-                  }
+                } catch (blockError: unknown) {
+                  // Log first error per tile, then continue rendering remaining blocks.
+                  // This prevents a single bad block from blanking the entire tile.
+                  Log.debug("Error rendering block at " + bX + "," + bZ + ": " + blockError);
                 }
               }
-            } catch (blockError: unknown) {
-              // Log first error per tile, then continue rendering remaining blocks.
-              // This prevents a single bad block from blanking the entire tile.
-              Log.debug("Error rendering block at " + bX + "," + bZ + ": " + blockError);
             }
+          } catch (chunkErr) {
+            // Skip this chunk on error and continue rendering remaining chunks.
+            // Tile-level coordinate text and other chunks still render correctly.
+            Log.debug("Error rendering chunk at " + chunkX + "," + chunkZ + ": " + chunkErr);
           }
         }
+
+        // Show tile coordinates in corner with better contrast
+        this._drawTileCoordinateText(ctx, tileHtml);
+
+        // Cache the rendered tile for future use
+        // Only cache complete tiles - tiles with loading indicators should NOT be cached
+        // This prevents having to invalidate the entire cache when chunks load
+        if (!tileHasLoadingChunks) {
+          this._tileCache.set(cacheKey, tile);
+        }
+
+        // Periodically run memory cleanup for large worlds
+        this._performMemoryCleanup();
+      } catch (renderErr) {
+        // Catch-all so a rendering exception never leaves the tile completely blank.
+        // Draw the loading pattern + coordinate text so at least the user sees the tile
+        // exists. Do NOT cache the failed tile so it will be re-rendered next time.
+        Log.debug("Error rendering tile at " + coords.x + "," + coords.y + "," + coords.z + ": " + renderErr);
+        try {
+          ctx.clearRect(0, 0, 256, 256);
+          this._drawLoadingPattern(ctx, 0, 0, 256, 256);
+          this._drawTileCoordinateText(ctx, tileHtml);
+        } catch (_drawErr) {
+          // Canvas operations should never fail, but be defensive
+        }
       }
-
-      // Show tile coordinates in corner with better contrast
-      ctx.font = "bold 10px Arial";
-      // Draw dark outline/shadow for contrast
-      ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
-      ctx.fillText(tileHtml, 3, 13);
-      ctx.fillText(tileHtml, 1, 13);
-      ctx.fillText(tileHtml, 2, 14);
-      ctx.fillText(tileHtml, 2, 12);
-      // Draw white text on top
-      ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
-      ctx.fillText(tileHtml, 2, 13);
-
-      // Cache the rendered tile for future use
-      // Only cache complete tiles - tiles with loading indicators should NOT be cached
-      // This prevents having to invalidate the entire cache when chunks load
-      if (!tileHasLoadingChunks) {
-        this._tileCache.set(cacheKey, tile);
-      }
-
-      // Periodically run memory cleanup for large worlds
-      this._performMemoryCleanup();
     }
 
     // return the tile so it can be rendered on screen

@@ -40,19 +40,16 @@ test.describe("Web Worker Tests @focused", () => {
       return;
     }
 
-    // Test that the project worker can be instantiated
+    // Test that the project worker can be instantiated via ProjectWorkerManager
     const workerResult = await page.evaluate(async () => {
       try {
-        // Access the ProjectWorkerManager through the app's global CreatorTools
-        // @ts-ignore - accessing global app object
-        const cto = window.creatorToolsInstance;
-        if (!cto) {
-          return { success: false, error: "CreatorTools not available" };
+        const module = await import("/src/workers/ProjectWorkerManager.ts");
+        const ProjectWorkerManager = module.default;
+
+        if (!ProjectWorkerManager) {
+          return { success: false, error: "ProjectWorkerManager not found" };
         }
 
-        // The ProjectWorkerManager is a singleton, access it
-        // @ts-ignore
-        const { default: ProjectWorkerManager } = await import("/src/workers/ProjectWorkerManager.ts");
         const manager = ProjectWorkerManager.instance;
 
         return {
@@ -64,14 +61,12 @@ test.describe("Web Worker Tests @focused", () => {
       }
     });
 
-    // The test should at least not throw an error
-    // In dev mode with Vite, the worker should be supported
     if (!workerResult.success) {
       console.log("Worker test result:", workerResult);
     }
 
-    // We mainly want to ensure no crashes occur
-    expect(workerResult).toBeDefined();
+    expect(workerResult.success).toBe(true);
+    expect(workerResult.isSupported).toBe(true);
   });
 
   test("should successfully load worker via ProjectWorkerManager", async ({ page }) => {

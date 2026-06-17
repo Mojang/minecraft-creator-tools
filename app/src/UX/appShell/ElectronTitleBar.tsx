@@ -2,7 +2,7 @@ import { Component, MouseEvent, DragEvent } from "react";
 import "./ElectronTitleBar.css";
 
 import AppServiceProxy, { AppServiceProxyCommands } from "../../core/AppServiceProxy";
-import { AppMode } from "./App";
+import { AppMode } from "./AppMode";
 import { WindowState } from "../../app/ICreatorToolsData";
 import CreatorToolsHost, { CreatorToolsThemeStyle } from "../../app/CreatorToolsHost";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

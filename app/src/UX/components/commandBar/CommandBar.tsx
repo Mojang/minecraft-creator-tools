@@ -96,7 +96,10 @@ function getAutocompleteSx(isCommandMode: boolean): SxProps<Theme> {
 }
 
 export default function CommandBar({ onSearchQueryChange, onSetProject, onProjectsChanged }: CommandBarProps) {
-  const [creatorTools] = useCreatorTools();
+  const [creatorToolsOrUndef, isCreatorToolsReady] = useCreatorTools();
+  // The component renders null when !isCreatorToolsReady, so creatorTools is always
+  // defined at any call site reachable from the rendered JSX.
+  const creatorTools = creatorToolsOrUndef!;
   const intl = useIntl();
 
   const [commandSuggestions, setCommandSuggestions] = useState<string[]>([]);
@@ -420,6 +423,10 @@ export default function CommandBar({ onSearchQueryChange, onSetProject, onProjec
     [isCommandMode, commandSuggestions, acceptSuggestion, executeToolCommand, inputValue]
   );
 
+  if (!isCreatorToolsReady) {
+    return null;
+  }
+
   return (
     <>
       <Autocomplete
@@ -461,9 +468,11 @@ export default function CommandBar({ onSearchQueryChange, onSetProject, onProjec
         renderInput={(params) => (
           <TextField
             {...params}
-            label={isCommandMode
-              ? intl.formatMessage({ id: "home.project_grid.command_label" })
-              : intl.formatMessage({ id: "home.project_grid.search_label" })}
+            label={
+              isCommandMode
+                ? intl.formatMessage({ id: "home.project_grid.command_label" })
+                : intl.formatMessage({ id: "home.project_grid.search_label" })
+            }
             variant="outlined"
             inputRef={commandInputRef}
             inputProps={{

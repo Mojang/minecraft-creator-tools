@@ -18,8 +18,10 @@ import {
   waitForEditorReady,
 } from "./WebTestUtilities";
 
-// Increase timeout for this test since thumbnail generation takes time
-test.setTimeout(120_000);
+// Increase timeout for this test since thumbnail generation takes time.
+// Full Add-On creation fetches from GitHub on production, which adds significant
+// latency on top of worker-driven thumbnail generation, so be generous here.
+test.setTimeout(180_000);
 
 /**
  * Create a Full Add-On project and enter the editor.
@@ -152,17 +154,29 @@ test.describe("Thumbnail Generation @thumbnails", () => {
 
     let thumbnailResult = { thumbnailCount: 0, itemsWithThumbnails: [] as string[], totalSidebarIcons: 0 };
     let stableCount = 0;
-    const maxWaitMs = 60_000;
+    // Generous budget: locally the first thumbnail can take ~35s, and production
+    // (mctools.dev) adds GitHub-fetch latency on top.
+    const maxWaitMs = 90_000;
     const pollIntervalMs = 3_000;
     const startTime = Date.now();
 
     while (Date.now() - startTime < maxWaitMs) {
       await page.waitForTimeout(pollIntervalMs);
 
-      // Make sure we're still on the editor page
-      const currentUrl = page.url();
-      if (!currentUrl.includes("#actions") && !currentUrl.includes("localhost")) {
-        console.log(`WARNING: Page navigated away to ${currentUrl}`);
+      // Make sure the editor sidebar is still mounted. Don't gate on URL: the
+      // local Vite host is "localhost" and prod is "mctools.dev" and Full Add-On
+      // creation lands on different hash routes depending on flow — using
+      // `localhost` / `#actions` as a sentinel produced false navigation bailouts
+      // on production. Instead, just confirm the Mobs sidebar entry is still
+      // present (it was verified above) — if it's gone, the editor really has
+      // navigated away.
+      const editorStillMounted = await page
+        .locator("text=Mobs")
+        .first()
+        .isVisible({ timeout: 1000 })
+        .catch(() => false);
+      if (!editorStillMounted) {
+        console.log(`WARNING: Editor sidebar no longer visible at ${page.url()}`);
         await page.screenshot({
           path: "debugoutput/screenshots/thumb-error-navigated-away.png",
           fullPage: true,

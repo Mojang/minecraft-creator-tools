@@ -18,6 +18,10 @@ import { GlobalErrorBoundary, GlobalErrorOverlay } from "./UX/appShell/errorOver
 // Import ProjectWorkerManager to register it for web worker support
 // This module self-registers when loaded in browser environments
 import "./workers/ProjectWorkerManager";
+import { LogMask } from "./core/logging/LogLevel";
+import WebLogger from "./core/logging/WebLogger";
+import LogFilter from "./core/logging/LogFilter";
+import Utilities from "./core/Utilities";
 
 CreatorToolsHost.init();
 
@@ -217,6 +221,11 @@ async function initVsLoader() {
 }
 
 async function initAsync() {
+  if (typeof (globalThis as any).window !== "undefined") {
+    const logLevel = Utilities.isDebug ? LogMask.all : LogMask.nonVerbose;
+    Log.registerLogger(new WebLogger(new LogFilter(logLevel)));
+  }
+
   await initVsLoader();
 
   const darkTheme = minecraftToolDarkTheme;

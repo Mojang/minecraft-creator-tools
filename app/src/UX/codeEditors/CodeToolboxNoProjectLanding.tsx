@@ -6,7 +6,7 @@ import Project from "../../app/Project";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AppServiceProxy from "../../core/AppServiceProxy";
 import { faPlus, faFolderOpen, faCube, faCheckCircle, faWrench } from "@fortawesome/free-solid-svg-icons";
-import { AppMode } from "../appShell/App";
+import { AppMode } from "../appShell/AppMode";
 import CreatorToolsHost, { CreatorToolsThemeStyle } from "../../app/CreatorToolsHost";
 import IProjectTheme from "../types/IProjectTheme";
 

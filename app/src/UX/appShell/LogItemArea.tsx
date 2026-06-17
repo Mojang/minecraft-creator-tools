@@ -3,7 +3,6 @@ import CreatorTools from "../../app/CreatorTools";
 import "./LogItemArea.css";
 import IAppProps from "./IAppProps";
 import IStatus, { StatusTopic } from "../../app/Status";
-import { LogItemLevel } from "../../core/Log";
 import { ProjectStatusAreaMode } from "../project/ProjectEditor";
 import { IconButton, List, ListItem, ListItemText, Stack } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,7 +12,6 @@ interface ILogItemAreaProps extends IAppProps {
   onSetExpandedSize: (newMode: ProjectStatusAreaMode) => void;
   mode: ProjectStatusAreaMode;
   widthOffset: number;
-  minLogLevel?: LogItemLevel;
   filterTopics?: StatusTopic[];
 }
 
