@@ -131,7 +131,10 @@ describe("simple", async () => {
 
     const dataObject = pis.getDataObject();
 
-    await ensureReportJsonMatchesScenario(scenariosFolder, resultsFolder, dataObject, "simple", ["CDWORLDDATA2"]);
+    await ensureReportJsonMatchesScenario(scenariosFolder, resultsFolder, dataObject, "simple", [
+      "CDWORLDDATA2",
+      "TEXTURELIST2",
+    ]);
   });
 });
 

@@ -1439,6 +1439,8 @@ class ProjectItemList extends Component<IProjectItemListProps, IProjectItemListS
         size="small"
         aria-label={addLabel}
         title={addLabel}
+        data-bi-name={addLabel}
+        data-bi-type={ProjectItemType[displayType]}
         onClick={handleAddItemClick}
         sx={{
           color: this.props.theme.foreground1,
@@ -1467,6 +1469,8 @@ class ProjectItemList extends Component<IProjectItemListProps, IProjectItemListS
           className="pil-itemTypeHeader"
           key={headerKey}
           data-item-type={itemType}
+          data-bi-name={`Toggle ${name}`}
+          data-bi-type={ProjectItemType[displayType]}
           onClick={handleHeaderToggle}
           onDoubleClick={this._handleItemTypeDoubleClick}
           title={

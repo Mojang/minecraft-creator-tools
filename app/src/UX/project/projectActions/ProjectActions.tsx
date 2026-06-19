@@ -634,6 +634,7 @@ class ProjectActions extends Component<IProjectActionsProps, IProjectActionsStat
                           onClick={b.onClick}
                           disabled={b.disabled}
                           aria-label={b.label}
+                          data-bi-name={b.label}
                           size="small"
                           className="pact-compactStripBtn"
                         >
@@ -734,6 +735,7 @@ class ProjectActions extends Component<IProjectActionsProps, IProjectActionsStat
                   onClick={this._editProjectDetails}
                   title={this.props.intl.formatMessage({ id: "project_editor.actions.edit_project_details" })}
                   aria-label={this.props.intl.formatMessage({ id: "project_editor.actions.edit_project_details" })}
+                  data-bi-name={this.props.intl.formatMessage({ id: "project_editor.actions.edit_project_details" })}
                 >
                   <FontAwesomeIcon icon={faEdit} />
                 </button>
@@ -814,6 +816,7 @@ class ProjectActions extends Component<IProjectActionsProps, IProjectActionsStat
                   key="pact-exportZip"
                   theme={this.props.theme}
                   onClick={this._exportZip}
+                  dataBiName="Dashboard download mcaddon"
                 >
                   <div className="pact-cardContent">
                     <div className="pact-cardIcon">
@@ -858,6 +861,7 @@ class ProjectActions extends Component<IProjectActionsProps, IProjectActionsStat
                     key="pact-exportLocalFolder"
                     theme={this.props.theme}
                     onClick={this._exportLocal}
+                    dataBiName="Dashboard save to folder"
                   >
                     <div className="pact-cardContent">
                       <div className="pact-cardIcon">
@@ -889,6 +893,7 @@ class ProjectActions extends Component<IProjectActionsProps, IProjectActionsStat
                   key="pact-dlFlatWorld"
                   theme={this.props.theme}
                   onClick={this._downloadFlatWorld}
+                  dataBiName="Dashboard download flat world"
                 >
                   <div className="pact-cardContent">
                     <div className="pact-cardIconImage">
@@ -916,6 +921,7 @@ class ProjectActions extends Component<IProjectActionsProps, IProjectActionsStat
                   key="pact-dlProjectWorld"
                   theme={this.props.theme}
                   onClick={this._downloadProjectWorld}
+                  dataBiName="Dashboard download project world"
                 >
                   <div className="pact-cardContent">
                     <div className="pact-cardIconImage">

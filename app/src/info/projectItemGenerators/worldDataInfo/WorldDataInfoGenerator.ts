@@ -478,9 +478,11 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
       // Determine whether to apply record processing limits based on resource consumption constraint
       const constrainResources = options?.constrainResourceConsumption !== ResourceConsumptionConstraint.none;
       const maxRecordsToProcess = constrainResources ? MaxWorldRecordsToProcess : undefined;
+      const skipWorldDataBlockCounts = options?.skipWorldDataBlockCounts === true;
 
       let didProcessWorldData = await mcworld.loadLevelDb(false, {
-        maxNumberOfRecordsToProcess: maxRecordsToProcess,
+        maxNumberOfRecordsToProcess: skipWorldDataBlockCounts ? undefined : maxRecordsToProcess,
+        skipWorldDataBlockCounts: skipWorldDataBlockCounts,
       });
 
       // A truncated load still counts as "loaded" so subsequent calls into
@@ -603,7 +605,19 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
         )
       );
 
-      if (didProcessWorldData) {
+      if (didProcessWorldData && skipWorldDataBlockCounts) {
+        items.push(
+          new ProjectInfoItem(
+            InfoItemType.info,
+            this.id,
+            WorldDataInfoGeneratorTest.subchunklessChunks,
+            "Subchunkless Chunks",
+            projectItem,
+            mcworld.worldScanCache?.subchunkLessChunkCount ?? 0,
+            mcworld.name
+          )
+        );
+      } else if (didProcessWorldData) {
         // CONTRACT
         // --------
         // World-scoped validation generators (this one,

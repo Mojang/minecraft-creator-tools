@@ -22,6 +22,7 @@ import {
 import { TextureInfoGeneratorTest } from "./projectGenerators/textureInfo/TextureInfoData";
 import { TextureReferenceInfoGeneratorTest } from "./projectGenerators/textureReferenceInfo/TextureReferenceInfoData";
 import { TypesInfoGeneratorTest } from "./projectGenerators/typesInfo/TypesInfoData";
+import { CheckTextureListGeneratorTest } from "./projectGenerators/checkTextureList/CheckTextureListData";
 
 /**
  * Form API pin tests.
@@ -108,5 +109,10 @@ describe("InfoGenerator form API pins", () => {
 
   it("TypesInfoGenerator", () => {
     assert.strictEqual(TypesInfoGeneratorTest.types, 101);
+  });
+
+  it("CheckTextureListGenerator", () => {
+    assert.strictEqual(CheckTextureListGeneratorTest.textureNotInTextureList, 101);
+    assert.strictEqual(CheckTextureListGeneratorTest.textureSetImageInTextureList, 102);
   });
 });

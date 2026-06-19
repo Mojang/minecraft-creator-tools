@@ -235,14 +235,15 @@ describe("Comprehensive Content Types", async () => {
     // - SCRIPTMODULE1: error count (changes when 114 fires or not)
     // - SCRIPTMODULE100: BP module dependency info (contains beta version string)
     // - SCRIPTMODULE114: beta version outdated error (fires only when version is stale)
-    // Exclude CDWORLDDATA2: new generator's "not applicable" entry — avoids baseline updates
-    // when this generator is first added.
+    // Exclude CDWORLDDATA2 / TEXTURELIST2: new generators' "not applicable" entries — avoids
+    // baseline updates when these generators are first added.
     await ensureReportJsonMatchesScenario(scenariosFolder, resultsFolder, dataObject, "comprehensive", [
       "SCRIPTMODULE0",
       "SCRIPTMODULE1",
       "SCRIPTMODULE100",
       "SCRIPTMODULE114",
       "CDWORLDDATA2",
+      "TEXTURELIST2",
     ]);
   });
 });
@@ -442,6 +443,7 @@ describe("Diverse Content Types", async () => {
     const dataObject = pis.getDataObject();
     await ensureReportJsonMatchesScenario(scenariosFolder, resultsFolder, dataObject, "diverse_content", [
       "CDWORLDDATA2",
+      "TEXTURELIST2",
     ]);
   });
 });
@@ -512,6 +514,7 @@ describe("Skin Pack Content - Errors", async () => {
     const dataObject = pis.getDataObject();
     await ensureReportJsonMatchesScenario(scenariosFolder, resultsFolder, dataObject, "sample_skins_errors", [
       "CDWORLDDATA2",
+      "TEXTURELIST2",
     ]);
   });
 });
@@ -582,6 +585,7 @@ describe("Skin Pack Content - Good", async () => {
     const dataObject = pis.getDataObject();
     await ensureReportJsonMatchesScenario(scenariosFolder, resultsFolder, dataObject, "sample_skins_good", [
       "CDWORLDDATA2",
+      "TEXTURELIST2",
     ]);
   });
 });

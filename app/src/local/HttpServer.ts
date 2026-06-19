@@ -2316,6 +2316,7 @@ export default class HttpServer {
 
                 // Server-side context: enable aggressive cleanup for memory efficiency
                 const pis = new ProjectInfoSet(packProject, suiteInst, excludeTests, undefined, undefined, undefined);
+                pis.skipWorldDataBlockCounts = req.headers["mctskipworldblockcounts"] === "true";
 
                 await pis.generateForProject();
 

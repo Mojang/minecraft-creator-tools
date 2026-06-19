@@ -17,12 +17,7 @@ const SERVER_STARTUP_TIMEOUT_MS = 15000;
 /**
  * POSTs `body` to `url` with the given headers, retrying briefly on transient
  * connection errors (ECONNREFUSED / ECONNRESET / EAI_AGAIN and the
- * AggregateErrors that wrap them). The serve command logs its "Web UI
- * available at:" line just before — or in CI, sometimes microseconds before —
- * the underlying socket transitions to listening, so a single early POST can
- * race the listen() callback and fail. This helper papers over that race
- * without masking real validation failures (non-network errors are rethrown
- * immediately).
+ * AggregateErrors that wrap them). Non-network errors are rethrown immediately.
  */
 async function postWithRetry(
   url: string,
@@ -166,13 +161,12 @@ function createServeValidationTest(
         ...extraHeaders,
       };
 
-      const response: AxiosResponse = await postWithRetry(
-        `http://127.0.0.1:${port}/api/validate/`,
-        content,
-        headers
-      );
+      const response: AxiosResponse = await postWithRetry(`http://127.0.0.1:${port}/api/validate/`, content, headers);
 
-      await ensureReportJsonMatchesScenario(scenariosFolder, resultsFolder, response.data, suiteName, ["CDWORLDDATA2"]);
+      await ensureReportJsonMatchesScenario(scenariosFolder, resultsFolder, response.data, suiteName, [
+        "CDWORLDDATA2",
+        "TEXTURELIST2",
+      ]);
 
       await new Promise<void>((resolve) => {
         if (serverProcess) {

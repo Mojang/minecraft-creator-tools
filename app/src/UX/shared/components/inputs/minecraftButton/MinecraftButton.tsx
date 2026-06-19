@@ -9,6 +9,7 @@ interface IMinecraftButtonProps {
   className?: string;
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   children: ReactNode;
+  dataBiName?: string;
 }
 
 interface IMinecraftButtonState {
@@ -107,6 +108,7 @@ export default class MinecraftButton extends Component<IMinecraftButtonProps, IM
                 onMouseDown={this._projectMouseDown}
                 onMouseUp={this._projectMouseUp}
                 onMouseLeave={this._projectMouseUp}
+                data-bi-name={this.props.dataBiName}
               >
                 {this.props.children}
               </Button>
@@ -201,6 +203,7 @@ export default class MinecraftButton extends Component<IMinecraftButtonProps, IM
               onMouseDown={this._projectMouseDown}
               onMouseUp={this._projectMouseUp}
               onMouseLeave={this._projectMouseUp}
+              data-bi-name={this.props.dataBiName}
             >
               {this.props.children}
             </Button>

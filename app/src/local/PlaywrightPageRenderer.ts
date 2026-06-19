@@ -66,6 +66,11 @@ export interface RenderResult {
   imageFormat?: "png" | "jpeg";
 }
 
+export interface PlaywrightPageRendererOptions {
+  /** Prefer hardware GPU rendering instead of SwiftShader software WebGL. */
+  useHardwareGpu?: boolean;
+}
+
 interface BrowserLaunchConfig {
   name: string;
   launchOptions: {
@@ -78,6 +83,7 @@ interface BrowserLaunchConfig {
 
 export default class PlaywrightPageRenderer {
   private _baseUrl: string;
+  private _useHardwareGpu: boolean;
   private _browser: any = null;
   private _browserName: string = "";
   private _playwright: any = null;
@@ -89,8 +95,9 @@ export default class PlaywrightPageRenderer {
   private _lastModelPath: string | null = null; // Track last model key (without camera params) to detect changes
   private _lastFullUrl: string | null = null; // Track full URL to detect camera param changes
 
-  constructor(baseUrl: string = "http://localhost:6126") {
+  constructor(baseUrl: string = "http://localhost:6126", options: PlaywrightPageRendererOptions = {}) {
     this._baseUrl = baseUrl;
+    this._useHardwareGpu = options.useHardwareGpu ?? false;
   }
 
   /**
@@ -118,23 +125,27 @@ export default class PlaywrightPageRenderer {
   private _getBrowserConfigs(): BrowserLaunchConfig[] {
     const configs: BrowserLaunchConfig[] = [];
 
-    // Common args for all browsers - includes flags for:
-    // - Security sandbox (needed for CI runners)
-    // - Cross-origin resource loading (needed for mctools.dev textures)
-    // - WebGL in headless mode (critical for 3D rendering on CI)
-    const commonArgs = [
+    const baseArgs = [
       "--no-sandbox",
       "--disable-setuid-sandbox",
       "--disable-web-security", // Allow cross-origin requests (needed for mctools.dev textures)
       "--allow-running-insecure-content",
-      // WebGL flags for headless rendering - without these, canvas may render black
       "--enable-webgl",
       "--use-gl=angle", // Use ANGLE for WebGL (works on most systems)
-      "--use-angle=swiftshader", // Use SwiftShader software renderer as fallback
-      "--enable-unsafe-swiftshader", // Enable SwiftShader for software WebGL on CI
-      "--enable-gpu",
-      "--ignore-gpu-blocklist", // Allow WebGL even on blocklisted GPUs
-      "--disable-gpu-sandbox", // Needed for some CI environments
+    ];
+    const rendererArgs = this._useHardwareGpu
+      ? [
+          // Prefer Chromium's normal hardware ANGLE backend.
+          "--enable-gpu",
+        ]
+      : [
+          // Default to SwiftShader for deterministic CI/headless rendering.
+          "--use-angle=swiftshader",
+          "--enable-unsafe-swiftshader",
+        ];
+    const commonArgs = [
+      ...baseArgs,
+      ...rendererArgs,
     ];
 
     // 1. System Chrome (most common on dev machines)
@@ -474,6 +485,12 @@ export default class PlaywrightPageRenderer {
             viewport: { width, height },
           });
           this._persistentPage = await this._persistentContext.newPage();
+          this._persistentPage.on("console", (msg: any) => {
+            const text = msg.text();
+            if (text.includes("[STRUCTURE DEBUG]") || text.includes("[TEXTURE DEBUG]")) {
+              console.log(`[BROWSER] ${text}`);
+            }
+          });
         } catch (e: any) {
           return { imageData: undefined, error: `Failed to create browser context: ${e.message}` };
         }
@@ -490,14 +507,6 @@ export default class PlaywrightPageRenderer {
       }
 
       const fullUrl = `${this._baseUrl}${modelPath}`;
-
-      // DEBUG: Capture console logs from the browser
-      page.on("console", (msg: any) => {
-        const text = msg.text();
-        if (text.includes("[STRUCTURE DEBUG]") || text.includes("[TEXTURE DEBUG]")) {
-          console.log(`[BROWSER] ${text}`);
-        }
-      });
 
       // If only camera params changed (same modelKey, different full URL), reload the page
       // to force React to reinitialize with new props

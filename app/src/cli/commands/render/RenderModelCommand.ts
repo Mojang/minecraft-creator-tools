@@ -36,6 +36,7 @@ interface IRenderModelOptions {
   height: number;
   renderWaitMs: number;
   canvasTimeoutMs: number;
+  gpu: boolean;
 }
 
 export class RenderModelCommand extends CommandBase {
@@ -80,6 +81,7 @@ export class RenderModelCommand extends CommandBase {
       .option("--port-end <port>", "Last port in the random temporary render server range", "6299")
       .option("--width <pixels>", "Rendered image width in pixels", "512")
       .option("--height <pixels>", "Rendered image height in pixels", "512")
+      .option("--gpu", "Prefer hardware GPU rendering instead of SwiftShader software WebGL")
       .option("--render-wait-ms <milliseconds>", "Milliseconds to wait after loading the model before capture")
       .option("--canvas-timeout-ms <milliseconds>", "Milliseconds to wait for the viewer canvas", "15000");
   }
@@ -286,7 +288,7 @@ export class RenderModelCommand extends CommandBase {
 
       const baseUrl = `http://localhost:${port}`;
       context.log.verbose(`Rendering model through ${baseUrl}`);
-      renderer = new PlaywrightPageRenderer(baseUrl);
+      renderer = new PlaywrightPageRenderer(baseUrl, { useHardwareGpu: renderOptions.gpu });
       const initialized = await renderer.initialize();
 
       if (!initialized) {
@@ -404,6 +406,7 @@ export class RenderModelCommand extends CommandBase {
       height,
       renderWaitMs,
       canvasTimeoutMs,
+      gpu: options.gpu === true,
     };
   }
 
