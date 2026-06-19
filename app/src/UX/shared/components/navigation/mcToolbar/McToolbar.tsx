@@ -41,6 +41,8 @@ export interface McToolbarMenuItem {
   disabled?: boolean;
   icon?: ReactNode;
   divider?: boolean;
+  /** Stable click name for 1DS WebAnalytics auto-capture. */
+  telemetryName?: string;
 }
 
 /**
@@ -75,6 +77,8 @@ export interface McToolbarItem {
   children?: ReactNode;
   /** Aria label for accessibility */
   "aria-label"?: string;
+  /** Stable click name for 1DS WebAnalytics auto-capture. */
+  telemetryName?: string;
 }
 
 interface McToolbarProps {
@@ -92,6 +96,10 @@ interface McToolbarProps {
   overflow?: boolean;
   /** Items to always place in the overflow menu */
   overflowItems?: McToolbarItem[];
+}
+
+function getSafeTelemetryKeyPart(key: string) {
+  return key.split("|", 1)[0].replace(/[^A-Za-z0-9._-]/g, "-");
 }
 
 /**
@@ -229,6 +237,9 @@ function McToolbarItemRenderer({ item, variant }: { item: McToolbarItem; variant
   };
 
   const isMenuOpen = Boolean(anchorEl);
+  const telemetryName = item.telemetryName || `Toolbar ${item.key}`;
+  const getMenuTelemetryName = (menuItem: McToolbarMenuItem) =>
+    menuItem.telemetryName || `Toolbar ${item.key} menu ${getSafeTelemetryKeyPart(menuItem.key)}`;
 
   // Split-button: main button fires onClick, small arrow opens menu
   if (item.splitMenu && item.menu && item.onClick) {
@@ -250,7 +261,12 @@ function McToolbarItemRenderer({ item, variant }: { item: McToolbarItem; variant
           menuItem.divider ? (
             <Divider key={menuItem.key} />
           ) : (
-            <MenuItem key={menuItem.key} onClick={() => handleMenuItemClick(menuItem)} disabled={menuItem.disabled}>
+            <MenuItem
+              key={menuItem.key}
+              onClick={() => handleMenuItemClick(menuItem)}
+              disabled={menuItem.disabled}
+              data-bi-name={getMenuTelemetryName(menuItem)}
+            >
               {menuItem.icon && (
                 <Box component="span" sx={{ mr: 1, display: "flex", alignItems: "center" }}>
                   {menuItem.icon}
@@ -282,6 +298,7 @@ function McToolbarItemRenderer({ item, variant }: { item: McToolbarItem; variant
                 disabled={item.disabled}
                 title={item.title}
                 aria-label={item["aria-label"] || item.title}
+                data-bi-name={telemetryName}
                 sx={{
                   ...buttonSx,
                   borderTopRightRadius: 0,
@@ -311,6 +328,7 @@ function McToolbarItemRenderer({ item, variant }: { item: McToolbarItem; variant
                 aria-haspopup="true"
                 aria-expanded={isMenuOpen ? "true" : undefined}
                 aria-label={item.title ? `More ${item.title} options` : "More options"}
+                data-bi-name={`${telemetryName} options`}
                 sx={{
                   ...buttonSx,
                   borderTopLeftRadius: 0,
@@ -349,6 +367,7 @@ function McToolbarItemRenderer({ item, variant }: { item: McToolbarItem; variant
               aria-label={item["aria-label"] || item.title}
               aria-haspopup={item.menu ? "true" : undefined}
               aria-expanded={isMenuOpen ? "true" : undefined}
+              data-bi-name={telemetryName}
               sx={buttonSx}
               size="small"
             >
@@ -374,7 +393,12 @@ function McToolbarItemRenderer({ item, variant }: { item: McToolbarItem; variant
               menuItem.divider ? (
                 <Divider key={menuItem.key} />
               ) : (
-                <MenuItem key={menuItem.key} onClick={() => handleMenuItemClick(menuItem)} disabled={menuItem.disabled}>
+                <MenuItem
+                  key={menuItem.key}
+                  onClick={() => handleMenuItemClick(menuItem)}
+                  disabled={menuItem.disabled}
+                  data-bi-name={getMenuTelemetryName(menuItem)}
+                >
                   {menuItem.icon && (
                     <Box component="span" sx={{ mr: 1, display: "flex", alignItems: "center" }}>
                       {menuItem.icon}
@@ -409,6 +433,7 @@ function McToolbarItemRenderer({ item, variant }: { item: McToolbarItem; variant
             aria-label={item["aria-label"] || item.title || undefined}
             aria-haspopup={item.menu ? "true" : undefined}
             aria-expanded={isMenuOpen ? "true" : undefined}
+            data-bi-name={telemetryName}
             sx={buttonSx}
             size="small"
           >
@@ -434,7 +459,12 @@ function McToolbarItemRenderer({ item, variant }: { item: McToolbarItem; variant
             menuItem.divider ? (
               <Divider key={menuItem.key} />
             ) : (
-              <MenuItem key={menuItem.key} onClick={() => handleMenuItemClick(menuItem)} disabled={menuItem.disabled}>
+              <MenuItem
+                key={menuItem.key}
+                onClick={() => handleMenuItemClick(menuItem)}
+                disabled={menuItem.disabled}
+                data-bi-name={getMenuTelemetryName(menuItem)}
+              >
                 {menuItem.icon && (
                   <Box component="span" sx={{ mr: 1, display: "flex", alignItems: "center" }}>
                     {menuItem.icon}
@@ -634,6 +664,7 @@ export default function McToolbar({
             }}
             aria-label="More options"
             title="More options"
+            data-bi-name="Toolbar overflow"
           >
             <MoreHorizIcon fontSize="small" />
           </IconButton>
@@ -649,6 +680,7 @@ export default function McToolbar({
                     <MenuItem
                       key={`${item.key}-header`}
                       disabled
+                      data-bi-name={item.telemetryName || `Toolbar overflow group ${item.key}`}
                       sx={{ opacity: "0.7 !important", fontWeight: 600, fontSize: "12px", minHeight: "28px" }}
                     >
                       {item.icon && (
@@ -671,6 +703,10 @@ export default function McToolbar({
                             setOverflowAnchorEl(null);
                           }}
                           disabled={menuItem.disabled}
+                          data-bi-name={
+                            menuItem.telemetryName ||
+                            `Toolbar ${item.key} menu ${getSafeTelemetryKeyPart(menuItem.key)}`
+                          }
                           sx={{ pl: 4 }}
                         >
                           {menuItem.icon && (
@@ -694,6 +730,7 @@ export default function McToolbar({
                       setOverflowAnchorEl(null);
                     }}
                     disabled={item.disabled}
+                    data-bi-name={item.telemetryName || `Toolbar ${item.key}`}
                   >
                     {item.icon && (
                       <Box component="span" sx={{ mr: 1, display: "flex", alignItems: "center" }}>

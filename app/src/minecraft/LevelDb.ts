@@ -39,6 +39,31 @@ export interface ILevelDbInitOptions {
   progressCallback?: (phase: string, current: number, total: number) => void;
 }
 
+export interface ILevelDbParsedRecord {
+  ordinal: number;
+  key: string;
+  keyBytes: Uint8Array;
+  value?: Uint8Array;
+  isDeleted?: boolean;
+  sourceKind: "ldb" | "log";
+  sourcePath?: string;
+}
+
+export interface ILevelDbRecordVisitorOptions {
+  includeValues?: boolean;
+  includeDeleted?: boolean;
+}
+
+export type LevelDbRecordVisitor = (record: ILevelDbParsedRecord) => void;
+
+interface ILevelDbRecordVisitorState {
+  ordinal: number;
+  visitor: LevelDbRecordVisitor;
+  options: Required<ILevelDbRecordVisitorOptions>;
+  sourceKind: "ldb" | "log";
+  sourcePath?: string;
+}
+
 /**
  * Represents chunk coordinates extracted from LevelDB keys.
  * Used for incremental chunk updates when new LDB files are detected.
@@ -92,6 +117,8 @@ export default class LevelDb implements IErrorable {
 
   /** Whether initial metadata has been loaded */
   private _isInitialized = false;
+
+  private static readonly _yieldInterval = 10;
 
   /** Get whether lazy loading mode is enabled */
   get isLazyMode(): boolean {
@@ -157,6 +184,7 @@ export default class LevelDb implements IErrorable {
         if (log) {
           await log("Loaded map manifest file '" + this.manifestFiles[i].fullPath + "'.");
         }
+
       }
 
       // Unload file content to free memory after parsing
@@ -209,9 +237,6 @@ export default class LevelDb implements IErrorable {
       return fileB.level - fileA.level;
     });
 
-    // Yield every N files to allow garbage collection and prevent memory pressure
-    const yieldInterval = 10;
-
     for (let i = 0; i < ldbFileInfoSorted.length; i++) {
       const ldbFile = ldbFileInfoSorted[i].file;
 
@@ -235,7 +260,7 @@ export default class LevelDb implements IErrorable {
 
       // Periodically yield to the event loop to allow garbage collection
       // This helps prevent out-of-memory errors when loading large worlds
-      if (i % yieldInterval === 0 && i > 0) {
+      if (i % LevelDb._yieldInterval === 0 && i > 0) {
         await new Promise((resolve) => setTimeout(resolve, 0));
       }
     }
@@ -262,10 +287,133 @@ export default class LevelDb implements IErrorable {
       }
 
       // Periodically yield to allow garbage collection
-      if (i % yieldInterval === 0 && i > 0) {
+      if (i % LevelDb._yieldInterval === 0 && i > 0) {
         await new Promise((resolve) => setTimeout(resolve, 0));
       }
     }
+  }
+
+  public async forEachRecord(
+    visitor: LevelDbRecordVisitor,
+    options?: ILevelDbRecordVisitorOptions
+  ): Promise<void> {
+    this.isInErrorState = false;
+    this.errorMessages = undefined;
+
+    const visitorState: ILevelDbRecordVisitorState = {
+      ordinal: 0,
+      visitor: visitor,
+      options: {
+        includeValues: options?.includeValues ?? false,
+        includeDeleted: options?.includeDeleted ?? true,
+      },
+      sourceKind: "ldb",
+    };
+
+    for (let i = 0; i < this.manifestFiles.length; i++) {
+      await this.manifestFiles[i].loadContent(false);
+
+      const content = this.manifestFiles[i].content;
+
+      if (content instanceof Uint8Array && content.length > 0) {
+        this.parseManifestContent(content, this.manifestFiles[i].storageRelativePath);
+      }
+
+      this.manifestFiles[i].unload();
+    }
+
+    const ldbFileInfos = this.getActiveLdbFileInfosInCompatibilityOrder();
+
+    for (let i = 0; i < ldbFileInfos.length; i++) {
+      const ldbFileInfo = ldbFileInfos[i];
+      const ldbFile = ldbFileInfo.file;
+
+      if (!ldbFile.isContentLoaded) {
+        await ldbFile.loadContent(false);
+      }
+
+      const content = ldbFile.content;
+
+      if (content instanceof Uint8Array && content.length > 0) {
+        visitorState.sourceKind = "ldb";
+        visitorState.sourcePath = ldbFile.storageRelativePath;
+        this.parseLdbContent(content, ldbFile.storageRelativePath, visitorState);
+      }
+
+      ldbFile.unload();
+
+      if (i % LevelDb._yieldInterval === 0 && i > 0) {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      }
+    }
+
+    const logFilesSorted = this.logFiles.sort((fileA: IFile, fileB: IFile) => {
+      return fileA.name.localeCompare(fileB.name);
+    });
+
+    for (let i = 0; i < logFilesSorted.length; i++) {
+      const logFile = logFilesSorted[i];
+      await logFile.loadContent(false);
+
+      const content = logFile.content;
+
+      if (content instanceof Uint8Array && content.length > 0) {
+        visitorState.sourceKind = "log";
+        visitorState.sourcePath = logFile.storageRelativePath;
+        this.parseLogContent(content, logFile.storageRelativePath, visitorState);
+      }
+
+      logFile.unload();
+
+      if (i % LevelDb._yieldInterval === 0 && i > 0) {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      }
+    }
+  }
+
+  private getActiveLdbFileInfosInCompatibilityOrder(): ILevelDbFileInfo[] {
+    const ldbFileInfos: ILevelDbFileInfo[] = [];
+
+    for (let i = 0; i < this.ldbFiles.length; i++) {
+      const file = this.ldbFiles[i];
+
+      try {
+        const index = parseInt(file.name);
+
+        if (!this.deletedFileNumber || !this.deletedFileNumber.includes(index)) {
+          let level = 0;
+
+          if (this.newFileLevel && this.newFileNumber) {
+            Log.assert(this.newFileLevel.length === this.newFileNumber.length);
+
+            if (this.newFileLevel.length === this.newFileNumber.length) {
+              for (let j = 0; j < this.newFileNumber.length; j++) {
+                if (this.newFileNumber[j] === index) {
+                  level = this.newFileLevel[j];
+                }
+              }
+            }
+          }
+
+          ldbFileInfos.push({
+            index: index,
+            file: file,
+            isDeleted: false,
+            level: level,
+          });
+        }
+      } catch (e: any) {
+        this._pushError("Error including LDB file: " + file.fullPath + " Error: " + e.toString());
+      }
+    }
+
+    return ldbFileInfos.sort((fileA: ILevelDbFileInfo, fileB: ILevelDbFileInfo) => {
+      if (fileA.level === fileB.level) {
+        return fileA.index - fileB.index;
+      }
+
+      return fileB.level - fileA.level;
+    });
   }
 
   /**
@@ -700,7 +848,7 @@ export default class LevelDb implements IErrorable {
     }
   }
 
-  parseLdbContent(content: Uint8Array, context?: string) {
+  parseLdbContent(content: Uint8Array, context?: string, visitorState?: ILevelDbRecordVisitorState) {
     let keysParsed = 0;
 
     //  Ends with magic: fixed64;
@@ -822,7 +970,7 @@ export default class LevelDb implements IErrorable {
             blockContent = blockContentCompressed;
           }
 
-          keysParsed += this.parseLdbBlockBytes(blockContent, 0, blockContent.length, context);
+          keysParsed += this.parseLdbBlockBytes(blockContent, 0, blockContent.length, context, visitorState);
         } else {
           this._pushError("Could not find index key.", context);
         }
@@ -880,7 +1028,13 @@ export default class LevelDb implements IErrorable {
     return true;
   }
 
-  parseLdbBlockBytes(data: Uint8Array, offset: number, length: number, context?: string) {
+  parseLdbBlockBytes(
+    data: Uint8Array,
+    offset: number,
+    length: number,
+    context?: string,
+    visitorState?: ILevelDbRecordVisitorState
+  ) {
     let index = offset;
     let keysParsed = 0;
     let lastKeyValuePair = undefined;
@@ -909,7 +1063,22 @@ export default class LevelDb implements IErrorable {
       lastKeyValuePair = lb;
 
       if (Utilities.isUsableAsObjectKey(key)) {
-        this.keys.set(key, lb);
+        if (visitorState) {
+          const keyBytes = lb.keyBytes;
+
+          if (keyBytes) {
+            visitorState.visitor({
+              ordinal: visitorState.ordinal++,
+              key: key,
+              keyBytes: keyBytes,
+              value: visitorState.options.includeValues ? lb.value : undefined,
+              sourceKind: visitorState.sourceKind,
+              sourcePath: visitorState.sourcePath,
+            });
+          }
+        } else {
+          this.keys.set(key, lb);
+        }
       }
 
       if (lb.length === undefined || lb.length < 0) {
@@ -923,7 +1092,7 @@ export default class LevelDb implements IErrorable {
     return keysParsed;
   }
 
-  parseLogContent(content: Uint8Array, context?: string) {
+  parseLogContent(content: Uint8Array, context?: string, visitorState?: ILevelDbRecordVisitorState) {
     let index = 0;
     let pendingBytes = undefined;
     let keysParsed = 0;
@@ -944,7 +1113,7 @@ export default class LevelDb implements IErrorable {
       index += 7; // size of record header
 
       if (type === 1 /* Type 1 = FULL */) {
-        keysParsed += this.addValueFromLog(content, index, length, context);
+        keysParsed += this.addValueFromLog(content, index, length, context, visitorState);
       } else if (type === 2 /* Type 2 = FIRST */) {
         pendingBytes = new Uint8Array(content.buffer, index, length);
       } else if (type === 3 /* Type 3 = MIDDLE */ || type === 4 /* Type 4 = LAST*/) {
@@ -959,7 +1128,7 @@ export default class LevelDb implements IErrorable {
           pendingBytes = newBytes;
 
           if (type === 4 /* This is the last part of a record */) {
-            keysParsed += this.addValueFromLog(pendingBytes, 0, pendingBytes.length, context);
+            keysParsed += this.addValueFromLog(pendingBytes, 0, pendingBytes.length, context, visitorState);
           }
         } else {
           this._pushError(
@@ -997,7 +1166,13 @@ export default class LevelDb implements IErrorable {
     return keysParsed;
   }
 
-  addValueFromLog(content: Uint8Array, index: number, length: number, context?: string) {
+  addValueFromLog(
+    content: Uint8Array,
+    index: number,
+    length: number,
+    context?: string,
+    visitorState?: ILevelDbRecordVisitorState
+  ) {
     const startIndex = index;
     // first 8 bytes are sequence number; next 4 are record count; skip over those for now.
     index += 12;
@@ -1039,28 +1214,58 @@ export default class LevelDb implements IErrorable {
           index += dataLength.byteLength;
 
           if (dataLength.value + index <= content.buffer.byteLength) {
-            // slice() (not subarray / new Uint8Array(content.buffer, ...))
-            // makes a tightly-sized copy with its own ArrayBuffer, so V8 can
-            // GC each log-file buffer as keys become unreachable. A view
-            // would pin the whole multi-MB log file alive — see the
-            // memory-retention note in LevelKeyValue.loadFromLdb.
-            const data = content.slice(index, index + dataLength.value);
+            const valueStartIndex = index;
             index += dataLength.value;
 
-            const kv = new LevelKeyValue();
-            kv.sharedKey = "";
-            kv.keyDelta = key;
-            kv.unsharedKeyBytes = keyBytes;
-
-            kv.value = data;
-
             if (Utilities.isUsableAsObjectKey(key)) {
-              this.keys.set(key, kv);
+              if (visitorState) {
+                let data: Uint8Array | undefined;
+
+                if (visitorState.options.includeValues) {
+                  data = content.slice(valueStartIndex, valueStartIndex + dataLength.value);
+                }
+
+                visitorState.visitor({
+                  ordinal: visitorState.ordinal++,
+                  key: key,
+                  keyBytes: keyBytes,
+                  value: visitorState.options.includeValues ? data : undefined,
+                  sourceKind: visitorState.sourceKind,
+                  sourcePath: visitorState.sourcePath,
+                });
+              } else {
+                // slice() (not subarray / new Uint8Array(content.buffer, ...))
+                // makes a tightly-sized copy with its own ArrayBuffer, so V8 can
+                // GC each log-file buffer as keys become unreachable. A view
+                // would pin the whole multi-MB log file alive — see the
+                // memory-retention note in LevelKeyValue.loadFromLdb.
+                const data = content.slice(valueStartIndex, valueStartIndex + dataLength.value);
+                const kv = new LevelKeyValue();
+                kv.sharedKey = "";
+                kv.keyDelta = key;
+                kv.unsharedKeyBytes = keyBytes;
+                kv.value = data;
+
+                this.keys.set(key, kv);
+              }
             }
           }
         } else {
           if (Utilities.isUsableAsObjectKey(key)) {
-            this.keys.set(key, false);
+            if (visitorState) {
+              if (visitorState.options.includeDeleted) {
+                visitorState.visitor({
+                  ordinal: visitorState.ordinal++,
+                  key: key,
+                  keyBytes: keyBytes,
+                  isDeleted: true,
+                  sourceKind: visitorState.sourceKind,
+                  sourcePath: visitorState.sourcePath,
+                });
+              }
+            } else {
+              this.keys.set(key, false);
+            }
           }
         }
       }

@@ -199,6 +199,7 @@ export default class ItemTileButton extends Component<IItemTileButtonProps, IIte
     }
 
     const isDark = colors.background1 === "#312f2d";
+    const telemetryName = proj.isProjectItem ? "Gallery project item" : "Gallery catalog item";
 
     return (
       <div
@@ -207,6 +208,10 @@ export default class ItemTileButton extends Component<IItemTileButtonProps, IIte
         onClick={this._projectClick}
         role="radio"
         aria-checked={this.props.isSelected}
+        aria-label={proj.title || proj.id}
+        data-bi-name={telemetryName}
+        data-bi-id={proj.isProjectItem ? undefined : proj.id}
+        data-bi-type={GalleryItemType[proj.type]}
         ref={this.buttonRef}
       >
         <div
@@ -224,7 +229,9 @@ export default class ItemTileButton extends Component<IItemTileButtonProps, IIte
           >
             <div className="itbi-iconArea"> {imageElement}</div>
             <div className="itbi-mainArea">
-              <div className="itbi-title">{proj.title}</div>
+              <div className="itbi-title" data-bi-name={telemetryName}>
+                {proj.title}
+              </div>
             </div>
           </div>
         </div>

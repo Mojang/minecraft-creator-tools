@@ -79,6 +79,7 @@ import ProjectItem from "../app/ProjectItem";
 import WorldChunkCache from "./WorldChunkCache";
 import IWorldScanCache from "./IWorldScanCache";
 import CommandBlockActor from "./blockActors/CommandBlockActor";
+import WorldDataMetricsReducer, { IWorldDataMetrics } from "./WorldDataMetricsReducer";
 
 const BEHAVIOR_PACKS_RELPATH = "/world_behavior_packs.json";
 const BEHAVIOR_PACK_HISTORY_RELPATH = "/world_behavior_pack_history.json";
@@ -147,6 +148,12 @@ export interface IWorldProcessingOptions {
    * Default: false (full processing for backwards compatibility)
    */
   skipFullProcessing?: boolean;
+  /**
+   * If true, computes only lightweight world metrics from LevelDB keys without
+   * building LevelDb.keys or WorldChunk objects. Intended for server validation
+   * paths that do not need block spectra or chunk payloads.
+   */
+  skipWorldDataBlockCounts?: boolean;
 }
 
 export interface IRegion {
@@ -2725,6 +2732,44 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
 
     this.levelDb = new LevelDb(ldbFileArr, logFileArr, manifestFileArr, this.name);
 
+    if (options?.skipWorldDataBlockCounts) {
+      const reducer = new WorldDataMetricsReducer();
+
+      try {
+        await this.levelDb.forEachRecord((record) => reducer.visit(record), {
+          includeDeleted: true,
+          includeValues: true,
+        });
+
+        Utilities.appendErrors(this, this.levelDb);
+
+        const metrics = reducer.getMetrics();
+        this.applyWorldDataMetrics(metrics);
+
+        if (loadOper !== undefined) {
+          await this._project?.creatorTools.notifyOperationEnded(
+            loadOper,
+            "Completed metadata-only first-pass load of '" + this.name + "' world",
+            StatusTopic.worldLoad
+          );
+        }
+
+        this._updateMeta();
+        this._onDataLoaded.dispatch(this, this);
+        this._isDataLoaded = true;
+
+        return !this.isInErrorState;
+      } catch (e: any) {
+        this._pushError("Error processing LevelDB world metrics: " + (e.message || e.toString()), this.name);
+
+        if (loadOper !== undefined) {
+          await this.notifyLoadEnded(loadOper);
+        }
+
+        return false;
+      }
+    }
+
     if (useLazyLoad) {
       // Lazy loading mode: only load manifest initially
       await this._project?.creatorTools.notifyStatusUpdate(
@@ -2808,8 +2853,33 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     this._onDataLoaded.dispatch(this, this);
 
     this._isDataLoaded = true;
-
     return true;
+  }
+
+  private applyWorldDataMetrics(metrics: IWorldDataMetrics) {
+    this._wasLoadTruncated = false;
+    this.chunks = new Map();
+    this.chunkCount = metrics.chunkCount;
+    this._minX = metrics.minX;
+    this._maxX = metrics.maxX;
+    this._minZ = metrics.minZ;
+    this._maxZ = metrics.maxZ;
+    this._dimensionIdsInChunks = new Set(metrics.dimensionIds);
+    this._dimensionNameIdTable = undefined;
+    this._hasDimensionNameIdTable = metrics.hasDimensionNameIdTable;
+
+    if (metrics.dimensionNameIdTableBytes) {
+      this._parseDimensionNameIdTable(metrics.dimensionNameIdTableBytes);
+    }
+
+    this.worldScanCache = {
+      chunkCount: metrics.chunkCount,
+      subchunkLessChunkCount: metrics.subchunkLessChunkCount,
+      blockCount: 0,
+      blockTypeCounts: new Map(),
+      blockActorCounts: new Map(),
+      commandBlockActors: [],
+    };
   }
 
   /**

@@ -157,6 +157,12 @@ export interface IGeneratorOptions {
    * @param percentComplete - Optional percentage (0-100) of completion
    */
   onProgress?: (message: string, percentComplete?: number) => void;
+
+  /**
+   * Server validation mode: compute world metrics from LevelDB metadata only.
+   * Avoids LevelDb.keys population, WorldChunk materialization, and block spectra.
+   */
+  skipWorldDataBlockCounts?: boolean;
 }
 
 export default class ProjectInfoSet {
@@ -168,6 +174,7 @@ export default class ProjectInfoSet {
   contentIndex: ContentIndex;
   performAggressiveCleanup: boolean = false;
   constrainResourceConsumption: ResourceConsumptionConstraint = ResourceConsumptionConstraint.medium;
+  skipWorldDataBlockCounts: boolean = false;
 
   static _generatorsById: { [name: string]: IProjectInfoGenerator } = {};
   _isGenerating: boolean = false;
@@ -957,6 +964,7 @@ export default class ProjectInfoSet {
                   gen.generate(pi, genContentIndex, {
                     performAggressiveCleanup: this.performAggressiveCleanup,
                     constrainResourceConsumption: this.constrainResourceConsumption,
+                    skipWorldDataBlockCounts: this.skipWorldDataBlockCounts,
                     onProgress: onProgress,
                   }),
                   GeneratorTimeoutMs,

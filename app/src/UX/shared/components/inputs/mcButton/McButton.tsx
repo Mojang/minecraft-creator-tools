@@ -19,6 +19,7 @@ interface McButtonProps {
   sx?: object;
   type?: "button" | "submit" | "reset";
   dataTestId?: string;
+  dataBiName?: string;
 }
 
 /**
@@ -80,6 +81,7 @@ export default function McButton({
   sx,
   type,
   dataTestId,
+  dataBiName,
 }: McButtonProps) {
   const [isPressed, setIsPressed] = useState(false);
   const colors = colorPalettes[variant];
@@ -109,6 +111,7 @@ export default function McButton({
       className={className}
       type={type}
       data-testid={dataTestId}
+      data-bi-name={dataBiName}
       sx={{
         width: fullWidth ? "100%" : "auto",
         height: fullWidth ? "100%" : "auto",

@@ -6172,6 +6172,7 @@ class ProjectEditor extends Component<IProjectEditorProps, IProjectEditorState> 
               onClick: menuItem.onClick,
               disabled: menuItem.disabled,
               divider: menuItem.divider === true || menuItem.kind === "divider",
+              telemetryName: menuItem.telemetryName,
             }));
         }
 
@@ -6198,6 +6199,7 @@ class ProjectEditor extends Component<IProjectEditorProps, IProjectEditorState> 
           menu: mcMenu,
           kind: item.kind,
           splitMenu: item.splitMenu,
+          telemetryName: item.telemetryName,
         } as McToolbarItem;
       });
 
