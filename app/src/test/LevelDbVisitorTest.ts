@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 import { assert } from "chai";
+import { deflateRawSync, deflateSync } from "zlib";
 import LevelDb, { ILevelDbParsedRecord } from "../minecraft/LevelDb";
 import WorldDataMetricsReducer from "../minecraft/WorldDataMetricsReducer";
 import IFile from "../storage/IFile";
@@ -45,11 +46,27 @@ function makeLdbBlock(records: number[][]): Uint8Array {
   return new Uint8Array([...records.flat(), ...fixed32(0), ...fixed32(1)]);
 }
 
-function makeLdbFile(records: number[][]): Uint8Array {
-  const dataBlock = makeLdbBlock(records);
+type LdbCompressionMode = "none" | "raw" | "wrapped";
+
+function compressBlock(block: Uint8Array, mode: LdbCompressionMode): Uint8Array {
+  if (mode === "raw") {
+    return deflateRawSync(block);
+  }
+
+  if (mode === "wrapped") {
+    return deflateSync(block);
+  }
+
+  return block;
+}
+
+function makeLdbFile(records: number[][], compressionMode: LdbCompressionMode = "none"): Uint8Array {
+  const uncompressedDataBlock = makeLdbBlock(records);
+  const dataBlock = compressBlock(uncompressedDataBlock, compressionMode);
   const metaBlock = new Uint8Array([0]);
   const indexValue = [...varint(0), ...varint(dataBlock.length)];
-  const indexBlock = makeLdbBlock([makeLdbRecord(bytesFromString("last"), indexValue)]);
+  const uncompressedIndexBlock = makeLdbBlock([makeLdbRecord(bytesFromString("last"), indexValue)]);
+  const indexBlock = compressBlock(uncompressedIndexBlock, compressionMode);
   const indexOffset = dataBlock.length + metaBlock.length;
   const footer = new Uint8Array(48);
   const footerPrefix = [
@@ -98,6 +115,16 @@ function makeFile(name: string, content: Uint8Array): IFile {
       this.isContentLoaded = false;
     },
   } as IFile;
+}
+
+async function collectLdbRecords(ldb: Uint8Array): Promise<ILevelDbParsedRecord[]> {
+  const levelDb = new LevelDb([makeFile("000001.ldb", ldb)], [], [], "test");
+  const records: ILevelDbParsedRecord[] = [];
+
+  await levelDb.forEachRecord((rec) => records.push(rec), { includeValues: true });
+
+  assert.strictEqual(levelDb.keys.size, 0);
+  return records;
 }
 
 function chunkKey(x: number, z: number, tag: number, dimension?: number, subchunk?: number): Uint8Array {
@@ -174,6 +201,69 @@ describe("LevelDb.forEachRecord", () => {
 
     assert.strictEqual(records.length, 1);
     assert.isUndefined(records[0].value);
+  });
+
+  it("streams raw-zlib-compressed LDB index and data blocks", async () => {
+    const ldb = makeLdbFile([makeLdbRecord(bytesFromString("compressed"), [7, 8, 9])], "raw");
+    const records = await collectLdbRecords(ldb);
+
+    assert.strictEqual(records.length, 1);
+    assert.strictEqual(records[0].key, "compressed");
+    assert.deepEqual(Array.from(records[0].value ?? []), [7, 8, 9]);
+  });
+
+  it("streams wrapped-zlib-compressed LDB index and data blocks", async () => {
+    const ldb = makeLdbFile([makeLdbRecord(bytesFromString("wrapped"), [10, 11])], "wrapped");
+    const records = await collectLdbRecords(ldb);
+
+    assert.strictEqual(records.length, 1);
+    assert.strictEqual(records[0].key, "wrapped");
+    assert.deepEqual(Array.from(records[0].value ?? []), [10, 11]);
+  });
+
+  it("streams compressed LDB blocks through pako fallback when native zlib is unavailable", async () => {
+    const levelDbConstructor = LevelDb as unknown as { _nodeZlib?: unknown };
+    const originalNodeZlib = levelDbConstructor._nodeZlib;
+
+    try {
+      levelDbConstructor._nodeZlib = false;
+
+      const rawRecords = await collectLdbRecords(
+        makeLdbFile([makeLdbRecord(bytesFromString("pako-raw"), [15])], "raw")
+      );
+      const wrappedRecords = await collectLdbRecords(
+        makeLdbFile([makeLdbRecord(bytesFromString("pako-wrapped"), [16, 17])], "wrapped")
+      );
+
+      assert.strictEqual(rawRecords[0].key, "pako-raw");
+      assert.deepEqual(Array.from(rawRecords[0].value ?? []), [15]);
+      assert.strictEqual(wrappedRecords[0].key, "pako-wrapped");
+      assert.deepEqual(Array.from(wrappedRecords[0].value ?? []), [16, 17]);
+    } finally {
+      levelDbConstructor._nodeZlib = originalNodeZlib;
+    }
+  });
+
+  it("loads raw-zlib-compressed LDB blocks through init", async () => {
+    const ldb = makeLdbFile([makeLdbRecord(bytesFromString("init-compressed"), [12])], "raw");
+    const levelDb = new LevelDb([makeFile("000001.ldb", ldb)], [], [], "test");
+
+    await levelDb.init();
+
+    const value = levelDb.keys.get("init-compressed");
+    assert.isOk(value && typeof value !== "boolean");
+    assert.deepEqual(Array.from((value && typeof value !== "boolean" ? value.value : undefined) ?? []), [12]);
+  });
+
+  it("loads wrapped-zlib-compressed LDB blocks through init", async () => {
+    const ldb = makeLdbFile([makeLdbRecord(bytesFromString("init-wrapped"), [13, 14])], "wrapped");
+    const levelDb = new LevelDb([makeFile("000001.ldb", ldb)], [], [], "test");
+
+    await levelDb.init();
+
+    const value = levelDb.keys.get("init-wrapped");
+    assert.isOk(value && typeof value !== "boolean");
+    assert.deepEqual(Array.from((value && typeof value !== "boolean" ? value.value : undefined) ?? []), [13, 14]);
   });
 
   it("emits LOG tombstones only when includeDeleted is enabled", async () => {
