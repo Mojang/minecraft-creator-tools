@@ -12,6 +12,8 @@ import { IErrorMessage, IErrorable } from "../core/IErrorable";
 import ILevelDbFileInfo from "./ILevelDbFileInfo";
 import LevelDbIndex, { ILevelDbFileIndex, ILevelDbLogIndex } from "./LevelDbIndex";
 
+declare const require: ((moduleName: string) => unknown) | undefined;
+
 /**
  * Options for initializing LevelDb.
  */
@@ -62,6 +64,11 @@ interface ILevelDbRecordVisitorState {
   options: Required<ILevelDbRecordVisitorOptions>;
   sourceKind: "ldb" | "log";
   sourcePath?: string;
+}
+
+interface INodeZlib {
+  inflateRawSync(input: Uint8Array): Uint8Array;
+  inflateSync(input: Uint8Array): Uint8Array;
 }
 
 /**
@@ -119,6 +126,7 @@ export default class LevelDb implements IErrorable {
   private _isInitialized = false;
 
   private static readonly _yieldInterval = 10;
+  private static _nodeZlib: INodeZlib | false | undefined;
 
   /** Get whether lazy loading mode is enabled */
   get isLazyMode(): boolean {
@@ -128,6 +136,60 @@ export default class LevelDb implements IErrorable {
   /** Get the file index for lazy loading */
   get index(): LevelDbIndex | undefined {
     return this._index;
+  }
+
+  private static _getNodeZlib(): INodeZlib | undefined {
+    if (LevelDb._nodeZlib === false) {
+      return undefined;
+    }
+
+    if (LevelDb._nodeZlib !== undefined) {
+      return LevelDb._nodeZlib;
+    }
+
+    if (typeof process === "undefined" || !process.versions?.node || typeof require !== "function") {
+      Log.verbose("[LevelDb] Native zlib unavailable; using pako inflate fallback.");
+      LevelDb._nodeZlib = false;
+      return undefined;
+    }
+
+    try {
+      const zlib = require("zlib") as Partial<INodeZlib>;
+
+      if (typeof zlib.inflateRawSync === "function" && typeof zlib.inflateSync === "function") {
+        LevelDb._nodeZlib = zlib as INodeZlib;
+        Log.verbose("[LevelDb] Native zlib found; using Node zlib for LevelDB inflate.");
+        return LevelDb._nodeZlib;
+      }
+    } catch (e) {
+      // Not running in Node, or zlib is unavailable in this runtime.
+    }
+
+    Log.verbose("[LevelDb] Native zlib not found; using pako inflate fallback.");
+    LevelDb._nodeZlib = false;
+    return undefined;
+  }
+
+  private static _tryInflate(content: Uint8Array, raw: boolean): Uint8Array | undefined {
+    const zlib = LevelDb._getNodeZlib();
+
+    if (zlib) {
+      try {
+        const inflated = raw ? zlib.inflateRawSync(content) : zlib.inflateSync(content);
+
+        // Node zlib returns Buffer, whose slice() aliases memory. The LDB parser
+        // relies on Uint8Array.slice() copy semantics when retaining key/value bytes.
+        return new Uint8Array(inflated.buffer, inflated.byteOffset, inflated.byteLength);
+      } catch (e) {
+        // Fall back to pako below. Some files may be uncompressed or use the other zlib wrapper mode.
+      }
+    }
+
+    try {
+      return pako.inflate(content, { raw: raw });
+    } catch (e) {
+      return undefined;
+    }
   }
 
   /** Get the number of keys currently in memory */
@@ -899,18 +961,10 @@ export default class LevelDb implements IErrorable {
     let indexContent = undefined;
 
     // I believe this logic replicates: https://twitter.com/_tomcc/status/894294552084860928
-    try {
-      indexContent = pako.inflate(indexContentCompressed, { raw: true });
-    } catch (e) {
-      //      Log.fail("Error inflating index compressed content: " + e);
-    }
+    indexContent = LevelDb._tryInflate(indexContentCompressed, true);
 
     if (!indexContent) {
-      try {
-        indexContent = pako.inflate(indexContentCompressed);
-      } catch (e) {
-        // Log.verbose("Error inflating index content: " + e + ". Further content may fail to load.", this.context);
-      }
+      indexContent = LevelDb._tryInflate(indexContentCompressed, false);
     }
 
     if (!indexContent) {
@@ -953,17 +1007,10 @@ export default class LevelDb implements IErrorable {
 
           let blockContent = undefined;
 
-          try {
-            blockContent = pako.inflate(blockContentCompressed, { raw: true });
-          } catch (e) {}
+          blockContent = LevelDb._tryInflate(blockContentCompressed, true);
 
           if (!blockContent) {
-            try {
-              blockContent = pako.inflate(blockContentCompressed);
-            } catch (e) {
-              // Apparently, some content is just not compressed, so failing to decompress is an acceptable state.
-              // Log.fail("Error inflating block content: " + e);
-            }
+            blockContent = LevelDb._tryInflate(blockContentCompressed, false);
           }
 
           if (!blockContent) {
