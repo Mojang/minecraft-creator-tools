@@ -1,0 +1,19 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "This describes the structure of the Events section.",
+  "fields": [],
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "describes the structure of the events section"
+          }
+        ]
+      }
+    ]
+  },
+  "description": "Describes the structure of the events section.",
+  "title": "This Describes The Structure Of The Events Section"
+}

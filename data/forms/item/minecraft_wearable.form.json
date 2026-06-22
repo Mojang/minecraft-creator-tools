@@ -1,0 +1,82 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "minecraft:wearable",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "slot",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can be worn in "
+          },
+          {
+            "type": "value",
+            "field": "slot"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "hides_player_location",
+      "title": "Hides Player Location",
+      "description": "Determines whether the Player's location is hidden on Locator Maps and the Locator Bar when the wearable item is worn. Default is false.",
+      "dataType": "boolean",
+      "defaultValue": false
+    },
+    {
+      "id": "protection",
+      "title": "Protection",
+      "description": "How much protection the wearable item provides. Default is set to 0.",
+      "dataType": "int",
+      "defaultValue": 0
+    },
+    {
+      "id": "slot",
+      "title": "EquipmentSlot",
+      "description": "Specifies where the item can be worn. If any non-hand slot is chosen, the max stack size is set to 1.",
+      "dataType": "string",
+      "choices": [
+        {
+          "id": "slot.armor.body",
+          "title": "Slot.armor.body"
+        },
+        {
+          "id": "slot.armor.chest",
+          "title": "Slot.armor.chest"
+        },
+        {
+          "id": "slot.armor.feet",
+          "title": "Slot.armor.feet"
+        },
+        {
+          "id": "slot.armor.head",
+          "title": "Slot.armor.head"
+        },
+        {
+          "id": "slot.armor.legs",
+          "title": "Slot.armor.legs"
+        },
+        {
+          "id": "slot.weapon.mainhand",
+          "title": "Slot.weapon.mainhand"
+        },
+        {
+          "id": "slot.weapon.offhand",
+          "title": "Slot.weapon.offhand"
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "description": "Wearable items can be worn by a player in a specified slot.",
+  "title": "Item Wearable",
+  "samples": {}
+}

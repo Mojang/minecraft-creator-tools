@@ -1,0 +1,31 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines spawn weight settings"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Spawn Weight",
+  "fields": [
+    {
+      "id": "default",
+      "title": "Default",
+      "dataType": "int",
+      "isRequired": true
+    },
+    {
+      "id": "rarity",
+      "title": "Rarity",
+      "dataType": "int"
+    }
+  ],
+  "description": "Defines spawn weight settings.",
+  "title": "Spawn Weight Misc"
+}

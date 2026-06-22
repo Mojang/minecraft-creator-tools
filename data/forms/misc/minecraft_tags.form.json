@@ -1,0 +1,26 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "specifies tags properties"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "minecraft:tags",
+  "fields": [
+    {
+      "id": "tags",
+      "title": "Tags",
+      "description": "An array that can contain multiple item tags.",
+      "dataType": "stringArray"
+    }
+  ],
+  "description": "The tags component specifies which tags an item has on it.",
+  "title": "Minecraft Tags Misc"
+}

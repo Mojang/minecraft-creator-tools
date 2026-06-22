@@ -1,0 +1,12 @@
+{
+  "files": [
+    "manifest.json",
+    "pack_icon.png"
+  ],
+  "folders": [
+    "animation_controllers",
+    "animations",
+    "entities",
+    "loot_tables"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has a dyeable color"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "The Palette Color value of the entity.",
+      "defaultValue": 0,
+      "dataType": "int"
+    }
+  ],
+  "note": "This attribute only works on vanilla entities that have predefined color values (sheep, llama, shulker).",
+  "description": "Defines the entity's main color.",
+  "title": "Color",
+  "samples": {},
+  "id": "minecraft:color"
+}

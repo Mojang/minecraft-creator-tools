@@ -1,0 +1,31 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "identifies the feature rule and the feature to place"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "identifier",
+      "title": "identifier",
+      "description": "The name of this feature rule in the format 'namespace_name:rule_name'. 'rule_name' must match the filename.",
+      "dataType": "string"
+    },
+    {
+      "id": "places_feature",
+      "title": "places_feature",
+      "description": "Named reference to the feature controlled by this rule.",
+      "dataType": "string"
+    }
+  ],
+  "description": "Feature Rule Description",
+  "title": "Feature Rule Description"
+}

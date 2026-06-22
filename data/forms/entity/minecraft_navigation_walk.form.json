@@ -1,0 +1,415 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "navigates by walking on land"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "avoid_water",
+            "comparison": "==",
+            "value": true
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "avoids walking through water"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "avoid_damage_blocks",
+            "comparison": "==",
+            "value": true
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "avoids damaging blocks like lava and cacti"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "can_break_doors",
+            "comparison": "==",
+            "value": true
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can break through doors to reach targets"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "can_open_doors",
+            "comparison": "==",
+            "value": true
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can open doors to navigate through buildings"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "can_swim",
+            "comparison": "==",
+            "value": true
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can swim through water"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "can_breach",
+            "comparison": "==",
+            "value": true
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can jump out of water like a dolphin"
+          }
+        ]
+      }
+    ]
+  },
+  "title": "Walk navigation",
+  "description": "Walking style of the mob",
+  "fields": [
+    {
+      "id": "can_float",
+      "title": "Tells the pathfinder that it can path through through the air.",
+      "dataType": "boolean"
+    },
+    {
+      "id": "blocks_to_avoid",
+      "title": "Tells the pathfinder which blocks to avoid when creating a path.",
+      "description": "List of block descriptors that the pathfinder should avoid. Items can be block identifier strings or objects with name/tags properties.",
+      "dataType": "stringArray",
+      "alternates": [
+        {
+          "id": "blocks_to_avoid",
+          "dataType": "objectArray",
+          "subForm": {
+            "id": "block_to_avoid",
+            "title": "Block to Avoid",
+            "fields": [
+              {
+                "id": "tags",
+                "title": "Tags",
+                "description": "Molang expression to match block tags, e.g. query.any_tag('trapdoors')",
+                "dataType": "molang"
+              },
+              {
+                "id": "name",
+                "title": "Name",
+                "description": "Block identifier to avoid.",
+                "dataType": "string"
+              }
+            ]
+          }
+        }
+      ],
+      "samples": {
+        "/vanilla/behavior_pack/entities/breeze.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:navigation.walk/",
+            "content": [
+              {
+                "tags": "query.any_tag('trapdoors')"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "can_breach",
+      "title": "Tells the pathfinder whether or not it can jump out of water (like a dolphin).",
+      "dataType": "boolean",
+      "defaultValue": false,
+      "description": "Tells the pathfinder whether or not it can jump out of water (like a dolphin)"
+    },
+    {
+      "id": "can_break_doors",
+      "title": "Tells the pathfinder that it can path through a closed door and break it.",
+      "dataType": "boolean",
+      "defaultValue": false,
+      "description": "Tells the pathfinder that it can path through a closed door and break it"
+    },
+    {
+      "id": "can_jump",
+      "title": " Tells the pathfinder whether or not it can jump up blocks.",
+      "dataType": "boolean",
+      "defaultValue": true,
+      "description": "Tells the pathfinder whether or not it can jump up blocks"
+    },
+    {
+      "id": "can_open_doors",
+      "title": " Tells the pathfinder that it can path through a closed door assuming the AI will open the door.",
+      "dataType": "boolean",
+      "defaultValue": false,
+      "description": "Tells the pathfinder that it can path through a closed door assuming the AI will open the door"
+    },
+    {
+      "id": "can_open_iron_doors",
+      "title": " Tells the pathfinder that it can path through a closed iron door assuming the AI will open the door.",
+      "dataType": "boolean",
+      "defaultValue": false,
+      "description": "Tells the pathfinder that it can path through a closed iron door assuming the AI will open the door"
+    },
+    {
+      "id": "avoid_water",
+      "title": "Avoids water",
+      "dataType": "boolean",
+      "samples": {
+        "/vanilla/behavior_pack/entities/blaze.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:navigation.walk/",
+            "content": true
+          }
+        ],
+        "/vanilla/behavior_pack/entities/bogged.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:navigation.walk/",
+            "content": true
+          }
+        ]
+      },
+      "defaultValue": false,
+      "description": "Tells the pathfinder to avoid water when creating a path"
+    },
+    {
+      "id": "avoid_damage_blocks",
+      "title": "Avoid damaging blocks",
+      "dataType": "boolean",
+      "samples": {
+        "/vanilla/behavior_pack/entities/blaze.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:navigation.walk/",
+            "content": true
+          }
+        ],
+        "/vanilla/behavior_pack/entities/chicken.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:navigation.walk/",
+            "content": true
+          }
+        ]
+      },
+      "defaultValue": false,
+      "description": "Tells the pathfinder to avoid blocks that cause damage when finding a path"
+    },
+    {
+      "id": "avoid_portals",
+      "title": "Avoid Portals",
+      "description": "Tells the pathfinder to avoid portals (like nether portals) when finding a path",
+      "defaultValue": false,
+      "dataType": "boolean"
+    },
+    {
+      "id": "avoid_sun",
+      "title": "Avoid Sun",
+      "description": "Whether or not the pathfinder should avoid tiles that are exposed to the sun when creating paths",
+      "defaultValue": false,
+      "dataType": "boolean",
+      "samples": {
+        "/vanilla/behavior_pack/entities/bogged.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:navigation.walk/",
+            "content": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "can_pass_doors",
+      "title": "Can Pass Doors",
+      "description": "Whether a path can be created through a door",
+      "defaultValue": true,
+      "dataType": "boolean"
+    },
+    {
+      "id": "can_path_from_air",
+      "title": "Can Path From Air",
+      "description": "Tells the pathfinder that it can start pathing when in the air",
+      "defaultValue": false,
+      "dataType": "boolean"
+    },
+    {
+      "id": "can_path_over_lava",
+      "title": "Can Path Over Lava",
+      "description": "Tells the pathfinder whether or not it can travel on the surface of the lava",
+      "defaultValue": false,
+      "dataType": "boolean"
+    },
+    {
+      "id": "can_path_over_water",
+      "title": "Can Path Over Water",
+      "description": "Tells the pathfinder whether or not it can travel on the surface of the water",
+      "defaultValue": false,
+      "dataType": "boolean",
+      "samples": {
+        "/vanilla/behavior_pack/entities/blaze.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:navigation.walk/",
+            "content": true
+          }
+        ],
+        "/vanilla/behavior_pack/entities/chicken.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:navigation.walk/",
+            "content": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "can_sink",
+      "title": "Can Sink",
+      "description": "Tells the pathfinder whether or not it will be pulled down by gravity while in water",
+      "defaultValue": true,
+      "dataType": "boolean"
+    },
+    {
+      "id": "can_swim",
+      "title": "Can Swim",
+      "description": "Tells the pathfinder whether or not it can path anywhere through water and plays swimming animation along that path",
+      "defaultValue": false,
+      "dataType": "boolean"
+    },
+    {
+      "id": "can_walk",
+      "title": "Can Walk",
+      "description": "Tells the pathfinder whether or not it can walk on the ground outside water",
+      "defaultValue": true,
+      "dataType": "boolean"
+    },
+    {
+      "id": "can_walk_in_lava",
+      "title": "Can Walk In Lava",
+      "description": "Tells the pathfinder whether or not it can travel in lava like walking on ground",
+      "defaultValue": false,
+      "dataType": "boolean"
+    },
+    {
+      "id": "is_amphibious",
+      "title": "Is Amphibious",
+      "description": "Tells the pathfinder whether or not it can walk on the ground underwater",
+      "defaultValue": false,
+      "dataType": "boolean",
+      "samples": {
+        "/vanilla/behavior_pack/entities/bogged.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:navigation.walk/",
+            "content": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "using_door_annotation",
+      "title": "Using Door Annotation",
+      "dataType": "string",
+      "samples": {
+        "/vanilla/behavior_pack/entities/blaze.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:navigation.walk/",
+            "content": true
+          }
+        ],
+        "/vanilla/behavior_pack/entities/breeze.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:navigation.walk/",
+            "content": true
+          }
+        ]
+      }
+    }
+  ],
+  "samples": {
+    "/vanilla/behavior_pack/entities/blaze.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:navigation.walk/",
+        "content": {
+          "avoid_damage_blocks": true,
+          "avoid_water": true,
+          "can_path_over_water": true,
+          "using_door_annotation": true
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/bogged.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:navigation.walk/",
+        "content": {
+          "avoid_sun": true,
+          "is_amphibious": true,
+          "avoid_water": true
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/breeze.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:navigation.walk/",
+        "content": {
+          "blocks_to_avoid": [
+            {
+              "tags": "query.any_tag('trapdoors')"
+            }
+          ],
+          "using_door_annotation": true
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/chicken.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:navigation.walk/",
+        "content": {
+          "can_path_over_water": true,
+          "avoid_damage_blocks": true
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/cow.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:navigation.walk/",
+        "content": {
+          "can_path_over_water": true,
+          "avoid_water": true,
+          "avoid_damage_blocks": true
+        }
+      }
+    ]
+  },
+  "id": "minecraft:navigation.walk"
+}

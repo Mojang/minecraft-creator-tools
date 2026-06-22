@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Voxel Shape: 3D bounding boxes/collision shapes -->
+  <!-- Main cube outline -->
+  <rect x="2" y="4" width="8" height="8" fill="none" stroke="currentColor" stroke-width="1" stroke-opacity="0.8"/>
+  <!-- Inner cube (offset) for 3D effect -->
+  <rect x="5" y="1" width="8" height="8" fill="none" stroke="currentColor" stroke-width="1" stroke-opacity="0.5"/>
+  <!-- Connecting lines for 3D perspective -->
+  <line x1="2" y1="4" x2="5" y2="1" stroke="currentColor" stroke-width="0.5" stroke-opacity="0.6"/>
+  <line x1="10" y1="4" x2="13" y2="1" stroke="currentColor" stroke-width="0.5" stroke-opacity="0.6"/>
+  <line x1="2" y1="12" x2="5" y2="9" stroke="currentColor" stroke-width="0.5" stroke-opacity="0.6"/>
+  <line x1="10" y1="12" x2="13" y2="9" stroke="currentColor" stroke-width="0.5" stroke-opacity="0.6"/>
+  <!-- Small inner boxes to represent voxel grid -->
+  <rect x="3.5" y="5.5" width="3" height="3" fill="currentColor" fill-opacity="0.3"/>
+  <rect x="6.5" y="8.5" width="3" height="3" fill="currentColor" fill-opacity="0.4"/>
+</svg>

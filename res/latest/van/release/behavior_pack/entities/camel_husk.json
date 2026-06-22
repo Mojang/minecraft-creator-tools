@@ -1,0 +1,503 @@
+{
+  "format_version": "1.26.0",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "minecraft:camel_husk",
+      "is_summonable": true,
+      "is_spawnable": true,
+      "properties": {
+        "minecraft:has_rider_mounted": {
+          "client_sync": false,
+          "default": false,
+          "type": "bool"
+        }
+      },
+      "spawn_category": "monster"
+    },
+    "components": {
+      "minecraft:balloonable": {},
+      "minecraft:behavior.float": {
+        "chance_per_tick_to_float": 1,
+        "priority": 0,
+        "time_under_water_to_dismount_passengers": 2
+      },
+      "minecraft:behavior.look_at_player": {
+        "look_distance": 6,
+        "priority": 8
+      },
+      "minecraft:behavior.mount_pathing": {
+        "priority": 3,
+        "target_dist": 0,
+        "speed_multiplier": 4,
+        "track_target": true
+      },
+      "minecraft:behavior.random_look_around": {
+        "priority": 9
+      },
+      "minecraft:behavior.random_look_around_and_sit": {
+        "min_look_time": 80,
+        "continue_if_leashed": true,
+        "min_look_count": 2,
+        "max_look_time": 100,
+        "continue_sitting_on_reload": true,
+        "max_angle_of_view_horizontal": 30,
+        "max_look_count": 5,
+        "min_angle_of_view_horizontal": -30,
+        "priority": 5,
+        "probability": 0.001,
+        "random_look_around_cooldown": 5
+      },
+      "minecraft:behavior.random_stroll": {
+        "priority": 7,
+        "speed_multiplier": 2
+      },
+      "minecraft:breathable": {
+        "breathes_air": true,
+        "breathes_water": true,
+        "suffocate_time": 0,
+        "total_supply": 15
+      },
+      "minecraft:can_climb": {},
+      // This component prevents Camel Husk from spawning in spaces it doesn't fit. Without it, the correct collision box wont be set until the sitting/standing events are triggered.
+      "minecraft:collision_box": {
+        "height": 2.375,
+        "width": 1.7
+      },
+      "minecraft:conditional_bandwidth_optimization": {},
+      "minecraft:damage_sensor": {
+        "triggers": {
+          "cause": "fall",
+          "damage_modifier": -4,
+          "deals_damage": "yes"
+        }
+      },
+      "minecraft:despawn": {
+        "despawn_from_distance": {}
+      },
+      "minecraft:environment_sensor": {
+        "triggers": [
+          {
+            "event": "minecraft:all_riders_dismounted",
+            "filters": {
+              "all_of": [
+                {
+                  "domain": "minecraft:has_rider_mounted",
+                  "test": "bool_property"
+                },
+                {
+                  "subject": "self",
+                  "test": "rider_count",
+                  "value": 0
+                }
+              ]
+            }
+          },
+          {
+            "event": "minecraft:rider_mounted",
+            "filters": {
+              "all_of": [
+                {
+                  "domain": "minecraft:has_rider_mounted",
+                  "test": "bool_property",
+                  "value": false
+                },
+                {
+                  "operator": ">",
+                  "test": "rider_count",
+                  "subject": "self",
+                  "value": 0
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "minecraft:experience_reward": {
+        "on_bred": {
+          "expression": "Math.Random(1,7)",
+          "version": 13
+        },
+        "on_death": {
+          "expression": "query.last_hit_by_player ? Math.Random(1,3) : 0",
+          "version": 13
+        }
+      },
+      "minecraft:healable": {
+        "items": [
+          {
+            "heal_amount": 2,
+            "item": "rabbit_foot"
+          }
+        ]
+      },
+      "minecraft:health": {
+        "value": 32
+      },
+      "minecraft:hurt_on_condition": {
+        "damage_conditions": [
+          {
+            "cause": "lava",
+            "damage_per_tick": 4,
+            "filters": {
+              "subject": "self",
+              "test": "in_lava"
+            }
+          }
+        ]
+      },
+      "minecraft:inventory": {
+        "container_type": "horse"
+      },
+      "minecraft:is_hidden_when_invisible": {},
+      "minecraft:is_tamed": {},
+      "minecraft:jump.static": {},
+      "minecraft:loot": {
+        "table": "loot_tables/entities/camel_husk.json"
+      },
+      "minecraft:movement": {
+        "value": 0.09
+      },
+      "minecraft:movement.basic": {},
+      "minecraft:nameable": {},
+      "minecraft:navigation.walk": {
+        "avoid_damage_blocks": true,
+        "can_path_over_water": true
+      },
+      "minecraft:physics": {},
+      "minecraft:rideable": {
+        "crouching_skip_interact": true,
+        "family_types": [
+          "player",
+          "parched",
+          "husk_rider"
+        ],
+        "interact_text": "action.interact.ride.horse",
+        "seat_count": 2,
+        "seats": [
+          {
+            "max_rider_count": 2,
+            "position": [
+              0,
+              1.905,
+              0.5
+            ],
+            "min_rider_count": 0
+          },
+          {
+            "max_rider_count": 2,
+            "position": [
+              0,
+              1.905,
+              -0.5
+            ],
+            "min_rider_count": 1
+          }
+        ]
+      },
+      "minecraft:type_family": {
+        "family": [
+          "camel_husk",
+          "mob",
+          "undead"
+        ]
+      },
+      "minecraft:variable_max_auto_step": {
+        "base_value": 1.5625,
+        "controlled_value": 1.5625,
+        "jump_prevented_value": 0.5625
+      }
+    },
+    "component_groups": {
+      "minecraft:camel_husk_saddled": {
+        "minecraft:behavior.player_ride_tamed": {
+          "priority": 1
+        },
+        "minecraft:dash_action": {
+          "cooldown_time": 2.75,
+          "horizontal_momentum": 20,
+          "vertical_momentum": 0.6
+        },
+        "minecraft:input_ground_controlled": {},
+        "minecraft:is_saddled": {}
+      },
+      "minecraft:camel_husk_sitting": {
+        "minecraft:collision_box": {
+          "height": 0.945,
+          "width": 1.7
+        },
+        "minecraft:pushable": {
+          "is_pushable": false,
+          "is_pushable_by_piston": true
+        }
+      },
+      "minecraft:camel_husk_standing": {
+        "minecraft:collision_box": {
+          "height": 2.375,
+          "width": 1.7
+        },
+        "minecraft:pushable": {
+          "is_pushable": true,
+          "is_pushable_by_piston": true
+        }
+      },
+      "minecraft:camel_husk_with_no_hostile_rider": {
+        "minecraft:behavior.tempt": {
+          "can_tempt_vertically": true,
+          "items": [
+            "rabbit_foot"
+          ],
+          "priority": 4,
+          "speed_multiplier": 2.5
+        },
+        "minecraft:equippable": {
+          "slots": [
+            {
+              "accepted_items": [
+                "saddle"
+              ],
+              "item": "saddle",
+              "on_equip": {
+                "event": "minecraft:camel_husk_saddled"
+              },
+              "on_unequip": {
+                "event": "minecraft:camel_husk_unsaddled"
+              },
+              "slot": 0
+            }
+          ]
+        },
+        "minecraft:interact": {
+          "interactions": [
+            {
+              "equip_item_slot": "0",
+              "play_sounds": "saddle",
+              "interact_text": "action.interact.saddle",
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    {
+                      "domain": "inventory",
+                      "operator": "not",
+                      "test": "has_equipment",
+                      "subject": "self",
+                      "value": "saddle"
+                    },
+                    {
+                      "domain": "hand",
+                      "subject": "other",
+                      "test": "has_equipment",
+                      "value": "saddle"
+                    },
+                    {
+                      "subject": "other",
+                      "test": "is_sneak_held",
+                      "value": false
+                    }
+                  ]
+                }
+              }
+            },
+            // Removing the Saddle while the Camel is standing. Keep consistent with the next interaction.
+            {
+              "drop_item_slot": "0",
+              // Bigger offset when the Camel is standing.
+              "drop_item_y_offset": 2,
+              "hurt_item": 1,
+              "interact_text": "action.interact.removesaddle",
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    {
+                      "subject": "self",
+                      "test": "is_sitting",
+                      "value": false
+                    },
+                    {
+                      "operator": "equals",
+                      "test": "rider_count",
+                      "subject": "self",
+                      "value": 0
+                    },
+                    {
+                      "domain": "inventory",
+                      "subject": "self",
+                      "test": "has_equipment",
+                      "value": "saddle"
+                    },
+                    {
+                      "domain": "hand",
+                      "subject": "other",
+                      "test": "has_equipment",
+                      "value": "shears"
+                    },
+                    {
+                      "subject": "other",
+                      "test": "is_sneak_held",
+                      "value": false
+                    }
+                  ]
+                }
+              },
+              "play_sounds": "unsaddle",
+              "vibration": "shear"
+            },
+            // Removing the Saddle while the Camel is sitting. Keep consistent with the previous interaction.
+            {
+              "drop_item_slot": "0",
+              // Smaller offset when the Camel is sitting.
+              "drop_item_y_offset": 1,
+              "hurt_item": 1,
+              "interact_text": "action.interact.removesaddle",
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    {
+                      "subject": "self",
+                      "test": "is_sitting"
+                    },
+                    {
+                      "operator": "equals",
+                      "test": "rider_count",
+                      "subject": "self",
+                      "value": 0
+                    },
+                    {
+                      "domain": "inventory",
+                      "subject": "self",
+                      "test": "has_equipment",
+                      "value": "saddle"
+                    },
+                    {
+                      "domain": "hand",
+                      "subject": "other",
+                      "test": "has_equipment",
+                      "value": "shears"
+                    },
+                    {
+                      "subject": "other",
+                      "test": "is_sneak_held",
+                      "value": false
+                    }
+                  ]
+                }
+              },
+              "play_sounds": "unsaddle",
+              "vibration": "shear"
+            }
+          ]
+        },
+        "minecraft:leashable": {
+          "presets": [
+            {
+              "filter": {
+                "subject": "other",
+                "test": "is_family",
+                "value": "happy_ghast"
+              },
+              "spring_type": "quad_dampened"
+            }
+          ]
+        },
+        "minecraft:leashable_to": {}
+      },
+      "minecraft:camel_husk_with_hostile_rider": {
+        "minecraft:addrider": {
+          "riders": [
+            {
+              "entity_type": "minecraft:husk",
+              "spawn_event": "minecraft:spawn_as_rider"
+            },
+            {
+              "entity_type": "minecraft:parched",
+              "spawn_event": "minecraft:ranged_mode"
+            }
+          ]
+        }
+      }
+    },
+    "events": {
+      "minecraft:entity_spawned": {
+        "add": {
+          "component_groups": [
+            "minecraft:camel_husk_standing",
+            "minecraft:camel_husk_with_no_hostile_rider"
+          ]
+        }
+      },
+      "minecraft:all_riders_dismounted": {
+        "add": {
+          "component_groups": [
+            "minecraft:camel_husk_with_no_hostile_rider"
+          ]
+        },
+        "set_property": {
+          "minecraft:has_rider_mounted": false
+        },
+        "remove": {
+          "component_groups": [
+            "minecraft:camel_husk_with_hostile_rider"
+          ]
+        }
+      },
+      "minecraft:camel_husk_saddled": {
+        "add": {
+          "component_groups": [
+            "minecraft:camel_husk_saddled"
+          ]
+        }
+      },
+      "minecraft:camel_husk_unsaddled": {
+        "remove": {
+          "component_groups": [
+            "minecraft:camel_husk_saddled"
+          ]
+        }
+      },
+      "minecraft:rider_mounted": {
+        "set_property": {
+          "minecraft:has_rider_mounted": true
+        }
+      },
+      "minecraft:stop_sitting": {
+        "add": {
+          "component_groups": [
+            "minecraft:camel_husk_standing"
+          ]
+        },
+        "remove": {
+          "component_groups": [
+            "minecraft:camel_husk_sitting"
+          ]
+        }
+      },
+      "minecraft:start_sitting": {
+        "add": {
+          "component_groups": [
+            "minecraft:camel_husk_sitting"
+          ]
+        },
+        "remove": {
+          "component_groups": [
+            "minecraft:camel_husk_standing"
+          ]
+        }
+      },
+      "minecraft:spawn_with_rider": {
+        "add": {
+          "component_groups": [
+            "minecraft:camel_husk_standing",
+            "minecraft:camel_husk_with_hostile_rider"
+          ]
+        },
+        "set_property": {
+          "minecraft:has_rider_mounted": true
+        },
+        "remove": {
+          "component_groups": [
+            "minecraft:camel_husk_with_no_hostile_rider"
+          ]
+        }
+      }
+    }
+  }
+}

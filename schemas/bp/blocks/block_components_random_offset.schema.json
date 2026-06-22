@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Block Components Random Offset",
+  "description": "This component defines a random offset for the block, seeded based on the block's position and the specified range and steps. It affects the block's rendered position, outline, and collision.\nIf the random offset causes the collision box to extend beyond the bounds of a cube, the offset range will automatically adjust to keep the collision box within the cube.\nCulling for this block is performed without considering the random offset.",
+  "properties": {
+    "x": {
+      "title": "X",
+      "description": "\n\nProperties:\n• range (object)\n• steps (int) = 0",
+      "$ref": "./block_components_range_and_steps.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Block Components Range And Steps",
+          "description": "Defines a value range with discrete steps.",
+          "body": {
+            "range": "",
+            "steps": 0
+          }
+        }
+      ]
+    },
+    "y": {
+      "title": "Y",
+      "description": "\n\nProperties:\n• range (object)\n• steps (int) = 0",
+      "$ref": "./block_components_range_and_steps.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Block Components Range And Steps",
+          "description": "Defines a value range with discrete steps.",
+          "body": {
+            "range": "",
+            "steps": 0
+          }
+        }
+      ]
+    },
+    "z": {
+      "title": "Z",
+      "description": "\n\nProperties:\n• range (object)\n• steps (int) = 0",
+      "$ref": "./block_components_range_and_steps.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Block Components Range And Steps",
+          "description": "Defines a value range with discrete steps.",
+          "body": {
+            "range": "",
+            "steps": 0
+          }
+        }
+      ]
+    }
+  }
+}

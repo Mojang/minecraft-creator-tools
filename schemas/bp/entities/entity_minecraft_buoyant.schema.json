@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Buoyant",
+  "description": "Enables an entity to float on the specified liquid blocks.",
+  "properties": {
+    "apply_gravity": {
+      "title": "Apply Gravity",
+      "description": "Applies gravity each tick. Causes \"movement_type\" to be more impactful, but also gravity to be applied more intensely outside liquids.",
+      "type": "boolean",
+      "default": true
+    },
+    "base_buoyancy": {
+      "title": "Base Buoyancy",
+      "description": "Base buoyancy used to calculate how much will a entity float.",
+      "type": "number",
+      "default": 1
+    },
+    "big_wave_probability": {
+      "title": "Big Wave Probability",
+      "description": "Probability for a big wave hitting the entity. Only used if \"movement_type\" is \"waves\".",
+      "type": "number",
+      "default": 0.03
+    },
+    "big_wave_speed": {
+      "title": "Big Wave Speed",
+      "description": "Multiplier for the speed to make a big wave. Triggered depending on \"big_wave_probability\".",
+      "type": "number",
+      "default": 10
+    },
+    "can_auto_step_from_liquid": {
+      "title": "Can Auto Step From Liquid",
+      "description": "Whether the entity can move out of a liquid block to a neighboring solid block if pushed against it.",
+      "type": "boolean",
+      "default": false
+    },
+    "drag_down_on_buoyancy_removed": {
+      "title": "Drag Down On Buoyancy Removed",
+      "description": "How much an entity will be dragged down when the component is removed.",
+      "type": "number",
+      "default": 0
+    },
+    "liquid_blocks": {
+      "title": "Liquid Blocks",
+      "description": "List of blocks this entity can float on. Must be a liquid block.\n\nSample values:\n• xp_orb: [\"minecraft:flowing_water\",\"minecraft:water\"]",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "movement_type": {
+      "title": "Movement Type",
+      "description": "Type of vertical movement applied to the entity:\n\"waves\", simulates wave movement based on the entity speed.\n\"bobbing\", simulates waves going through.\n\"none\", simulates waves going through.",
+      "type": "string",
+      "default": "waves"
+    }
+  }
+}

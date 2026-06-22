@@ -1,0 +1,28 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:paper"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "pattern": [
+      "###"
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:reeds"
+      }
+    },
+    "unlock": [
+      {
+        "item": "minecraft:reeds"
+      }
+    ],
+    "result": {
+      "item": "minecraft:paper",
+      "count": 3
+    }
+  }
+}

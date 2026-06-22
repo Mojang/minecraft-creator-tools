@@ -1,0 +1,36 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines behavior.breed configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "minecraft:behavior.breed",
+  "fields": [
+    {
+      "id": "control_flags",
+      "title": "Control Flags",
+      "dataType": "stringArray"
+    },
+    {
+      "id": "priority",
+      "title": "Priority",
+      "dataType": "int"
+    },
+    {
+      "id": "speed_multiplier",
+      "title": "Speed Multiplier",
+      "description": "Movement speed multiplier applied to the mob when using this AI Goal. Default value: 1.",
+      "dataType": "float"
+    }
+  ],
+  "description": "Allows this mob to breed with other mobs.",
+  "title": "Minecraft Behavior.breed Misc"
+}

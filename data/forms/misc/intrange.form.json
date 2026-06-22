@@ -1,0 +1,30 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines intrange configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "IntRange",
+  "fields": [
+    {
+      "id": "max",
+      "title": "Max",
+      "dataType": "int"
+    },
+    {
+      "id": "min",
+      "title": "Min",
+      "dataType": "int"
+    }
+  ],
+  "description": "Defines intrange configuration.",
+  "title": "IntRange Misc"
+}

@@ -1,0 +1,80 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "Spawn Herd",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "min_size",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "spawns in groups of "
+          },
+          {
+            "type": "value",
+            "field": "min_size"
+          },
+          {
+            "type": "literal",
+            "text": " to "
+          },
+          {
+            "type": "value",
+            "field": "max_size"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "event",
+      "title": "Event",
+      "description": "An event to run after M number of the herd have spawned",
+      "dataType": "string",
+      "defaultValue": ""
+    },
+    {
+      "id": "event_skip_count",
+      "title": "Event Skip Count",
+      "description": "Number of the herd to skip before running the event",
+      "dataType": "int",
+      "defaultValue": 0
+    },
+    {
+      "id": "initial_event",
+      "title": "Initial Event",
+      "description": "Event run for the first N of the herd are placed.",
+      "dataType": "string",
+      "defaultValue": ""
+    },
+    {
+      "id": "initial_event_count",
+      "title": "Initial Event Count",
+      "description": "Number of times that the initial event will run",
+      "dataType": "int",
+      "defaultValue": 0
+    },
+    {
+      "id": "max_size",
+      "title": "Max Size",
+      "description": "Maximum number in this group to attempt to spawn",
+      "dataType": "int",
+      "defaultValue": 1
+    },
+    {
+      "id": "min_size",
+      "title": "Min Size",
+      "description": "Minimum number in this group to attempt to spawn",
+      "dataType": "int",
+      "defaultValue": 1
+    }
+  ],
+  "description": "Configures group spawning behavior, including minimum and maximum herd size. Mobs like wolves, chickens, and zombies spawn in groups rather than individually. Also allows running events on the first N spawns or after M spawns.",
+  "title": "Spawn Herd"
+}

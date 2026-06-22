@@ -1,0 +1,104 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has placement direction states"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Placement Direction",
+  "fields": [
+    {
+      "id": "blocks_to_corner_with",
+      "description": "A list of block descriptors that define the blocks to connect with the corner shape.",
+      "dataType": "objectArray",
+      "defaultValue": [],
+      "subForm": {
+        "id": "blocks_to_corner_with",
+        "title": "Blocks To Corner With",
+        "fields": [
+          {
+            "id": "name",
+            "title": "Name",
+            "dataType": "string",
+            "defaultValue": ""
+          },
+          {
+            "id": "states",
+            "title": "States",
+            "dataType": "int",
+            "defaultValue": {},
+            "alternates": [
+              {
+                "id": "states",
+                "dataType": "string"
+              },
+              {
+                "id": "states",
+                "dataType": "boolean"
+              }
+            ]
+          },
+          {
+            "id": "tags",
+            "title": "Tags",
+            "dataType": "string",
+            "defaultValue": ""
+          }
+        ]
+      },
+      "alternates": [
+        {
+          "id": "blocks_to_corner_with",
+          "dataType": "string"
+        },
+        {
+          "id": "blocks_to_corner_with",
+          "dataType": "object"
+        }
+      ]
+    },
+    {
+      "id": "enabled_states",
+      "title": "Enabled States",
+      "description": "Which states to enable. Must specify at least one. Options: [\"minecraft:cardinal_direction\", \"minecraft:facing_direction\", \"minecraft:corner_and_cardinal_direction\"].",
+      "dataType": "stringArray",
+      "minLength": 1,
+      "choices": [
+        {
+          "id": "minecraft:cardinal_direction",
+          "title": "Minecraft:cardinal direction"
+        },
+        {
+          "id": "minecraft:corner_and_cardinal_direction",
+          "title": "Minecraft:corner and cardinal direction"
+        },
+        {
+          "id": "minecraft:facing_direction",
+          "title": "Minecraft:facing direction"
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "y_rotation_offset",
+      "title": "y Rotation Offset",
+      "description": "The y rotation offset to apply to the block. Must be [0.0, 90.0, 180.0, 270.0, 360.0]. Default is 0, meaning if the player is facing north, the \"minecraft:cardinal_direction\" and/or \"minecraft:facing_direction\" state will be north.",
+      "dataType": "float",
+      "validity": [
+        {
+          "comparison": "<=",
+          "value": 360
+        }
+      ]
+    }
+  ],
+  "description": "Adds the \"minecraft:cardinal_direction\", \"minecraft:facing_direction\" and/or \"minecraft:corner_and_cardinal_direction\" states and setter function to the block.",
+  "title": "Block Placement Direction"
+}

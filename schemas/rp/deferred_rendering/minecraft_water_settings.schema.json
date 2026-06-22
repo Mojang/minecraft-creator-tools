@@ -1,0 +1,88 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "minecraft:water_settings",
+  "description": "minecraft:water_settings",
+  "type": "object",
+  "properties": {
+    "description": {
+      "title": "description",
+      "description": "description",
+      "type": "object",
+      "properties": {
+        "identifier": {
+          "title": "identifier",
+          "description": "identifier",
+          "type": "string"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "WaterConfig WaterConfigSettingsV0 WaterSettings WaterDescription",
+          "description": "WaterConfig WaterConfigSettingsV0 WaterSettings WaterDescription",
+          "body": {
+            "identifier": ""
+          }
+        }
+      ]
+    },
+    "particle_concentrations": {
+      "$ref": "./particle_concentrations.schema.json",
+      "title": "particle_concentrations",
+      "description": "particle_concentrations",
+      "defaultSnippets": [
+        {
+          "label": "WaterConfig WaterConfigSettingsV0 WaterSettings PSY",
+          "description": "WaterConfig WaterConfigSettingsV0 WaterSettings PSY",
+          "body": {
+            "chlorophyll": 0,
+            "suspended_sediment": 0,
+            "cdom": 0
+          }
+        }
+      ]
+    },
+    "caustics": {
+      "$ref": "./caustics.schema.json",
+      "title": "caustics",
+      "description": "caustics",
+      "defaultSnippets": [
+        {
+          "label": "Mce Framebuilder CausticsParameters",
+          "description": "Mce Framebuilder CausticsParameters",
+          "body": {
+            "enabled": true,
+            "power": 0,
+            "frame_length": 0,
+            "texture": "",
+            "scale": 0
+          }
+        }
+      ]
+    },
+    "waves": {
+      "$ref": "./waves.schema.json",
+      "title": "waves",
+      "description": "waves",
+      "defaultSnippets": [
+        {
+          "label": "Mce Framebuilder WaterSurfaceParameters",
+          "description": "Mce Framebuilder WaterSurfaceParameters",
+          "body": {
+            "enabled": true,
+            "pull": 0,
+            "frequency": 0,
+            "sampleWidth": 0,
+            "mix": 0,
+            "octaves": 0,
+            "speed_scaling": 0,
+            "depth": 0,
+            "speed": 0,
+            "frequency_scaling": 0,
+            "direction_increment": 0,
+            "shape": 0
+          }
+        }
+      ]
+    }
+  }
+}

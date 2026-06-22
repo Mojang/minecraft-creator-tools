@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "fog/fog_document",
+  "title": "Fog Settings Document",
+  "description": "A Minecraft Bedrock Edition fog settings definition document. Fog settings control the appearance of fog in different environments including distance-based fog, volumetric fog density, and media coefficients for scattering and absorption effects.",
+  "type": "object",
+  "properties": {
+    "format_version": {
+      "title": "Format Version",
+      "description": "The format version of this fog settings file. Use '1.16.100' or later.",
+      "type": "string"
+    },
+    "minecraft:fog_settings": {
+      "$ref": "./fog_settings.schema.json",
+      "title": "Fog Settings",
+      "description": "The fog settings definition containing description, distance, and volumetric properties.",
+      "defaultSnippets": [
+        {
+          "label": "Fog Settings Definition",
+          "description": "The fog settings definition containing description, distance, and volumetric properties.",
+          "body": {
+            "description": ""
+          }
+        }
+      ]
+    }
+  },
+  "required": [
+    "format_version",
+    "minecraft:fog_settings"
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Item Controllable",
+  "description": "Defines what items can be used to control this entity while ridden.",
+  "properties": {
+    "control_items": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "title": "Control Items",
+      "description": "List of items that can be used to control this entity while ridden. Can be a single string or an array of strings.\n\nSample values:\n• pig: carrotOnAStick\n• strider: warped_fungus_on_a_stick"
+    }
+  }
+}

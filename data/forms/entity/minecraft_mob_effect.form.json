@@ -1,0 +1,61 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "applies mob effects to nearby entities"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "ambient",
+      "title": "Ambient",
+      "description": "If the effect is considered an ambient effect (like the ones applied by Beacons or Conduits).",
+      "defaultValue": false,
+      "dataType": "boolean"
+    },
+    {
+      "id": "cooldown_time",
+      "title": "Cooldown Time",
+      "description": "Time in seconds to wait between each application of the effect.",
+      "defaultValue": 0,
+      "dataType": "int"
+    },
+    {
+      "id": "effect_range",
+      "title": "Effect Range",
+      "description": "How close a hostile entity must be to have the mob effect applied.",
+      "defaultValue": 0.2,
+      "dataType": "float"
+    },
+    {
+      "id": "effect_time",
+      "title": "Effect Time",
+      "description": "How long the applied mob effect lasts in seconds. Can also be set to \"infinite\"",
+      "defaultValue": 10,
+      "dataType": "int"
+    },
+    {
+      "id": "entity_filter",
+      "title": "Entity Filter",
+      "description": "The set of entities that are valid to apply the mob effect to.",
+      "dataType": "minecraftFilter"
+    },
+    {
+      "id": "mob_effect",
+      "title": "Mob Effect",
+      "description": "The mob effect that is applied to entities that enter this entities effect range.",
+      "dataType": "string"
+    }
+  ],
+  "description": "A component that applies a mob effect to entities that get within range.",
+  "title": "Mob Effect",
+  "samples": {},
+  "id": "minecraft:mob_effect"
+}

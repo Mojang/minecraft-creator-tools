@@ -1,0 +1,26 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "tracks feature occurrence counts"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "info_set.featureSetEntry",
+  "title": "Feature Set Metric",
+  "description": "Describes a single metric collected while processing a content feature set.",
+  "fields": [
+    {
+      "id": "count",
+      "title": "Count",
+      "dataType": "int",
+      "description": "Number of occurrences attributed to this feature."
+    }
+  ]
+}

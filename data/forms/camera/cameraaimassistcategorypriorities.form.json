@@ -1,0 +1,43 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "specifies aim assist priority values for blocks and entities"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "entities",
+      "title": "entities",
+      "description": "Optional. Map of Entity identifiers to Aim-Assist targeting priority. Larger numbers have greater priority.",
+      "dataType": "object"
+    },
+    {
+      "id": "blocks",
+      "title": "blocks",
+      "description": "Optional. Map of Block identifiers to Aim-Assist targeting priority. Larger numbers have greater priority.",
+      "dataType": "object"
+    },
+    {
+      "id": "block_default",
+      "title": "block_default",
+      "description": "Optional. Default Aim-Assist targeting priority used for Blocks not found in 'blocks'.",
+      "dataType": "int"
+    },
+    {
+      "id": "entity_default",
+      "title": "entity_default",
+      "description": "Optional. Default Aim-Assist targeting priority used for Entities not found in 'entities'.",
+      "dataType": "int"
+    }
+  ],
+  "description": "CameraAimAssistCategoryPriorities",
+  "title": "CameraAimAssistCategoryPriorities"
+}

@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "ui/ui_screen",
+  "title": "UI Screen",
+  "description": "A UI screen definition file for Minecraft Bedrock Edition. UI screens define complete interface layouts including namespaces, element definitions, and global variables.",
+  "type": "object",
+  "properties": {
+    "namespace": {
+      "title": "Namespace",
+      "description": "The namespace for this UI screen. Used to reference elements from other UI files using the 'namespace.element_name' syntax.",
+      "type": "string"
+    }
+  }
+}

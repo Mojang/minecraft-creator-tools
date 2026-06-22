@@ -1,0 +1,33 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "places down held blocks (enderman-specific)"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "priority",
+      "title": "Priority",
+      "hideSamples": true,
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "dataType": "int"
+    }
+  ],
+  "restrictions": [
+    {
+      "id": "minecraft:enderman",
+      "type": "entity_type"
+    }
+  ],
+  "description": "Allows the enderman to drop a block they are carrying.",
+  "title": "Enderman Leave Block Behavior",
+  "id": "minecraft:behavior.enderman_leave_block"
+}

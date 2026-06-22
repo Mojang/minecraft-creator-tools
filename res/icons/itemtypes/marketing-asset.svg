@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Marketing Asset: Store/promotional icon -->
+  <rect x="1" y="3" width="14" height="10" rx="1" fill-opacity="0.15"/>
+  <rect x="2" y="1" width="12" height="3" fill-opacity="0.3"/>
+  <polygon points="2,1 8,0 14,1 14,4 2,4" fill-opacity="0.4"/>
+  <circle cx="5" cy="8" r="2" fill-opacity="0.5"/>
+  <rect x="8" y="6" width="5" height="1" fill-opacity="0.5"/>
+  <rect x="8" y="8" width="4" height="1" fill-opacity="0.4"/>
+  <rect x="8" y="10" width="3" height="1" fill-opacity="0.3"/>
+</svg>

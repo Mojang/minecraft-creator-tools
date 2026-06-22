@@ -1,0 +1,67 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "fields": [
+    {
+      "id": "event",
+      "description": "The event to trigger on the entity.",
+      "dataType": "string"
+    },
+    {
+      "id": "target",
+      "description": "The target entity for the trigger.",
+      "dataType": "string",
+      "choices": [
+        {
+          "id": "self"
+        },
+        {
+          "id": "other"
+        },
+        {
+          "id": "player"
+        },
+        {
+          "id": "target"
+        },
+        {
+          "id": "baby"
+        },
+        {
+          "id": "parent"
+        }
+      ]
+    }
+  ],
+  "tags": [
+    "entityevent",
+    "trigger"
+  ],
+  "scalarField": {
+    "id": "trigger",
+    "title": "Trigger Value",
+    "dataType": "string"
+  },
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "triggers another entity event"
+          }
+        ]
+      }
+    ]
+  },
+  "samples": {
+    "samples": [
+      {
+        "path": "Example:",
+        "content": "\t\t\"sample:spawn_adult\": {\n\t\t\t// add adult component groups\n\t\t},\n\t\t\"sample:spawn_baby\": {\n\t\t\t// add baby component groups\n\t\t},\n\t\t\"minecraft:entity_spawned\": {\n\t\t\t\"randomize\": [\n\t\t\t\t{\n\t\t\t\t\t\"weight\": 50.0,\n\t\t\t\t\t\"trigger\": \"sample:spawn_adult\"\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"weight\": 50.0,\n\t\t\t\t\t\"trigger\": \"sample:spawn_baby\"\n\t\t\t\t}\n\t\t\t]\n\t\t}\n\t"
+      }
+    ]
+  },
+  "id": "trigger",
+  "description": "Triggers additional entity events when hit. For example, you could use a randomize node in minecraft:entity_spawned to choose either an adult or baby event for adding component groups.",
+  "title": "Trigger"
+}

@@ -1,0 +1,11 @@
+{
+  "files": [
+    "palm_tree_distro.json",
+    "palm_tree_large.json",
+    "palm_tree_med.json",
+    "palm_tree_meds.json",
+    "palm_tree_scatter.json",
+    "palm_tree_small.json"
+  ],
+  "folders": []
+}

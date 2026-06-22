@@ -1,0 +1,215 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Spawn Entity",
+  "description": "Adds a timer after which this entity will spawn another entity or item (similar to vanilla's chicken's egg-laying behavior).",
+  "properties": {
+    "entities": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "filters": {
+                "title": "Filters",
+                "description": "If present, the specified entity will only spawn if the filter evaluates to true.\n\nSample values:\n• chicken: [{\"test\":\"rider_count\",\"subject\":\"self\",\"operat...",
+                "anyOf": [
+                  {
+                    "type": "object"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "all_of": {
+                        "type": "array",
+                        "items": {
+                          "type": "object"
+                        }
+                      },
+                      "any_of": {
+                        "type": "array",
+                        "items": {
+                          "type": "object"
+                        }
+                      },
+                      "none_of": {
+                        "type": "array",
+                        "items": {
+                          "type": "object"
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              "min_wait_time": {
+                "title": "Min wait time",
+                "description": "\n\nSample values:\n• chicken: 300",
+                "type": "number"
+              },
+              "max_wait_time": {
+                "title": "Max wait time",
+                "description": "\n\nSample values:\n• chicken: 600",
+                "type": "number"
+              },
+              "spawn_sound": {
+                "title": "Spawn sound",
+                "description": "\n\nSample values:\n• chicken: plop",
+                "type": "string"
+              },
+              "spawn_item": {
+                "title": "Spawn item",
+                "description": "\n\nSample values:\n• chicken: egg",
+                "type": "string"
+              }
+            }
+          }
+        },
+        {
+          "type": "object"
+        }
+      ],
+      "title": "Entities",
+      "description": "List of entity spawn definitions. Can be a single object or an array of objects.\n\nSample values:\n• chicken: [{\"min_wait_time\":300,\"max_wait_time\":600,\"spaw...\n• sniffer: {\"min_wait_time\":0,\"max_wait_time\":0,\"spawn_sou..."
+    },
+    "filters": {
+      "title": "Filters",
+      "description": "If present, the specified entity will only spawn if the filter evaluates to true.",
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "all_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "any_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "none_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "max_wait_time": {
+      "title": "Max Wait Time",
+      "description": "Maximum amount of time to randomly wait in seconds before another entity is spawned.",
+      "type": "integer",
+      "default": 600
+    },
+    "min_wait_time": {
+      "title": "Min Wait Time",
+      "description": "Minimum amount of time to randomly wait in seconds before another entity is spawned.",
+      "type": "integer",
+      "default": 300
+    },
+    "num_to_spawn": {
+      "title": "Num To Spawn",
+      "description": "The number of entities of this type to spawn each time that this triggers.",
+      "type": "integer",
+      "default": 1
+    },
+    "should_leash": {
+      "title": "Should Leash",
+      "description": "If true, this the spawned entity will be leashed to the parent.",
+      "type": "boolean",
+      "default": false
+    },
+    "single_use": {
+      "title": "Single Use",
+      "description": "If true, this component will only ever spawn the specified entity once.",
+      "type": "boolean",
+      "default": false
+    },
+    "spawn_entity": {
+      "title": "Spawn Entity",
+      "description": "Identifier of the entity to spawn, leave empty to spawn the item defined by \"spawn_item\" instead.",
+      "type": "string"
+    },
+    "spawn_event": {
+      "title": "Spawn Event",
+      "description": "Event to call on the spawned entity when it spawns.",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event": {
+              "type": "string"
+            },
+            "target": {
+              "type": "string"
+            }
+          }
+        }
+      ],
+      "default": "minecraft:entity_born"
+    },
+    "spawn_item": {
+      "title": "Spawn Item",
+      "description": "Item identifier of the item to spawn.",
+      "type": "string",
+      "default": "egg"
+    },
+    "spawn_item_event": {
+      "title": "Spawn Item Event",
+      "description": "Event to call on this entity when the item is spawned.",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event": {
+              "type": "string"
+            },
+            "target": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "spawn_method": {
+      "title": "Spawn Method",
+      "description": "Method to use to spawn the entity.",
+      "type": "string",
+      "default": "born"
+    },
+    "spawn_sound": {
+      "title": "Spawn Sound",
+      "description": "Identifier of the sound effect to play when the entity is spawned.",
+      "type": "string",
+      "default": "plop"
+    }
+  }
+}

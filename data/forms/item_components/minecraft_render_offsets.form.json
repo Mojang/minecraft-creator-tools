@@ -1,0 +1,32 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has custom render offsets"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "main_hand",
+      "title": "main_hand",
+      "description": "Main hand transform data.",
+      "dataType": "object"
+    },
+    {
+      "id": "off_hand",
+      "title": "off_hand",
+      "description": "Offhand hand transform data.",
+      "dataType": "object"
+    }
+  ],
+  "isDeprecated": true,
+  "description": "Render offsets component: optional values can be given to offset the way the item is rendered.",
+  "title": "Render Offsets"
+}

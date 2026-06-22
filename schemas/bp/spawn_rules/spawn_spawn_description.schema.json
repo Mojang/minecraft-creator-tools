@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Spawn Description",
+  "description": "The description block that identifies which entity these spawn rules apply to, via the entity identifier (e.g., 'minecraft:zombie'). Also specifies the population control group for managing spawn caps.",
+  "properties": {
+    "identifier": {
+      "title": "Identifier",
+      "type": "string"
+    },
+    "population_control": {
+      "title": "Population Control",
+      "type": "string",
+      "default": ""
+    }
+  },
+  "required": [
+    "identifier"
+  ]
+}

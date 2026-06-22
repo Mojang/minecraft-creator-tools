@@ -1,0 +1,84 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "horizon_blend_stops",
+  "description": "horizon_blend_stops",
+  "type": "object",
+  "properties": {
+    "min": {
+      "anyOf": [
+        {
+          "type": "number",
+          "maximum": 1
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number"
+          }
+        }
+      ],
+      "title": "min",
+      "description": "min"
+    },
+    "start": {
+      "anyOf": [
+        {
+          "type": "number",
+          "maximum": 1
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number"
+          }
+        }
+      ],
+      "title": "start",
+      "description": "start"
+    },
+    "mie_start": {
+      "anyOf": [
+        {
+          "type": "number",
+          "maximum": 1.2000000476837158
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number"
+          }
+        }
+      ],
+      "title": "mie_start",
+      "description": "mie_start"
+    },
+    "max": {
+      "anyOf": [
+        {
+          "type": "number",
+          "maximum": 1
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number"
+          }
+        }
+      ],
+      "title": "max",
+      "description": "max"
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "AtmosphericScattering AtmosphericScatteringConfigSettings AtmosphericScatteringSettings HorizonBlendKeyFrames",
+      "description": "AtmosphericScattering AtmosphericScatteringConfigSettings AtmosphericScatteringSettings HorizonBlendKeyFrames",
+      "body": {
+        "min": 0,
+        "start": 0,
+        "mie_start": 0,
+        "max": 0
+      }
+    }
+  ]
+}

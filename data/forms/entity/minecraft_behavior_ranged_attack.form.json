@@ -1,0 +1,492 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "enables this entity to attack targets from a distance with projectiles"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "attack_radius",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can shoot targets within "
+          },
+          {
+            "type": "value",
+            "field": "attack_radius"
+          },
+          {
+            "type": "literal",
+            "text": " blocks"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "attack_interval_min",
+            "comparison": "defined"
+          },
+          {
+            "field": "attack_interval_max",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "fires every "
+          },
+          {
+            "type": "value",
+            "field": "attack_interval_min"
+          },
+          {
+            "type": "literal",
+            "text": " to "
+          },
+          {
+            "type": "value",
+            "field": "attack_interval_max"
+          },
+          {
+            "type": "literal",
+            "text": " seconds"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "attack_interval",
+            "comparison": "defined"
+          },
+          {
+            "field": "attack_interval_min",
+            "comparison": "undefined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "fires every "
+          },
+          {
+            "type": "value",
+            "field": "attack_interval"
+          },
+          {
+            "type": "literal",
+            "text": " seconds"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "charge_charged_trigger",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can perform charged burst-shot attacks"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "burst_shots",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "fires "
+          },
+          {
+            "type": "value",
+            "field": "burst_shots"
+          },
+          {
+            "type": "literal",
+            "text": " shots in a burst"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "attack_interval",
+      "title": "Attack Interval",
+      "description": "Alternative to \"attack_interval_min\" & \"attack_interval_max\". Consistent reload-time (in seconds), when not using a charged shot. Does not scale with target-distance.",
+      "defaultValue": 0,
+      "dataType": "float",
+      "samples": {
+        "/vanilla/behavior_pack/entities/bogged.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:ranged_attack/minecraft:behavior.ranged_attack/",
+            "content": 3.5
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:ranged_attack_hard/minecraft:behavior.ranged_attack/",
+            "content": 2.5
+          }
+        ],
+        "/vanilla/behavior_pack/entities/parched.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:ranged_attack/minecraft:behavior.ranged_attack/",
+            "content": 3.5
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:ranged_attack_hard/minecraft:behavior.ranged_attack/",
+            "content": 2.5
+          }
+        ]
+      }
+    },
+    {
+      "id": "attack_interval_max",
+      "title": "Attack Interval Max",
+      "description": "Maximum bound for reload-time range (in seconds), when not using a charged shot. Reload-time range scales with target-distance.",
+      "defaultValue": 0,
+      "dataType": "float",
+      "samples": {
+        "/vanilla/behavior_pack/entities/blaze.json": [
+          {
+            "path": "/minecraft:entity/component_groups/ranged_mode/minecraft:behavior.ranged_attack/",
+            "content": 5
+          }
+        ],
+        "/vanilla/behavior_pack/entities/shulker.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.ranged_attack/",
+            "content": 3
+          }
+        ]
+      }
+    },
+    {
+      "id": "attack_interval_min",
+      "title": "Attack Interval Min",
+      "description": "Minimum bound for reload-time range (in seconds), when not using a charged shot. Reload-time range scales with target-distance.",
+      "defaultValue": 0,
+      "dataType": "float",
+      "samples": {
+        "/vanilla/behavior_pack/entities/blaze.json": [
+          {
+            "path": "/minecraft:entity/component_groups/ranged_mode/minecraft:behavior.ranged_attack/",
+            "content": 3
+          }
+        ],
+        "/vanilla/behavior_pack/entities/shulker.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.ranged_attack/",
+            "content": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "attack_radius",
+      "title": "Attack Radius",
+      "description": "Minimum distance to target before this entity will attempt to shoot.",
+      "defaultValue": 0,
+      "dataType": "float",
+      "samples": {
+        "/vanilla/behavior_pack/entities/blaze.json": [
+          {
+            "path": "/minecraft:entity/component_groups/ranged_mode/minecraft:behavior.ranged_attack/",
+            "content": 48
+          }
+        ],
+        "/vanilla/behavior_pack/entities/bogged.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:ranged_attack/minecraft:behavior.ranged_attack/",
+            "content": 15
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:ranged_attack_hard/minecraft:behavior.ranged_attack/",
+            "content": 15
+          }
+        ],
+        "/vanilla/behavior_pack/entities/llama.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:llama_angry/minecraft:behavior.ranged_attack/",
+            "content": 64
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:llama_angry_wolf/minecraft:behavior.ranged_attack/",
+            "content": 64
+          }
+        ]
+      }
+    },
+    {
+      "id": "attack_radius_min",
+      "title": "Attack Radius Min",
+      "description": "Minimum distance the target can be for this mob to fire. If the target is closer, this mob will move first before firing",
+      "defaultValue": 0,
+      "dataType": "float"
+    },
+    {
+      "id": "burst_interval",
+      "title": "Burst Interval",
+      "description": "Time (in seconds) between each individual shot when firing a burst of shots from a charged up attack.",
+      "defaultValue": 0,
+      "dataType": "float",
+      "samples": {
+        "/vanilla/behavior_pack/entities/blaze.json": [
+          {
+            "path": "/minecraft:entity/component_groups/ranged_mode/minecraft:behavior.ranged_attack/",
+            "content": 0.3
+          }
+        ]
+      }
+    },
+    {
+      "id": "burst_shots",
+      "title": "Burst Shots",
+      "description": "Number of shots fired every time the attacking entity uses a charged up attack.",
+      "defaultValue": 1,
+      "dataType": "int",
+      "samples": {
+        "/vanilla/behavior_pack/entities/blaze.json": [
+          {
+            "path": "/minecraft:entity/component_groups/ranged_mode/minecraft:behavior.ranged_attack/",
+            "content": 3
+          }
+        ]
+      }
+    },
+    {
+      "id": "charge_charged_trigger",
+      "title": "Charge Charged Trigger",
+      "description": "Time (in seconds, then add \"charge_shoot_trigger\"), before a charged up attack is done charging. Charge-time decays while target is not in sight.",
+      "defaultValue": 0,
+      "dataType": "float",
+      "samples": {
+        "/vanilla/behavior_pack/entities/llama.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:llama_angry/minecraft:behavior.ranged_attack/",
+            "content": 1
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:llama_angry_wolf/minecraft:behavior.ranged_attack/",
+            "content": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "charge_shoot_trigger",
+      "title": "Charge Shoot Trigger",
+      "description": "Amount of time (in seconds, then doubled) a charged shot must be charging before reloading burst shots. Charge-time decays while target is not in sight.",
+      "defaultValue": 0,
+      "dataType": "float",
+      "samples": {
+        "/vanilla/behavior_pack/entities/blaze.json": [
+          {
+            "path": "/minecraft:entity/component_groups/ranged_mode/minecraft:behavior.ranged_attack/",
+            "content": 4
+          }
+        ],
+        "/vanilla/behavior_pack/entities/llama.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:llama_angry/minecraft:behavior.ranged_attack/",
+            "content": 2
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:llama_angry_wolf/minecraft:behavior.ranged_attack/",
+            "content": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "ranged_fov",
+      "title": "Ranged Fov",
+      "description": "Field of view (in degrees) when using sensing to detect a target for attack.",
+      "defaultValue": 90,
+      "dataType": "float"
+    },
+    {
+      "id": "set_persistent",
+      "title": "Set Persistent",
+      "description": "Allows the actor to be set to persist upon targeting a player",
+      "defaultValue": false,
+      "dataType": "boolean"
+    },
+    {
+      "id": "speed_multiplier",
+      "title": "Speed Multiplier",
+      "description": "During attack behavior, this multiplier modifies the entity's speed when moving toward the target.",
+      "defaultValue": 1,
+      "dataType": "float"
+    },
+    {
+      "id": "swing",
+      "title": "Swing",
+      "description": "If a swing animation (using variable.attack_time) exists, this causes the actor to swing their arm(s) upon firing the ranged attack.",
+      "defaultValue": false,
+      "dataType": "boolean"
+    },
+    {
+      "id": "target_in_sight_time",
+      "title": "Target In Sight Time",
+      "description": "Minimum amount of time (in seconds) the attacking entity needs to see the target before moving toward it.",
+      "defaultValue": 1,
+      "dataType": "float"
+    },
+    {
+      "id": "x_max_rotation",
+      "title": "x Max Rotation",
+      "description": "Maximum rotation (in degrees), on the X-axis, this entity can rotate while trying to look at the target.",
+      "defaultValue": 30,
+      "dataType": "float"
+    },
+    {
+      "id": "y_max_head_rotation",
+      "title": "y Max Head Rotation",
+      "description": "Maximum rotation (in degrees), on the Y-axis, this entity can rotate its head while trying to look at the target.",
+      "defaultValue": 30,
+      "dataType": "float"
+    },
+    {
+      "id": "priority",
+      "title": "Priority",
+      "hideSamples": true,
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "dataType": "int",
+      "samples": {
+        "/vanilla/behavior_pack/entities/blaze.json": [
+          {
+            "path": "/minecraft:entity/component_groups/ranged_mode/minecraft:behavior.ranged_attack/",
+            "content": 3
+          }
+        ],
+        "/vanilla/behavior_pack/entities/llama.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:llama_angry/minecraft:behavior.ranged_attack/",
+            "content": 2
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:llama_angry_wolf/minecraft:behavior.ranged_attack/",
+            "content": 2
+          }
+        ],
+        "/vanilla/behavior_pack/entities/parched.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:ranged_attack/minecraft:behavior.ranged_attack/",
+            "content": 1
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:ranged_attack_hard/minecraft:behavior.ranged_attack/",
+            "content": 1
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Allows an entity to attack by using ranged shots. \"charge_shoot_trigger\" must be greater than 0 to enable charged up burst-shot attacks. Requires minecraft:shooter to define projectile behaviour.",
+  "title": "Ranged Attack Behavior",
+  "samples": {
+    "/vanilla/behavior_pack/entities/blaze.json": [
+      {
+        "path": "/minecraft:entity/component_groups/ranged_mode/minecraft:behavior.ranged_attack/",
+        "content": {
+          "charge_shoot_trigger": 4,
+          "attack_interval_max": 5,
+          "attack_interval_min": 3,
+          "attack_radius": 48,
+          "burst_interval": 0.3,
+          "burst_shots": 3,
+          "priority": 3,
+          "charge_charged_trigger": 0
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/bogged.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:ranged_attack/minecraft:behavior.ranged_attack/",
+        "content": {
+          "attack_interval": 3.5,
+          "attack_radius": 15,
+          "priority": 0
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:ranged_attack_hard/minecraft:behavior.ranged_attack/",
+        "content": {
+          "attack_interval": 2.5,
+          "attack_radius": 15,
+          "priority": 0
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/llama.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:llama_angry/minecraft:behavior.ranged_attack/",
+        "content": {
+          "priority": 2,
+          "attack_radius": 64,
+          "charge_shoot_trigger": 2,
+          "charge_charged_trigger": 1
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:llama_angry_wolf/minecraft:behavior.ranged_attack/",
+        "content": {
+          "priority": 2,
+          "attack_radius": 64,
+          "charge_shoot_trigger": 2,
+          "charge_charged_trigger": 1
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/parched.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:ranged_attack/minecraft:behavior.ranged_attack/",
+        "content": {
+          "attack_interval": 3.5,
+          "attack_radius": 15,
+          "priority": 1
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:ranged_attack_hard/minecraft:behavior.ranged_attack/",
+        "content": {
+          "attack_interval": 2.5,
+          "attack_radius": 15,
+          "priority": 1
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/shulker.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.ranged_attack/",
+        "content": {
+          "attack_interval_max": 3,
+          "attack_interval_min": 1,
+          "attack_radius": 15
+        }
+      }
+    ]
+  },
+  "id": "minecraft:behavior.ranged_attack"
+}

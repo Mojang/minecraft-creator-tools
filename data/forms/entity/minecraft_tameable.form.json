@@ -1,0 +1,106 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can be tamed by players"
+          }
+        ]
+      }
+    ]
+  },
+  "description": "This entity can be tamed",
+  "fields": [
+    {
+      "id": "probability",
+      "title": "Probability of being tamed",
+      "samples": {
+        "/vanilla/behavior_pack/entities/parrot.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:parrot_wild/minecraft:tameable/",
+            "content": 0.33
+          }
+        ]
+      },
+      "defaultValue": 1,
+      "dataType": "float",
+      "description": "The chance of taming the entity with each item use between 0.0 and 1.0, where 1.0 is 100%"
+    },
+    {
+      "id": "tameItems",
+      "title": "List of items that can be fed to an entity to tame them"
+    },
+    {
+      "id": "tame_event",
+      "title": "Event to fire when the entity is tamed",
+      "description": "Event to fire when the entity is tamed. Can be an object with event and target properties, or a simple event string.",
+      "dataType": "object",
+      "subFormId": "ActorDefinitionTrigger",
+      "alternates": [
+        {
+          "id": "tame_event",
+          "dataType": "string"
+        }
+      ],
+      "samples": {
+        "/vanilla/behavior_pack/entities/parrot.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:parrot_wild/minecraft:tameable/",
+            "content": {
+              "event": "minecraft:on_tame",
+              "target": "self"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "tame_items",
+      "title": "Tame Items",
+      "description": "The list of items that can be used to tame this entity",
+      "dataType": "stringArray",
+      "samples": {
+        "/vanilla/behavior_pack/entities/parrot.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:parrot_wild/minecraft:tameable/",
+            "content": [
+              "wheat_seeds",
+              "pumpkin_seeds",
+              "melon_seeds",
+              "beetroot_seeds",
+              "pitcher_pod",
+              "torchflower_seeds"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "title": "Tameable",
+  "samples": {
+    "/vanilla/behavior_pack/entities/parrot.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:parrot_wild/minecraft:tameable/",
+        "content": {
+          "probability": 0.33,
+          "tame_items": [
+            "wheat_seeds",
+            "pumpkin_seeds",
+            "melon_seeds",
+            "beetroot_seeds",
+            "pitcher_pod",
+            "torchflower_seeds"
+          ],
+          "tame_event": {
+            "event": "minecraft:on_tame",
+            "target": "self"
+          }
+        }
+      }
+    ]
+  },
+  "id": "minecraft:tameable"
+}

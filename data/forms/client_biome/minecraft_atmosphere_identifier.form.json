@@ -1,0 +1,27 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "minecraft:atmosphere_identifier",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "specifies the atmospheric scattering settings for Vibrant Visuals mode"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "atmosphere_identifier",
+      "title": "Atmosphere Identifier",
+      "description": "Identifier of atmosphere definition to use",
+      "dataType": "object",
+      "isRequired": true
+    }
+  ],
+  "description": "Set the identifier used for atmospherics in Vibrant Visuals mode. Identifiers must resolve to identifiers in valid Atmospheric Scattering JSON schemas under the \"atmospherics\" directory. Biomes without this component will have default atmosphere settings.",
+  "title": "Client Biome Atmosphere Identifier"
+}

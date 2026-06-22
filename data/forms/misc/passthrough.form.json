@@ -1,0 +1,26 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines passthrough configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Passthrough",
+  "fields": [
+    {
+      "id": "type",
+      "title": "BlockEntityModifierType",
+      "dataType": "string",
+      "isRequired": true
+    }
+  ],
+  "description": "Modifier that leaves the state unchanged. This is the default block modifier if no other block modifier is specified.",
+  "title": "Passthrough Misc"
+}

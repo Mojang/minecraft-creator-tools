@@ -1,0 +1,461 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can grow from baby to adult"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "duration",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "switch",
+            "cases": [
+              {
+                "conditions": [
+                  {
+                    "field": "duration",
+                    "comparison": "<",
+                    "value": 0
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "but always stays a baby"
+                  }
+                ]
+              },
+              {
+                "conditions": [
+                  {
+                    "field": "duration",
+                    "comparison": ">",
+                    "value": 1800
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "with a very long growth time ("
+                  },
+                  {
+                    "type": "value",
+                    "field": "duration"
+                  },
+                  {
+                    "type": "literal",
+                    "text": "s)"
+                  }
+                ]
+              },
+              {
+                "conditions": [
+                  {
+                    "field": "duration",
+                    "comparison": "<",
+                    "value": 600
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "with a quick growth time ("
+                  },
+                  {
+                    "type": "value",
+                    "field": "duration"
+                  },
+                  {
+                    "type": "literal",
+                    "text": "s)"
+                  }
+                ]
+              }
+            ],
+            "default": [
+              {
+                "type": "literal",
+                "text": "in "
+              },
+              {
+                "type": "value",
+                "field": "duration"
+              },
+              {
+                "type": "literal",
+                "text": " seconds"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "feed_items",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "and can be fed to speed growth"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "drop_items",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "dropping items when grown"
+          }
+        ]
+      }
+    ]
+  },
+  "description": "Adds a timer for the entity to grow up. It can be accelerated by giving the entity the items it likes as defined by feed_items.",
+  "fields": [
+    {
+      "id": "duration",
+      "description": "Length of time before an entity grows up (-1 to always stay a baby)",
+      "dataType": "float",
+      "samples": {
+        "/vanilla/behavior_pack/entities/chicken.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:chicken_baby/minecraft:ageable/",
+            "content": 1200
+          }
+        ],
+        "/vanilla/behavior_pack/entities/cow.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:cow_baby/minecraft:ageable/",
+            "content": 1200
+          }
+        ]
+      },
+      "defaultValue": 1200,
+      "title": "Duration"
+    },
+    {
+      "id": "feed_items",
+      "title": "Feed Items",
+      "description": "List of items that can be fed to an entity to age them up. Can be a single item string, an array of strings, or an array of objects with item and growth properties.",
+      "dataType": "objectArray",
+      "subForm": {
+        "id": "ageable_feed_item",
+        "fields": [
+          {
+            "id": "item",
+            "title": "Item",
+            "description": "The item identifier.",
+            "dataType": "string"
+          },
+          {
+            "id": "growth",
+            "title": "Growth",
+            "description": "How much the entity ages when fed this item.",
+            "dataType": "float"
+          }
+        ]
+      },
+      "alternates": [
+        {
+          "id": "feed_items",
+          "dataType": "stringArray"
+        },
+        {
+          "id": "feed_items",
+          "dataType": "string"
+        }
+      ],
+      "samples": {
+        "/vanilla/behavior_pack/entities/chicken.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:chicken_baby/minecraft:ageable/",
+            "content": [
+              "wheat_seeds",
+              "beetroot_seeds",
+              "melon_seeds",
+              "pumpkin_seeds",
+              "pitcher_pod",
+              "torchflower_seeds"
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/cow.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:cow_baby/minecraft:ageable/",
+            "content": "wheat"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/dolphin.json": [
+          {
+            "path": "/minecraft:entity/component_groups/dolphin_baby/minecraft:ageable/",
+            "content": [
+              "fish",
+              "salmon"
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/goat.json": [
+          {
+            "path": "/minecraft:entity/component_groups/goat_baby/minecraft:ageable/",
+            "content": "wheat"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/llama.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:llama_baby/minecraft:ageable/",
+            "content": [
+              {
+                "item": "wheat",
+                "growth": 0.1
+              },
+              {
+                "item": "hay_block",
+                "growth": 0.9
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "drop_items",
+      "description": "List of items that are dropped when an entity grows up",
+      "dataType": "stringArray",
+      "title": "Drop Items"
+    },
+    {
+      "id": "grow_up",
+      "title": "Grow up event",
+      "description": "Event to fire when an entity grows up. Can be an object with event and target properties, or a simple event string.",
+      "dataType": "object",
+      "subFormId": "ActorDefinitionTrigger",
+      "alternates": [
+        {
+          "id": "grow_up",
+          "dataType": "string"
+        }
+      ],
+      "samples": {
+        "/vanilla/behavior_pack/entities/chicken.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:chicken_baby/minecraft:ageable/",
+            "content": {
+              "event": "minecraft:ageable_grow_up",
+              "target": "self"
+            }
+          }
+        ],
+        "/vanilla/behavior_pack/entities/cow.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:cow_baby/minecraft:ageable/",
+            "content": {
+              "event": "minecraft:ageable_grow_up",
+              "target": "self"
+            }
+          }
+        ],
+        "/vanilla/behavior_pack/entities/dolphin.json": [
+          {
+            "path": "/minecraft:entity/component_groups/dolphin_baby/minecraft:ageable/",
+            "content": {
+              "event": "ageable_grow_up",
+              "target": "self"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "interact_filters",
+      "title": "Interact Filters",
+      "description": "List of conditions to meet so that the entity can be fed.",
+      "dataType": "minecraftFilter"
+    },
+    {
+      "id": "pause_growth_items",
+      "title": "Pause Growth Items",
+      "description": "List of items that can be fed to the entity to pause growth for baby entities.",
+      "dataType": "stringArray",
+      "samples": {
+        "/vanilla/behavior_pack/entities/chicken.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:chicken_baby/minecraft:ageable/",
+            "content": [
+              "golden_dandelion"
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/cow.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:cow_baby/minecraft:ageable/",
+            "content": [
+              "golden_dandelion"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "reset_growth_items",
+      "title": "Reset Growth Items",
+      "description": "List of items that can be used to reset growth for baby entities.",
+      "dataType": "stringArray",
+      "samples": {
+        "/vanilla/behavior_pack/entities/chicken.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:chicken_baby/minecraft:ageable/",
+            "content": [
+              "golden_dandelion"
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/cow.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:cow_baby/minecraft:ageable/",
+            "content": [
+              "golden_dandelion"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "title": "Ageable",
+  "samples": {
+    "/vanilla/behavior_pack/entities/chicken.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:chicken_baby/minecraft:ageable/",
+        "content": {
+          "duration": 1200,
+          "feed_items": [
+            "wheat_seeds",
+            "beetroot_seeds",
+            "melon_seeds",
+            "pumpkin_seeds",
+            "pitcher_pod",
+            "torchflower_seeds"
+          ],
+          "pause_growth_items": [
+            "golden_dandelion"
+          ],
+          "reset_growth_items": [
+            "golden_dandelion"
+          ],
+          "grow_up": {
+            "event": "minecraft:ageable_grow_up",
+            "target": "self"
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/cow.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:cow_baby/minecraft:ageable/",
+        "content": {
+          "duration": 1200,
+          "feed_items": "wheat",
+          "pause_growth_items": [
+            "golden_dandelion"
+          ],
+          "reset_growth_items": [
+            "golden_dandelion"
+          ],
+          "grow_up": {
+            "event": "minecraft:ageable_grow_up",
+            "target": "self"
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/dolphin.json": [
+      {
+        "path": "/minecraft:entity/component_groups/dolphin_baby/minecraft:ageable/",
+        "content": {
+          "duration": 1200,
+          "feed_items": [
+            "fish",
+            "salmon"
+          ],
+          "pause_growth_items": [
+            "golden_dandelion"
+          ],
+          "reset_growth_items": [
+            "golden_dandelion"
+          ],
+          "grow_up": {
+            "event": "ageable_grow_up",
+            "target": "self"
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/goat.json": [
+      {
+        "path": "/minecraft:entity/component_groups/goat_baby/minecraft:ageable/",
+        "content": {
+          "duration": 1200,
+          "feed_items": "wheat",
+          "pause_growth_items": [
+            "golden_dandelion"
+          ],
+          "reset_growth_items": [
+            "golden_dandelion"
+          ],
+          "grow_up": {
+            "event": "minecraft:ageable_grow_up",
+            "target": "self"
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/llama.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:llama_baby/minecraft:ageable/",
+        "content": {
+          "duration": 1200,
+          "feed_items": [
+            {
+              "item": "wheat",
+              "growth": 0.1
+            },
+            {
+              "item": "hay_block",
+              "growth": 0.9
+            }
+          ],
+          "pause_growth_items": [
+            "golden_dandelion"
+          ],
+          "reset_growth_items": [
+            "golden_dandelion"
+          ],
+          "grow_up": {
+            "event": "minecraft:ageable_grow_up",
+            "target": "self"
+          }
+        }
+      }
+    ]
+  },
+  "id": "minecraft:ageable"
+}

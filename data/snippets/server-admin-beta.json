@@ -1,0 +1,22 @@
+{
+  "getPlayerProfile": {
+    "description": "Uses secrets and variables from dedicated server configuration files to further parameterize web requests. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server-admin/serversecrets",
+    "prefix": ["mc"],
+    "body": [
+      "// Note this code will only run on Bedrock Dedicated Server.",
+      "  const serverUrl = mcsa.variables.get('serverEndpoint');",
+      "  const req = new HttpRequest(serverUrl + 'getPlayerProfile');",
+      "  req.body = JSON.stringify({",
+      "    playerId: 'johndoe',",
+      "  });",
+      "  const authTokenSec = mcsa.secrets.get('authtoken');",
+      "  if (!authTokenSec) {",
+      "    log('authtoken secret not defined.', -1);",
+      "    return;",
+      "  }",
+      "  req.method = HttpRequestMethod.Post;",
+      "  req.headers = [new HttpHeader('Content-Type', 'application/json'), new HttpHeader('auth', authTokenSec)];",
+      "  await http.request(req);"
+    ]
+  }
+}

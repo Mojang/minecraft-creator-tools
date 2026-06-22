@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "resource/blocks_resource",
+  "title": "Blocks Resource Definition",
+  "description": "The blocks.json file in a resource pack defines texture and sound mappings for blocks. Each block entry maps a block identifier to its visual and audio properties.",
+  "type": "object",
+  "properties": {
+    "format_version": {
+      "title": "Format Version",
+      "description": "The format version of the blocks.json file. Can be an array like [1, 1, 0] or a string like '1.1.0'.",
+      "type": "string"
+    }
+  }
+}

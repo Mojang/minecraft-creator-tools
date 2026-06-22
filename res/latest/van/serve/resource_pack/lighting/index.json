@@ -1,0 +1,20 @@
+{
+  "files": [
+    "cold_lighting.json",
+    "coolish_lighting.json",
+    "desert_lighting.json",
+    "end_lighting.json",
+    "global.json",
+    "hot_lighting.json",
+    "ice_plains_spikes_lighting.json",
+    "mangrove_swamp_lighting.json",
+    "mesa_lighting.json",
+    "mushroom_island_lighting.json",
+    "nether_lighting.json",
+    "pale_garden_lighting.json",
+    "roofed_forest_lighting.json",
+    "swampland_lighting.json",
+    "warmish_lighting.json"
+  ],
+  "folders": []
+}

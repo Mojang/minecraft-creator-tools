@@ -1,0 +1,27 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines processor list description configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Processor List Description",
+  "fields": [
+    {
+      "id": "identifier",
+      "title": "Identifier",
+      "description": "Identifier of the Processor List. This is referenced by Template Pools when pairing processors with Structure Templates.",
+      "dataType": "object",
+      "isRequired": true
+    }
+  ],
+  "description": "Defines processor list description configuration.",
+  "title": "Processor List Description Misc"
+}

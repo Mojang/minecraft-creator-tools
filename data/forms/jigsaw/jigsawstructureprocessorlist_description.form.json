@@ -1,0 +1,25 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "identifies a processor list for template pools"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "identifier",
+      "title": "identifier",
+      "description": "Identifier of the Processor List. This is referenced by Template Pools when pairing processors with Structure Templates.",
+      "dataType": "string"
+    }
+  ],
+  "description": "JigsawStructureProcessorList Description",
+  "title": "JigsawStructureProcessorList Description"
+}

@@ -1,0 +1,33 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines tagmatch configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "TagMatch",
+  "fields": [
+    {
+      "id": "predicate_type",
+      "title": "BlockType",
+      "dataType": "string",
+      "isRequired": true
+    },
+    {
+      "id": "tag",
+      "title": "Tag",
+      "description": "The tag to be matched",
+      "dataType": "string",
+      "isRequired": true
+    }
+  ],
+  "description": "Predicate that evaluates to true if the block at the specified location constains the tag.",
+  "title": "TagMatch Misc"
+}

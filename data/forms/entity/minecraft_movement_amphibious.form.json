@@ -1,0 +1,35 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "uses amphibious movement"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "max_turn",
+      "title": "Max Turn",
+      "description": "The maximum number in degrees the mob can turn per tick.",
+      "defaultValue": 30,
+      "dataType": "float"
+    }
+  ],
+  "description": "This move control allows the mob to swim in water and walk on land.",
+  "title": "Amphibious Movement",
+  "samples": {
+    "/vanilla/behavior_pack/entities/frog.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:movement.amphibious/",
+        "content": {}
+      }
+    ]
+  },
+  "id": "minecraft:movement.amphibious"
+}

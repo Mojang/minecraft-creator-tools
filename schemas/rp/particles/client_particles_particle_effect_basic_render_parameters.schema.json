@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Client Particles Particle Effect Basic Render Parameters",
+  "description": "The parameters MUST contain a material and texture.",
+  "properties": {
+    "material": {
+      "title": "Material",
+      "description": "The material used for rendering the particle effect.",
+      "type": "string"
+    },
+    "texture": {
+      "title": "Texture",
+      "description": "The texture path used for the particle effect.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "material",
+    "texture"
+  ]
+}

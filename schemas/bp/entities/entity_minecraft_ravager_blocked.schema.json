@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Ravager Blocked",
+  "description": "Defines the ravager's response to their melee attack being blocked.",
+  "properties": {
+    "knockback_strength": {
+      "title": "Knockback Strength",
+      "description": "The strength with which blocking entities should be knocked back",
+      "type": "number",
+      "default": 3
+    },
+    "reaction_choices": {
+      "title": "Reaction Choices",
+      "description": "A list of weighted responses to the melee attack being blocked",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": "[ ]"
+    }
+  }
+}

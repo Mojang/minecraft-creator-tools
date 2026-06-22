@@ -1,0 +1,22 @@
+{
+  "files": [
+    "atmospherics.json",
+    "basalt_deltas_atmospherics.json",
+    "crimson_forest_atmospherics.json",
+    "desert_atmospherics.json",
+    "end_atmospherics.json",
+    "hell_atmospherics.json",
+    "hot_atmospherics.json",
+    "ice_plains_spikes_atmospherics.json",
+    "mangrove_swamp_atmospherics.json",
+    "mesa_atmospherics.json",
+    "mushroom_island_atmospherics.json",
+    "pale_garden_atmospherics.json",
+    "roofed_forest_atmospherics.json",
+    "soulsand_valley_atmospherics.json",
+    "swampland_atmospherics.json",
+    "warmish_atmospherics.json",
+    "warped_forest_atmospherics.json"
+  ],
+  "folders": []
+}

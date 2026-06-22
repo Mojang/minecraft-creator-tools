@@ -1,0 +1,65 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has placement position and direction traits"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Traits",
+  "fields": [
+    {
+      "id": "minecraft:connection",
+      "title": "Minecraft Connection",
+      "description": "Adds connection states to the block. The values of these states are updated when the block or neighboring blocks change.",
+      "dataType": "object",
+      "defaultValue": {
+        "enabled_states": []
+      },
+      "subFormId": "block/connection"
+    },
+    {
+      "id": "minecraft:multi_block",
+      "title": "Minecraft Multi Block",
+      "description": "Adds the \"minecraft:multi_block_part\" state and multi block functionality to the block.",
+      "dataType": "object",
+      "defaultValue": {
+        "direction": "up",
+        "enabled_states": [],
+        "parts": 2
+      },
+      "subFormId": "block/multi_block"
+    },
+    {
+      "id": "minecraft:placement_direction",
+      "title": "Minecraft Placement Direction",
+      "description": "Adds the \"minecraft:cardinal_direction\", \"minecraft:facing_direction\" and/or \"minecraft:corner_and_cardinal_direction\" states and setter function to the block.",
+      "dataType": "object",
+      "defaultValue": {
+        "blocks_to_corner_with": [],
+        "enabled_states": [],
+        "y_rotation_offset": null
+      },
+      "technicalDescription": "\"y_rotation_offset\" can only be used when \"minecraft:cardinal_direction\" and/or \"minecraft:facing_direction\" are enabled in \"enabled_states\". and \"blocks_to_corner_with\" can only be used when \"minecraft:corner_and_cardinal_direction\" is enabled in \"enabled_states\".",
+      "subFormId": "block/placement_direction"
+    },
+    {
+      "id": "minecraft:placement_position",
+      "title": "Minecraft Placement Position",
+      "description": "Adds the \"minecraft:block_face\" and/or \"minecraft:vertical_half\" states and setter function to the block.",
+      "dataType": "object",
+      "defaultValue": {
+        "enabled_states": []
+      },
+      "subFormId": "block/placement_position"
+    }
+  ],
+  "description": "Change the connection, multiblock state, placement position and/or direction behaviors of a block",
+  "title": "Block Traits"
+}

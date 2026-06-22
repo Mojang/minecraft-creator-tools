@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Grows Crop",
+  "description": "Could increase crop growth when entity walks over crop",
+  "properties": {
+    "chance": {
+      "title": "Chance",
+      "description": "Value between 0-1. Chance of success per tick.",
+      "type": "number",
+      "default": 0
+    },
+    "charges": {
+      "title": "Charges",
+      "description": "Number of charges",
+      "type": "integer",
+      "default": 10
+    }
+  }
+}

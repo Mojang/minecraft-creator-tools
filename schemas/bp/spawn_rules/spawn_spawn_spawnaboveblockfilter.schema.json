@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Spawns Above Block Filter",
+  "description": "Filters spawning based on blocks above the spawn location. This component appears to have been deprecated or changed in versions after 1.17.20.",
+  "properties": {
+    "blocks": {
+      "title": "Blocks",
+      "type": "object"
+    },
+    "distance": {
+      "title": "Distance",
+      "type": "integer",
+      "default": 1
+    }
+  }
+}

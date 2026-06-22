@@ -1,0 +1,19 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "returns get root locator offset information"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "query.get_root_locator_offset",
+  "fields": [],
+  "description": "Gets specified axis of the specified locator offset of the root model.",
+  "title": "Get Root Locator Offset"
+}

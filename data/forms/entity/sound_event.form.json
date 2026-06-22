@@ -1,0 +1,41 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has custom sound event definitions"
+          }
+        ]
+      }
+    ]
+  },
+  "title": "Entity Sound Event",
+  "fields": [
+    {
+      "id": "volume",
+      "title": "Volume",
+      "dataType": "float",
+      "minValue": 0,
+      "maxValue": 1,
+      "step": 0.05,
+      "experienceType": "slider",
+      "description": "Overall adjustment to the volume level of the set of sounds"
+    },
+    {
+      "id": "pitch",
+      "title": "Pitch",
+      "dataType": "float",
+      "description": "Overall adjustment to the pitch level of the set of sounds"
+    },
+    {
+      "id": "events",
+      "title": "Events",
+      "dataType": "keyedStringCollection",
+      "description": "A set of associated events."
+    }
+  ],
+  "description": "Maps gameplay events to sound effects for the entity, enabling custom audio for actions like attacking, being hurt, dying, or ambient idle sounds. Reference sounds defined in sound_definitions.json to give custom mobs distinctive audio identities that match their visual design and behavior."
+}

@@ -1,0 +1,177 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can dig into the ground"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "allow_dig_when_named",
+      "title": "Allow Dig When Named",
+      "description": "If true, this behavior can run when this entity is named. Otherwise not.",
+      "dataType": "boolean",
+      "defaultValue": false
+    },
+    {
+      "id": "control_flags",
+      "title": "Control Flags",
+      "dataType": "stringArray",
+      "defaultValue": [],
+      "choices": [
+        {
+          "id": "jump",
+          "title": "Jump"
+        },
+        {
+          "id": "look",
+          "title": "Look"
+        },
+        {
+          "id": "move",
+          "title": "Move"
+        }
+      ]
+    },
+    {
+      "id": "digs_in_daylight",
+      "title": "Digs In Daylight",
+      "description": "Indicates that the actor should start digging when it sees daylight",
+      "dataType": "boolean",
+      "defaultValue": false
+    },
+    {
+      "id": "duration",
+      "title": "Duration",
+      "description": "Goal duration in seconds",
+      "dataType": "float",
+      "defaultValue": 0,
+      "samples": {
+        "/vanilla/behavior_pack/entities/warden.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.dig/",
+            "content": 5.5
+          }
+        ]
+      }
+    },
+    {
+      "id": "idle_time",
+      "title": "Idle Time",
+      "description": "The minimum idle time in seconds between the last detected disturbance to the start of digging.",
+      "dataType": "float",
+      "defaultValue": 0,
+      "samples": {
+        "/vanilla/behavior_pack/entities/warden.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.dig/",
+            "content": 60
+          }
+        ]
+      }
+    },
+    {
+      "id": "on_start",
+      "title": "Start",
+      "description": "Event(s) to run when the goal starts.",
+      "dataType": "object",
+      "defaultValue": {
+        "event": "",
+        "filters": {
+          "AND": null,
+          "NOT": null,
+          "OR": null,
+          "all": null,
+          "all_of": null,
+          "any": null,
+          "any_of": null,
+          "none_of": null
+        },
+        "target": "self"
+      },
+      "subFormId": "entity/actordefinitiontrigger",
+      "samples": {
+        "/vanilla/behavior_pack/entities/warden.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.dig/",
+            "content": {
+              "event": "on_digging_event"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "priority",
+      "title": "Priority",
+      "dataType": "int",
+      "defaultValue": 0,
+      "samples": {
+        "/vanilla/behavior_pack/entities/warden.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.dig/",
+            "content": 1
+          }
+        ]
+      },
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal."
+    },
+    {
+      "id": "suspicion_is_disturbance",
+      "title": "Suspicion Is Disturbance",
+      "description": "If true, finding new suspicious locations count as disturbances that may delay the start of this goal.",
+      "dataType": "boolean",
+      "defaultValue": false,
+      "samples": {
+        "/vanilla/behavior_pack/entities/warden.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.dig/",
+            "content": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "vibration_is_disturbance",
+      "title": "Vibration Is Disturbance",
+      "description": "If true, vibrations count as disturbances that may delay the start of this goal.",
+      "dataType": "boolean",
+      "defaultValue": false,
+      "samples": {
+        "/vanilla/behavior_pack/entities/warden.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.dig/",
+            "content": true
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Allows this entity to dig into the ground before despawning.",
+  "title": "Entity Dig Behavior",
+  "samples": {
+    "/vanilla/behavior_pack/entities/warden.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.dig/",
+        "content": {
+          "duration": 5.5,
+          "idle_time": 60,
+          "vibration_is_disturbance": true,
+          "suspicion_is_disturbance": true,
+          "on_start": {
+            "event": "on_digging_event"
+          },
+          "priority": 1
+        }
+      }
+    ]
+  },
+  "id": "minecraft:behavior.dig"
+}

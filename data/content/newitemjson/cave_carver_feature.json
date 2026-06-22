@@ -1,0 +1,9 @@
+{
+  "format_version": "1.21.80",
+  "minecraft:aggregate_feature": {
+    "description": {
+      "identifier": "examplens:examplename"
+    },
+    "features": ["examplens:targetname"]
+  }
+}

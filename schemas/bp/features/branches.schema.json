@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Branches",
+  "description": "Configuration object for branches.",
+  "type": "object",
+  "properties": {
+    "branch_canopy": {
+      "$ref": "./branch_canopy_3.schema.json",
+      "title": "Branch Canopy",
+      "description": "Configuration object for the canopy."
+    },
+    "branch_length": {
+      "title": "Branch Length",
+      "description": "Length for the branch.",
+      "type": "integer"
+    },
+    "branch_altitude_factor": {
+      "title": "Branch Altitude Factor",
+      "description": "Altitude at which branches can spawn, relative to the tree height.",
+      "type": "object",
+      "properties": {}
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "Branches",
+      "description": "Configuration object for branches.",
+      "body": {
+        "branch_length": 0,
+        "branch_altitude_factor": ""
+      }
+    }
+  ]
+}

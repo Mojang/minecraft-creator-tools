@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "East",
+  "description": "Specifies the UV's for the face that stretches along the z and y axes, and faces the x axis",
+  "type": "object",
+  "properties": {
+    "uv": {
+      "title": "Uv",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "uv_size": {
+      "title": "Uv Size",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "material_instance": {
+      "title": "Material Instance",
+      "type": "string"
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "East",
+      "description": "Specifies the UV's for the face that stretches along the z and y axes, and faces the x axis",
+      "body": {
+        "uv": "",
+        "material_instance": ""
+      }
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "moves toward its dwelling"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "control_flags",
+      "title": "Control Flags",
+      "dataType": "stringArray",
+      "defaultValue": [],
+      "choices": [
+        {
+          "id": "jump",
+          "title": "Jump"
+        },
+        {
+          "id": "look",
+          "title": "Look"
+        },
+        {
+          "id": "move",
+          "title": "Move"
+        }
+      ]
+    },
+    {
+      "id": "priority",
+      "title": "Priority",
+      "dataType": "int",
+      "defaultValue": 0,
+      "samples": {
+        "/vanilla/behavior_pack/entities/iron_golem.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.move_towards_dwelling_restriction/",
+            "content": 4
+          }
+        ]
+      },
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal."
+    },
+    {
+      "id": "speed_multiplier",
+      "title": "Speed Multiplier",
+      "description": "This multiplier modifies the entity's speed when moving towards its restriction.",
+      "dataType": "float",
+      "defaultValue": 1
+    }
+  ],
+  "requires": [
+    {
+      "id": "minecraft:dweller",
+      "type": "entity_component"
+    }
+  ],
+  "description": "Allows entities with the \"minecraft:dweller\" component to move toward their village area that the entity should be restricted to.",
+  "title": "Entity Move Towards Dwelling Restriction Behavior",
+  "samples": {
+    "/vanilla/behavior_pack/entities/iron_golem.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.move_towards_dwelling_restriction/",
+        "content": {
+          "priority": 4
+        }
+      }
+    ]
+  },
+  "id": "minecraft:behavior.move_towards_dwelling_restriction"
+}

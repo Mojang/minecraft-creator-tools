@@ -1,0 +1,122 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "boolean",
+            "comparison": "equals",
+            "compareTo": false
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has no collision (entities pass through)"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "boolean",
+            "comparison": "equals",
+            "compareTo": true
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has full block collision"
+          }
+        ]
+      },
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has a custom collision box"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "origin",
+      "title": "Origin",
+      "description": "Minimal position of the bounds of the collision box. \"origin\" is specified as [x, y, z] and must be in the range (-8, 0, -8) to (8, 24, 8), inclusive.",
+      "defaultValue": [
+        -8,
+        0,
+        -8
+      ],
+      "dataType": "point3"
+    },
+    {
+      "id": "size",
+      "title": "Size",
+      "description": "Size of each side of the collision box. Size is specified as [x, y, z]. \"origin\" + \"size\" must be in the range (-8, 0, -8) to (8, 24, 8), inclusive.",
+      "defaultValue": [
+        16,
+        24,
+        16
+      ],
+      "dataType": "point3"
+    }
+  ],
+  "description": "Defines the area of the block that collides with entities. If set to true, default values are used (a full 16x16x16 block). If set to false, the block's collision with entities is disabled, allowing entities to pass through. If this component is omitted, default values are used.",
+  "scalarField": {
+    "id": "boolean",
+    "title": "Object enabled",
+    "tags": [
+      "presence"
+    ],
+    "dataType": "boolean"
+  },
+  "samples": {
+    "samples": [
+      {
+        "path": "JSON (object)",
+        "content": {
+          "origin": [
+            -8,
+            0,
+            -8
+          ],
+          "size": [
+            16,
+            16,
+            16
+          ]
+        }
+      }
+    ],
+    "Block Fabricator": [
+      {
+        "path": "https://github.com/microsoft/minecraft-samples/tree/main/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/blocks/fabricator.block.json",
+        "content": true
+      }
+    ],
+    "Block Leaf Pile": [
+      {
+        "path": "https://github.com/microsoft/minecraft-samples/tree/main/creator_camp/behavior_packs/creator_camp/blocks/leaf_pile.block.json",
+        "content": {
+          "origin": [
+            -8,
+            2,
+            -8
+          ],
+          "size": [
+            16,
+            4,
+            16
+          ]
+        }
+      }
+    ]
+  },
+  "title": "Collision Box",
+  "id": "minecraft:collision_box"
+}

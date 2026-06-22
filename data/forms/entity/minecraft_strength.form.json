@@ -1,0 +1,35 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has strength to carry items"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "max",
+      "title": "Max",
+      "description": "The maximum strength of this entity",
+      "defaultValue": 5,
+      "dataType": "int"
+    },
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "The initial value of the strength",
+      "defaultValue": 1,
+      "dataType": "int"
+    }
+  ],
+  "description": "Defines the entity's strength to carry items.",
+  "title": "Strength",
+  "samples": {},
+  "id": "minecraft:strength"
+}

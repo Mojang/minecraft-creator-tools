@@ -1,0 +1,29 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Owner Hurt By Target Behavior",
+  "description": "Allows the mob to target another mob that hurts their owner.",
+  "properties": {
+    "entity_types": {
+      "title": "Entity Types",
+      "description": "List of entity types that this mob can target if they hurt their owner",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "reevaluate_description": {
+            "title": "Reevaluate Target",
+            "description": "If true, the targeting entity will continuously reevaluate the target and stop attacking if the target no longer meets the filter conditions.",
+            "type": "boolean",
+            "default": false
+          }
+        }
+      }
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "type": "integer"
+    }
+  }
+}

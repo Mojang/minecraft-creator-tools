@@ -1,0 +1,56 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines herd configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Herd",
+  "fields": [
+    {
+      "id": "initial_event",
+      "description": "Event run when the first 'initial_event_count' entities in the group are placed.",
+      "dataType": "string",
+      "title": "Initial Event"
+    },
+    {
+      "id": "event",
+      "title": "Event",
+      "description": "An event to run after 'event_skip_count' number of entities in the group have spawned",
+      "dataType": "string"
+    },
+    {
+      "id": "event_skip_count",
+      "title": "Event Skip Count",
+      "description": "Number of entities spawned in the group to skip before running the event",
+      "dataType": "int"
+    },
+    {
+      "id": "initial_event_count",
+      "title": "Initial Event Count",
+      "description": "Number of times that 'initial_event' can run",
+      "dataType": "int"
+    },
+    {
+      "id": "max",
+      "title": "Max",
+      "description": "Maximum number of entities in this group to attempt to spawn",
+      "dataType": "int"
+    },
+    {
+      "id": "min",
+      "title": "Min",
+      "description": "Minimum number of entities in this group to attempt to spawn",
+      "dataType": "int"
+    }
+  ],
+  "description": "Defines herd configuration.",
+  "title": "Herd Misc"
+}

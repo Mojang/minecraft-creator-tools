@@ -1,0 +1,196 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "event_name",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "plays ambient "
+          },
+          {
+            "type": "value",
+            "field": "event_name"
+          },
+          {
+            "type": "literal",
+            "text": " sounds"
+          }
+        ]
+      }
+    ]
+  },
+  "description": "Delay for an entity playing its sound",
+  "fields": [
+    {
+      "id": "event_name",
+      "dataType": "string",
+      "lookupId": "entityTypeEvents",
+      "samples": {
+        "/vanilla/behavior_pack/entities/allay.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:ambient_sound_interval/",
+            "content": "ambient"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/warden.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:ambient_sound_interval/",
+            "content": "ambient"
+          }
+        ]
+      },
+      "defaultValue": "ambient",
+      "description": "Level sound event to be played as the ambient sound.",
+      "title": "Event Name"
+    },
+    {
+      "id": "event_names",
+      "title": "Event Names",
+      "description": "List of dynamic level sound events, with conditions for choosing between them. Evaluated in order, first one wins. If none evaluate to true, 'event_name' will take precedence.",
+      "dataType": "objectArray",
+      "subForm": {
+        "id": "",
+        "description": "List of dynamic level sound events, with conditions for choosing between them. Evaluated in order, first one wins. If none evaluate to true, 'event_name' will take precedence.",
+        "fields": [
+          {
+            "id": "condition",
+            "title": "Condition",
+            "description": "The condition that must be satisfied to select the given ambient sound",
+            "dataType": "string"
+          },
+          {
+            "id": "event_name",
+            "title": "Event Name",
+            "description": "Level sound event to be played as the ambient sound",
+            "dataType": "string"
+          }
+        ]
+      },
+      "samples": {
+        "/vanilla/behavior_pack/entities/allay.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:ambient_sound_interval/",
+            "content": [
+              {
+                "condition": "query.is_using_item",
+                "event_name": "ambient.tame"
+              },
+              {
+                "condition": "!query.is_using_item",
+                "event_name": "ambient"
+              }
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/warden.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:ambient_sound_interval/",
+            "content": [
+              {
+                "condition": "query.anger_level(this) >= 80",
+                "event_name": "angry"
+              },
+              {
+                "condition": "query.anger_level(this) >= 40",
+                "event_name": "agitated"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "range",
+      "title": "Range",
+      "description": "Maximum time in seconds to randomly add to the ambient sound delay time.",
+      "defaultValue": 16,
+      "dataType": "float",
+      "samples": {
+        "/vanilla/behavior_pack/entities/allay.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:ambient_sound_interval/",
+            "content": 5
+          }
+        ],
+        "/vanilla/behavior_pack/entities/warden.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:ambient_sound_interval/",
+            "content": 4
+          }
+        ]
+      }
+    },
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "Minimum time in seconds before the entity plays its ambient sound again.",
+      "defaultValue": 8,
+      "dataType": "float",
+      "samples": {
+        "/vanilla/behavior_pack/entities/allay.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:ambient_sound_interval/",
+            "content": 5
+          }
+        ],
+        "/vanilla/behavior_pack/entities/warden.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:ambient_sound_interval/",
+            "content": 2
+          }
+        ]
+      }
+    }
+  ],
+  "title": "Ambient Sound Interval",
+  "samples": {
+    "/vanilla/behavior_pack/entities/allay.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:ambient_sound_interval/",
+        "content": {
+          "event_name": "ambient",
+          "event_names": [
+            {
+              "condition": "query.is_using_item",
+              "event_name": "ambient.tame"
+            },
+            {
+              "condition": "!query.is_using_item",
+              "event_name": "ambient"
+            }
+          ],
+          "range": 5,
+          "value": 5
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/warden.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:ambient_sound_interval/",
+        "content": {
+          "event_name": "ambient",
+          "event_names": [
+            {
+              "condition": "query.anger_level(this) >= 80",
+              "event_name": "angry"
+            },
+            {
+              "condition": "query.anger_level(this) >= 40",
+              "event_name": "agitated"
+            }
+          ],
+          "range": 4,
+          "value": 2
+        }
+      }
+    ]
+  },
+  "id": "minecraft:ambient_sound_interval"
+}

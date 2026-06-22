@@ -1,0 +1,34 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has riders that spawn with it"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Rider Data",
+  "fields": [
+    {
+      "id": "entity_type",
+      "title": "Entity Type",
+      "description": "The entity type that will be riding this entity.",
+      "dataType": "string",
+      "isRequired": true
+    },
+    {
+      "id": "spawn_event",
+      "title": "Spawn Event",
+      "description": "The spawn event that will be used when the riding entity is created.",
+      "dataType": "string",
+      "defaultValue": ""
+    }
+  ],
+  "description": "List of riders to be added to the entity. Must have no more riders than \"minecraft:rideable\" has \"seat_count\".",
+  "title": "Entity Rider Data"
+}

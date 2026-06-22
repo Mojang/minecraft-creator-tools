@@ -1,0 +1,30 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines spawn worldagefilter settings"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Spawn WorldAgeFilter",
+  "fields": [
+    {
+      "id": "max",
+      "title": "Max",
+      "dataType": "int"
+    },
+    {
+      "id": "min",
+      "title": "Min",
+      "dataType": "int"
+    }
+  ],
+  "description": "Defines spawn worldagefilter settings.",
+  "title": "Spawn WorldAgeFilter Misc"
+}

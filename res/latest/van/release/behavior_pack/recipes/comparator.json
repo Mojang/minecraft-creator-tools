@@ -1,0 +1,36 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:comparator"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "pattern": [
+      " # ",
+      "#X#",
+      "III"
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:redstone_torch"
+      },
+      "X": {
+        "item": "minecraft:quartz"
+      },
+      "I": {
+        "item": "minecraft:stone",
+        "data": 0
+      }
+    },
+    "unlock": [
+      {
+        "item": "minecraft:quartz"
+      }
+    ],
+    "result": {
+      "item": "minecraft:comparator"
+    }
+  }
+}

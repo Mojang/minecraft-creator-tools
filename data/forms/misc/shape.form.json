@@ -1,0 +1,28 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines shape configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Shape",
+  "fields": [
+    {
+      "id": "boxes",
+      "title": "Boxes",
+      "dataType": "object",
+      "minLength": 1,
+      "subFormId": "misc/box",
+      "isRequired": true
+    }
+  ],
+  "description": "Defines shape configuration.",
+  "title": "Shape Misc"
+}

@@ -1,0 +1,25 @@
+{
+  "files": [
+    "Check.png",
+    "checkboxFilled.png",
+    "checkboxFilledWhiteBorder.png",
+    "checkboxFilledYellow_WhiteBorder.png",
+    "checkboxFilled_hover.png",
+    "checkboxUnFilled_WhiteBorder.png",
+    "checkboxUnFilled_hover.png",
+    "checkbox_checked.png",
+    "checkbox_checked_WhiteBorder.png",
+    "checkbox_checked_WhiteBorder_disabled.png",
+    "checkbox_checked_disabled.png",
+    "checkbox_checked_hover.png",
+    "checkbox_filled.png",
+    "checkbox_filled_WhiteBorder.png",
+    "checkbox_filled_WhiteBorder_disabled.png",
+    "checkbox_unchecked.png",
+    "checkbox_unchecked_WhiteBorder.png",
+    "checkbox_unchecked_WhiteBorder_disabled.png",
+    "checkbox_unchecked_disabled.png",
+    "checkbox_unchecked_hover.png"
+  ],
+  "folders": []
+}

@@ -1,0 +1,52 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "Spawn DelayFilter",
+  "title": "Delay Filter",
+  "description": "Delays entity spawning by a configurable amount of time after spawn conditions are met. Useful for preventing immediate respawning after mob deaths or creating spawn cooldowns for rare creatures.",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "delays spawning with "
+          },
+          {
+            "type": "value",
+            "field": "spawn_chance"
+          },
+          {
+            "type": "literal",
+            "text": "% chance"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "identifier",
+      "title": "Identifier",
+      "dataType": "string",
+      "defaultValue": ""
+    },
+    {
+      "id": "max",
+      "title": "Max",
+      "dataType": "int",
+      "defaultValue": 0
+    },
+    {
+      "id": "min",
+      "title": "Min",
+      "dataType": "int",
+      "defaultValue": 0
+    },
+    {
+      "id": "spawn_chance",
+      "title": "Spawn Chance",
+      "dataType": "int",
+      "defaultValue": 100
+    }
+  ]
+}

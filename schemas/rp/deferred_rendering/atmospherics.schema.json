@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "client_deferred_rendering/atmosphericscattering_atmosphericscatteringconfigsettings",
+  "title": "Atmospheric Scattering",
+  "description": "Customize atmospherics effects",
+  "type": "object",
+  "properties": {
+    "format_version": {
+      "title": "format_version",
+      "description": "format_version",
+      "type": "string"
+    },
+    "minecraft:atmosphere_settings": {
+      "$ref": "./minecraft_atmosphere_settings.schema.json",
+      "title": "minecraft:atmosphere_settings",
+      "description": "minecraft:atmosphere_settings",
+      "defaultSnippets": [
+        {
+          "label": "AtmosphericScattering AtmosphericScatteringConfigSettings AtmosphericScatteringSettings",
+          "description": "AtmosphericScattering AtmosphericScatteringConfigSettings AtmosphericScatteringSettings",
+          "body": {
+            "moon_mie_strength": 0,
+            "rayleigh_strength": 0,
+            "sun_mie_strength": 0,
+            "sun_glare_shape": 0
+          }
+        }
+      ]
+    }
+  }
+}

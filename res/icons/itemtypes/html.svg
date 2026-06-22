@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- HTML: Angle brackets -->
+  <path d="M3 1H10L13 4V15H3V1Z" fill-opacity="0.15"/>
+  <path d="M10 1V4H13" fill="none" stroke="currentColor" stroke-width="0.8"/>
+  <path d="M4 8L6 6V7L5 8L6 9V10L4 8Z"/>
+  <path d="M12 8L10 6V7L11 8L10 9V10L12 8Z"/>
+  <rect x="7" y="5.5" width="0.8" height="5" transform="rotate(-15 7.4 8)"/>
+</svg>

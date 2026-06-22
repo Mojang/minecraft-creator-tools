@@ -1,0 +1,210 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Description",
+  "description": "\n\nProperties:\n• identifier (string)\n• min_engine_version\n• materials (object)\n• textures (object)\n• geometry (object)\n• queryable_geometry (string)\n• spawn_egg ({ texture, base_color, overlay_color, ... })\n• scripts ({ variables, initialize, pre_animation, ... })\n• ... and 9 more properties",
+  "type": "object",
+  "properties": {
+    "identifier": {
+      "title": "Identifier",
+      "type": "string"
+    },
+    "min_engine_version": {
+      "title": "Min Engine Version",
+      "type": "string"
+    },
+    "materials": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {}
+        },
+        {
+          "title": "<identifier>",
+          "type": "string"
+        }
+      ],
+      "title": "Materials"
+    },
+    "textures": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {}
+        },
+        {
+          "title": "<identifier>",
+          "type": "string"
+        }
+      ],
+      "title": "Textures"
+    },
+    "geometry": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {}
+        },
+        {
+          "title": "<identifier>",
+          "type": "string"
+        }
+      ],
+      "title": "Geometry"
+    },
+    "queryable_geometry": {
+      "title": "Queryable Geometry",
+      "type": "string"
+    },
+    "spawn_egg": {
+      "$ref": "./spawn_egg_2.schema.json",
+      "title": "Spawn Egg",
+      "description": "\n\nProperties:\n• texture (string)\n• base_color (string)\n• overlay_color (string)\n• texture_index (int)",
+      "defaultSnippets": [
+        {
+          "label": "Spawn Egg",
+          "description": "Create a Spawn Egg",
+          "body": {
+            "texture": "",
+            "base_color": "",
+            "overlay_color": "",
+            "texture_index": 0
+          }
+        }
+      ]
+    },
+    "scripts": {
+      "$ref": "./scripts_2.schema.json",
+      "title": "Scripts",
+      "description": "\n\nProperties:\n• variables ({ variable.[a-zA-Z_][a-zA-Z0-9_]* })\n• initialize\n• pre_animation\n• scale\n• scale[xX]\n• scale[yY]\n• scale[zZ]\n• parent_setup\n• ... and 3 more properties"
+    },
+    "particle_effects": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {}
+        },
+        {
+          "title": "<identifier>",
+          "type": "string"
+        }
+      ],
+      "title": "Particle Effects"
+    },
+    "particle_emitters": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {}
+        },
+        {
+          "title": "<identifier>",
+          "type": "string"
+        }
+      ],
+      "title": "Particle Emitters"
+    },
+    "animations": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {}
+        },
+        {
+          "title": "<identifier>",
+          "type": "string"
+        }
+      ],
+      "title": "Animations"
+    },
+    "render_controllers": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {}
+          }
+        },
+        {
+          "title": "Render Controllers",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        {
+          "title": "<scope Identifier>",
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        }
+      ]
+    },
+    "sound_effects": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {}
+        },
+        {
+          "title": "<identifier>",
+          "type": "string"
+        }
+      ],
+      "title": "Sound Effects"
+    },
+    "enable_attachables": {
+      "title": "Enable Attachables",
+      "type": "boolean"
+    },
+    "held_item_ignores_lighting": {
+      "title": "Held Item Ignores Lighting",
+      "type": "boolean"
+    },
+    "hide_armor": {
+      "title": "Hide Armor",
+      "type": "boolean"
+    },
+    "item": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {}
+        },
+        {
+          "type": "string"
+        },
+        {
+          "title": "<scope Identifier>",
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        }
+      ],
+      "title": "Item"
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "Description",
+      "description": "Create a Description",
+      "body": {
+        "identifier": "",
+        "queryable_geometry": "",
+        "enable_attachables": true,
+        "held_item_ignores_lighting": true,
+        "hide_armor": true
+      }
+    }
+  ]
+}

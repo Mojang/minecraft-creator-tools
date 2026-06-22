@@ -1,0 +1,95 @@
+{
+  "formatVersion": "1.0.0",
+  "identifier": "crystal_block",
+  "description": "A solid block of crystalline material",
+  "pixelsPerUnit": 2,
+  "textures": {
+    "crystal": {
+      "background": {
+        "type": "perlin_noise",
+        "colors": [
+          "#E040FB",
+          "#AA00FF",
+          "#D500F9"
+        ],
+        "seed": 2401,
+        "scale": 3,
+        "factor": 0.3
+      },
+      "effects": {
+        "lighting": {
+          "preset": "pillow",
+          "intensity": 0.35
+        },
+        "overlay": {
+          "pattern": "sparkle",
+          "density": 0.15,
+          "seed": 2402
+        }
+      }
+    },
+    "crystal_edge": {
+      "background": {
+        "type": "perlin_noise",
+        "colors": [
+          "#7B1FA2",
+          "#6A1B9A"
+        ],
+        "seed": 2403,
+        "scale": 4,
+        "factor": 0.2
+      },
+      "effects": {
+        "lighting": {
+          "preset": "outset",
+          "intensity": 0.25
+        }
+      }
+    }
+  },
+  "bones": [
+    {
+      "name": "block",
+      "pivot": [
+        0,
+        8,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -8,
+            0,
+            -8
+          ],
+          "size": [
+            16,
+            16,
+            16
+          ],
+          "faces": {
+            "north": {
+              "textureId": "crystal"
+            },
+            "south": {
+              "textureId": "crystal"
+            },
+            "east": {
+              "textureId": "crystal"
+            },
+            "west": {
+              "textureId": "crystal"
+            },
+            "up": {
+              "textureId": "crystal"
+            },
+            "down": {
+              "textureId": "crystal_edge"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "category": "block"
+}

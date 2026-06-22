@@ -1,0 +1,97 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "minecraft:storage_weight_modifier",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "weight_in_storage_item",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "weighs "
+          },
+          {
+            "type": "value",
+            "field": "weight_in_storage_item"
+          },
+          {
+            "type": "literal",
+            "text": " when stored"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "weight_in_storage_item",
+      "title": "Weight In Storage Item",
+      "description": "The weight of this item when inside another Storage Item. Default is 4. 0 means item is not allowed in another Storage Item.",
+      "dataType": "int",
+      "defaultValue": 4,
+      "samples": {
+        "/vanilla/behavior_pack/items/black_bundle.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:storage_weight_modifier/",
+            "content": 4
+          }
+        ],
+        "/vanilla/behavior_pack/items/blue_bundle.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:storage_weight_modifier/",
+            "content": 4
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Specifies the maximum weight limit that a storage item can hold",
+  "title": "Item Storage Weight Modifier",
+  "samples": {
+    "/vanilla/behavior_pack/items/black_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:storage_weight_modifier/",
+        "content": {
+          "weight_in_storage_item": 4
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/blue_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:storage_weight_modifier/",
+        "content": {
+          "weight_in_storage_item": 4
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/brown_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:storage_weight_modifier/",
+        "content": {
+          "weight_in_storage_item": 4
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:storage_weight_modifier/",
+        "content": {
+          "weight_in_storage_item": 4
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/cyan_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:storage_weight_modifier/",
+        "content": {
+          "weight_in_storage_item": 4
+        }
+      }
+    ]
+  }
+}

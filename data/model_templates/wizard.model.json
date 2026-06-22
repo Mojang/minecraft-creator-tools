@@ -1,0 +1,677 @@
+{
+  "formatVersion": "1.0.0",
+  "identifier": "custom_wizard",
+  "description": "A wizard with flowing robes, pointy hat, and mystical staff. 55 units tall (~3.5 blocks). Perfect for magic-themed mobs.",
+  "textureSize": [
+    64,
+    64
+  ],
+  "textures": {
+    "skin": {
+      "background": {
+        "type": "stipple_noise",
+        "colors": [
+          "#E8C8A8",
+          "#D4B494",
+          "#F0D0B0"
+        ],
+        "seed": 2001
+      }
+    },
+    "beard": {
+      "background": {
+        "type": "stipple_noise",
+        "colors": [
+          "#E8E8E8",
+          "#D0D0D0",
+          "#F8F8F8"
+        ],
+        "seed": 2007
+      }
+    },
+    "robe": {
+      "background": {
+        "type": "dither_noise",
+        "colors": [
+          "#4B0082",
+          "#380066",
+          "#5E109E"
+        ],
+        "seed": 2002
+      }
+    },
+    "robe_trim": {
+      "background": {
+        "type": "dither_noise",
+        "colors": [
+          "#FFD700",
+          "#E8C000",
+          "#FFE828"
+        ],
+        "seed": 2003
+      }
+    },
+    "hat": {
+      "background": {
+        "type": "stipple_noise",
+        "colors": [
+          "#4B0082",
+          "#380066",
+          "#5E109E"
+        ],
+        "seed": 2004
+      }
+    },
+    "hat_tip": {
+      "background": {
+        "type": "gradient",
+        "colors": [
+          "#FFD700",
+          "#FFAA00"
+        ]
+      }
+    },
+    "staff_wood": {
+      "background": {
+        "type": "dither_noise",
+        "colors": [
+          "#5A3D2B",
+          "#4A2D1B",
+          "#6A4D3B"
+        ],
+        "seed": 2005
+      }
+    },
+    "staff_gem": {
+      "background": {
+        "type": "gradient",
+        "colors": [
+          "#00FFFF",
+          "#00AAFF",
+          "#0066FF"
+        ]
+      }
+    }
+  },
+  "bones": [
+    {
+      "name": "head",
+      "pivot": [
+        0,
+        28,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -4,
+            28,
+            -4
+          ],
+          "size": [
+            8,
+            8,
+            8
+          ],
+          "faces": {
+            "north": {
+              "textureId": "skin"
+            },
+            "south": {
+              "textureId": "skin"
+            },
+            "east": {
+              "textureId": "skin"
+            },
+            "west": {
+              "textureId": "skin"
+            },
+            "up": {
+              "textureId": "skin"
+            },
+            "down": {
+              "textureId": "skin"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "hat_brim",
+      "parent": "head",
+      "pivot": [
+        0,
+        36,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -6,
+            35,
+            -6
+          ],
+          "size": [
+            12,
+            1,
+            12
+          ],
+          "faces": {
+            "north": {
+              "textureId": "hat"
+            },
+            "south": {
+              "textureId": "hat"
+            },
+            "east": {
+              "textureId": "hat"
+            },
+            "west": {
+              "textureId": "hat"
+            },
+            "up": {
+              "textureId": "hat"
+            },
+            "down": {
+              "textureId": "hat"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "hat_base",
+      "parent": "head",
+      "pivot": [
+        0,
+        36,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -5,
+            36,
+            -5
+          ],
+          "size": [
+            10,
+            4,
+            10
+          ],
+          "faces": {
+            "north": {
+              "textureId": "hat"
+            },
+            "south": {
+              "textureId": "hat"
+            },
+            "east": {
+              "textureId": "hat"
+            },
+            "west": {
+              "textureId": "hat"
+            },
+            "up": {
+              "textureId": "hat"
+            },
+            "down": {
+              "textureId": "hat"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "hat_mid1",
+      "parent": "head",
+      "pivot": [
+        0,
+        40,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -4,
+            40,
+            -4
+          ],
+          "size": [
+            8,
+            4,
+            8
+          ],
+          "faces": {
+            "north": {
+              "textureId": "hat"
+            },
+            "south": {
+              "textureId": "hat"
+            },
+            "east": {
+              "textureId": "hat"
+            },
+            "west": {
+              "textureId": "hat"
+            },
+            "up": {
+              "textureId": "hat"
+            },
+            "down": {
+              "textureId": "hat"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "hat_mid2",
+      "parent": "head",
+      "pivot": [
+        0,
+        44,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -3,
+            44,
+            -3
+          ],
+          "size": [
+            6,
+            4,
+            6
+          ],
+          "faces": {
+            "north": {
+              "textureId": "hat"
+            },
+            "south": {
+              "textureId": "hat"
+            },
+            "east": {
+              "textureId": "hat"
+            },
+            "west": {
+              "textureId": "hat"
+            },
+            "up": {
+              "textureId": "hat"
+            },
+            "down": {
+              "textureId": "hat"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "hat_top",
+      "parent": "head",
+      "pivot": [
+        0,
+        48,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -2,
+            48,
+            -2
+          ],
+          "size": [
+            4,
+            4,
+            4
+          ],
+          "faces": {
+            "north": {
+              "textureId": "hat"
+            },
+            "south": {
+              "textureId": "hat"
+            },
+            "east": {
+              "textureId": "hat"
+            },
+            "west": {
+              "textureId": "hat"
+            },
+            "up": {
+              "textureId": "hat"
+            },
+            "down": {
+              "textureId": "hat"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "hat_tip",
+      "parent": "head",
+      "pivot": [
+        0,
+        52,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -1,
+            52,
+            -1
+          ],
+          "size": [
+            2,
+            3,
+            2
+          ],
+          "faces": {
+            "north": {
+              "textureId": "hat_tip"
+            },
+            "south": {
+              "textureId": "hat_tip"
+            },
+            "east": {
+              "textureId": "hat_tip"
+            },
+            "west": {
+              "textureId": "hat_tip"
+            },
+            "up": {
+              "textureId": "hat_tip"
+            },
+            "down": {
+              "textureId": "hat"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "beard",
+      "parent": "head",
+      "pivot": [
+        0,
+        28,
+        -4
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -3,
+            20,
+            -5
+          ],
+          "size": [
+            6,
+            10,
+            2
+          ],
+          "faces": {
+            "north": {
+              "textureId": "beard"
+            },
+            "south": {
+              "textureId": "beard"
+            },
+            "east": {
+              "textureId": "beard"
+            },
+            "west": {
+              "textureId": "beard"
+            },
+            "up": {
+              "textureId": "beard"
+            },
+            "down": {
+              "textureId": "beard"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "body",
+      "pivot": [
+        0,
+        20,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -5,
+            6,
+            -3
+          ],
+          "size": [
+            10,
+            22,
+            6
+          ],
+          "faces": {
+            "north": {
+              "textureId": "robe"
+            },
+            "south": {
+              "textureId": "robe"
+            },
+            "east": {
+              "textureId": "robe"
+            },
+            "west": {
+              "textureId": "robe"
+            },
+            "up": {
+              "textureId": "robe"
+            },
+            "down": {
+              "textureId": "robe_trim"
+            }
+          }
+        },
+        {
+          "origin": [
+            -5,
+            4,
+            -4
+          ],
+          "size": [
+            10,
+            4,
+            8
+          ],
+          "faces": {
+            "north": {
+              "textureId": "robe_trim"
+            },
+            "south": {
+              "textureId": "robe_trim"
+            },
+            "east": {
+              "textureId": "robe_trim"
+            },
+            "west": {
+              "textureId": "robe_trim"
+            },
+            "up": {
+              "textureId": "robe"
+            },
+            "down": {
+              "textureId": "robe_trim"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "right_arm",
+      "parent": "body",
+      "pivot": [
+        6,
+        26,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            5,
+            14,
+            -2
+          ],
+          "size": [
+            4,
+            14,
+            4
+          ],
+          "faces": {
+            "north": {
+              "textureId": "robe"
+            },
+            "south": {
+              "textureId": "robe"
+            },
+            "east": {
+              "textureId": "robe"
+            },
+            "west": {
+              "textureId": "robe"
+            },
+            "up": {
+              "textureId": "robe"
+            },
+            "down": {
+              "textureId": "skin"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "left_arm",
+      "parent": "body",
+      "pivot": [
+        -6,
+        26,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -9,
+            14,
+            -2
+          ],
+          "size": [
+            4,
+            14,
+            4
+          ],
+          "faces": {
+            "north": {
+              "textureId": "robe"
+            },
+            "south": {
+              "textureId": "robe"
+            },
+            "east": {
+              "textureId": "robe"
+            },
+            "west": {
+              "textureId": "robe"
+            },
+            "up": {
+              "textureId": "robe"
+            },
+            "down": {
+              "textureId": "skin"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "staff",
+      "parent": "right_arm",
+      "pivot": [
+        7,
+        14,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            8,
+            0,
+            -1
+          ],
+          "size": [
+            2,
+            52,
+            2
+          ],
+          "faces": {
+            "north": {
+              "textureId": "staff_wood"
+            },
+            "south": {
+              "textureId": "staff_wood"
+            },
+            "east": {
+              "textureId": "staff_wood"
+            },
+            "west": {
+              "textureId": "staff_wood"
+            },
+            "up": {
+              "textureId": "staff_wood"
+            },
+            "down": {
+              "textureId": "staff_wood"
+            }
+          }
+        },
+        {
+          "origin": [
+            6,
+            52,
+            -3
+          ],
+          "size": [
+            6,
+            6,
+            6
+          ],
+          "faces": {
+            "north": {
+              "textureId": "staff_gem"
+            },
+            "south": {
+              "textureId": "staff_gem"
+            },
+            "east": {
+              "textureId": "staff_gem"
+            },
+            "west": {
+              "textureId": "staff_gem"
+            },
+            "up": {
+              "textureId": "staff_gem"
+            },
+            "down": {
+              "textureId": "staff_gem"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "category": "entity"
+}

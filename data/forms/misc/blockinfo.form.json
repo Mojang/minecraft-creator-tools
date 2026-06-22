@@ -1,0 +1,75 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines blockinfo configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "BlockInfo",
+  "fields": [
+    {
+      "id": "block",
+      "title": "Block",
+      "description": "Block to be dug.",
+      "dataType": "object",
+      "subForm": {
+        "id": "block",
+        "title": "Block",
+        "fields": [
+          {
+            "id": "name",
+            "title": "Name",
+            "dataType": "string"
+          },
+          {
+            "id": "states",
+            "title": "States",
+            "dataType": "int",
+            "alternates": [
+              {
+                "id": "states",
+                "dataType": "string"
+              },
+              {
+                "id": "states",
+                "dataType": "boolean"
+              }
+            ]
+          },
+          {
+            "id": "tags",
+            "title": "Tags",
+            "dataType": "string"
+          }
+        ]
+      },
+      "alternates": [
+        {
+          "id": "block",
+          "dataType": "string"
+        },
+        {
+          "id": "block",
+          "dataType": "object"
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "speed",
+      "title": "Speed",
+      "description": "Digging speed for the correlating block(s).",
+      "dataType": "int",
+      "isRequired": true
+    }
+  ],
+  "description": "Defines blockinfo configuration.",
+  "title": "BlockInfo Misc"
+}

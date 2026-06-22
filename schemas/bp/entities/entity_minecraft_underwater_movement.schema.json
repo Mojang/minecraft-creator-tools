@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Underwater Movement",
+  "description": "Defines the speed with which an entity can move through water.",
+  "properties": {
+    "value": {
+      "title": "Value",
+      "description": "Movement speed of the entity under water.\n\nSample values:\n• dolphin: 0.15\n• elder_guardian: 0.3\n• guardian: 0.12",
+      "type": "number"
+    }
+  }
+}

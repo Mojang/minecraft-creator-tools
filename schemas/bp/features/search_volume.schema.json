@@ -1,0 +1,73 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Search Volume",
+  "description": "Axis-aligned bounding box that will be searched for valid placement positions. Expressed as offsets from the input position.",
+  "type": "object",
+  "properties": {
+    "min": {
+      "title": "Min",
+      "description": "Minimum extent of the bounding volume expressed as [ x, y, z ]",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "[0..0]": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "description": "x_max",
+          "type": "integer"
+        }
+      ],
+      "description": "x_min"
+    },
+    "[1..1]": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "description": "y_max",
+          "type": "integer"
+        }
+      ],
+      "description": "y_min"
+    },
+    "[2..2]": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "description": "z_max",
+          "type": "integer"
+        }
+      ],
+      "description": "z_min"
+    },
+    "max": {
+      "title": "Max",
+      "description": "Maxium extent of the bounding volume expressed as [ x, y, z ]",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "Search Volume",
+      "description": "Axis-aligned bounding box that will be searched for valid placement positions. Expressed as offsets from the input position.",
+      "body": {
+        "min": "",
+        "[0..0]": 0,
+        "[1..1]": 0,
+        "[2..2]": 0,
+        "max": ""
+      }
+    }
+  ]
+}

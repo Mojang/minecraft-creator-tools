@@ -1,0 +1,19 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "returns the square root of a value"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "`math.sqrt(value)`",
+  "fields": [],
+  "description": "Square root of value",
+  "title": "Sqrt(value)"
+}

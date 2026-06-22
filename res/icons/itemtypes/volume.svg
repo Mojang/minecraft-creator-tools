@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Volume: 3D selection box -->
+  <path d="M3 4L8 1L13 4V11L8 14L3 11V4Z" fill="none" stroke="currentColor" stroke-width="0.8" stroke-dasharray="2,1"/>
+  <path d="M3 4L8 7L13 4" fill="none" stroke="currentColor" stroke-width="0.6" stroke-dasharray="1,1"/>
+  <path d="M8 7V14" fill="none" stroke="currentColor" stroke-width="0.6" stroke-dasharray="1,1"/>
+  <rect x="2" y="3" width="2" height="2" rx="0.5"/>
+  <rect x="12" y="3" width="2" height="2" rx="0.5"/>
+  <rect x="7" y="0" width="2" height="2" rx="0.5"/>
+  <rect x="7" y="13" width="2" height="2" rx="0.5"/>
+</svg>

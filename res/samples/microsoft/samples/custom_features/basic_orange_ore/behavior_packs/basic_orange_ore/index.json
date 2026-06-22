@@ -1,0 +1,12 @@
+{
+  "files": [
+    "manifest.json",
+    "pack_icon.png"
+  ],
+  "folders": [
+    "blocks",
+    "feature_rules",
+    "features",
+    "loot_tables"
+  ]
+}

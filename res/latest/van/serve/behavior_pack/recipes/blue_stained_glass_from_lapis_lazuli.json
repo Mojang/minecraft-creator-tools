@@ -1,0 +1,35 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:blue_stained_glass_from_lapis_lazuli"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "group": "stained_glass",
+    "priority": 1,
+    "pattern": [
+      "###",
+      "#X#",
+      "###"
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:glass"
+      },
+      "X": {
+        "item": "minecraft:lapis_lazuli"
+      }
+    },
+	"unlock": [
+      {
+        "item": "minecraft:glass"
+      }
+    ],
+    "result": {
+      "item": "minecraft:blue_stained_glass",
+      "count": 8
+    }
+  }
+}

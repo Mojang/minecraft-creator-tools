@@ -1,0 +1,137 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "emits particles from a disc-shaped region"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "direction",
+      "title": "Direction",
+      "description": "The direction of particle emission. Can be a string ('inwards' or 'outwards'), or an array of [x, y, z] Molang expressions.",
+      "dataType": "string",
+      "alternates": [
+        {
+          "id": "direction",
+          "dataType": "molangArray",
+          "minLength": 3,
+          "maxLength": 3
+        }
+      ]
+    },
+    {
+      "id": "offset",
+      "title": "Offset",
+      "description": "The offset from the emitter position, as [x, y, z] Molang expressions or numbers.",
+      "dataType": "molangArray",
+      "minLength": 3,
+      "maxLength": 3,
+      "defaultValue": [
+        0,
+        0,
+        0
+      ],
+      "alternates": [
+        {
+          "id": "offset",
+          "dataType": "keyedObjectCollection",
+          "readOnly": true,
+          "subForm": {
+            "id": "offset",
+            "title": "Offset",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "Expression",
+                "dataType": "string",
+                "isRequired": true
+              },
+              {
+                "id": "version",
+                "title": "Version",
+                "dataType": "int",
+                "isRequired": true
+              }
+            ]
+          }
+        },
+        {
+          "id": "offset",
+          "dataType": "float"
+        }
+      ]
+    },
+    {
+      "id": "radius",
+      "title": "Radius",
+      "description": "The radius of the disc. Can be a number or Molang expression.",
+      "dataType": "molang",
+      "defaultValue": 1,
+      "alternates": [
+        {
+          "id": "radius",
+          "dataType": "keyedObjectCollection",
+          "readOnly": true,
+          "subForm": {
+            "id": "radius",
+            "title": "Radius",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "Expression",
+                "dataType": "string",
+                "isRequired": true
+              },
+              {
+                "id": "version",
+                "title": "Version",
+                "dataType": "int",
+                "isRequired": true
+              }
+            ]
+          }
+        },
+        {
+          "id": "radius",
+          "dataType": "float"
+        }
+      ]
+    },
+    {
+      "id": "plane_normal",
+      "title": "Plane Normal",
+      "description": "The normal vector of the disc plane. Can be 'x', 'y', 'z', or an array of [x, y, z] values.",
+      "dataType": "string",
+      "alternates": [
+        {
+          "id": "plane_normal",
+          "dataType": "molangArray",
+          "minLength": 3,
+          "maxLength": 3
+        }
+      ],
+      "defaultValue": [
+        0,
+        1,
+        0
+      ]
+    },
+    {
+      "id": "surface_only",
+      "title": "Surface Only",
+      "dataType": "boolean",
+      "defaultValue": false
+    }
+  ],
+  "description": "Emits particles from random positions on a flat circular disc. Configure the radius and plane normal to control disc size and orientation. Surface_only restricts spawns to the disc edge for ring effects. Perfect for ground-based effects like summoning circles, shockwaves, splash impacts, and aura rings around entities.",
+  "title": "Client Particles Emitter Shape Disc",
+  "id": "emitter_shape_disc"
+}

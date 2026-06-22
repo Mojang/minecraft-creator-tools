@@ -1,0 +1,32 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:mangrove_sign"
+    },
+    "tags": [ "crafting_table" ],
+    "group": "sign",
+    "pattern": [
+      "###",
+  	  "###",
+  	  " | "
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:mangrove_planks"
+      },
+      "|": {
+        "item": "minecraft:stick"
+      }
+    },
+	"unlock": [
+        {
+          "item": "minecraft:mangrove_planks"
+        }
+    ],
+    "result": {
+      "item": "minecraft:mangrove_sign",
+      "count": 3
+    }
+  }
+}

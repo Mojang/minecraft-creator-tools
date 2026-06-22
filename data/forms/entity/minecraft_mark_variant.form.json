@@ -1,0 +1,64 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "value",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has mark variant "
+          },
+          {
+            "type": "value",
+            "field": "value"
+          }
+        ]
+      }
+    ]
+  },
+  "description": "Mark Variant is typically used as an additional per-type way (besides `variant`) to express a different visual form of the same mob.",
+  "fields": [
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "The Id of the mark_variant. By convention, 0 is the Id of the base entity.",
+      "defaultValue": 0,
+      "dataType": "int",
+      "hideSamples": true,
+      "samples": {
+        "/vanilla/behavior_pack/entities/trader_llama.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:mark_variant/",
+            "content": 1
+          }
+        ]
+      }
+    }
+  ],
+  "title": "Mark Variant",
+  "samples": {
+    "/vanilla/behavior_pack/entities/llama.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:mark_variant/",
+        "content": {
+          "value": 0
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/trader_llama.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:mark_variant/",
+        "content": {
+          "value": 1
+        }
+      }
+    ]
+  },
+  "id": "minecraft:mark_variant"
+}

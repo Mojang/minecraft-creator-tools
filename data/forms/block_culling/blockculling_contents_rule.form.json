@@ -1,0 +1,37 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "specifies a single block culling rule"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "face",
+      "title": "Facing",
+      "description": "Facing",
+      "dataType": "string"
+    },
+    {
+      "id": "bone",
+      "title": "bone",
+      "description": "bone",
+      "dataType": "string"
+    },
+    {
+      "id": "cube",
+      "title": "cube",
+      "description": "cube",
+      "dataType": "int"
+    }
+  ],
+  "description": "BlockCulling Contents Rule",
+  "title": "BlockCulling Contents Rule"
+}

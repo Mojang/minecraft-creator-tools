@@ -1,0 +1,71 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Sculk Patch Feature",
+  "description": "\n\nProperties:\n• description ({ identifier })\n• can_place_sculk_patch_on (string[])\n• cursor_count (int)\n• charge_amount (int)\n• spread_attempts (int)\n• growth_rounds (int)\n• spread_rounds (int)",
+  "type": "object",
+  "properties": {
+    "description": {
+      "title": "Description",
+      "description": "\n\nProperties:\n• identifier (string)",
+      "type": "object",
+      "properties": {
+        "identifier": {
+          "title": "Identifier",
+          "description": "The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
+          "type": "string"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Description",
+          "description": "Create a Description",
+          "body": {
+            "identifier": ""
+          }
+        }
+      ]
+    },
+    "can_place_sculk_patch_on": {
+      "title": "Can Place Sculk Patch On",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "cursor_count": {
+      "title": "Cursor Count",
+      "type": "integer"
+    },
+    "charge_amount": {
+      "title": "Charge Amount",
+      "type": "integer"
+    },
+    "spread_attempts": {
+      "title": "Spread Attempts",
+      "type": "integer"
+    },
+    "growth_rounds": {
+      "title": "Growth Rounds",
+      "type": "integer"
+    },
+    "spread_rounds": {
+      "title": "Spread Rounds",
+      "type": "integer"
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "Sculk Patch Feature",
+      "description": "Create a Sculk Patch Feature",
+      "body": {
+        "description": "",
+        "can_place_sculk_patch_on": "",
+        "cursor_count": 0,
+        "charge_amount": 0,
+        "spread_attempts": 0,
+        "growth_rounds": 0,
+        "spread_rounds": 0
+      }
+    }
+  ]
+}

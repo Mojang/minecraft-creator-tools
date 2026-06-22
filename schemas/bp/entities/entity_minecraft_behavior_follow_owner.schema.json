@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Follow Owner Behavior",
+  "description": "Allows a mob to follow the player that owns it.",
+  "properties": {
+    "can_teleport": {
+      "title": "Can Teleport",
+      "description": "Defines if the mob will teleport to its owner when too far away.",
+      "type": "boolean",
+      "default": true
+    },
+    "control_flags": {
+      "title": "Control Flags",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "jump",
+          "look",
+          "move"
+        ]
+      }
+    },
+    "ignore_vibration": {
+      "title": "Ignore Vibration",
+      "description": "Defines if the mob should disregard following its owner after detecting a recent vibration.",
+      "type": "boolean",
+      "default": false
+    },
+    "max_distance": {
+      "title": "Max Distance",
+      "description": "The maximum distance the mob can be from its owner to start following it. Applicable only when \"can_teleport\" is set to false.",
+      "type": "number",
+      "default": 60
+    },
+    "post_teleport_distance": {
+      "title": "Post Teleport Distance",
+      "description": "Defines how far (in blocks) the entity will be from its owner after teleporting. If not specified, it defaults to \"stop_distance\" + 1, allowing the entity to seamlessly resume navigation.",
+      "type": "integer",
+      "default": 3
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.\n\nSample values:\n• allay: 6\n• parrot: 3",
+      "type": "integer",
+      "default": 0
+    },
+    "speed_multiplier": {
+      "title": "Speed Multiplier",
+      "description": "Movement speed multiplier of the mob when using this AI Goal\n\nSample values:\n• allay: 8\n• parrot: 1",
+      "type": "number",
+      "default": 1
+    },
+    "start_distance": {
+      "title": "Start Distance",
+      "description": "The minimum distance the mob must be from its owner to start following it.\n\nSample values:\n• allay: 16\n• parrot: 5",
+      "type": "number",
+      "default": 10
+    },
+    "stop_distance": {
+      "title": "Stop Distance",
+      "description": "The distance at which the mob will stop following its owner.\n\nSample values:\n• allay: 4\n• parrot: 1",
+      "type": "number",
+      "default": 2
+    }
+  }
+}

@@ -1,0 +1,344 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Biome Capped",
+  "description": "Generates surface on blocks with non-solid blocks above or below.",
+  "properties": {
+    "beach_material": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "description": "\n\nProperties:\n• name (object)\n• states = {}",
+          "type": "object",
+          "properties": {
+            "name": {
+              "title": "Name",
+              "description": "Name of the block",
+              "type": "object"
+            },
+            "states": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number"
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "boolean"
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              ],
+              "title": "States",
+              "description": "Contains members named after each state, with boolean, integer, or string values."
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Beach Material (object)",
+              "description": "Use Beach Material as an object",
+              "body": {
+                "name": "",
+                "states": {}
+              }
+            }
+          ]
+        }
+      ],
+      "description": "Material used to decorate surface near sea level.",
+      "defaultSnippets": [
+        {
+          "label": "Beach Material (object)",
+          "description": "Use Beach Material as an object",
+          "body": {
+            "name": "",
+            "states": {}
+          }
+        }
+      ]
+    },
+    "ceiling_materials": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "description": "\n\nProperties:\n• name (object)\n• states = {}",
+          "type": "object",
+          "properties": {
+            "name": {
+              "title": "Name",
+              "description": "Name of the block",
+              "type": "object"
+            },
+            "states": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number"
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "boolean"
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              ],
+              "title": "States",
+              "description": "Contains members named after each state, with boolean, integer, or string values."
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Ceiling Materials (object)",
+              "description": "Use Ceiling Materials as an object",
+              "body": {
+                "name": "",
+                "states": {}
+              }
+            }
+          ]
+        }
+      ],
+      "description": "Materials used for the surface ceiling.",
+      "defaultSnippets": [
+        {
+          "label": "Ceiling Materials (object)",
+          "description": "Use Ceiling Materials as an object",
+          "body": {
+            "name": "",
+            "states": {}
+          }
+        }
+      ]
+    },
+    "floor_materials": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "description": "\n\nProperties:\n• name (object)\n• states = {}",
+          "type": "object",
+          "properties": {
+            "name": {
+              "title": "Name",
+              "description": "Name of the block",
+              "type": "object"
+            },
+            "states": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number"
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "boolean"
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              ],
+              "title": "States",
+              "description": "Contains members named after each state, with boolean, integer, or string values."
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Floor Materials (object)",
+              "description": "Use Floor Materials as an object",
+              "body": {
+                "name": "",
+                "states": {}
+              }
+            }
+          ]
+        }
+      ],
+      "description": "Materials used for the surface floor.",
+      "defaultSnippets": [
+        {
+          "label": "Floor Materials (object)",
+          "description": "Use Floor Materials as an object",
+          "body": {
+            "name": "",
+            "states": {}
+          }
+        }
+      ]
+    },
+    "foundation_material": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "description": "\n\nProperties:\n• name (object)\n• states = {}",
+          "type": "object",
+          "properties": {
+            "name": {
+              "title": "Name",
+              "description": "Name of the block",
+              "type": "object"
+            },
+            "states": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number"
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "boolean"
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              ],
+              "title": "States",
+              "description": "Contains members named after each state, with boolean, integer, or string values."
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Foundation Material (object)",
+              "description": "Use Foundation Material as an object",
+              "body": {
+                "name": "",
+                "states": {}
+              }
+            }
+          ]
+        }
+      ],
+      "description": "Material used to replace solid blocks that are not surface blocks.",
+      "defaultSnippets": [
+        {
+          "label": "Foundation Material (object)",
+          "description": "Use Foundation Material as an object",
+          "body": {
+            "name": "",
+            "states": {}
+          }
+        }
+      ]
+    },
+    "sea_material": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "description": "\n\nProperties:\n• name (object)\n• states = {}",
+          "type": "object",
+          "properties": {
+            "name": {
+              "title": "Name",
+              "description": "Name of the block",
+              "type": "object"
+            },
+            "states": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number"
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "boolean"
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              ],
+              "title": "States",
+              "description": "Contains members named after each state, with boolean, integer, or string values."
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Sea Material (object)",
+              "description": "Use Sea Material as an object",
+              "body": {
+                "name": "",
+                "states": {}
+              }
+            }
+          ]
+        }
+      ],
+      "description": "Material used to replace air blocks below sea level.",
+      "defaultSnippets": [
+        {
+          "label": "Sea Material (object)",
+          "description": "Use Sea Material as an object",
+          "body": {
+            "name": "",
+            "states": {}
+          }
+        }
+      ]
+    },
+    "type": {
+      "title": "SurfaceBuilderType",
+      "description": "Controls the type of surface builder to use",
+      "type": "string",
+      "enum": [
+        "minecraft:capped",
+        "minecraft:frozen_ocean",
+        "minecraft:mesa",
+        "minecraft:noise_gradient",
+        "minecraft:overworld",
+        "minecraft:swamp",
+        "minecraft:the_end"
+      ]
+    }
+  },
+  "required": [
+    "ceiling_materials",
+    "floor_materials",
+    "foundation_material",
+    "sea_material",
+    "type"
+  ]
+}

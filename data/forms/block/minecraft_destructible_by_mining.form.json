@@ -1,0 +1,352 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "seconds_to_destroy",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "switch",
+            "cases": [
+              {
+                "conditions": [
+                  {
+                    "field": "seconds_to_destroy",
+                    "comparison": ">=",
+                    "value": 50
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "is extremely hard to mine (obsidian-like, "
+                  },
+                  {
+                    "type": "value",
+                    "field": "seconds_to_destroy"
+                  },
+                  {
+                    "type": "literal",
+                    "text": "s)"
+                  }
+                ]
+              },
+              {
+                "conditions": [
+                  {
+                    "field": "seconds_to_destroy",
+                    "comparison": ">=",
+                    "value": 10
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "is hard to mine ("
+                  },
+                  {
+                    "type": "value",
+                    "field": "seconds_to_destroy"
+                  },
+                  {
+                    "type": "literal",
+                    "text": "s)"
+                  }
+                ]
+              },
+              {
+                "conditions": [
+                  {
+                    "field": "seconds_to_destroy",
+                    "comparison": ">=",
+                    "value": 1.5
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "has standard mining time (stone-like, "
+                  },
+                  {
+                    "type": "value",
+                    "field": "seconds_to_destroy"
+                  },
+                  {
+                    "type": "literal",
+                    "text": "s)"
+                  }
+                ]
+              },
+              {
+                "conditions": [
+                  {
+                    "field": "seconds_to_destroy",
+                    "comparison": ">",
+                    "value": 0
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "breaks quickly ("
+                  },
+                  {
+                    "type": "value",
+                    "field": "seconds_to_destroy"
+                  },
+                  {
+                    "type": "literal",
+                    "text": "s)"
+                  }
+                ]
+              }
+            ],
+            "default": [
+              {
+                "type": "literal",
+                "text": "breaks instantly"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "item_specific_speeds",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has item-specific mining speeds"
+          }
+        ]
+      }
+    ]
+  },
+  "versionIntroduced": "1.21.50",
+  "fields": [
+    {
+      "id": "item_specific_speeds",
+      "title": "Item Specific Speeds",
+      "description": "Optional array of objects to describe item specific block destroy speeds, each object contains an 'item' ItemDescriptor and a 'destroy_speed' float. This array currently requires UpcomingFeatures experiment to be enabled.",
+      "dataType": "objectArray",
+      "subForm": {
+        "description": "Optional array of objects to describe item specific block destroy speeds, each object contains an 'item' ItemDescriptor and a 'destroy_speed' float. This array currently requires UpcomingFeatures experiment to be enabled.",
+        "fields": [
+          {
+            "id": "destroy_speed",
+            "title": "Destroy Speed",
+            "description": "Required. A destroy speed applied while using the defined 'item'.",
+            "dataType": "float"
+          },
+          {
+            "id": "item",
+            "title": "Item",
+            "description": "Required. A filter for the item used while mining.",
+            "dataType": "objectArray",
+            "subForm": {
+              "description": "Optional array of objects to describe item specific block destroy speeds, each object contains an 'item' ItemDescriptor and a 'destroy_speed' float. This array currently requires UpcomingFeatures experiment to be enabled.",
+              "fields": [
+                {
+                  "id": "tags",
+                  "title": "Tags",
+                  "dataType": "numberArray"
+                }
+              ]
+            },
+            "alternates": [
+              {
+                "id": "item",
+                "title": "Item",
+                "description": "An item tag that is usable for the item.",
+                "dataType": "string",
+                "lookupId": "itemType"
+              }
+            ]
+          }
+        ],
+        "samples": {
+          "samples": [
+            {
+              "path": "Example1",
+              "content": {
+                "minecraft:destructible_by_mining": {
+                  "seconds_to_destroy": 10,
+                  "item_specific_speeds": [
+                    {
+                      "item": {
+                        "tags": "q.any_tag('minecraft:is_pickaxe', 'minecraft:is_tool') "
+                      },
+                      "destroy_speed": 5
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "path": "Example2",
+              "content": {
+                "minecraft:destructible_by_mining": {
+                  "seconds_to_destroy": 10,
+                  "item_specific_speeds": [
+                    {
+                      "item": "minecraft:iron_pickaxe",
+                      "destroy_speed": 5
+                    },
+                    {
+                      "item": "minecraft:diamond_pickaxe",
+                      "destroy_speed": 2
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "samples": {
+        "samples": [
+          {
+            "path": "Example1",
+            "content": "{\n\t\"minecraft:destructible_by_mining\": {\n\t\t\"seconds_to_destroy\": 10,\n\t\t\"item_specific_speeds\": [\n\t\t\t{\n\t\t\t\t\"item\": { \"tags\": \"q.any_tag('minecraft:is_pickaxe', 'minecraft:is_tool') \" },\n\t\t\t\t\"destroy_speed\": 5.0\n\t\t\t}\n\t\t]\n\t}\n}"
+          },
+          {
+            "path": "Example2",
+            "content": "{\n\t\"minecraft:destructible_by_mining\": {\n\t\t\"seconds_to_destroy\": 10,\n\t\t\"item_specific_speeds\": [\n\t\t\t{\n\t\t\t\t\"item\": \"minecraft:iron_pickaxe\",\n\t\t\t\t\"destroy_speed\": 5.0\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"item\": \"minecraft:diamond_pickaxe\",\n\t\t\t\t\"destroy_speed\": 2.0\n\t\t\t}\n\t\t]\n\t}\n}"
+          }
+        ]
+      }
+    },
+    {
+      "id": "seconds_to_destroy",
+      "title": "Seconds To Destroy",
+      "description": "Sets the number of seconds it takes to destroy the block with base equipment. Greater numbers result in greater mining times.",
+      "defaultValue": 0,
+      "dataType": "float"
+    }
+  ],
+  "scalarField": {
+    "id": "boolean",
+    "title": "Object enabled",
+    "tags": [
+      "presence"
+    ],
+    "dataType": "boolean"
+  },
+  "samples": {
+    "samples": [
+      {
+        "path": "JSON Object (Item Tags)",
+        "content": {
+          "seconds_to_destroy": 10,
+          "item_specific_speeds": [
+            {
+              "item": {
+                "tags": "q.any_tag('minecraft:is_pickaxe', 'my_pack:custom_tool') "
+              },
+              "destroy_speed": 5
+            }
+          ]
+        }
+      },
+      {
+        "path": "JSON Object (Item Ids)",
+        "content": {
+          "seconds_to_destroy": 10,
+          "item_specific_speeds": [
+            {
+              "item": "minecraft:iron_pickaxe",
+              "destroy_speed": 5
+            },
+            {
+              "item": "minecraft:diamond_pickaxe",
+              "destroy_speed": 2
+            }
+          ]
+        }
+      }
+    ],
+    "Block Fabricator": [
+      {
+        "path": "https://github.com/microsoft/minecraft-samples/tree/main/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/blocks/fabricator.block.json",
+        "content": {
+          "seconds_to_destroy": 0.4
+        }
+      }
+    ],
+    "Block White Sand": [
+      {
+        "path": "https://github.com/microsoft/minecraft-samples/tree/main/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/white_sand.block.json",
+        "content": {
+          "seconds_to_destroy": 7.5,
+          "item_specific_speeds": [
+            {
+              "item": {
+                "tags": "q.all_tags('minecraft:is_pickaxe', 'minecraft:wooden_tier')"
+              },
+              "destroy_speed": 1.15
+            },
+            {
+              "item": {
+                "tags": "q.all_tags('minecraft:is_pickaxe', 'minecraft:stone_tier')"
+              },
+              "destroy_speed": 0.6
+            },
+            {
+              "item": {
+                "tags": "q.all_tags('minecraft:is_pickaxe', 'minecraft:iron_tier')"
+              },
+              "destroy_speed": 0.4
+            },
+            {
+              "item": {
+                "tags": "q.all_tags('minecraft:is_pickaxe', 'minecraft:golden_tier')"
+              },
+              "destroy_speed": 0.2
+            },
+            {
+              "item": {
+                "tags": "q.all_tags('minecraft:is_pickaxe', 'minecraft:diamond_tier')"
+              },
+              "destroy_speed": 0.3
+            },
+            {
+              "item": {
+                "tags": "q.all_tags('minecraft:is_pickaxe', 'minecraft:netherite_tier')"
+              },
+              "destroy_speed": 0.25
+            }
+          ]
+        }
+      }
+    ],
+    "Block Leaf Pile": [
+      {
+        "path": "https://github.com/microsoft/minecraft-samples/tree/main/creator_camp/behavior_packs/creator_camp/blocks/leaf_pile.block.json",
+        "content": {
+          "seconds_to_destroy": 1
+        }
+      }
+    ],
+    "Luckyblock": [
+      {
+        "path": "https://github.com/microsoft/minecraft-samples/tree/main/lucky_block/version_1/behavior_packs/mike_luck/blocks/luckyblock.json",
+        "content": {
+          "seconds_to_destroy": 5,
+          "item_specific_speeds": []
+        }
+      }
+    ]
+  },
+  "description": "Describes the destructible by mining properties for this block. If set to true, the block will take the default number of seconds to destroy. If set to false, this block is indestructible by mining. If the component is omitted, the block will take the default number of seconds to destroy.",
+  "title": "Destructible By Mining",
+  "id": "minecraft:destructible_by_mining"
+}

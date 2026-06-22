@@ -1,0 +1,289 @@
+{
+  "formatVersion": "1.0.0",
+  "identifier": "ornate_key",
+  "description": "An ornate golden key with decorative bow",
+  "pixelsPerUnit": 2,
+  "textures": {
+    "gold": {
+      "background": {
+        "type": "dither_noise",
+        "colors": [
+          "#FFD700",
+          "#FFC107",
+          "#FFAB00"
+        ],
+        "seed": 3201,
+        "factor": 0.15
+      },
+      "effects": {
+        "lighting": {
+          "preset": "outset",
+          "intensity": 0.3
+        }
+      }
+    },
+    "gem": {
+      "background": {
+        "type": "gradient",
+        "colors": [
+          "#E53935",
+          "#C62828"
+        ],
+        "seed": 3202
+      },
+      "effects": {
+        "lighting": {
+          "preset": "pillow",
+          "intensity": 0.4
+        }
+      }
+    }
+  },
+  "bones": [
+    {
+      "name": "key",
+      "pivot": [
+        0,
+        8,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -3,
+            10,
+            -0.5
+          ],
+          "size": [
+            6,
+            6,
+            1
+          ],
+          "faces": {
+            "north": {
+              "textureId": "gold"
+            },
+            "south": {
+              "textureId": "gold"
+            },
+            "east": {
+              "textureId": "gold"
+            },
+            "west": {
+              "textureId": "gold"
+            },
+            "up": {
+              "textureId": "gold"
+            },
+            "down": {
+              "textureId": "gold"
+            }
+          }
+        },
+        {
+          "origin": [
+            -2,
+            11,
+            -0.5
+          ],
+          "size": [
+            4,
+            4,
+            1
+          ],
+          "faces": {
+            "north": {
+              "background": {
+                "type": "solid",
+                "colors": [
+                  "#1a1a1a"
+                ]
+              }
+            },
+            "south": {
+              "background": {
+                "type": "solid",
+                "colors": [
+                  "#1a1a1a"
+                ]
+              }
+            },
+            "east": {
+              "textureId": "gold"
+            },
+            "west": {
+              "textureId": "gold"
+            },
+            "up": {
+              "textureId": "gold"
+            },
+            "down": {
+              "textureId": "gold"
+            }
+          }
+        },
+        {
+          "origin": [
+            -0.5,
+            0,
+            -0.5
+          ],
+          "size": [
+            1,
+            10,
+            1
+          ],
+          "faces": {
+            "north": {
+              "textureId": "gold"
+            },
+            "south": {
+              "textureId": "gold"
+            },
+            "east": {
+              "textureId": "gold"
+            },
+            "west": {
+              "textureId": "gold"
+            },
+            "up": {
+              "textureId": "gold"
+            },
+            "down": {
+              "textureId": "gold"
+            }
+          }
+        },
+        {
+          "origin": [
+            -2,
+            0,
+            -0.5
+          ],
+          "size": [
+            2,
+            1,
+            1
+          ],
+          "faces": {
+            "north": {
+              "textureId": "gold"
+            },
+            "south": {
+              "textureId": "gold"
+            },
+            "east": {
+              "textureId": "gold"
+            },
+            "west": {
+              "textureId": "gold"
+            },
+            "up": {
+              "textureId": "gold"
+            },
+            "down": {
+              "textureId": "gold"
+            }
+          }
+        },
+        {
+          "origin": [
+            -1.5,
+            2,
+            -0.5
+          ],
+          "size": [
+            1,
+            1,
+            1
+          ],
+          "faces": {
+            "north": {
+              "textureId": "gold"
+            },
+            "south": {
+              "textureId": "gold"
+            },
+            "east": {
+              "textureId": "gold"
+            },
+            "west": {
+              "textureId": "gold"
+            },
+            "up": {
+              "textureId": "gold"
+            },
+            "down": {
+              "textureId": "gold"
+            }
+          }
+        },
+        {
+          "origin": [
+            -2,
+            4,
+            -0.5
+          ],
+          "size": [
+            2,
+            1,
+            1
+          ],
+          "faces": {
+            "north": {
+              "textureId": "gold"
+            },
+            "south": {
+              "textureId": "gold"
+            },
+            "east": {
+              "textureId": "gold"
+            },
+            "west": {
+              "textureId": "gold"
+            },
+            "up": {
+              "textureId": "gold"
+            },
+            "down": {
+              "textureId": "gold"
+            }
+          }
+        },
+        {
+          "origin": [
+            -1,
+            12,
+            -1
+          ],
+          "size": [
+            2,
+            2,
+            2
+          ],
+          "faces": {
+            "north": {
+              "textureId": "gem"
+            },
+            "south": {
+              "textureId": "gem"
+            },
+            "east": {
+              "textureId": "gem"
+            },
+            "west": {
+              "textureId": "gem"
+            },
+            "up": {
+              "textureId": "gem"
+            },
+            "down": {
+              "textureId": "gem"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "category": "item"
+}

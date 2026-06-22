@@ -1,0 +1,34 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines voxelshapefile configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "VoxelShapeFile",
+  "fields": [
+    {
+      "id": "description",
+      "title": "Description",
+      "dataType": "object",
+      "subFormId": "misc/description",
+      "isRequired": true
+    },
+    {
+      "id": "shape",
+      "title": "Shape",
+      "dataType": "object",
+      "subFormId": "misc/shape",
+      "isRequired": true
+    }
+  ],
+  "description": "Defines voxelshapefile configuration.",
+  "title": "VoxelShapeFile Misc"
+}

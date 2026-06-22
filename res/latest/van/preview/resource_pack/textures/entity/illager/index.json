@@ -1,0 +1,14 @@
+{
+  "files": [
+    "evoker.png",
+    "evoker.texture_set.json",
+    "evoker_mers.tga",
+    "fangs.png",
+    "fangs.texture_set.json",
+    "fangs_mers.tga",
+    "ravager.png",
+    "ravager.texture_set.json",
+    "ravager_mers.tga"
+  ],
+  "folders": []
+}

@@ -1,0 +1,109 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "equips items from its inventory"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "control_flags",
+      "title": "Control Flags",
+      "dataType": "stringArray",
+      "defaultValue": [],
+      "choices": [
+        {
+          "id": "jump",
+          "title": "Jump"
+        },
+        {
+          "id": "look",
+          "title": "Look"
+        },
+        {
+          "id": "move",
+          "title": "Move"
+        }
+      ]
+    },
+    {
+      "id": "priority",
+      "title": "Priority",
+      "dataType": "int",
+      "defaultValue": 0,
+      "samples": {
+        "/vanilla/behavior_pack/entities/bogged.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.equip_item/",
+            "content": 3
+          }
+        ],
+        "/vanilla/behavior_pack/entities/parched.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.equip_item/",
+            "content": 4
+          }
+        ],
+        "/vanilla/behavior_pack/entities/skeleton.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.equip_item/",
+            "content": 3
+          }
+        ]
+      },
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal."
+    }
+  ],
+  "description": "The entity puts on the desired equipment.",
+  "title": "Entity Equip Item Behavior",
+  "samples": {
+    "/vanilla/behavior_pack/entities/bogged.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.equip_item/",
+        "content": {
+          "priority": 3
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/parched.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.equip_item/",
+        "content": {
+          "priority": 4
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/skeleton.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.equip_item/",
+        "content": {
+          "priority": 3
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/stray.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.equip_item/",
+        "content": {
+          "priority": 3
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/wither_skeleton.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.equip_item/",
+        "content": {
+          "priority": 3
+        }
+      }
+    ]
+  },
+  "id": "minecraft:behavior.equip_item"
+}

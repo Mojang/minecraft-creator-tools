@@ -1,0 +1,37 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "Components",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "specifies the components that define dimension properties such as bounds and generation"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "minecraft:dimension_bounds",
+      "title": "Minecraft Dimension Bounds",
+      "dataType": "object",
+      "defaultValue": {
+        "max": 0,
+        "min": 0
+      },
+      "subFormId": "dimension/bounds"
+    },
+    {
+      "id": "minecraft:generation",
+      "title": "Minecraft Generation",
+      "dataType": "object",
+      "subFormId": "dimension/generation",
+      "isRequired": true
+    }
+  ],
+  "description": "Specifies the components that define dimension properties such as bounds and generation.",
+  "title": "Dimension Components"
+}

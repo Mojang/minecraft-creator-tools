@@ -1,0 +1,25 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "identifies a template pool for jigsaw structures"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "identifier",
+      "title": "identifier",
+      "description": "Identifier of the template pool. Used by Jigsaw Structures to assign processors to Structure Templates.",
+      "dataType": "string"
+    }
+  ],
+  "description": "JigsawStructureTemplatePool Description",
+  "title": "JigsawStructureTemplatePool Description"
+}

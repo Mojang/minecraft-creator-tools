@@ -1,0 +1,50 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "minecraft:shooter",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can shoot projectiles"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "ammunition",
+      "title": "Ammunition",
+      "description": "Ammunition.",
+      "dataType": "objectArray",
+      "defaultValue": [],
+      "subFormId": "item_components/ammunition"
+    },
+    {
+      "id": "charge_on_draw",
+      "title": "Charge On Draw",
+      "description": "Charge on draw? Default is set to false.",
+      "dataType": "boolean",
+      "defaultValue": false
+    },
+    {
+      "id": "max_draw_duration",
+      "title": "Max Draw Duration",
+      "description": "Draw Duration. Default is set to 0.",
+      "dataType": "float",
+      "defaultValue": 0
+    },
+    {
+      "id": "scale_power_by_draw_duration",
+      "title": "Scale Power By Draw Duration",
+      "description": "Scale power by draw duration? Default is set to false.",
+      "dataType": "boolean",
+      "defaultValue": false
+    }
+  ],
+  "description": "Shooter Item Component.",
+  "title": "Item Shooter",
+  "samples": {}
+}

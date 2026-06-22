@@ -1,0 +1,32 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:end_rod"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "pattern": [
+      "/",
+      "#"
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:chorus_fruit_popped"
+      },
+      "/": {
+        "item": "minecraft:blaze_rod"
+      }
+    },
+	"unlock": [
+      {
+        "item": "minecraft:chorus_fruit_popped"
+      }
+    ],
+    "result": {
+      "item": "minecraft:end_rod",
+      "count": 4
+    }
+  }
+}

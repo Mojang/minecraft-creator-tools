@@ -1,0 +1,20 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has body rotation that always follows head direction"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "minecraft:body_rotation_always_follows_head",
+  "fields": [],
+  "description": "Causes the entity's body rotation to match the one of their head.\nDoes not override the \"minecraft:body_rotation_blocked\" component.",
+  "title": "Body Rotation Always Follows Head",
+  "samples": {}
+}

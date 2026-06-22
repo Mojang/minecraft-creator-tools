@@ -1,0 +1,73 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines a bezier chain curve for particle animation"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "input",
+      "title": "Input",
+      "dataType": "keyedStringCollection",
+      "alternates": [
+        {
+          "id": "input",
+          "dataType": "keyedObjectCollection",
+          "readOnly": true,
+          "subForm": {
+            "id": "input",
+            "title": "Input",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "Expression",
+                "dataType": "string",
+                "isRequired": true
+              },
+              {
+                "id": "version",
+                "title": "Version",
+                "dataType": "int",
+                "isRequired": true
+              }
+            ]
+          }
+        },
+        {
+          "id": "input",
+          "dataType": "float"
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "nodes",
+      "title": "Nodes",
+      "dataType": "object",
+      "isRequired": true
+    },
+    {
+      "id": "type",
+      "title": "Type",
+      "dataType": "string",
+      "validity": [
+        {
+          "comparison": "pattern",
+          "value": "^bezier_chain$"
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "description": "Creates smooth, organic animation curves using chained bezier segments. Unlike linear curves, bezier chains produce natural-feeling motion with acceleration and deceleration. Define control nodes that the curve passes through, with automatic smooth interpolation between them. Used for lifelike particle behaviors like gentle floating, heartbeat pulses, or wind gusts.",
+  "title": "Client Particles Particle Curve Bezier Chain",
+  "id": "particle_curve_bezier_chain"
+}

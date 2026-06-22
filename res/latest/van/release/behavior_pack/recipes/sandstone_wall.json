@@ -1,0 +1,31 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:sandstone_wall"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "pattern": [
+      "###",
+      "###"
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:sandstone",
+        "data": 0
+      }
+    },
+    "unlock": [
+      {
+        "item": "minecraft:sandstone",
+        "data": 0
+      }
+    ],
+    "result": {
+      "item": "minecraft:sandstone_wall",
+      "count": 6
+    }
+  }
+}

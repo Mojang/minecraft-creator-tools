@@ -1,0 +1,119 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Move To Block Behavior",
+  "description": "Allows mob to move towards a block.",
+  "properties": {
+    "goal_radius": {
+      "title": "Goal Radius",
+      "description": "Distance in blocks within the mob considers it has reached the goal. This is the \"wiggle room\" to stop the AI from bouncing back and forth trying to reach a specific spot",
+      "type": "number",
+      "default": 0.5
+    },
+    "on_reach": {
+      "title": "Reach",
+      "description": "Event to run on block reached.",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event": {
+              "type": "string"
+            },
+            "target": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "on_stay_completed": {
+      "title": "Stay Completed",
+      "description": "Event to run on completing a stay of stay_duration at the block.",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event": {
+              "type": "string"
+            },
+            "target": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "search_height": {
+      "title": "Search Height",
+      "description": "The height in blocks that the mob will look for the block.",
+      "type": "integer",
+      "default": 1
+    },
+    "search_range": {
+      "title": "Search Range",
+      "description": "The distance in blocks that the mob will look for the block.",
+      "type": "integer",
+      "default": 0
+    },
+    "speed_multiplier": {
+      "title": "Speed Multiplier",
+      "description": "Movement speed multiplier of the mob when using this AI Goal",
+      "type": "number",
+      "default": 1
+    },
+    "start_chance": {
+      "title": "Start Chance",
+      "description": "Chance to start the behavior (applied after each random tick_interval).",
+      "type": "number",
+      "default": 1
+    },
+    "stay_duration": {
+      "title": "Stay Duration",
+      "description": "Number of ticks needed to complete a stay at the block.",
+      "type": "number",
+      "default": 0
+    },
+    "target_blocks": {
+      "title": "Target Blocks",
+      "description": "Block types to move to.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "target_offset": {
+      "title": "Target Offset",
+      "description": "Offset to add to the selected target position.",
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "target_selection_method": {
+      "title": "Target Selection Method",
+      "description": "Kind of block to find fitting the specification. Valid values are \"random\" and \"nearest\".",
+      "type": "string",
+      "default": "nearest"
+    },
+    "tick_interval": {
+      "title": "Tick Interval",
+      "description": "Average interval in ticks to try to run this behavior.",
+      "type": "integer",
+      "default": 20
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "type": "integer"
+    }
+  }
+}

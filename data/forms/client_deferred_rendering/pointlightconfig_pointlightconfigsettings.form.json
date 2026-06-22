@@ -1,0 +1,52 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "fields": [
+    {
+      "id": "format_version",
+      "title": "format_version",
+      "description": "format_version",
+      "dataType": "string"
+    },
+    {
+      "id": "minecraft:point_light_settings",
+      "title": "minecraft:point_light_settings",
+      "description": "minecraft:point_light_settings",
+      "dataType": "object",
+      "subForm": {
+        "title": "PointLightConfig PointLightConfigSettings PointLightSettings",
+        "description": "PointLightConfig PointLightConfigSettings PointLightSettings",
+        "fields": [
+          {
+            "id": "colors",
+            "title": "colors",
+            "description": "colors",
+            "dataType": "string",
+            "alternates": [
+              {
+                "id": "colors",
+                "dataType": "numberArray",
+                "minLength": 3,
+                "maxLength": 3
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "id": "minecraft:point_light_settings",
+  "title": "Point Light Settings",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "controls point light colors for Vibrant Visuals"
+          }
+        ]
+      }
+    ]
+  },
+  "description": "Struct PointLightConfig PointLightConfigSettings Client Deferred Rendering"
+}

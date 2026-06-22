@@ -1,0 +1,29 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines a documented script module"
+          }
+        ]
+      }
+    ]
+  },
+  "title": "Documented Module",
+  "fields": [
+    {
+      "id": "uuid",
+      "title": "Unique Id",
+      "dataType": "string"
+    },
+    {
+      "id": "version",
+      "title": "Version",
+      "dataType": "string"
+    }
+  ],
+  "description": "Defines a documented script module."
+}

@@ -1,0 +1,148 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Summon Entity Behavior",
+  "description": "Allows the mob to attack the player by summoning other entities.",
+  "properties": {
+    "summon_choices": {
+      "title": "Summon Choices",
+      "description": "List of spells for the mob to use to summon entities.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "cast_duration": {
+            "title": "Cast Duration",
+            "description": "Time in seconds the spell casting will take.",
+            "type": "number"
+          },
+          "cooldown_time": {
+            "title": "Cooldown Time",
+            "description": "Time in seconds the mob has to wait before using the spell again.",
+            "type": "number",
+            "default": 0
+          },
+          "do_casting": {
+            "title": "Do Casting",
+            "description": "If true, the mob will do the casting animations and render spell particles.",
+            "type": "boolean",
+            "default": true
+          },
+          "filters": {
+            "title": "Filters",
+            "description": "Conditions that must be met for this summon choice to be valid.",
+            "type": "object"
+          },
+          "max_activation_range": {
+            "title": "Max Activation Range",
+            "description": "Upper bound of the activation distance in blocks for this spell.",
+            "type": "number",
+            "default": 32
+          },
+          "min_activation_range": {
+            "title": "Min Activation Range",
+            "description": "Lower bound of the activation distance in blocks for this spell.",
+            "type": "number",
+            "default": 1
+          },
+          "particle_color": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Particle Color",
+            "description": "The color of the particles for this spell. Can be an integer (ARGB) or a hex string like '#AARRGGBB'."
+          },
+          "sequence": {
+            "title": "Sequence",
+            "description": "List of summon steps for the spell.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "base_delay": {
+                  "title": "Base Delay",
+                  "description": "Delay in seconds before this step starts.",
+                  "type": "number",
+                  "default": 0
+                },
+                "delay_per_summon": {
+                  "title": "Delay Per Summon",
+                  "description": "Delay in seconds between each entity summon.",
+                  "type": "number",
+                  "default": 0
+                },
+                "entity_type": {
+                  "title": "Entity Type",
+                  "description": "The entity type to summon.",
+                  "type": "string"
+                },
+                "num_entities_spawned": {
+                  "title": "Num Entities Spawned",
+                  "description": "Number of entities to spawn in this step.",
+                  "type": "integer",
+                  "default": 1
+                },
+                "shape": {
+                  "title": "Shape",
+                  "description": "Shape of the summon pattern: 'circle' or 'line'.",
+                  "type": "string",
+                  "default": "circle"
+                },
+                "size": {
+                  "title": "Size",
+                  "description": "Size of the summon pattern.",
+                  "type": "number",
+                  "default": 1
+                },
+                "sound_event": {
+                  "title": "Sound Event",
+                  "description": "Sound event to play when summoning.",
+                  "type": "string"
+                },
+                "summon_cap": {
+                  "title": "Summon Cap",
+                  "description": "Maximum number of entities that can be summoned.",
+                  "type": "integer",
+                  "default": 0
+                },
+                "summon_cap_radius": {
+                  "title": "Summon Cap Radius",
+                  "description": "Radius to check for existing summoned entities.",
+                  "type": "number",
+                  "default": 0
+                },
+                "target": {
+                  "title": "Target",
+                  "description": "Target for the summon: 'self' or 'other'.",
+                  "type": "string",
+                  "default": "self"
+                }
+              }
+            }
+          },
+          "start_sound_event": {
+            "title": "Start Sound Event",
+            "description": "Sound event to play when casting starts.",
+            "type": "string"
+          },
+          "weight": {
+            "title": "Weight",
+            "description": "Relative weight for random selection among summon choices.",
+            "type": "number",
+            "default": 1
+          }
+        }
+      }
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "type": "integer"
+    }
+  }
+}

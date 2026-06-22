@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Terrain Texture: Layered terrain cross-section -->
+  <rect x="1" y="1" width="14" height="4" fill-opacity="0.3"/>
+  <rect x="1" y="5" width="14" height="3" fill-opacity="0.5"/>
+  <rect x="1" y="8" width="14" height="4" fill-opacity="0.7"/>
+  <rect x="1" y="12" width="14" height="3"/>
+  <rect x="2" y="2" width="2" height="2" fill-opacity="0.5"/>
+  <rect x="5" y="1.5" width="1.5" height="1.5" fill-opacity="0.6"/>
+  <rect x="10" y="2" width="2" height="2" fill-opacity="0.4"/>
+  <rect x="4" y="13" width="1.5" height="1.5" fill-opacity="0.8"/>
+  <rect x="9" y="12.5" width="2" height="1.5" fill-opacity="0.7"/>
+</svg>

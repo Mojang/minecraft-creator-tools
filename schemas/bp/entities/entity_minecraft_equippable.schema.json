@@ -1,0 +1,82 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Equippable",
+  "description": "Defines an entity's behavior for having items equipped to it.",
+  "properties": {
+    "slots": {
+      "title": "Slots",
+      "description": "List of slots and the item that can be equipped.\n\nSample values:\n• llama: [{\"slot\":1,\"item\":\"carpet\",\"accepted_items\":[\"c...",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "accepted_items": {
+            "title": "Accepted Items",
+            "description": "The list of items that can go in this slot.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "interact_text": {
+            "title": "Interact Text",
+            "description": "Text to be displayed when the entity can be equipped with this item when playing with Touch-screen controls.",
+            "type": "string"
+          },
+          "item": {
+            "title": "Item",
+            "description": "Identifier of the item that can be equipped for this slot.",
+            "type": "string"
+          },
+          "on_equip": {
+            "title": "Equip",
+            "description": "Event to trigger when this entity is equipped with this item.",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "event": {
+                    "type": "string"
+                  },
+                  "target": {
+                    "type": "string"
+                  }
+                }
+              }
+            ]
+          },
+          "on_unequip": {
+            "title": "Unequip",
+            "description": "Event to trigger when this item is removed from this entity.",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "event": {
+                    "type": "string"
+                  },
+                  "target": {
+                    "type": "string"
+                  }
+                }
+              }
+            ]
+          },
+          "slot": {
+            "title": "Slot",
+            "description": "The slot number of this slot.",
+            "type": "integer",
+            "default": 0
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Animation Controller: State machine nodes -->
+  <circle cx="4" cy="4" r="2.5" fill-opacity="0.3"/>
+  <circle cx="12" cy="4" r="2.5" fill-opacity="0.3"/>
+  <circle cx="8" cy="12" r="2.5" fill-opacity="0.3"/>
+  <circle cx="4" cy="4" r="1.5"/>
+  <circle cx="12" cy="4" r="1.5"/>
+  <circle cx="8" cy="12" r="1.5"/>
+  <path d="M6 4H10" stroke="currentColor" stroke-width="0.8"/>
+  <path d="M5 6L7 10" stroke="currentColor" stroke-width="0.8"/>
+  <path d="M11 6L9 10" stroke="currentColor" stroke-width="0.8"/>
+  <path d="M10.5 4.5L10 4L10.5 3.5" fill="none" stroke="currentColor" stroke-width="0.6"/>
+</svg>

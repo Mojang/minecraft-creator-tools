@@ -1,0 +1,27 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can pick up nearby items automatically"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [],
+  "description": "Determines that this entity is an item hopper.",
+  "title": "Item Hopper",
+  "samples": {
+    "/vanilla/behavior_pack/entities/hopper_minecart.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:hopper_active/minecraft:item_hopper/",
+        "content": {}
+      }
+    ]
+  },
+  "id": "minecraft:item_hopper"
+}

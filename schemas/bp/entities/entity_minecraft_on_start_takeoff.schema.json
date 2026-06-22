@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "On Start Takeoff",
+  "description": "Only usable by the Ender Dragon. Adds a trigger to call when this entity starts flying.",
+  "properties": {
+    "event": {
+      "title": "Event",
+      "description": "The event to run when the conditions for this trigger are met.\n\nSample values:\n• ender_dragon: minecraft:start_fly",
+      "type": "string"
+    },
+    "filters": {
+      "title": "Filters",
+      "description": "The list of conditions for this trigger to execute.",
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "all_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "any_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "none_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "target": {
+      "title": "Target",
+      "description": "The target of the event.\n\nSample values:\n• ender_dragon: self",
+      "type": "string",
+      "default": "self"
+    }
+  }
+}

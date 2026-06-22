@@ -1,0 +1,20 @@
+{
+  "resource_pack_name": "culled_block_resource_pack",
+  "texture_name": "atlas.terrain",
+  "padding": 8,
+  "num_mip_levels": 4,
+  "texture_data": {
+    "sushi_wrap": {
+      "textures": "textures/blocks/sushi_wrap"
+    },
+    "salmon_roll": {
+      "textures": "textures/blocks/salmon_roll"
+    },
+    "tuna_roll": {
+      "textures": "textures/blocks/tuna_roll"
+    },
+    "california_roll": {
+      "textures": "textures/blocks/california_roll"
+    }
+  }
+}

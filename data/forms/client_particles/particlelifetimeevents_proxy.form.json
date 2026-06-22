@@ -1,0 +1,55 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "ParticleLifetimeEvents Proxy",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "controls particle lifetime events like creation and expiration"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "creation_event",
+      "title": "Creation Event",
+      "dataType": "objectArray",
+      "defaultValue": [],
+      "alternates": [
+        {
+          "id": "creation_event",
+          "dataType": "string"
+        }
+      ]
+    },
+    {
+      "id": "expiration_event",
+      "title": "Expiration Event",
+      "dataType": "objectArray",
+      "defaultValue": [],
+      "alternates": [
+        {
+          "id": "expiration_event",
+          "dataType": "string"
+        }
+      ]
+    },
+    {
+      "id": "timeline",
+      "title": "Timeline",
+      "dataType": "objectArray",
+      "alternates": [
+        {
+          "id": "timeline",
+          "dataType": "string"
+        }
+      ]
+    }
+  ],
+  "description": "Controls particle lifetime events like creation and expiration.",
+  "title": "Client Particles ParticleLifetimeEvents Proxy"
+}

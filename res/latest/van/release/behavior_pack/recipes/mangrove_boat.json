@@ -1,0 +1,25 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:mangrove_boat"
+    },
+    "tags": [ "crafting_table" ],
+    "pattern": [
+      "# #",
+      "###"
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:mangrove_planks",
+        "data": 4
+      }
+    },
+	"unlock": {
+        "context": "PlayerInWater"
+    },
+    "result": {
+      "item": "minecraft:mangrove_boat"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "files": [
+    "DebugToolRegistry.ts",
+    "DebugTools.ts",
+    "IDebugToolsData.ts",
+    "ITool.ts",
+    "IToolData.ts",
+    "IWatchTool.ts",
+    "Utilities.ts"
+  ],
+  "folders": [
+    "editor",
+    "ingame",
+    "tools"
+  ]
+}

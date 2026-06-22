@@ -1,0 +1,19 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "returns ratio (from 0 to 1) of how much between ai tick..."
+          }
+        ]
+      }
+    ]
+  },
+  "id": "query.frame_alpha",
+  "fields": [],
+  "description": "Returns the ratio (from 0 to 1) of how much between AI ticks this frame is being rendered.",
+  "title": "Frame Alpha"
+}

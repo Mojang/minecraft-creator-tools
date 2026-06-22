@@ -1,0 +1,188 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "family",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "belongs to type families: "
+          },
+          {
+            "type": "value",
+            "field": "family"
+          }
+        ]
+      },
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "belongs to one or more type families"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "minecraft:type_family",
+  "description": "Defines the family categories this entity belongs to. Type families are used by filters and other game systems to group entities (e.g., 'mob', 'monster', 'undead', 'zombie').",
+  "fields": [
+    {
+      "id": "family",
+      "title": "Type Family (Tag)",
+      "description": "A set of tags that describe the categories of this entity. In addition to typically having a tag for the type of mob, entities frequently have additional type family tags that modify how the rest of the Minecraft world reacts to them.",
+      "dataType": "stringArray",
+      "mustMatchChoices": false,
+      "choices": [
+        {
+          "id": "mob"
+        },
+        {
+          "id": "inanimate"
+        },
+        {
+          "id": "aquatic"
+        },
+        {
+          "id": "monster"
+        },
+        {
+          "id": "undead"
+        },
+        {
+          "id": "skeleton"
+        },
+        {
+          "id": "arthropod"
+        },
+        {
+          "id": "zombie"
+        },
+        {
+          "id": "lightweight"
+        },
+        {
+          "id": "fish"
+        },
+        {
+          "id": "player"
+        }
+      ],
+      "samples": {
+        "/vanilla/behavior_pack/entities/allay.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:type_family/",
+            "content": [
+              "allay",
+              "mob"
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/armor_stand.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:type_family/",
+            "content": [
+              "armor_stand",
+              "inanimate",
+              "mob"
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/bat.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:type_family/",
+            "content": [
+              "bat",
+              "mob"
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/blaze.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:type_family/",
+            "content": [
+              "blaze",
+              "monster",
+              "mob"
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/boat.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:type_family/",
+            "content": [
+              "boat",
+              "inanimate"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "title": "Type Family",
+  "samples": {
+    "/vanilla/behavior_pack/entities/allay.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:type_family/",
+        "content": {
+          "family": [
+            "allay",
+            "mob"
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/armor_stand.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:type_family/",
+        "content": {
+          "family": [
+            "armor_stand",
+            "inanimate",
+            "mob"
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/bat.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:type_family/",
+        "content": {
+          "family": [
+            "bat",
+            "mob"
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/blaze.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:type_family/",
+        "content": {
+          "family": [
+            "blaze",
+            "monster",
+            "mob"
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/boat.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:type_family/",
+        "content": {
+          "family": [
+            "boat",
+            "inanimate"
+          ]
+        }
+      }
+    ]
+  }
+}

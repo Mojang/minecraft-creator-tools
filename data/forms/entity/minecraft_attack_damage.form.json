@@ -1,0 +1,40 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "value",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "deals "
+          },
+          {
+            "type": "value",
+            "field": "value"
+          },
+          {
+            "type": "literal",
+            "text": " attack damage"
+          }
+        ]
+      }
+    ]
+  },
+  "title": "Attack Damage",
+  "description": "Specifies how much damage is dealt by the entity when it attacks.",
+  "fields": [
+    {
+      "id": "value",
+      "description": "How much an attack should damage a target.",
+      "dataType": "intRange",
+      "minValue": -50,
+      "maxValue": 50
+    }
+  ]
+}

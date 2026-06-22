@@ -1,0 +1,68 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "takes naps"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "can_nap_filters",
+      "title": "Can Nap Filters",
+      "description": "Conditions that need to be met for the entity to nap.",
+      "dataType": "minecraftFilter"
+    },
+    {
+      "id": "wake_mob_exceptions",
+      "title": "Wake Mob Exceptions",
+      "description": "Filters for mobs that will not wake this entity from napping.",
+      "dataType": "minecraftFilter"
+    },
+    {
+      "id": "cooldown_max",
+      "title": "Cooldown Max",
+      "description": "Maximum time in seconds the mob has to wait before using the goal again",
+      "defaultValue": 0,
+      "dataType": "float"
+    },
+    {
+      "id": "cooldown_min",
+      "title": "Cooldown Min",
+      "description": "Minimum time in seconds the mob has to wait before using the goal again",
+      "defaultValue": 0,
+      "dataType": "float"
+    },
+    {
+      "id": "mob_detect_dist",
+      "title": "Mob Detect Dist",
+      "description": "The block distance in x and z that will be checked for mobs that this mob detects",
+      "defaultValue": 6,
+      "dataType": "float"
+    },
+    {
+      "id": "mob_detect_height",
+      "title": "Mob Detect Height",
+      "description": "The block distance in y that will be checked for mobs that this mob detects",
+      "defaultValue": 6,
+      "dataType": "float"
+    },
+    {
+      "id": "priority",
+      "title": "Priority",
+      "hideSamples": true,
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "dataType": "int"
+    }
+  ],
+  "description": "Allows mobs to occassionally stop and take a nap under certain conditions.",
+  "title": "Nap Behavior",
+  "samples": {},
+  "id": "minecraft:behavior.nap"
+}

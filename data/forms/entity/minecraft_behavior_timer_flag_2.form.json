@@ -1,0 +1,199 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "fires events after a timed duration"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "cooldown_range",
+      "title": "Cooldown Range",
+      "description": "Goal cooldown range in seconds. Can be a range object or a single number.",
+      "dataType": "floatRange",
+      "alternates": [
+        {
+          "id": "cooldown_range",
+          "dataType": "float"
+        }
+      ],
+      "samples": {
+        "/vanilla/behavior_pack/entities/sniffer.json": [
+          {
+            "path": "/minecraft:entity/component_groups/stand_up/minecraft:behavior.timer_flag_2/",
+            "content": {
+              "min": 0,
+              "max": 0
+            }
+          }
+        ]
+      },
+      "defaultValue": {
+        "max": 0,
+        "min": 0
+      },
+      "subFormId": "item_components/floatrange"
+    },
+    {
+      "id": "duration_range",
+      "title": "Duration Range",
+      "description": "Goal duration range in seconds. Can be a range object or a single number.",
+      "dataType": "floatRange",
+      "alternates": [
+        {
+          "id": "duration_range",
+          "dataType": "float"
+        }
+      ],
+      "samples": {
+        "/vanilla/behavior_pack/entities/sniffer.json": [
+          {
+            "path": "/minecraft:entity/component_groups/stand_up/minecraft:behavior.timer_flag_2/",
+            "content": {
+              "min": 2,
+              "max": 5
+            }
+          }
+        ]
+      },
+      "defaultValue": {
+        "max": 0,
+        "min": 0
+      },
+      "subFormId": "item_components/floatrange"
+    },
+    {
+      "id": "control_flags",
+      "title": "Control Flags",
+      "dataType": "stringArray",
+      "defaultValue": [],
+      "choices": [
+        {
+          "id": "jump",
+          "title": "Jump"
+        },
+        {
+          "id": "look",
+          "title": "Look"
+        },
+        {
+          "id": "move",
+          "title": "Move"
+        }
+      ],
+      "samples": {
+        "/vanilla/behavior_pack/entities/sniffer.json": [
+          {
+            "path": "/minecraft:entity/component_groups/stand_up/minecraft:behavior.timer_flag_2/",
+            "content": [
+              "move"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "on_end",
+      "title": "End",
+      "description": "Event(s) to run when the goal ends.",
+      "dataType": "object",
+      "defaultValue": {
+        "event": "",
+        "filters": {
+          "AND": null,
+          "NOT": null,
+          "OR": null,
+          "all": null,
+          "all_of": null,
+          "any": null,
+          "any_of": null,
+          "none_of": null
+        },
+        "target": "self"
+      },
+      "subFormId": "entity/actordefinitiontrigger",
+      "samples": {
+        "/vanilla/behavior_pack/entities/sniffer.json": [
+          {
+            "path": "/minecraft:entity/component_groups/stand_up/minecraft:behavior.timer_flag_2/",
+            "content": {
+              "event": "on_rising_end",
+              "target": "self"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "on_start",
+      "title": "Start",
+      "description": "Event(s) to run when the goal starts.",
+      "dataType": "object",
+      "defaultValue": {
+        "event": "",
+        "filters": {
+          "AND": null,
+          "NOT": null,
+          "OR": null,
+          "all": null,
+          "all_of": null,
+          "any": null,
+          "any_of": null,
+          "none_of": null
+        },
+        "target": "self"
+      },
+      "subFormId": "entity/actordefinitiontrigger"
+    },
+    {
+      "id": "priority",
+      "title": "Priority",
+      "dataType": "int",
+      "defaultValue": 0,
+      "samples": {
+        "/vanilla/behavior_pack/entities/sniffer.json": [
+          {
+            "path": "/minecraft:entity/component_groups/stand_up/minecraft:behavior.timer_flag_2/",
+            "content": 2
+          }
+        ]
+      },
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal."
+    }
+  ],
+  "description": "Fires an event when this behavior starts, then waits for a duration before stopping. When stopping due to that timeout or due to being interrupted by another behavior, fires another event. query.timer_flag_2 will return 1.0 on both the client and server when this behavior is running, and 0.0 otherwise.",
+  "title": "Entity Timer Flag 2 Behavior",
+  "samples": {
+    "/vanilla/behavior_pack/entities/sniffer.json": [
+      {
+        "path": "/minecraft:entity/component_groups/stand_up/minecraft:behavior.timer_flag_2/",
+        "content": {
+          "priority": 2,
+          "control_flags": [
+            "move"
+          ],
+          "cooldown_range": {
+            "min": 0,
+            "max": 0
+          },
+          "duration_range": {
+            "min": 2,
+            "max": 5
+          },
+          "on_end": {
+            "event": "on_rising_end",
+            "target": "self"
+          }
+        }
+      }
+    ]
+  },
+  "id": "minecraft:behavior.timer_flag_2"
+}

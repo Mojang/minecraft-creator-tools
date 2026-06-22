@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Spawn Weight",
+  "description": "Defines the relative probability of this entity spawning compared to other entities in the same biome and spawn pool. Higher weight values mean more frequent spawns. A weight of 100 is typical for common mobs.",
+  "properties": {
+    "default": {
+      "title": "Default",
+      "type": "integer"
+    },
+    "rarity": {
+      "title": "Rarity",
+      "type": "integer",
+      "default": 0
+    }
+  },
+  "required": [
+    "default"
+  ]
+}

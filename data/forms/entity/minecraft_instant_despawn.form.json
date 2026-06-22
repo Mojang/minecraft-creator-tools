@@ -1,0 +1,28 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "despawns immediately when far from players"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "remove_child_entities",
+      "title": "Remove Child Entities",
+      "description": "If true, all entities linked to this entity in a child relationship (eg. leashed) will also be despawned.",
+      "defaultValue": false,
+      "dataType": "boolean"
+    }
+  ],
+  "description": "Despawns the Actor immediately.",
+  "title": "Instant Despawn",
+  "samples": {},
+  "id": "minecraft:instant_despawn"
+}

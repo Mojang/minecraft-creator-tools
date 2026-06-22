@@ -1,0 +1,29 @@
+{
+  "files": [
+    "arctic_fox.png",
+    "arctic_fox.texture_set.json",
+    "arctic_fox_mers.png",
+    "arctic_fox_mers.tga",
+    "fox.png",
+    "fox.texture_set.json",
+    "fox_baby.png",
+    "fox_baby.texture_set.json",
+    "fox_baby_mers.png",
+    "fox_baby_mers.tga",
+    "fox_mers.png",
+    "fox_mers.tga",
+    "fox_sleep_baby.png",
+    "fox_sleep_baby.texture_set.json",
+    "fox_sleep_baby_mers.png",
+    "fox_sleep_baby_mers.tga",
+    "fox_snow_baby.png",
+    "fox_snow_baby.texture_set.json",
+    "fox_snow_baby_mers.png",
+    "fox_snow_baby_mers.tga",
+    "fox_snow_sleep_baby.png",
+    "fox_snow_sleep_baby.texture_set.json",
+    "fox_snow_sleep_baby_mers.png",
+    "fox_snow_sleep_baby_mers.tga"
+  ],
+  "folders": []
+}

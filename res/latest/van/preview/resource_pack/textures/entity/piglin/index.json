@@ -1,0 +1,20 @@
+{
+  "files": [
+    "piglin.png",
+    "piglin.texture_set.json",
+    "piglin_baby.png",
+    "piglin_baby.texture_set.json",
+    "piglin_baby_mers.tga",
+    "piglin_brute.png",
+    "piglin_brute.texture_set.json",
+    "piglin_brute_mers.tga",
+    "piglin_mers.tga",
+    "zombie_piglin.png",
+    "zombie_piglin.texture_set.json",
+    "zombie_piglin_baby.png",
+    "zombie_piglin_baby.texture_set.json",
+    "zombie_piglin_baby_mers.tga",
+    "zombie_piglin_mers.tga"
+  ],
+  "folders": []
+}

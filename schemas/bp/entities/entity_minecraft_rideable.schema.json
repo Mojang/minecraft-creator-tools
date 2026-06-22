@@ -1,0 +1,139 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Rideable",
+  "description": "This entity can be ridden",
+  "properties": {
+    "seat_count": {
+      "title": "Number of seats",
+      "description": "The number of entities that can ride this entity at the same time.\n\nSample values:\n• chicken: 1",
+      "type": "integer",
+      "default": 1
+    },
+    "crouching_skip_interact": {
+      "title": "This entity can't be interacted with while crouching.",
+      "description": "If true, this entity can't be interacted with if the entity interacting with it is crouching.\n\nSample values:\n• llama: true",
+      "type": "boolean",
+      "default": true
+    },
+    "controlling_seat": {
+      "title": "The seat that controls how this entity moves",
+      "description": "The seat that designates the driver of the entity. Entities with the \"minecraft:behavior.controlled_by_player\" goal ignore this field and give control to any player in any seat.",
+      "type": "integer",
+      "default": 0
+    },
+    "pulls_in_entities": {
+      "title": "This entity will pull in nearby entities.",
+      "description": "[DEPRECATED] \n\n*⚠️ Deprecated*",
+      "type": "boolean",
+      "deprecated": true
+    },
+    "rider_can_interact": {
+      "title": "Whether a rider can interact with this item.",
+      "description": "If true, this entity will be picked when looked at by the rider.",
+      "type": "boolean",
+      "default": false
+    },
+    "on_rider_enter_event": {
+      "title": "Rider Enter Event",
+      "description": "Event to execute on the owner entity when an entity starts riding it.\n\n*Introduced in version 1.21.80*",
+      "type": "string"
+    },
+    "on_rider_exit_event": {
+      "title": "Rider Exit Event",
+      "description": "Event to execute on the owner entity when an entity stops riding it.\n\n*Introduced in version 1.21.80*",
+      "type": "string"
+    },
+    "dismount_mode": {
+      "title": "Dismount Mode",
+      "description": "Defines where riders are placed when dismounting this entity:\n- \"default\", riders are placed on a valid ground position around the entity, or at the center of the entity's collision box if none is found.\n- \"on_top_center\", riders are placed at the center of the top of the entity's collision box.",
+      "type": "string",
+      "enum": [
+        "default",
+        "on_top_center"
+      ],
+      "default": "default"
+    },
+    "seats": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "third_person_camera_radius": {
+                "description": "\n\n*Introduced in version 1.21.80*",
+                "type": "string"
+              },
+              "camera_relax_distance_smoothing": {
+                "description": "\n\n*Introduced in version 1.21.80*",
+                "type": "string"
+              },
+              "rotate_rider_by": {
+                "title": "Rotate Rider By",
+                "description": "Offset to rotate riders by. Can be a number or a Molang expression.",
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ],
+                "default": 0
+              },
+              "lock_rider_rotation": {
+                "title": "Lock Rider Rotation",
+                "description": "Angle in degrees to rotate the rider by. Can be a number or a Molang expression.",
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ],
+                "default": 0
+              }
+            }
+          }
+        },
+        {
+          "type": "object"
+        }
+      ],
+      "title": "Seats",
+      "description": "The list of positions and number of riders for each position for entities riding this entity.\n\nSample values:\n• chicken: {\"position\":[0,0.48,0]}\n• cow: {\"position\":[0,1,0]}\n• cow: {\"position\":[0,1.15,0]}"
+    },
+    "family_types": {
+      "title": "Family Types",
+      "description": "List of entities that can ride this entity.\n\nSample values:\n• chicken: [\"baby_undead\"]\n• llama: [\"player\"]",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "interact_text": {
+      "title": "Interact Text",
+      "description": "The text to display when the player can interact with the entity when playing with touch-screen controls.\n\nSample values:\n• llama: action.interact.mount\n• llama: action.interact.ride.horse\n• minecart: action.interact.ride.minecart",
+      "type": "string"
+    },
+    "passenger_max_width": {
+      "title": "Passenger Max Width",
+      "description": "The max width a mob can have to be a rider. A value of 0 ignores this parameter.",
+      "type": "number",
+      "default": 0
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "This field may exist in old data but isn't used by \"minecraft:rideable\".",
+      "type": "integer"
+    },
+    "pull_in_entities": {
+      "title": "Pull In Entities",
+      "description": "If true, this entity will pull entities matching the specified \"family_types\" into any available seats. Entities that are leashed will only be pulled in if their distance to their leash holder is less than the \"hard_distance\" defined in their own \"minecraft:leashable\" component.\n\nSample values:\n• minecart: true",
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

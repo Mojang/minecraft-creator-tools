@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Swim With Entity Behavior",
+  "description": "Allows the entity follow another entity. Both entities must be swimming [ie, in water].",
+  "properties": {
+    "catch_up_multiplier": {
+      "title": "Catch Up Multiplier",
+      "description": "The multiplier this entity's speed is modified by when matching another entity's direction.\n\nSample values:\n• dolphin: 2.5",
+      "type": "number",
+      "default": 2.5
+    },
+    "catch_up_threshold": {
+      "title": "Catch Up Threshold",
+      "description": "Distance, from the entity being followed, at which this entity will speed up to reach that entity.\n\nSample values:\n• dolphin: 12",
+      "type": "number",
+      "default": 12
+    },
+    "chance_to_stop": {
+      "title": "Chance To Stop",
+      "description": "Percent chance to stop following the current entity, if they're riding another entity or they're not swimming. 1.0 = 100%\n\nSample values:\n• dolphin: 0.0333",
+      "type": "number",
+      "default": 0.0333
+    },
+    "entity_types": {
+      "title": "Entity Types",
+      "description": "Filters which types of entities are valid to follow.\n\nSample values:\n• dolphin: [{\"filters\":{\"test\":\"is_family\",\"subject\":\"othe...",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "match_direction_threshold": {
+      "title": "Match Direction Threshold",
+      "description": "Distance, from the entity being followed, at which this entity will try to match that entity's direction\n\nSample values:\n• dolphin: 2",
+      "type": "number",
+      "default": 2
+    },
+    "search_range": {
+      "title": "Search Range",
+      "description": "Radius around this entity to search for another entity to follow.\n\nSample values:\n• dolphin: 20",
+      "type": "number",
+      "default": 20
+    },
+    "speed_multiplier": {
+      "title": "Speed Multiplier",
+      "description": "The multiplier this entity's speed is modified by when trying to catch up to the entity being followed.\n\nSample values:\n• dolphin: 1.5",
+      "type": "number",
+      "default": 1.5
+    },
+    "state_check_interval": {
+      "title": "State Check Interval",
+      "description": "Time (in seconds) between checks to determine if this entity should catch up to the entity being followed or match the direction of the entity being followed.\n\nSample values:\n• dolphin: 0.5",
+      "type": "number",
+      "default": 0.5
+    },
+    "stop_distance": {
+      "title": "Stop Distance",
+      "description": "Distance, from the entity being followed, at which this entity will stop following that entity.\n\nSample values:\n• dolphin: 5",
+      "type": "number",
+      "default": 5
+    },
+    "success_rate": {
+      "title": "Success Rate",
+      "description": "Percent chance to start following another entity, if not already doing so. 1.0 = 100%\n\nSample values:\n• dolphin: 0.1",
+      "type": "number",
+      "default": 0.1
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "type": "integer"
+    }
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines jigsaw block metadata configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Jigsaw Block Metadata",
+  "fields": [
+    {
+      "id": "block",
+      "title": "Block",
+      "description": "The serialization Id of the Jigsaw block before generation.",
+      "dataType": "string",
+      "isRequired": true
+    },
+    {
+      "id": "final_block",
+      "title": "Final Block",
+      "description": "The serialization Id to replace the starting Jigsaw block with.",
+      "dataType": "string",
+      "isRequired": true
+    },
+    {
+      "id": "joint_type",
+      "title": "Jigsaw Joint Type",
+      "description": "The type of Jigsaw joint made with 'target'.",
+      "dataType": "string",
+      "isRequired": true
+    },
+    {
+      "id": "name",
+      "title": "Name",
+      "description": "The name identifier referenced by the 'target' field of another Jigsaw block.",
+      "dataType": "string",
+      "isRequired": true
+    },
+    {
+      "id": "placement_priority",
+      "title": "Placement Priority",
+      "description": "The priority used during target block placement.",
+      "dataType": "int",
+      "isRequired": true
+    },
+    {
+      "id": "pool",
+      "title": "Pool",
+      "description": "The structure template pool containing possible structures to generate.",
+      "dataType": "string",
+      "isRequired": true
+    },
+    {
+      "id": "pos",
+      "title": "Pos",
+      "description": "The Jigsaw block position.",
+      "dataType": "object",
+      "isRequired": true
+    },
+    {
+      "id": "selection_priority",
+      "title": "Selection Priority",
+      "description": "The priority used during target block selection.",
+      "dataType": "int",
+      "isRequired": true
+    },
+    {
+      "id": "target",
+      "title": "Target",
+      "description": "The name identifier of the Jigsaw block to target within the generated structure.",
+      "dataType": "string",
+      "isRequired": true
+    }
+  ],
+  "description": "Defines jigsaw block metadata configuration.",
+  "title": "Jigsaw Block Metadata Misc"
+}

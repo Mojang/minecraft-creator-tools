@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "On Friendly Anger",
+  "description": "Adds a trigger that will run when a nearby entity of the same type as this entity becomes Angry.",
+  "properties": {
+    "event": {
+      "title": "Event",
+      "description": "The event to run when the conditions for this trigger are met.\n\nSample values:\n• polar_bear: minecraft:on_anger\n• trader_llama: minecraft:defend_wandering_trader",
+      "type": "string"
+    },
+    "filters": {
+      "title": "Filters",
+      "description": "The list of conditions for this trigger to execute.",
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "all_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "any_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "none_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "target": {
+      "title": "Target",
+      "description": "The target of the event.\n\nSample values:\n• polar_bear: self",
+      "type": "string",
+      "default": "self"
+    }
+  }
+}

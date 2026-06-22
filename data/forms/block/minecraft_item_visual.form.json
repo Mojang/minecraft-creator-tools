@@ -1,0 +1,82 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has custom item visuals"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "geometry",
+      "title": "Geometry",
+      "description": "[Required] The \"minecraft:geometry\" component that will be used for the item.",
+      "dataType": "objectArray"
+    },
+    {
+      "id": "material_instances",
+      "title": "Material Instances",
+      "description": "[Required] The \"minecraft:material_instances\" component that will be used for the item.",
+      "dataType": "objectArray"
+    }
+  ],
+  "tags": [
+    "visual"
+  ],
+  "description": "The description identifier of the geometry and material used to render the item of this block.",
+  "versionIntroduced": "1.21.60",
+  "samples": {
+    "sample": [
+      {
+        "path": "Full Block Example",
+        "content": {
+          "geometry": {
+            "identifier": "minecraft:geometry.full_block"
+          },
+          "material_instances": {
+            "*": {
+              "texture": "dirt",
+              "render_method": "opaque"
+            }
+          }
+        }
+      }
+    ],
+    "Block Fabricator": [
+      {
+        "path": "https://github.com/microsoft/minecraft-samples/tree/main/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/blocks/fabricator.block.json",
+        "content": {
+          "geometry": "geometry.mikeamm_gwve_fabricator_in_hand",
+          "material_instances": {
+            "*": {
+              "texture": "mikeamm_gwve_fabricator_in_hand",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      }
+    ],
+    "Die": [
+      {
+        "path": "https://github.com/microsoft/minecraft-samples/tree/main/custom_blocks/behavior_packs/custom_blocks/blocks/die.json",
+        "content": {
+          "geometry": "minecraft:geometry.full_block",
+          "material_instances": {
+            "*": {
+              "texture": "die_red",
+              "render_method": "opaque"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "title": "Item Visual",
+  "id": "minecraft:item_visual"
+}

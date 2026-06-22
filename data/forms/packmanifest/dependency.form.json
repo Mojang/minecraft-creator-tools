@@ -1,0 +1,78 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "3.0.0.Dependency",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "specifies a pack dependency with module name, UUID, and version"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "module_name",
+      "title": "Module Name",
+      "dataType": "string"
+    },
+    {
+      "id": "uuid",
+      "title": "Uuid",
+      "dataType": "object",
+      "validity": [
+        {
+          "comparison": "pattern",
+          "value": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        }
+      ]
+    },
+    {
+      "id": "version",
+      "dataType": "object",
+      "subForm": {
+        "id": "version",
+        "title": "Version",
+        "fields": [
+          {
+            "id": "buildMeta",
+            "title": "BuildMeta",
+            "dataType": "string"
+          },
+          {
+            "id": "major",
+            "title": "Major",
+            "dataType": "int"
+          },
+          {
+            "id": "minor",
+            "title": "Minor",
+            "dataType": "int"
+          },
+          {
+            "id": "patch",
+            "title": "Patch",
+            "dataType": "int"
+          },
+          {
+            "id": "preRelease",
+            "title": "PreRelease",
+            "dataType": "string"
+          }
+        ]
+      },
+      "alternates": [
+        {
+          "id": "version",
+          "dataType": "string"
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "description": "Declares that this pack requires another pack or native module to function. Dependencies can reference other add-ons by UUID/version or native Script API modules like '@minecraft/server'. Minecraft ensures dependencies are loaded first.",
+  "title": "3.0.0.Dependency"
+}

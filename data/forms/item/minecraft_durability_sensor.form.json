@@ -1,0 +1,29 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "minecraft:durability_sensor",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "emits effects when damaged"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "durability_thresholds",
+      "title": "Durability Thresholds",
+      "description": "The list of both durability thresholds and effects emitted when each threshold is met. When multiple thresholds are met, only the threshold with the lowest durability after applying the damage is considered.",
+      "dataType": "objectArray",
+      "minLength": 1,
+      "subFormId": "item_components/minecraft_durability_sensor_durability_threshold",
+      "isRequired": true
+    }
+  ],
+  "description": "Enables an item to emit effects when it receives damage. Because of this, the item also needs a `minecraft:durability` component.",
+  "title": "Item Durability Sensor"
+}

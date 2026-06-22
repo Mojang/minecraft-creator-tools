@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Block Components Entity Fall On",
+  "description": "Configures the behavior of an entity falling on this block. The minimum distance in blocks that an actor needs to fall before events are triggered.",
+  "properties": {
+    "min_fall_distance": {
+      "title": "Min Fall Distance",
+      "description": "The minimum distance in blocks that an actor needs to fall before events are triggered.",
+      "type": "number",
+      "default": 0
+    }
+  }
+}

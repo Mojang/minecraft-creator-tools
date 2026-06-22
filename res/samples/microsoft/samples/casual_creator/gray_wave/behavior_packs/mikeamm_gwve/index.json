@@ -1,0 +1,14 @@
+{
+  "files": [
+    "manifest.json",
+    "pack_icon.png"
+  ],
+  "folders": [
+    "blocks",
+    "entities",
+    "feature_rules",
+    "features",
+    "item_catalog",
+    "items"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "checks if pack setting dropdown (first paramete..."
+          }
+        ]
+      }
+    ]
+  },
+  "id": "query.is_pack_setting_selected",
+  "fields": [],
+  "description": "Returns 1.0 if the Pack Setting dropdown (first parameter) matches the string value of the second parameter (selection). Available on the Client (Resource Packs) only.",
+  "title": "Is Pack Setting Selected"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Burns In Daylight",
+  "description": "Specifies that this entity takes fire damage when exposed to direct sunlight. This component is used by undead mobs like zombies, skeletons, and phantoms. The entity will catch fire when in sunlight unless it is wearing armor in the protection slot, standing in water, or in a shaded area.",
+  "properties": {
+    "protection_slot": {
+      "title": "EquipmentSlot",
+      "description": "The equipment slot that provides protection from burning in sunlight. If armor is equipped in this slot, the entity will not burn. Commonly set to 'slot.armor.head' for helmets or 'slot.armor.body' for horse armor.",
+      "type": "string",
+      "enum": [
+        "slot.armor.body",
+        "slot.armor.chest",
+        "slot.armor.feet",
+        "slot.armor.head",
+        "slot.armor.legs",
+        "slot.weapon.mainhand",
+        "slot.weapon.offhand"
+      ],
+      "default": "slot.armor.head"
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "returns total distance traveled by an entity while on t..."
+          }
+        ]
+      }
+    ]
+  },
+  "id": "query.walk_distance",
+  "fields": [],
+  "description": "Returns the total distance traveled by an entity while on the ground and not sneaking.",
+  "title": "Walk Distance"
+}

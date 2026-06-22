@@ -1,0 +1,23 @@
+{
+  "files": [
+    "strider.png",
+    "strider.texture_set.json",
+    "strider_baby.png",
+    "strider_baby.texture_set.json",
+    "strider_baby_mers.tga",
+    "strider_cold_baby.png",
+    "strider_cold_baby.texture_set.json",
+    "strider_cold_baby_mers.tga",
+    "strider_mers.tga",
+    "strider_saddled.png",
+    "strider_saddled.texture_set.json",
+    "strider_saddled_mers.tga",
+    "strider_suffocated.png",
+    "strider_suffocated.texture_set.json",
+    "strider_suffocated_mers.tga",
+    "strider_suffocated_saddled.png",
+    "strider_suffocated_saddled.texture_set.json",
+    "strider_suffocated_saddled_mers.tga"
+  ],
+  "folders": []
+}

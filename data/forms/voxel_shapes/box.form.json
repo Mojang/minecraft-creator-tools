@@ -1,0 +1,92 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines a bounding box with min and max coordinates"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Box",
+  "fields": [
+    {
+      "id": "max",
+      "title": "Max",
+      "dataType": "numberArray",
+      "alternates": [
+        {
+          "id": "max",
+          "dataType": "object",
+          "subForm": {
+            "id": "max",
+            "title": "Max",
+            "fields": [
+              {
+                "id": "x",
+                "title": "X",
+                "dataType": "float",
+                "defaultValue": 0
+              },
+              {
+                "id": "y",
+                "title": "Y",
+                "dataType": "float",
+                "defaultValue": 0
+              },
+              {
+                "id": "z",
+                "title": "Z",
+                "dataType": "float",
+                "defaultValue": 0
+              }
+            ]
+          }
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "min",
+      "title": "Min",
+      "dataType": "numberArray",
+      "alternates": [
+        {
+          "id": "min",
+          "dataType": "object",
+          "subForm": {
+            "id": "min",
+            "title": "Min",
+            "fields": [
+              {
+                "id": "x",
+                "title": "X",
+                "dataType": "float",
+                "defaultValue": 0
+              },
+              {
+                "id": "y",
+                "title": "Y",
+                "dataType": "float",
+                "defaultValue": 0
+              },
+              {
+                "id": "z",
+                "title": "Z",
+                "dataType": "float",
+                "defaultValue": 0
+              }
+            ]
+          }
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "description": "Defines a bounding box with min and max coordinates.",
+  "title": "Voxel Shapes Box"
+}

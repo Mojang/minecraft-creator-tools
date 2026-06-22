@@ -1,0 +1,103 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "minecraft:block_placer",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "block",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "places "
+          },
+          {
+            "type": "value",
+            "field": "block"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "aligned_placement",
+      "title": "Aligned Placement",
+      "description": "If true, block placement through this item will be aligned while holding the interaction button down. Defaults to false.",
+      "dataType": "boolean",
+      "defaultValue": false
+    },
+    {
+      "id": "block",
+      "title": "Block",
+      "description": "Defines the block that will be placed.",
+      "dataType": "object",
+      "isRequired": true
+    },
+    {
+      "id": "replace_block_item",
+      "title": "Replace Block Item",
+      "description": "If true, the item will be registered as the item for this block. This item will be returned by default when the block is broken/picked. Note: the identifier for this item must match the block's identifier for this field to be valid. Defaults to false.",
+      "dataType": "boolean",
+      "defaultValue": false
+    },
+    {
+      "id": "use_on",
+      "description": "List of block descriptors of the blocks that this item can be used on. If left empty, all blocks will be allowed.",
+      "dataType": "objectArray",
+      "defaultValue": [],
+      "maxLength": 256,
+      "subForm": {
+        "id": "use_on",
+        "title": "Use On",
+        "fields": [
+          {
+            "id": "name",
+            "title": "Name",
+            "dataType": "string",
+            "defaultValue": ""
+          },
+          {
+            "id": "states",
+            "title": "States",
+            "dataType": "int",
+            "defaultValue": {},
+            "alternates": [
+              {
+                "id": "states",
+                "dataType": "string"
+              },
+              {
+                "id": "states",
+                "dataType": "boolean"
+              }
+            ]
+          },
+          {
+            "id": "tags",
+            "title": "Tags",
+            "dataType": "string",
+            "defaultValue": ""
+          }
+        ]
+      },
+      "alternates": [
+        {
+          "id": "use_on",
+          "dataType": "string"
+        },
+        {
+          "id": "use_on",
+          "dataType": "object"
+        }
+      ]
+    }
+  ],
+  "description": "Items with the block_placer component will place a block when used. \nThis component can also be used instead of the \"minecraft:icon\" component to render the referenced block as the item icon.",
+  "title": "Item Block Placer",
+  "samples": {}
+}

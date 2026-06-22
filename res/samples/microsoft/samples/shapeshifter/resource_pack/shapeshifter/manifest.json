@@ -1,0 +1,24 @@
+{
+	"format_version": 2,
+	"header": {
+		"name": "shapeshifter",
+		"description": "shapeshifter Resource Pack",
+		"uuid": "0b9782bd-25c1-6929-669c-a114032526c5",
+		"version": [1, 0, 0],
+		"min_engine_version": [1, 16, 0]
+	},
+	"metadata": {
+		"authors": ["camwilkerson"],
+		"generated_with": {
+			"blockbench_entity_wizard": ["1.8.2"]
+		}
+	},
+	"modules": [
+		{
+			"description": "shapeshifter",
+			"type": "resources",
+			"uuid": "1e3335b2-3377-94e6-6068-f7ba563a0a41",
+			"version": [1, 0, 0]
+		}
+	]
+}

@@ -1,0 +1,27 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has explosion resistance"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Detailed Resistance",
+  "fields": [
+    {
+      "id": "explosion_resistance",
+      "title": "Explosion Resistance",
+      "description": "Sets the explosion resistance for the block. Greater values result in greater resistance to explosions. The scale will be different for different explosion power levels. A negative value or 0 means it will easily explode; larger numbers increase level of resistance.",
+      "dataType": "float",
+      "isRequired": true
+    }
+  ],
+  "description": "Sets the block's resistance to explosions from TNT, creepers, and other sources. Higher values make blocks harder to destroy—bedrock has near-infinite resistance while glass shatters easily. Configure appropriate resistance to match the block's intended durability in survival gameplay.",
+  "title": "Block Detailed Resistance"
+}

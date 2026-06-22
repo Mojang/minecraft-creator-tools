@@ -1,0 +1,156 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Play Dead Behavior",
+  "description": "Allows this entity to pretend to be dead to avoid being targeted by attackers.",
+  "properties": {
+    "apply_regeneration": {
+      "title": "Apply Regeneration",
+      "description": "Whether the mob will receive the regeneration effect while playing dead.",
+      "type": "boolean",
+      "default": false
+    },
+    "control_flags": {
+      "title": "Control Flags",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "jump",
+          "look",
+          "move"
+        ]
+      }
+    },
+    "damage_sources": {
+      "title": "Damage Sources",
+      "description": "The list of Entity Damage Sources that will cause this mob to play dead.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "all",
+          "anvil",
+          "block_explosion",
+          "campfire",
+          "charging",
+          "contact",
+          "drowning",
+          "entity_attack",
+          "entity_explosion",
+          "fall",
+          "falling_block",
+          "fire",
+          "fire_tick",
+          "fireworks",
+          "fly_into_wall",
+          "freezing",
+          "lava",
+          "lightning",
+          "mace_smash",
+          "magic",
+          "magma",
+          "none",
+          "override",
+          "piston",
+          "projectile",
+          "ram_attack",
+          "self_destruct",
+          "sonic_boom",
+          "soul_campfire",
+          "stalactite",
+          "stalagmite",
+          "starve",
+          "suffocation",
+          "temperature",
+          "thorns",
+          "void",
+          "wither"
+        ]
+      }
+    },
+    "duration": {
+      "title": "Duration",
+      "description": "The amount of time the mob will remain playing dead (in seconds).",
+      "type": "number",
+      "default": 1
+    },
+    "filters": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "title": "Domain",
+              "description": "The domain the test should be performed in.",
+              "type": "object"
+            },
+            "operator": {
+              "title": "Operator",
+              "description": "The comparison to apply with 'value'.",
+              "type": "object"
+            },
+            "subject": {
+              "title": "Subject",
+              "description": "The subject of this filter test.",
+              "type": "object"
+            },
+            "test": {
+              "title": "Test",
+              "description": "The name of the test to apply.",
+              "type": "string"
+            },
+            "value": {
+              "title": "Value",
+              "description": "The value being compared with the test.",
+              "type": "object"
+            }
+          }
+        },
+        {
+          "type": "object"
+        }
+      ],
+      "title": "Filters",
+      "description": "The list of other triggers that are required for the mob to activate play dead"
+    },
+    "force_below_health": {
+      "title": "Force Below Health",
+      "description": "The amount of health at which damage will cause the mob to play dead.",
+      "type": "integer",
+      "default": 0
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "type": "integer",
+      "default": 0
+    },
+    "random_damage_range": {
+      "title": "Random Damage Range",
+      "description": "The range of damage that may cause the goal to start depending on randomness. Damage taken below the min will never cause the goal to start. Damage taken above the max will always cause the goal to start.",
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        {
+          "$ref": "../../common/intrange.schema.json"
+        }
+      ]
+    },
+    "random_start_chance": {
+      "title": "Random Start Chance",
+      "description": "The likelihood of this goal starting upon taking damage.",
+      "type": "number",
+      "default": 1
+    }
+  }
+}

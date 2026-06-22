@@ -1,0 +1,118 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Shareables",
+  "description": "Defines a list of items the mob wants to share or pick up. Items can be configured with optional parameters to control pickup, sharing, and inventory behavior.",
+  "properties": {
+    "all_items": {
+      "title": "All Items",
+      "description": "A bucket for all other items in the game. Note this category is always least priority items.",
+      "type": "boolean",
+      "default": false
+    },
+    "all_items_max_amount": {
+      "title": "All Items Max Amount",
+      "description": "Maximum number of this item the mob will hold.",
+      "type": "integer",
+      "default": -1
+    },
+    "all_items_surplus_amount": {
+      "title": "All Items Surplus Amount",
+      "description": "Number of this item considered extra that the entity wants to share.",
+      "type": "integer",
+      "default": -1
+    },
+    "all_items_want_amount": {
+      "title": "All Items Want Amount",
+      "description": "Number of this item this entity wants to share.",
+      "type": "integer",
+      "default": -1
+    },
+    "items": {
+      "title": "Items",
+      "description": "List of items or item tags that the entity wants to share. Items in-game will match to this list from top to bottom, meaning that the first occurance of a match, be it name or tag, will shadow those coming after.\n\nSample values:\n• bogged: [{\"item\":\"minecraft:netherite_sword\",\"priority\"...",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "admire": {
+            "title": "Admire",
+            "description": "Mob will admire the item after picking up by looking at it. For this to happen the mob needs to have an Admire component and an Admire goal.",
+            "type": "boolean",
+            "default": false
+          },
+          "barter": {
+            "title": "Barter",
+            "description": "Mob will barter for the item after picking it up. For this to work the mob needs to have a Barter component and a Barter goal.",
+            "type": "boolean",
+            "default": false
+          },
+          "consume_item": {
+            "title": "Consume Item",
+            "description": "Determines whether the mob will consume the item or not.",
+            "type": "boolean",
+            "default": false
+          },
+          "craft_into": {
+            "title": "Craft Into",
+            "description": "Defines the item this entity wants to craft with the item defined by \"item\". Should be an item name.",
+            "type": "string"
+          },
+          "item": {
+            "title": "Item",
+            "description": "The name of the item. Aux value can be specified, for instance 'minecraft:skull:1'. Alternatively, a tag can be specified to match all items with that tag.",
+            "type": "string"
+          },
+          "max_amount": {
+            "title": "Max Amount",
+            "description": "Maximum number of this item the mob will hold.",
+            "type": "integer",
+            "default": -1
+          },
+          "pickup_limit": {
+            "title": "Pickup Limit",
+            "description": "Maximum number items the mob will pick up during a single goal tick.",
+            "type": "integer",
+            "default": -1
+          },
+          "pickup_only": {
+            "title": "Pickup Only",
+            "description": "Determines whether the mob can only pickup the item and not drop it.",
+            "type": "boolean",
+            "default": false
+          },
+          "priority": {
+            "title": "Priority",
+            "description": "Prioritizes which items the entity prefers. 0 is the highest priority.",
+            "type": "integer",
+            "default": 0
+          },
+          "stored_in_inventory": {
+            "title": "Stored In Inventory",
+            "description": "Determines whether the mob will try to put the item in its inventory if it has the inventory component and if it can't be equipped.",
+            "type": "boolean",
+            "default": false
+          },
+          "surplus_amount": {
+            "title": "Surplus Amount",
+            "description": "Number of this item considered extra that the entity wants to share.",
+            "type": "integer",
+            "default": -1
+          },
+          "want_amount": {
+            "title": "Want Amount",
+            "description": "Number of this item this entity wants to share.",
+            "type": "integer",
+            "default": -1
+          }
+        }
+      }
+    },
+    "singular_pickup": {
+      "title": "Singular Pickup",
+      "description": "Boolean value that controls if the mob is able to pick up more of the same item if it is already holding that item",
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

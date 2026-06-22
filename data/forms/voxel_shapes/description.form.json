@@ -1,0 +1,26 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines voxel shape identifier"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Description",
+  "fields": [
+    {
+      "id": "identifier",
+      "title": "Identifier",
+      "dataType": "object",
+      "isRequired": true
+    }
+  ],
+  "description": "Defines voxel shape identifier.",
+  "title": "Voxel Shapes Description"
+}

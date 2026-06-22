@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "client_deferred_rendering/pointlightconfig_pointlightconfigsettings",
+  "title": "Point Light Settings",
+  "description": "Struct PointLightConfig PointLightConfigSettings Client Deferred Rendering",
+  "type": "object",
+  "properties": {
+    "format_version": {
+      "title": "format_version",
+      "description": "format_version",
+      "type": "string"
+    },
+    "minecraft:point_light_settings": {
+      "title": "minecraft:point_light_settings",
+      "description": "minecraft:point_light_settings",
+      "type": "object",
+      "properties": {
+        "colors": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minLength": 3,
+              "maxLength": 3
+            }
+          ],
+          "title": "colors",
+          "description": "colors"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "PointLightConfig PointLightConfigSettings PointLightSettings",
+          "description": "PointLightConfig PointLightConfigSettings PointLightSettings",
+          "body": {
+            "colors": ""
+          }
+        }
+      ]
+    }
+  }
+}

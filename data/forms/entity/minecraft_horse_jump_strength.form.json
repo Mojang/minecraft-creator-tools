@@ -1,0 +1,49 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has horse-like jump strength"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "minecraft:horse.jump_strength",
+  "title": "Horse Jump Strength",
+  "description": "Determines the jump height for a horse or similar entity, like a donkey.",
+  "fields": [
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "Value of jump strength the entity has when spawned.",
+      "dataType": "object",
+      "subForm": {
+        "description": "Describes the range of jump strength.",
+        "fields": [
+          {
+            "id": "range_min",
+            "title": "Range Minimum",
+            "description": "Defines the minimum strength level.",
+            "dataType": "float"
+          },
+          {
+            "id": "range_max",
+            "title": "Range Maximum",
+            "description": "Defines the maximum strength level.",
+            "dataType": "float"
+          }
+        ]
+      },
+      "alternates": [
+        {
+          "dataType": "float"
+        }
+      ]
+    }
+  ],
+  "samples": {}
+}

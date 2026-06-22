@@ -1,0 +1,48 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has block reference with states and tags"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "BlockDescriptorProxy",
+  "fields": [
+    {
+      "id": "name",
+      "title": "Name",
+      "dataType": "string",
+      "defaultValue": ""
+    },
+    {
+      "id": "states",
+      "title": "States",
+      "dataType": "int",
+      "defaultValue": {},
+      "alternates": [
+        {
+          "id": "states",
+          "dataType": "string"
+        },
+        {
+          "id": "states",
+          "dataType": "boolean"
+        }
+      ]
+    },
+    {
+      "id": "tags",
+      "title": "Tags",
+      "dataType": "string",
+      "defaultValue": ""
+    }
+  ],
+  "description": "References a block type with optional state values and tags for item components. Used by components like minecraft:block_placer to specify which block an item places, or by mining behaviors to identify blocks the tool affects. Enables items that interact with specific block types.",
+  "title": "Item BlockDescriptorProxy"
+}

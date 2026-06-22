@@ -1,0 +1,51 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "cannot travel through portals"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [],
+  "description": "Prevents the entity from changing dimension through portals.",
+  "title": "Dimension Bound",
+  "samples": {
+    "/vanilla/behavior_pack/entities/arrow.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:dimension_bound/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/dragon_fireball.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:dimension_bound/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/ender_dragon.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:dimension_bound/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/fireball.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:dimension_bound/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/fishing_hook.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:dimension_bound/",
+        "content": {}
+      }
+    ]
+  },
+  "id": "minecraft:dimension_bound"
+}

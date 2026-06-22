@@ -1,0 +1,194 @@
+{
+  "formatVersion": "1.0.0",
+  "identifier": "magic_wand",
+  "description": "A wooden wand with magical crystal tip",
+  "pixelsPerUnit": 2,
+  "textures": {
+    "wood": {
+      "background": {
+        "type": "stipple_noise",
+        "colors": [
+          "#5D4037",
+          "#4E342E",
+          "#6D4C41"
+        ],
+        "seed": 3101,
+        "factor": 0.2
+      }
+    },
+    "handle": {
+      "background": {
+        "type": "dither_noise",
+        "colors": [
+          "#3E2723",
+          "#4E342E"
+        ],
+        "seed": 3102,
+        "factor": 0.15
+      }
+    },
+    "crystal": {
+      "background": {
+        "type": "gradient",
+        "colors": [
+          "#00FFFF",
+          "#00CED1",
+          "#40E0D0"
+        ],
+        "seed": 3103
+      },
+      "effects": {
+        "lighting": {
+          "preset": "pillow",
+          "intensity": 0.4
+        },
+        "overlay": {
+          "pattern": "sparkle",
+          "density": 0.2,
+          "seed": 3104
+        }
+      }
+    }
+  },
+  "bones": [
+    {
+      "name": "wand",
+      "pivot": [
+        0,
+        10,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -1,
+            0,
+            -1
+          ],
+          "size": [
+            2,
+            6,
+            2
+          ],
+          "faces": {
+            "north": {
+              "textureId": "handle"
+            },
+            "south": {
+              "textureId": "handle"
+            },
+            "east": {
+              "textureId": "handle"
+            },
+            "west": {
+              "textureId": "handle"
+            },
+            "up": {
+              "textureId": "handle"
+            },
+            "down": {
+              "textureId": "handle"
+            }
+          }
+        },
+        {
+          "origin": [
+            -0.5,
+            6,
+            -0.5
+          ],
+          "size": [
+            1,
+            14,
+            1
+          ],
+          "faces": {
+            "north": {
+              "textureId": "wood"
+            },
+            "south": {
+              "textureId": "wood"
+            },
+            "east": {
+              "textureId": "wood"
+            },
+            "west": {
+              "textureId": "wood"
+            },
+            "up": {
+              "textureId": "wood"
+            },
+            "down": {
+              "textureId": "wood"
+            }
+          }
+        },
+        {
+          "origin": [
+            -1.5,
+            20,
+            -1.5
+          ],
+          "size": [
+            3,
+            4,
+            3
+          ],
+          "faces": {
+            "north": {
+              "textureId": "crystal"
+            },
+            "south": {
+              "textureId": "crystal"
+            },
+            "east": {
+              "textureId": "crystal"
+            },
+            "west": {
+              "textureId": "crystal"
+            },
+            "up": {
+              "textureId": "crystal"
+            },
+            "down": {
+              "textureId": "crystal"
+            }
+          }
+        },
+        {
+          "origin": [
+            -1,
+            24,
+            -1
+          ],
+          "size": [
+            2,
+            2,
+            2
+          ],
+          "faces": {
+            "north": {
+              "textureId": "crystal"
+            },
+            "south": {
+              "textureId": "crystal"
+            },
+            "east": {
+              "textureId": "crystal"
+            },
+            "west": {
+              "textureId": "crystal"
+            },
+            "up": {
+              "textureId": "crystal"
+            },
+            "down": {
+              "textureId": "crystal"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "category": "item"
+}

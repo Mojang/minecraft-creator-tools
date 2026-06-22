@@ -1,0 +1,35 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "responds when its melee attack is blocked"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "knockback_strength",
+      "title": "Knockback Strength",
+      "description": "The strength with which blocking entities should be knocked back",
+      "defaultValue": 3,
+      "dataType": "float"
+    },
+    {
+      "id": "reaction_choices",
+      "title": "Reaction Choices",
+      "description": "A list of weighted responses to the melee attack being blocked",
+      "defaultValue": "[ ]",
+      "dataType": "stringArray"
+    }
+  ],
+  "description": "Defines the ravager's response to their melee attack being blocked.",
+  "title": "Ravager Blocked",
+  "samples": {},
+  "id": "minecraft:ravager_blocked"
+}

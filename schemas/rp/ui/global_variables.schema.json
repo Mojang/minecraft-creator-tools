@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "ui/ui_global_variables",
+  "title": "UI Global Variables",
+  "description": "The _global_variables.json file that defines global variables used across all UI screens in Minecraft. Variables are defined with '$' prefix and can include colors, sizes, and other values.",
+  "type": "object",
+  "properties": {
+    "$button_text_color": {
+      "title": "$button Text Color",
+      "description": "\n\nSample values:\n• colors: [1,1,1]",
+      "type": "string"
+    },
+    "$background_color": {
+      "title": "$background Color",
+      "description": "\n\nSample values:\n• colors: [0.2,0.2,0.2,0.8]",
+      "type": "string"
+    },
+    "$highlight_color": {
+      "title": "$highlight Color",
+      "description": "\n\nSample values:\n• colors: [1,0.84,0]",
+      "type": "string"
+    }
+  }
+}

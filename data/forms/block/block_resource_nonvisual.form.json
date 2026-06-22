@@ -1,0 +1,26 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has custom sound"
+          }
+        ]
+      }
+    ]
+  },
+  "title": "Block Resource Properties",
+  "description": "Defines properties related to a solid unit cube's audio.",
+  "fields": [
+    {
+      "id": "sound",
+      "title": "Sound",
+      "description": "Sound item to use.",
+      "lookupId": "soundDefinition",
+      "dataType": "string"
+    }
+  ]
+}

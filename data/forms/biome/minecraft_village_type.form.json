@@ -1,0 +1,62 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "type",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "generates "
+          },
+          {
+            "type": "value",
+            "field": "type"
+          },
+          {
+            "type": "literal",
+            "text": " style villages"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "minecraft:village_type",
+  "fields": [
+    {
+      "id": "type",
+      "title": "VillageType",
+      "dataType": "string",
+      "choices": [
+        {
+          "id": "default",
+          "title": "Default"
+        },
+        {
+          "id": "desert",
+          "title": "Desert"
+        },
+        {
+          "id": "ice",
+          "title": "Ice"
+        },
+        {
+          "id": "savanna",
+          "title": "Savanna"
+        },
+        {
+          "id": "taiga",
+          "title": "Taiga"
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "description": "Determines the type of village for the Biome",
+  "title": "Biome Village Type"
+}

@@ -1,0 +1,81 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "minecraft:beards_and_shavers",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "modifies terrain around structures (beards add, shavers remove)"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "bounding_box_min",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "operates within a defined bounding box"
+          }
+        ],
+        "priority": 3
+      },
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "blends structures naturally into terrain"
+          }
+        ],
+        "priority": 3
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "format_version",
+      "title": "Format Version",
+      "dataType": "string"
+    },
+    {
+      "dataType": "object",
+      "id": "description",
+      "title": "Description",
+      "isRequired": true,
+      "subForm": {
+        "fields": [
+          {
+            "dataType": "string",
+            "id": "identifier",
+            "title": "Identifier",
+            "description": "The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
+            "isRequired": true
+          }
+        ]
+      }
+    },
+    {
+      "dataType": "stringArray",
+      "id": "bounding_box_min",
+      "title": "Bounding Box Min",
+      "description": "Dimensions of the Bounding Box",
+      "isRequired": true
+    },
+    {
+      "dataType": "stringArray",
+      "id": "bounding_box_max",
+      "title": "Bounding Box Max",
+      "description": "Dimensions of the Bounding Box",
+      "isRequired": true
+    }
+  ],
+  "isInternal": true,
+  "description": "Carves or fills terrain within a defined bounding box during world generation. 'Beard' operations add blocks below structures to connect them to ground, while 'shaver' operations remove blocks above to create clearance. Used for natural integration of structures like villages into varied terrain.",
+  "title": "Beards And Shavers"
+}

@@ -1,0 +1,12 @@
+{
+  "files": [
+    "blocks.json",
+    "manifest.json"
+  ],
+  "folders": [
+    "block_culling",
+    "models",
+    "texts",
+    "textures"
+  ]
+}

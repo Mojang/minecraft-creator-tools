@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "feature/feature_rule_definition",
+  "title": "Feature Rule Definition",
+  "description": "Feature Rule Definition",
+  "type": "object",
+  "properties": {
+    "distribution": {
+      "$ref": "./distribution.schema.json",
+      "title": "Distribution",
+      "description": "Parameters controlling the initial scatter of the feature.",
+      "defaultSnippets": [
+        {
+          "label": "Distribution",
+          "description": "Controls the scatter distribution of features during world generation.",
+          "body": {
+            "iterations": 1,
+            "scatter_chance": 1,
+            "coordinate_eval_order": "xzy",
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    },
+    "description": {
+      "title": "description",
+      "description": "Identifier for the Feature Rule and Feture to place.",
+      "type": "object"
+    },
+    "conditions": {
+      "title": "conditions",
+      "description": "Parameters to control where and when the feature will be placed.",
+      "type": "object"
+    }
+  }
+}

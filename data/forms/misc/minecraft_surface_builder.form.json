@@ -1,0 +1,27 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines surface builder component"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "minecraft:surface_builder",
+  "fields": [
+    {
+      "id": "builder",
+      "title": "Builder",
+      "description": "Controls the block types used for terrain generation.",
+      "dataType": "object",
+      "isRequired": true
+    }
+  ],
+  "description": "Controls the materials used for terrain generation.",
+  "title": "Minecraft Surface Builder Misc"
+}

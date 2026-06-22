@@ -1,0 +1,42 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has a variable step height for climbing blocks"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "base_value",
+      "title": "Base Value",
+      "description": "The maximum auto step height when on any other block.",
+      "defaultValue": 0.5625,
+      "dataType": "float"
+    },
+    {
+      "id": "controlled_value",
+      "title": "Controlled Value",
+      "description": "The maximum auto step height when on any other block and controlled by the player.",
+      "defaultValue": 0.5625,
+      "dataType": "float"
+    },
+    {
+      "id": "jump_prevented_value",
+      "title": "Jump Prevented Value",
+      "description": "The maximum auto step height when on a block that prevents jumping.",
+      "defaultValue": 0.5625,
+      "dataType": "float"
+    }
+  ],
+  "description": "Entities with this component will have a maximum auto step height that is different depending on whether they are on a block that prevents jumping. Incompatible with \"runtime_identifier\": \"minecraft:horse\".",
+  "title": "Variable Max Auto Step",
+  "samples": {},
+  "id": "minecraft:variable_max_auto_step"
+}

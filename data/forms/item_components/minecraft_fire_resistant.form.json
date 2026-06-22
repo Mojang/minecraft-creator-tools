@@ -1,0 +1,27 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "minecraft:fire_resistant",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "is fire resistant"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "Determines whether the item is immune to burning when dropped in fire or lava.",
+      "dataType": "boolean",
+      "defaultValue": true
+    }
+  ],
+  "description": "Determines whether the item is immune to burning when dropped in fire or lava.",
+  "title": "Item Components Fire Resistant"
+}

@@ -1,0 +1,134 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "has_gravity",
+            "comparison": "==",
+            "value": false
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "is not affected by gravity (floats or hovers)"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "has_collision",
+            "comparison": "==",
+            "value": false
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has no collision (can pass through blocks and entities)"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "push_towards_closest_space",
+            "comparison": "==",
+            "value": true
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "will be pushed out when stuck inside blocks"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "has_gravity",
+            "comparison": "!=",
+            "value": false
+          },
+          {
+            "field": "has_collision",
+            "comparison": "!=",
+            "value": false
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has standard physics with gravity and collision"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "has_collision",
+      "title": "Has Collision",
+      "description": "Whether or not the entity collides with things.",
+      "defaultValue": true,
+      "dataType": "boolean"
+    },
+    {
+      "id": "has_gravity",
+      "title": "Has Gravity",
+      "description": "Whether or not the entity is affected by gravity.",
+      "defaultValue": true,
+      "dataType": "boolean"
+    },
+    {
+      "id": "push_towards_closest_space",
+      "title": "Push Towards Closest Space",
+      "description": "Whether or not the entity should be pushed towards the nearest open area when stuck inside a block.",
+      "defaultValue": false,
+      "dataType": "boolean"
+    }
+  ],
+  "description": "Defines physics properties of an actor, including if it is affected by gravity or if it collides with objects.",
+  "title": "Physics",
+  "samples": {
+    "/vanilla/behavior_pack/entities/allay.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:physics/",
+        "content": {
+          "has_gravity": false
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/area_effect_cloud.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:physics/",
+        "content": {
+          "has_collision": false
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/armor_stand.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:physics/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/arrow.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:physics/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/bat.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:physics/",
+        "content": {}
+      }
+    ]
+  },
+  "id": "minecraft:physics"
+}

@@ -1,0 +1,69 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has creative menu category"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Menu Category",
+  "fields": [
+    {
+      "id": "category",
+      "title": "CreativeItemCategory",
+      "description": "The creative inventory or recipe book tab that the block is placed into. Default to \"none\".",
+      "dataType": "string",
+      "choices": [
+        {
+          "id": "construction",
+          "title": "Construction"
+        },
+        {
+          "id": "equipment",
+          "title": "Equipment"
+        },
+        {
+          "id": "items",
+          "title": "Items"
+        },
+        {
+          "id": "nature",
+          "title": "Nature"
+        },
+        {
+          "id": "none",
+          "title": "None"
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "group",
+      "title": "Group",
+      "description": "The expandable group that the block is a part of. Must be a namespace and can use vanilla ones",
+      "dataType": "string",
+      "defaultValue": "",
+      "validity": [
+        {
+          "comparison": "pattern",
+          "value": "^\\S+$"
+        }
+      ]
+    },
+    {
+      "id": "is_hidden_in_commands",
+      "title": "Is Hidden In Commands",
+      "description": "Is the block hidden from use in commands.",
+      "dataType": "boolean",
+      "defaultValue": false
+    }
+  ],
+  "description": "Configures the block behavior in inventory and menu category",
+  "title": "Block Menu Category"
+}

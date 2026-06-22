@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Trunk Height",
+  "description": "Configuration object for the trunk height.",
+  "type": "object",
+  "properties": {
+    "base": {
+      "title": "Base",
+      "description": "Min height for the trunk.",
+      "type": "integer"
+    },
+    "height_rand_a": {
+      "title": "Height Rand A",
+      "description": "Tree height modifier A.",
+      "type": "integer"
+    },
+    "height_rand_b": {
+      "title": "Height Rand B",
+      "description": "Tree height modifier B.",
+      "type": "integer"
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "Trunk Height",
+      "description": "Configuration object for the trunk height.",
+      "body": {
+        "base": 0,
+        "height_rand_a": 0,
+        "height_rand_b": 0
+      }
+    }
+  ]
+}

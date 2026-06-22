@@ -1,0 +1,93 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Client Particles Particle Event Node",
+  "description": "Defines actions triggered by particle events like spawning, collision, or expiration. Event nodes can run Molang expressions to modify variables, spawn nested particle effects, play sounds, or control emitter state. Chain multiple effects together for complex reactions like explosions spawning secondary debris particles.",
+  "properties": {
+    "expression": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        {
+          "type": "string"
+        },
+        {
+          "description": "\n\nProperties:\n• expression (string)\n• version (int)",
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "expression": {
+                "title": "Expression",
+                "type": "string"
+              },
+              "version": {
+                "title": "Version",
+                "type": "integer"
+              }
+            }
+          }
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "title": "Expression"
+    },
+    "log": {
+      "title": "Log",
+      "type": "string",
+      "default": ""
+    },
+    "particle_effect": {
+      "title": "Particle Effect",
+      "description": "\n\nProperties:\n• effect (object)\n• pre_effect_expression = 0\n• type (string)",
+      "$ref": "./client_particles_particle_visual_effect_event.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Client Particles Particle Visual Effect Event",
+          "description": "Spawns another particle effect when triggered by particle events, enabling cascading visual sequences. Reference other particle effects by identifier to create chains like explosions spawning embers, impacts creating dust clouds, or magical projectiles trailing sparkles. Builds complex layered effects from simpler reusable components.",
+          "body": {
+            "effect": "",
+            "pre_effect_expression": 0,
+            "type": ""
+          }
+        }
+      ]
+    },
+    "randomize": {
+      "title": "Randomize",
+      "description": "\n\nProperties:\n• expression = 0\n• log (string) = \n• particle_effect (object) = {\"effect\":\"\",\"pre_ef\n• randomize\n• sequence\n• sound_effect (object)\n• weight (float)",
+      "type": "array",
+      "items": {
+        "$ref": "./client_particles_particle_event_random_node.schema.json"
+      }
+    },
+    "sequence": {
+      "title": "Sequence",
+      "description": "\n\nProperties:\n• expression = 0\n• log (string) = \n• particle_effect (object) = {\"effect\":\"\",\"pre_ef\n• randomize\n• sequence\n• sound_effect (object)",
+      "type": "array",
+      "items": {
+        "$ref": "./client_particles_particle_event_node.schema.json"
+      }
+    },
+    "sound_effect": {
+      "title": "Sound Effect",
+      "description": "\n\nProperties:\n• event_name (string)",
+      "$ref": "./client_particles_particle_sound_effect_event.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Client Particles Particle Sound Effect Event",
+          "description": "Plays a sound effect when triggered by particle events like spawning, collision, or expiration. Reference sounds defined in sound_definitions.json using their identifier. Synchronizes audio with visual particle moments—sparks crackling, explosions booming, or magical effects chiming for immersive multi-sensory feedback.",
+          "body": {
+            "event_name": ""
+          }
+        }
+      ]
+    }
+  }
+}

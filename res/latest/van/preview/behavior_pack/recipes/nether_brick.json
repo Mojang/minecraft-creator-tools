@@ -1,0 +1,28 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:nether_brick"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "pattern": [
+      "NN",
+      "NN"
+    ],
+    "key": {
+      "N": {
+        "item": "minecraft:netherbrick"
+      }
+    },
+	"unlock": [
+      {
+        "item": "minecraft:netherbrick"
+      }
+    ],
+    "result": {
+      "item": "minecraft:nether_brick"
+    }
+  }
+}

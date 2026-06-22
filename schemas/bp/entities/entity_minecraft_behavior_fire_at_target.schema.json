@@ -1,0 +1,249 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Fire At Target Behavior",
+  "description": "Allows an entity to attack by firing a shot with a delay. Anchor and offset parameters of this component overrides the anchor and offset from projectile component.",
+  "properties": {
+    "attack_cooldown": {
+      "title": "Attack Cooldown",
+      "description": "The cooldown time in seconds before this goal can be used again.\n\nSample values:\n• breeze: 0.5",
+      "type": "number",
+      "default": 0.5
+    },
+    "attack_range": {
+      "title": "Attack Range",
+      "description": "Target needs to be within this range for the attack to happen.\n\nSample values:\n• breeze: [0,16]",
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        {
+          "$ref": "../../common/floatrange.schema.json"
+        }
+      ]
+    },
+    "control_flags": {
+      "title": "Control Flags",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "jump",
+          "look",
+          "move"
+        ]
+      }
+    },
+    "filters": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "title": "Domain",
+              "description": "The domain the test should be performed in.",
+              "type": "object"
+            },
+            "operator": {
+              "title": "Operator",
+              "description": "The comparison to apply with 'value'.",
+              "type": "object"
+            },
+            "subject": {
+              "title": "Subject",
+              "description": "The subject of this filter test.",
+              "type": "object"
+            },
+            "test": {
+              "title": "Test",
+              "description": "The name of the test to apply.",
+              "type": "string"
+            },
+            "value": {
+              "title": "Value",
+              "description": "The value being compared with the test.",
+              "type": "object"
+            }
+          }
+        },
+        {
+          "type": "object"
+        }
+      ],
+      "title": "Filters",
+      "description": "Conditions that need to be met for the behavior to start.\n\nSample values:\n• breeze: {\"all_of\":[{\"test\":\"is_navigating\",\"value\":fals..."
+    },
+    "max_head_rotation_x": {
+      "title": "Max Head Rotation X",
+      "description": "Maximum head rotation (in degrees), on the X-axis, that this entity can apply while trying to look at the target.",
+      "type": "number",
+      "default": 30
+    },
+    "max_head_rotation_y": {
+      "title": "Max Head Rotation Y",
+      "description": "Maximum head rotation (in degrees), on the Y-axis, that this entity can apply while trying to look at the target.",
+      "type": "number",
+      "default": 30
+    },
+    "owner_anchor": {
+      "title": "Owner Anchor",
+      "description": "Entity anchor for the projectile spawn location.\n\nSample values:\n• breeze: 2",
+      "type": "object",
+      "default": 2
+    },
+    "owner_offset": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        {
+          "description": "\n\nProperties:\n• x (float) = 0\n• y (float) = 0\n• z (float) = 0",
+          "type": "object",
+          "properties": {
+            "x": {
+              "title": "X",
+              "type": "number",
+              "default": 0
+            },
+            "y": {
+              "title": "Y",
+              "type": "number",
+              "default": 0
+            },
+            "z": {
+              "title": "Z",
+              "type": "number",
+              "default": 0
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Owner Offset (object)",
+              "description": "Use Owner Offset as an object",
+              "body": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              }
+            }
+          ]
+        }
+      ],
+      "title": "Owner Offset",
+      "description": "Offset vector from the owner_anchor.\n\nSample values:\n• breeze: [0,0.3,0]",
+      "defaultSnippets": [
+        {
+          "label": "Owner Offset (object)",
+          "description": "Use Owner Offset as an object",
+          "body": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    },
+    "post_shoot_delay": {
+      "title": "Post Shoot Delay",
+      "description": "Time in seconds between firing the projectile and ending the goal.\n\nSample values:\n• breeze: 0.2",
+      "type": "number",
+      "default": 0.20000000298023224
+    },
+    "pre_shoot_delay": {
+      "title": "Pre Shoot Delay",
+      "description": "Time in seconds before firing the projectile.\n\nSample values:\n• breeze: 0.75",
+      "type": "number",
+      "default": 0.75
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.\n\nSample values:\n• breeze: 2",
+      "type": "integer",
+      "default": 0
+    },
+    "projectile_def": {
+      "title": "Projectile Def",
+      "description": "Actor definition to use as projectile for the ranged attack. The actor must be a projectile. This field is required for the goal to be usable.\n\nSample values:\n• breeze: minecraft:breeze_wind_charge_projectile",
+      "type": "string",
+      "default": ""
+    },
+    "ranged_fov": {
+      "title": "Ranged Fov",
+      "description": "Field of view (in degrees) when using sensing to detect a target for attack.\n\nSample values:\n• breeze: 90",
+      "type": "number",
+      "default": 90
+    },
+    "target_anchor": {
+      "title": "Target Anchor",
+      "description": "Entity anchor for projectile target.",
+      "type": "object",
+      "default": 2
+    },
+    "target_offset": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        {
+          "description": "\n\nProperties:\n• x (float) = 0\n• y (float) = 0\n• z (float) = 0",
+          "type": "object",
+          "properties": {
+            "x": {
+              "title": "X",
+              "type": "number",
+              "default": 0
+            },
+            "y": {
+              "title": "Y",
+              "type": "number",
+              "default": 0
+            },
+            "z": {
+              "title": "Z",
+              "type": "number",
+              "default": 0
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Target Offset (object)",
+              "description": "Use Target Offset as an object",
+              "body": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              }
+            }
+          ]
+        }
+      ],
+      "title": "Target Offset",
+      "description": "Offset vector from the target_anchor.\n\nSample values:\n• breeze: [0,0.5,0]",
+      "defaultSnippets": [
+        {
+          "label": "Target Offset (object)",
+          "description": "Use Target Offset as an object",
+          "body": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "detects when specific blocks are broken nearby"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "on_break",
+      "title": "Break",
+      "description": "List of blocks to watch for being broken to fire off a specified event. If a block is in multiple lists, multiple events will fire.",
+      "dataType": "objectArray",
+      "subForm": {
+        "id": "on_break_item",
+        "title": "Block Break Entry",
+        "fields": [
+          {
+            "id": "block_list",
+            "title": "Block List",
+            "description": "List of blocks that trigger the on_block_broken event.",
+            "dataType": "stringArray"
+          },
+          {
+            "id": "on_block_broken",
+            "title": "On Block Broken",
+            "description": "Event to call when a block in block_list is broken.",
+            "dataType": "string"
+          }
+        ]
+      }
+    },
+    {
+      "id": "sources",
+      "title": "Sources",
+      "description": "List of sources that break the block to listen for. If none are specified, all block breaks will be detected.",
+      "dataType": "minecraftFilter"
+    },
+    {
+      "id": "sensor_radius",
+      "title": "Sensor Radius",
+      "description": "The maximum radial distance in which a specified block can be detected. The biggest radius is 32.0.",
+      "defaultValue": 16,
+      "dataType": "float"
+    }
+  ],
+  "description": "Fires off a specified event when a block in the block list is broken within the sensor range.",
+  "title": "Block Sensor",
+  "samples": {},
+  "id": "minecraft:block_sensor"
+}

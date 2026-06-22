@@ -1,0 +1,27 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "Specifies the cubemap identifier used for skybox rendering in Vibrant Visuals mode."
+          }
+        ]
+      }
+    ]
+  },
+  "id": "minecraft:cubemap_identifier",
+  "fields": [
+    {
+      "id": "cubemap_identifier",
+      "title": "Cubemap Identifier",
+      "description": "Identifier of cubemap definition to use",
+      "dataType": "object",
+      "isRequired": true
+    }
+  ],
+  "description": "Set the identifier used for cubemap in Vibrant Visuals mode. Identifiers must resolve to identifiers in valid Cubemap JSON schemas under the \"cubemaps\" directory. Biomes without this component will have default cubemap settings.",
+  "title": "Client Biome Cubemap Identifier"
+}

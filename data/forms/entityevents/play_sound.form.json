@@ -1,0 +1,37 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "play_sound",
+  "title": "Play Sound",
+  "versionIntroduced": "1.21.50",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "plays a sound from the entity"
+          }
+        ]
+      }
+    ]
+  },
+  "description": "Plays a sound as part of an entity event response.",
+  "fields": [
+    {
+      "id": "sound",
+      "description": "The identifier of the sound to play.",
+      "dataType": "string"
+    }
+  ],
+  "tags": [
+    "entityevent"
+  ],
+  "samples": {
+    "samples": [
+      {
+        "path": "Example:",
+        "content": "{\r\n\t\"play_sound\": {\r\n\t\t\"sound\": \"death\"\r\n\t}\r\n}"
+      }
+    ]
+  }
+}

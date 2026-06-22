@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Water Movement",
+  "description": "Customizes how the entity moves through water by adjusting drag coefficient. Lower values let entities glide through water easily like fish, while higher values create resistance for entities that struggle in water. Essential for aquatic mobs, boats, and any entity needing custom underwater physics.",
+  "properties": {
+    "drag_factor": {
+      "title": "Drag Factor",
+      "description": "Drag factor to determine movement speed when in water.\n\nSample values:\n• polar_bear: 0.98",
+      "type": "number",
+      "default": 0.8
+    }
+  }
+}

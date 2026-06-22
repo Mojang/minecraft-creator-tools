@@ -1,0 +1,32 @@
+{
+  "files": [
+    "AquaticChargeAttackGoalDefinition.json",
+    "DefendVillageTargetGoalDefinition.json",
+    "DelayedAttackGoalDefinition.json",
+    "DragonBaseGoalDefinition.json",
+    "DragonChargePlayerGoalDefinition.json",
+    "DragonStrafePlayerGoalDefinition.json",
+    "ExperienceRewardComponentDefinition.json",
+    "GuardianAttackGoalDefinition.json",
+    "LookAtActorBaseGoalDefinition.json",
+    "LookAtEntityGoalDefinition.json",
+    "LookAtPlayerGoalDefinition.json",
+    "LookAtTargetGoalDefinition.json",
+    "LookAtTradingPlayerGoalDefinition.json",
+    "MeleeAttackGoalDefinition.json",
+    "MeleeBoxAttackGoalDefinition.json",
+    "MoveTowardsDwellingRestrictionGoalDefinition.json",
+    "MoveTowardsHomeRestrictionGoalDefinition.json",
+    "MoveTowardsRestrictionGoalDefinition.json",
+    "NearestAttackableTargetGoalDefinition.json",
+    "OcelotAttackGoalDefinition.json",
+    "StompAttackGoalDefinition.json",
+    "TargetGoalDefinition.json",
+    "TimerActorFlag1GoalDefinition.json",
+    "TimerActorFlag2GoalDefinition.json",
+    "TimerActorFlag3GoalDefinition.json",
+    "TimerActorFlagBaseGoalDefinition.json",
+    "ActorDefinitions.json"
+  ],
+  "folders": []
+}

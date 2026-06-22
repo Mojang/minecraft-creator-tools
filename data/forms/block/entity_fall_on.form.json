@@ -1,0 +1,27 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "triggers events when entities fall on it"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Entity Fall On",
+  "fields": [
+    {
+      "id": "min_fall_distance",
+      "title": "Min Fall Distance",
+      "description": "The minimum distance in blocks that an actor needs to fall before events are triggered.",
+      "dataType": "float",
+      "defaultValue": 0
+    }
+  ],
+  "description": "Configures the behavior of an entity falling on this block. The minimum distance in blocks that an actor needs to fall before events are triggered.",
+  "title": "Block Entity Fall On"
+}

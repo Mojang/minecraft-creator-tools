@@ -1,0 +1,664 @@
+{
+  "version": "1.0.0",
+  "description": "Content Wizard Templates - Pre-built templates for Minecraft content creation",
+
+  "modelTemplates": {
+    "description": "3D model geometry templates. These reference designs from ModelDesignTemplates.ts and can be used with previewModelDesign/exportModelDesign MCP tools.",
+    "categories": {
+      "humanoids": {
+        "displayName": "Humanoid Characters",
+        "description": "Two-legged character models including players, villagers, and monsters",
+        "templates": ["humanoid", "wizard", "ghost", "robot"]
+      },
+      "animals": {
+        "displayName": "Animals & Creatures",
+        "description": "Four-legged and other animal-type models",
+        "templates": ["small_animal", "large_animal", "fox", "bird", "fish", "tropical_fish", "insect", "flying"]
+      },
+      "fantasy": {
+        "displayName": "Fantasy Creatures",
+        "description": "Magical and mythical creature models",
+        "templates": ["golem", "slime", "mushroom_creature"]
+      },
+      "objects": {
+        "displayName": "Objects & Items",
+        "description": "Non-creature models like blocks, items, and furniture",
+        "templates": ["block", "item", "crystal", "enchanted_sword", "treasure_chest", "vehicle"]
+      }
+    },
+    "templates": {
+      "humanoid": {
+        "displayName": "Humanoid",
+        "description": "A humanoid mob with head, body, arms, and legs. 32 units tall (~2 blocks).",
+        "category": "humanoids",
+        "height": 32,
+        "tags": ["bipedal", "player-scale", "arms", "legs"]
+      },
+      "wizard": {
+        "displayName": "Wizard",
+        "description": "A robed wizard with pointed hat and magical staff. 40 units tall (~2.5 blocks).",
+        "category": "humanoids",
+        "height": 40,
+        "tags": ["magic", "robed", "staff", "hat"]
+      },
+      "ghost": {
+        "displayName": "Ghost",
+        "description": "A floating spectral entity with ethereal wisps. 24 units tall (~1.5 blocks).",
+        "category": "humanoids",
+        "height": 24,
+        "tags": ["undead", "floating", "spectral"]
+      },
+      "robot": {
+        "displayName": "Robot",
+        "description": "A mechanical humanoid with metal plating and circuits. 32 units tall (~2 blocks).",
+        "category": "humanoids",
+        "height": 32,
+        "tags": ["mechanical", "tech", "metal"]
+      },
+      "small_animal": {
+        "displayName": "Small Animal",
+        "description": "A small quadruped like a pig or sheep. 14 units tall (~0.9 blocks).",
+        "category": "animals",
+        "height": 14,
+        "tags": ["quadruped", "passive", "farm"]
+      },
+      "large_animal": {
+        "displayName": "Large Animal",
+        "description": "A larger quadruped like a horse or cow. 24 units tall (~1.5 blocks).",
+        "category": "animals",
+        "height": 24,
+        "tags": ["quadruped", "rideable", "large"]
+      },
+      "fox": {
+        "displayName": "Fox",
+        "description": "A sleek fox with pointed ears and bushy tail. 12 units tall (~0.75 blocks).",
+        "category": "animals",
+        "height": 12,
+        "tags": ["quadruped", "forest", "wild"]
+      },
+      "bird": {
+        "displayName": "Bird",
+        "description": "A bipedal bird with wings and beak. 12 units tall (~0.75 blocks).",
+        "category": "animals",
+        "height": 12,
+        "tags": ["bipedal", "wings", "flying"]
+      },
+      "fish": {
+        "displayName": "Fish",
+        "description": "A simple fish with fins and tail. 6 units tall (~0.4 blocks).",
+        "category": "animals",
+        "height": 6,
+        "tags": ["aquatic", "swimming"]
+      },
+      "tropical_fish": {
+        "displayName": "Tropical Fish",
+        "description": "A vibrant tropical fish with flowing fins. 6 units tall (~0.4 blocks).",
+        "category": "animals",
+        "height": 6,
+        "tags": ["aquatic", "colorful", "decorative"]
+      },
+      "insect": {
+        "displayName": "Insect/Spider",
+        "description": "An 8-legged spider or insect. 14 units tall (~0.9 blocks).",
+        "category": "animals",
+        "height": 14,
+        "tags": ["arthropod", "hostile", "climbing"]
+      },
+      "flying": {
+        "displayName": "Flying Creature",
+        "description": "A flying creature with articulated wings. 44 units wingspan (~2.75 blocks).",
+        "category": "animals",
+        "height": 20,
+        "tags": ["wings", "flying", "bat-like"]
+      },
+      "golem": {
+        "displayName": "Golem",
+        "description": "A massive stone golem with glowing core. 48 units tall (~3 blocks).",
+        "category": "fantasy",
+        "height": 48,
+        "tags": ["construct", "stone", "guardian"]
+      },
+      "slime": {
+        "displayName": "Slime",
+        "description": "A simple bouncy cube creature. 6 units tall (~0.4 blocks).",
+        "category": "fantasy",
+        "height": 6,
+        "tags": ["bouncy", "simple", "hostile"]
+      },
+      "mushroom_creature": {
+        "displayName": "Mushroom Creature",
+        "description": "An adorable walking mushroom with spotted cap. 16 units tall (~1 block).",
+        "category": "fantasy",
+        "height": 16,
+        "tags": ["fungal", "cute", "forest"]
+      },
+      "block": {
+        "displayName": "Block",
+        "description": "A simple unit cube block. 16x16x16 units (1 block).",
+        "category": "objects",
+        "height": 16,
+        "tags": ["cube", "simple", "building"]
+      },
+      "item": {
+        "displayName": "Handheld Item",
+        "description": "A handheld sword-like item. 30 units tall (~2 blocks).",
+        "category": "objects",
+        "height": 30,
+        "tags": ["weapon", "tool", "handheld"]
+      },
+      "crystal": {
+        "displayName": "Crystal",
+        "description": "A glowing crystal formation with multiple facets. 20 units tall (~1.25 blocks).",
+        "category": "objects",
+        "height": 20,
+        "tags": ["decorative", "magical", "glowing"]
+      },
+      "enchanted_sword": {
+        "displayName": "Enchanted Sword",
+        "description": "A glowing magical blade with ornate hilt. 32 units tall (~2 blocks).",
+        "category": "objects",
+        "height": 32,
+        "tags": ["weapon", "magical", "legendary"]
+      },
+      "treasure_chest": {
+        "displayName": "Treasure Chest",
+        "description": "A decorative treasure chest with lid and lock. 12 units tall (~0.75 blocks).",
+        "category": "objects",
+        "height": 12,
+        "tags": ["container", "loot", "furniture"]
+      },
+      "vehicle": {
+        "displayName": "Vehicle",
+        "description": "A wheeled vehicle or machine. 48 units long (~3 blocks).",
+        "category": "objects",
+        "height": 24,
+        "tags": ["rideable", "mechanical", "transport"]
+      }
+    }
+  },
+
+  "texturePatterns": {
+    "organic": {
+      "skin_tone_1": {
+        "displayName": "Skin Tone 1",
+        "generate": { "type": "stipple_noise", "colors": ["#FFDFC4", "#E8C8AC", "#FFE8D4"], "seed": 100 }
+      },
+      "skin_tone_2": {
+        "displayName": "Skin Tone 2",
+        "generate": { "type": "stipple_noise", "colors": ["#C69C6D", "#B88B5C", "#D4A87A"], "seed": 101 }
+      },
+      "skin_tone_3": {
+        "displayName": "Skin Tone 3",
+        "generate": { "type": "stipple_noise", "colors": ["#8D5524", "#7A4820", "#9F6028"], "seed": 102 }
+      },
+      "fur_white": {
+        "displayName": "White Fur",
+        "generate": { "type": "stipple_noise", "colors": ["#F0F0F0", "#E0E0E0", "#FFFFFF"], "seed": 110 }
+      },
+      "fur_brown": {
+        "displayName": "Brown Fur",
+        "generate": { "type": "stipple_noise", "colors": ["#8B4513", "#A0522D", "#6B3410"], "seed": 111 }
+      },
+      "fur_black": {
+        "displayName": "Black Fur",
+        "generate": { "type": "stipple_noise", "colors": ["#1A1A1A", "#2A2A2A", "#0A0A0A"], "seed": 112 }
+      },
+      "fur_orange": {
+        "displayName": "Orange Fur",
+        "generate": { "type": "stipple_noise", "colors": ["#E07020", "#C06010", "#F08030"], "seed": 113 }
+      },
+      "fur_gray": {
+        "displayName": "Gray Fur",
+        "generate": { "type": "stipple_noise", "colors": ["#808080", "#707070", "#909090"], "seed": 114 }
+      },
+      "scales_green": {
+        "displayName": "Green Scales",
+        "generate": { "type": "dither_noise", "colors": ["#228B22", "#1A6B1A", "#2AAB2A"], "seed": 120 }
+      },
+      "scales_blue": {
+        "displayName": "Blue Scales",
+        "generate": { "type": "dither_noise", "colors": ["#2050A0", "#1840B0", "#2860B0"], "seed": 121 }
+      },
+      "scales_red": {
+        "displayName": "Red Scales",
+        "generate": { "type": "dither_noise", "colors": ["#A02020", "#801818", "#C02828"], "seed": 122 }
+      },
+      "feathers_white": {
+        "displayName": "White Feathers",
+        "generate": { "type": "perlin_noise", "colors": ["#F8F8F8", "#E8E8E8", "#FFFFFF"], "seed": 130, "scale": 8 }
+      },
+      "feathers_brown": {
+        "displayName": "Brown Feathers",
+        "generate": { "type": "perlin_noise", "colors": ["#8B6914", "#6B5010", "#AB7918"], "seed": 131, "scale": 8 }
+      }
+    },
+    "stone": {
+      "stone_gray": {
+        "displayName": "Gray Stone",
+        "generate": { "type": "stipple_noise", "colors": ["#808080", "#707070", "#909090"], "seed": 200 }
+      },
+      "stone_dark": {
+        "displayName": "Dark Stone",
+        "generate": { "type": "stipple_noise", "colors": ["#404040", "#303030", "#505050"], "seed": 201 }
+      },
+      "cobblestone": {
+        "displayName": "Cobblestone",
+        "generate": { "type": "stipple_noise", "colors": ["#6B6B6B", "#5B5B5B", "#7B7B7B"], "seed": 202 },
+        "effects": { "lighting": { "preset": "outset", "intensity": 0.3 } }
+      },
+      "brick_red": {
+        "displayName": "Red Brick",
+        "generate": { "type": "dither_noise", "colors": ["#A04040", "#803030", "#C05050"], "seed": 210 },
+        "effects": { "border": { "all": { "style": "solid", "width": 1, "color": "#604040" } } }
+      },
+      "sandstone": {
+        "displayName": "Sandstone",
+        "generate": { "type": "perlin_noise", "colors": ["#D4B896", "#C4A886", "#E4C8A6"], "seed": 220, "scale": 6 }
+      }
+    },
+    "wood": {
+      "wood_oak": {
+        "displayName": "Oak Wood",
+        "generate": { "type": "dither_noise", "colors": ["#B8945C", "#A88450", "#C8A468"], "seed": 300 }
+      },
+      "wood_dark_oak": {
+        "displayName": "Dark Oak Wood",
+        "generate": { "type": "dither_noise", "colors": ["#4A3728", "#3A2718", "#5A4738"], "seed": 301 }
+      },
+      "wood_birch": {
+        "displayName": "Birch Wood",
+        "generate": { "type": "dither_noise", "colors": ["#E8D8C8", "#D8C8B8", "#F8E8D8"], "seed": 302 }
+      },
+      "wood_spruce": {
+        "displayName": "Spruce Wood",
+        "generate": { "type": "dither_noise", "colors": ["#6B5034", "#5B4024", "#7B6044"], "seed": 303 }
+      },
+      "planks_oak": {
+        "displayName": "Oak Planks",
+        "generate": { "type": "dither_noise", "colors": ["#BC9456", "#AC8446", "#CCA466"], "seed": 310 },
+        "effects": { "border": { "bottom": { "style": "solid", "width": 1, "color": "#8C6436" } } }
+      }
+    },
+    "metal": {
+      "metal_iron": {
+        "displayName": "Iron Metal",
+        "generate": { "type": "dither_noise", "colors": ["#C0C0C0", "#A8A8A8", "#D8D8D8"], "seed": 400 },
+        "effects": { "lighting": { "preset": "outset", "intensity": 0.2 } }
+      },
+      "metal_gold": {
+        "displayName": "Gold Metal",
+        "generate": { "type": "dither_noise", "colors": ["#FFD700", "#E8C000", "#FFE828"], "seed": 401 },
+        "effects": { "lighting": { "preset": "outset", "intensity": 0.3 } }
+      },
+      "metal_copper": {
+        "displayName": "Copper Metal",
+        "generate": { "type": "dither_noise", "colors": ["#B87333", "#A06328", "#C8833E"], "seed": 402 }
+      },
+      "metal_netherite": {
+        "displayName": "Netherite Metal",
+        "generate": { "type": "stipple_noise", "colors": ["#3D3D3D", "#2D2D2D", "#4D4D4D"], "seed": 403 }
+      }
+    },
+    "cloth": {
+      "cloth_white": {
+        "displayName": "White Cloth",
+        "generate": { "type": "perlin_noise", "colors": ["#F0F0F0", "#E0E0E0", "#FFFFFF"], "seed": 500, "scale": 4 }
+      },
+      "cloth_red": {
+        "displayName": "Red Cloth",
+        "generate": { "type": "perlin_noise", "colors": ["#C03030", "#A02020", "#E04040"], "seed": 501, "scale": 4 }
+      },
+      "cloth_blue": {
+        "displayName": "Blue Cloth",
+        "generate": { "type": "perlin_noise", "colors": ["#3050A0", "#204090", "#4060B0"], "seed": 502, "scale": 4 }
+      },
+      "cloth_green": {
+        "displayName": "Green Cloth",
+        "generate": { "type": "perlin_noise", "colors": ["#30A030", "#209020", "#40B040"], "seed": 503, "scale": 4 }
+      },
+      "leather_brown": {
+        "displayName": "Brown Leather",
+        "generate": { "type": "stipple_noise", "colors": ["#8B4513", "#7A3A10", "#9C5016"], "seed": 510 }
+      }
+    },
+    "natural": {
+      "dirt": {
+        "displayName": "Dirt",
+        "generate": { "type": "stipple_noise", "colors": ["#8B6914", "#7B5904", "#9B7924"], "seed": 600 }
+      },
+      "grass": {
+        "displayName": "Grass",
+        "generate": { "type": "perlin_noise", "colors": ["#5B8731", "#4B7721", "#6B9741"], "seed": 601, "scale": 6 }
+      },
+      "sand": {
+        "displayName": "Sand",
+        "generate": { "type": "random_noise", "colors": ["#E8D8A0", "#D8C890", "#F8E8B0"], "seed": 602 }
+      },
+      "gravel": {
+        "displayName": "Gravel",
+        "generate": { "type": "random_noise", "colors": ["#808080", "#707070", "#909090"], "seed": 603 }
+      },
+      "leaves_green": {
+        "displayName": "Green Leaves",
+        "generate": { "type": "perlin_noise", "colors": ["#2D6B2D", "#1D5B1D", "#3D7B3D"], "seed": 610, "scale": 4 }
+      }
+    },
+    "special": {
+      "glowing_yellow": {
+        "displayName": "Glowing Yellow",
+        "generate": { "type": "gradient", "colors": ["#FFFF00", "#FFA500"] },
+        "effects": { "overlay": { "pattern": "sparkle", "density": 0.2 } }
+      },
+      "glowing_blue": {
+        "displayName": "Glowing Blue",
+        "generate": { "type": "gradient", "colors": ["#00BFFF", "#0040FF"] },
+        "effects": { "overlay": { "pattern": "sparkle", "density": 0.2 } }
+      },
+      "crystal_purple": {
+        "displayName": "Purple Crystal",
+        "generate": { "type": "perlin_noise", "colors": ["#9932CC", "#8B008B", "#BA55D3"], "seed": 700, "scale": 3 },
+        "effects": { "lighting": { "preset": "pillow", "intensity": 0.4 } }
+      },
+      "ice": {
+        "displayName": "Ice",
+        "generate": { "type": "perlin_noise", "colors": ["#B0E0E6", "#87CEEB", "#E0FFFF"], "seed": 710, "scale": 8 }
+      },
+      "lava": {
+        "displayName": "Lava",
+        "generate": { "type": "perlin_noise", "colors": ["#FF4500", "#FF6600", "#FF0000"], "seed": 720, "scale": 4 },
+        "effects": { "overlay": { "pattern": "veins", "density": 0.3, "color": "#FFD700" } }
+      },
+      "slime_green": {
+        "displayName": "Green Slime",
+        "generate": { "type": "solid", "colors": ["#7FBF00"] },
+        "effects": { "lighting": { "preset": "pillow", "intensity": 0.3 } }
+      }
+    }
+  },
+
+  "entityTemplates": {
+    "quadruped_passive": {
+      "displayName": "Passive Quadruped",
+      "description": "A simple passive four-legged animal with breeding and leashing support",
+      "category": "passive",
+      "traits": ["quadruped", "passive", "breedable", "leasable"],
+      "appearance": {
+        "bodyType": "quadruped_small",
+        "primaryColor": "#E07020",
+        "textureStyle": "organic"
+      }
+    },
+    "humanoid_hostile": {
+      "displayName": "Hostile Humanoid",
+      "description": "A hostile two-legged mob with melee attacks and undead properties",
+      "category": "hostile",
+      "traits": ["humanoid", "hostile", "melee_attacker", "undead", "flees_daylight"],
+      "appearance": {
+        "bodyType": "humanoid",
+        "primaryColor": "#4A6B4A",
+        "secondaryColor": "#2050A0",
+        "textureStyle": "organic"
+      },
+      "health": 20,
+      "attackDamage": 3,
+      "movementSpeed": 0.23
+    },
+    "quadruped_neutral": {
+      "displayName": "Neutral Wolf-like",
+      "description": "A neutral animal that can be tamed and attacks when provoked",
+      "category": "neutral",
+      "traits": ["quadruped", "neutral", "melee_attacker", "tameable", "breedable"],
+      "appearance": {
+        "bodyType": "quadruped_small",
+        "primaryColor": "#808080",
+        "textureStyle": "organic"
+      },
+      "health": 8,
+      "attackDamage": 4,
+      "movementSpeed": 0.3
+    },
+    "flying_passive": {
+      "displayName": "Flying Creature",
+      "description": "A passive flying creature like a bat",
+      "category": "passive",
+      "traits": ["flying", "passive"],
+      "appearance": {
+        "bodyType": "flying",
+        "primaryColor": "#6B4513",
+        "textureStyle": "organic"
+      },
+      "health": 6,
+      "movementSpeed": 0.6
+    },
+    "aquatic_passive": {
+      "displayName": "Aquatic Fish",
+      "description": "A passive water-dwelling creature",
+      "category": "passive",
+      "traits": ["aquatic", "passive"],
+      "appearance": {
+        "bodyType": "fish",
+        "primaryColor": "#2050A0",
+        "textureStyle": "organic"
+      },
+      "health": 3,
+      "movementSpeed": 0.4
+    },
+    "arthropod_hostile": {
+      "displayName": "Spider-like Arthropod",
+      "description": "A hostile spider-like creature with wall climbing",
+      "category": "hostile",
+      "traits": ["arthropod", "hostile", "melee_attacker"],
+      "appearance": {
+        "bodyType": "insect",
+        "primaryColor": "#1A1A1A",
+        "textureStyle": "organic",
+        "eyes": "red"
+      },
+      "health": 16,
+      "attackDamage": 2,
+      "movementSpeed": 0.3
+    },
+    "slime_hostile": {
+      "displayName": "Slime Creature",
+      "description": "A bouncy hostile slime that splits when killed",
+      "category": "hostile",
+      "traits": ["slime", "hostile", "melee_attacker"],
+      "appearance": {
+        "bodyType": "slime",
+        "primaryColor": "#7FBF00",
+        "textureStyle": "solid"
+      },
+      "health": 16,
+      "attackDamage": 4,
+      "movementSpeed": 0.5
+    },
+    "boss_humanoid": {
+      "displayName": "Boss Entity",
+      "description": "A powerful boss mob with multiple attack types and phases",
+      "category": "boss",
+      "traits": ["humanoid", "boss", "melee_attacker", "ranged_attacker"],
+      "appearance": {
+        "bodyType": "humanoid",
+        "primaryColor": "#3D3D3D",
+        "secondaryColor": "#8D5524",
+        "textureStyle": "armored",
+        "eyes": "glowing"
+      },
+      "health": 300,
+      "attackDamage": 12,
+      "movementSpeed": 0.35
+    }
+  },
+
+  "blockTemplates": {
+    "solid_cube": {
+      "displayName": "Solid Cube",
+      "description": "A simple solid cube block with stone properties",
+      "category": "building",
+      "traits": ["solid"],
+      "sounds": "stone",
+      "defaultTexture": "stone_gray"
+    },
+    "wood_planks": {
+      "displayName": "Wood Planks",
+      "description": "Wooden plank block with flammable properties",
+      "category": "building",
+      "traits": ["solid"],
+      "sounds": "wood",
+      "flammable": true,
+      "defaultTexture": "planks_oak"
+    },
+    "light_block": {
+      "displayName": "Light Block",
+      "description": "A block that emits light",
+      "category": "functional",
+      "traits": ["solid", "light_source"],
+      "sounds": "stone",
+      "lightEmission": 15,
+      "defaultTexture": "glowing_yellow"
+    },
+    "container_block": {
+      "displayName": "Container Block",
+      "description": "A block that stores items like a chest",
+      "category": "functional",
+      "traits": ["solid", "container"],
+      "sounds": "wood",
+      "defaultTexture": "wood_oak"
+    },
+    "door_block": {
+      "displayName": "Door Block",
+      "description": "An openable door block",
+      "category": "functional",
+      "traits": ["door"],
+      "sounds": "wood",
+      "defaultTexture": "wood_dark_oak"
+    },
+    "glass_block": {
+      "displayName": "Glass Block",
+      "description": "A transparent passable block",
+      "category": "building",
+      "traits": ["transparent"],
+      "sounds": "glass",
+      "defaultTexture": "ice"
+    },
+    "crafting_block": {
+      "displayName": "Crafting Station",
+      "description": "A block for crafting items",
+      "category": "functional",
+      "traits": ["solid", "workstation"],
+      "sounds": "wood",
+      "defaultTexture": "planks_oak"
+    },
+    "slab_block": {
+      "displayName": "Slab Block",
+      "description": "A half-height block with top/bottom placement",
+      "category": "building",
+      "traits": ["slab"],
+      "sounds": "stone",
+      "defaultTexture": "stone_gray"
+    },
+    "stairs_block": {
+      "displayName": "Stairs Block",
+      "description": "A stair-shaped block with directional placement",
+      "category": "building",
+      "traits": ["stairs"],
+      "sounds": "stone",
+      "defaultTexture": "cobblestone"
+    },
+    "ore_block": {
+      "displayName": "Ore Block",
+      "description": "A mineable ore block with sparkle effects",
+      "category": "natural",
+      "traits": ["solid"],
+      "sounds": "stone",
+      "defaultTexture": "ore_sparkle"
+    }
+  },
+
+  "itemTemplates": {
+    "sword_iron": {
+      "displayName": "Iron Sword",
+      "description": "A standard melee weapon with durability",
+      "category": "weapon",
+      "traits": ["sword"],
+      "defaultTexture": "metal_iron",
+      "weapon": { "damage": 6, "durability": 250 }
+    },
+    "sword_gold": {
+      "displayName": "Gold Sword",
+      "description": "A fast but fragile enchanted sword",
+      "category": "weapon",
+      "traits": ["sword"],
+      "defaultTexture": "metal_gold",
+      "weapon": { "damage": 4, "durability": 32 },
+      "glint": true
+    },
+    "pickaxe_iron": {
+      "displayName": "Iron Pickaxe",
+      "description": "A mining tool for stone and ores",
+      "category": "tool",
+      "traits": ["pickaxe"],
+      "defaultTexture": "metal_iron",
+      "tool": { "miningSpeed": 1.2, "durability": 250 }
+    },
+    "food_basic": {
+      "displayName": "Basic Food",
+      "description": "A simple food item that restores hunger",
+      "category": "consumable",
+      "traits": ["food"],
+      "defaultTexture": "fur_brown",
+      "maxStackSize": 64,
+      "food": { "nutrition": 4, "saturation": 0.6 }
+    },
+    "potion_healing": {
+      "displayName": "Healing Potion",
+      "description": "A drinkable healing item",
+      "category": "consumable",
+      "traits": ["food"],
+      "defaultTexture": "glowing_blue",
+      "maxStackSize": 1,
+      "glint": true
+    },
+    "armor_helmet": {
+      "displayName": "Helmet",
+      "description": "Head armor piece with protection",
+      "category": "armor",
+      "traits": ["armor_helmet"],
+      "defaultTexture": "metal_iron",
+      "armor": { "slot": "helmet", "defense": 2, "durability": 165 }
+    },
+    "armor_chestplate": {
+      "displayName": "Chestplate",
+      "description": "Chest armor piece with high protection",
+      "category": "armor",
+      "traits": ["armor_chestplate"],
+      "defaultTexture": "metal_iron",
+      "armor": { "slot": "chestplate", "defense": 6, "durability": 240 }
+    },
+    "throwable_item": {
+      "displayName": "Throwable Item",
+      "description": "An item that can be thrown as a projectile",
+      "category": "special",
+      "traits": ["throwable"],
+      "defaultTexture": "stone_gray",
+      "maxStackSize": 16
+    },
+    "music_disc": {
+      "displayName": "Music Disc",
+      "description": "A playable music disc for jukeboxes",
+      "category": "special",
+      "traits": [],
+      "defaultTexture": "disc_black",
+      "maxStackSize": 1
+    },
+    "fuel_item": {
+      "displayName": "Fuel Item",
+      "description": "An item that can be used as furnace fuel",
+      "category": "special",
+      "traits": [],
+      "defaultTexture": "wood_dark_oak",
+      "maxStackSize": 64,
+      "fuel": 200
+    }
+  }
+}

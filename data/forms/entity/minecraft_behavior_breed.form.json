@@ -1,0 +1,219 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "seeks out mates to breed with"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "speed_multiplier",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "approaches at "
+          },
+          {
+            "type": "switch",
+            "cases": [
+              {
+                "conditions": [
+                  {
+                    "field": "speed_multiplier",
+                    "comparison": ">=",
+                    "value": 1.5
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "fast"
+                  }
+                ]
+              },
+              {
+                "conditions": [
+                  {
+                    "field": "speed_multiplier",
+                    "comparison": "<",
+                    "value": 0.8
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "slow"
+                  }
+                ]
+              }
+            ],
+            "default": [
+              {
+                "type": "literal",
+                "text": "normal"
+              }
+            ]
+          },
+          {
+            "type": "literal",
+            "text": " speed ("
+          },
+          {
+            "type": "value",
+            "field": "speed_multiplier"
+          },
+          {
+            "type": "literal",
+            "text": "x)"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "control_flags",
+      "title": "Control Flags",
+      "dataType": "stringArray",
+      "defaultValue": [],
+      "choices": [
+        {
+          "id": "jump",
+          "title": "Jump"
+        },
+        {
+          "id": "look",
+          "title": "Look"
+        },
+        {
+          "id": "move",
+          "title": "Move"
+        }
+      ]
+    },
+    {
+      "id": "priority",
+      "title": "Priority",
+      "dataType": "int",
+      "defaultValue": 0,
+      "samples": {
+        "/vanilla/behavior_pack/entities/chicken.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:chicken_adult/minecraft:behavior.breed/",
+            "content": 3
+          }
+        ],
+        "/vanilla/behavior_pack/entities/frog.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.breed/",
+            "content": 4
+          }
+        ],
+        "/vanilla/behavior_pack/entities/goat.json": [
+          {
+            "path": "/minecraft:entity/component_groups/goat_adult/minecraft:behavior.breed/",
+            "content": 3
+          }
+        ],
+        "/vanilla/behavior_pack/entities/llama.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:llama_adult/minecraft:behavior.breed/",
+            "content": 4
+          }
+        ]
+      },
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal."
+    },
+    {
+      "id": "speed_multiplier",
+      "title": "Speed Multiplier",
+      "description": "Movement speed multiplier applied to the mob when using this AI Goal.",
+      "dataType": "float",
+      "defaultValue": 1,
+      "samples": {
+        "/vanilla/behavior_pack/entities/chicken.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:chicken_adult/minecraft:behavior.breed/",
+            "content": 1
+          }
+        ],
+        "/vanilla/behavior_pack/entities/goat.json": [
+          {
+            "path": "/minecraft:entity/component_groups/goat_adult/minecraft:behavior.breed/",
+            "content": 0.6
+          }
+        ],
+        "/vanilla/behavior_pack/entities/llama.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:llama_adult/minecraft:behavior.breed/",
+            "content": 1
+          }
+        ]
+      }
+    }
+  ],
+  "requires": [
+    {
+      "id": "minecraft:breedable",
+      "type": "entity_component"
+    }
+  ],
+  "description": "Allows this mob to breed with other mobs.",
+  "title": "Entity Breed Behavior",
+  "samples": {
+    "/vanilla/behavior_pack/entities/chicken.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:chicken_adult/minecraft:behavior.breed/",
+        "content": {
+          "priority": 3,
+          "speed_multiplier": 1
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/frog.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.breed/",
+        "content": {
+          "priority": 4
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/goat.json": [
+      {
+        "path": "/minecraft:entity/component_groups/goat_adult/minecraft:behavior.breed/",
+        "content": {
+          "priority": 3,
+          "speed_multiplier": 0.6
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/llama.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:llama_adult/minecraft:behavior.breed/",
+        "content": {
+          "priority": 4,
+          "speed_multiplier": 1
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/pig.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:pig_adult/minecraft:behavior.breed/",
+        "content": {
+          "priority": 4,
+          "speed_multiplier": 1
+        }
+      }
+    ]
+  },
+  "id": "minecraft:behavior.breed"
+}

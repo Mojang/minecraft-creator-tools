@@ -1,0 +1,26 @@
+{
+  "files": [
+    "copper_spear.png",
+    "copper_spear.texture_set.json",
+    "copper_spear_mers.tga",
+    "diamond_spear.png",
+    "diamond_spear.texture_set.json",
+    "diamond_spear_mers.tga",
+    "gold_spear.png",
+    "gold_spear.texture_set.json",
+    "gold_spear_mers.tga",
+    "iron_spear.png",
+    "iron_spear.texture_set.json",
+    "iron_spear_mers.tga",
+    "netherite_spear.png",
+    "netherite_spear.texture_set.json",
+    "netherite_spear_mers.tga",
+    "stone_spear.png",
+    "stone_spear.texture_set.json",
+    "stone_spear_mers.tga",
+    "wood_spear.png",
+    "wood_spear.texture_set.json",
+    "wood_spear_mers.tga"
+  ],
+  "folders": []
+}

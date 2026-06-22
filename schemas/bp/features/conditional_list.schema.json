@@ -1,0 +1,77 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Conditional List",
+  "description": "\n\nProperties:\n• description ({ identifier })\n• conditional_features\n• early_out_scheme (string)",
+  "type": "object",
+  "properties": {
+    "description": {
+      "title": "Description",
+      "description": "\n\nProperties:\n• identifier (string)",
+      "type": "object",
+      "properties": {
+        "identifier": {
+          "title": "Identifier",
+          "description": "The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
+          "type": "string"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Description",
+          "description": "Create a Description",
+          "body": {
+            "identifier": ""
+          }
+        }
+      ]
+    },
+    "conditional_features": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "condition": {
+                "title": "Condition",
+                "description": "Condition for placing associated Feature",
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "title": "Conditional Features",
+          "description": "Array of Features, and their associated Conditions, for attempted placement. These features will be evaluated as ordered.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ],
+      "description": "\n\nProperties:\n• condition"
+    },
+    "early_out_scheme": {
+      "title": "Early Out Scheme\"<\"condition Success\", \"placement Success\"",
+      "description": "Denote whether placement should end on first successful placement or first passed condition.",
+      "type": "string"
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "Conditional List",
+      "description": "Create a Conditional List",
+      "body": {
+        "description": "",
+        "early_out_scheme\"<\"condition_success\", \"placement_success\"": ""
+      }
+    }
+  ]
+}

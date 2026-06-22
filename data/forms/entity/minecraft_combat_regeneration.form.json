@@ -1,0 +1,42 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "grants regeneration when killing targets"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "apply_to_family",
+      "title": "Apply To Family",
+      "description": "Determines if the mob will grant mobs of the same type combat buffs if they kill the target.",
+      "defaultValue": false,
+      "dataType": "boolean"
+    },
+    {
+      "id": "apply_to_self",
+      "title": "Apply To Self",
+      "description": "Determines if the mob will grant itself the combat buffs if it kills the target.",
+      "defaultValue": false,
+      "dataType": "boolean"
+    },
+    {
+      "id": "regeneration_duration",
+      "title": "Regeneration Duration",
+      "description": "The duration in seconds of Regeneration I added to the mob. Can also be set to \"infinite\"",
+      "defaultValue": 5,
+      "dataType": "int"
+    }
+  ],
+  "description": "Gives `Regeneration I` and removes `Mining Fatigue` from the mob that kills the entity's attack target.",
+  "title": "Combat Regeneration",
+  "samples": {},
+  "id": "minecraft:combat_regeneration"
+}

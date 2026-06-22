@@ -1,0 +1,85 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "spawns a visual effect when triggered by a particle"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "effect",
+      "title": "Effect",
+      "dataType": "object",
+      "isRequired": true
+    },
+    {
+      "id": "pre_effect_expression",
+      "title": "Pre Effect Expression",
+      "dataType": "keyedStringCollection",
+      "defaultValue": 0,
+      "alternates": [
+        {
+          "id": "pre_effect_expression",
+          "dataType": "keyedObjectCollection",
+          "readOnly": true,
+          "subForm": {
+            "id": "pre_effect_expression",
+            "title": "Pre Effect Expression",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "Expression",
+                "dataType": "string",
+                "isRequired": true
+              },
+              {
+                "id": "version",
+                "title": "Version",
+                "dataType": "int",
+                "isRequired": true
+              }
+            ]
+          }
+        },
+        {
+          "id": "pre_effect_expression",
+          "dataType": "float"
+        }
+      ]
+    },
+    {
+      "id": "type",
+      "title": "Particle Visual Effect Event Effect Type",
+      "dataType": "string",
+      "choices": [
+        {
+          "id": "emitter",
+          "title": "Emitter"
+        },
+        {
+          "id": "emitter_bound",
+          "title": "Emitter bound"
+        },
+        {
+          "id": "particle",
+          "title": "Particle"
+        },
+        {
+          "id": "particle_with_velocity",
+          "title": "Particle with velocity"
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "description": "Spawns another particle effect when triggered by particle events, enabling cascading visual sequences. Reference other particle effects by identifier to create chains like explosions spawning embers, impacts creating dust clouds, or magical projectiles trailing sparkles. Builds complex layered effects from simpler reusable components.",
+  "title": "Client Particles Particle Visual Effect Event",
+  "id": "particle_visual_effect_event"
+}

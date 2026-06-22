@@ -1,0 +1,261 @@
+{
+  "formatVersion": "1.0.0",
+  "identifier": "pickaxe",
+  "description": "A sturdy pickaxe with iron head and wooden handle",
+  "pixelsPerUnit": 2,
+  "textures": {
+    "iron": {
+      "background": {
+        "type": "dither_noise",
+        "colors": [
+          "#9E9E9E",
+          "#BDBDBD",
+          "#757575"
+        ],
+        "seed": 3501,
+        "factor": 0.2
+      },
+      "effects": {
+        "lighting": {
+          "preset": "outset",
+          "intensity": 0.25
+        }
+      }
+    },
+    "wood": {
+      "background": {
+        "type": "stipple_noise",
+        "colors": [
+          "#8D6E63",
+          "#795548",
+          "#A1887F"
+        ],
+        "seed": 3502,
+        "factor": 0.25
+      },
+      "effects": {
+        "overlay": {
+          "pattern": "scratches",
+          "density": 0.1,
+          "seed": 3503
+        }
+      }
+    }
+  },
+  "bones": [
+    {
+      "name": "handle",
+      "pivot": [
+        0,
+        12,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -1,
+            0,
+            -1
+          ],
+          "size": [
+            2,
+            20,
+            2
+          ],
+          "faces": {
+            "north": {
+              "textureId": "wood"
+            },
+            "south": {
+              "textureId": "wood"
+            },
+            "east": {
+              "textureId": "wood"
+            },
+            "west": {
+              "textureId": "wood"
+            },
+            "up": {
+              "textureId": "wood"
+            },
+            "down": {
+              "textureId": "wood"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "head",
+      "parent": "handle",
+      "pivot": [
+        0,
+        20,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -2,
+            18,
+            -1
+          ],
+          "size": [
+            4,
+            4,
+            2
+          ],
+          "faces": {
+            "north": {
+              "textureId": "iron"
+            },
+            "south": {
+              "textureId": "iron"
+            },
+            "east": {
+              "textureId": "iron"
+            },
+            "west": {
+              "textureId": "iron"
+            },
+            "up": {
+              "textureId": "iron"
+            },
+            "down": {
+              "textureId": "iron"
+            }
+          }
+        },
+        {
+          "origin": [
+            -8,
+            19,
+            -0.5
+          ],
+          "size": [
+            6,
+            2,
+            1
+          ],
+          "faces": {
+            "north": {
+              "textureId": "iron"
+            },
+            "south": {
+              "textureId": "iron"
+            },
+            "east": {
+              "textureId": "iron"
+            },
+            "west": {
+              "textureId": "iron"
+            },
+            "up": {
+              "textureId": "iron"
+            },
+            "down": {
+              "textureId": "iron"
+            }
+          }
+        },
+        {
+          "origin": [
+            -10,
+            19.5,
+            -0.5
+          ],
+          "size": [
+            2,
+            1,
+            1
+          ],
+          "faces": {
+            "north": {
+              "textureId": "iron"
+            },
+            "south": {
+              "textureId": "iron"
+            },
+            "east": {
+              "textureId": "iron"
+            },
+            "west": {
+              "textureId": "iron"
+            },
+            "up": {
+              "textureId": "iron"
+            },
+            "down": {
+              "textureId": "iron"
+            }
+          }
+        },
+        {
+          "origin": [
+            2,
+            19,
+            -0.5
+          ],
+          "size": [
+            6,
+            2,
+            1
+          ],
+          "faces": {
+            "north": {
+              "textureId": "iron"
+            },
+            "south": {
+              "textureId": "iron"
+            },
+            "east": {
+              "textureId": "iron"
+            },
+            "west": {
+              "textureId": "iron"
+            },
+            "up": {
+              "textureId": "iron"
+            },
+            "down": {
+              "textureId": "iron"
+            }
+          }
+        },
+        {
+          "origin": [
+            8,
+            19.5,
+            -0.5
+          ],
+          "size": [
+            2,
+            1,
+            1
+          ],
+          "faces": {
+            "north": {
+              "textureId": "iron"
+            },
+            "south": {
+              "textureId": "iron"
+            },
+            "east": {
+              "textureId": "iron"
+            },
+            "west": {
+              "textureId": "iron"
+            },
+            "up": {
+              "textureId": "iron"
+            },
+            "down": {
+              "textureId": "iron"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "category": "item"
+}

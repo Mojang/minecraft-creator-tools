@@ -1,0 +1,51 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "is a baby"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [],
+  "description": "Sets that this entity is a baby. This is used to set the is_baby value for use in query functions like Molang and Filters.",
+  "title": "Is Baby",
+  "samples": {
+    "/vanilla/behavior_pack/entities/chicken.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:chicken_baby/minecraft:is_baby/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/cow.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:cow_baby/minecraft:is_baby/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/dolphin.json": [
+      {
+        "path": "/minecraft:entity/component_groups/dolphin_baby/minecraft:is_baby/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/goat.json": [
+      {
+        "path": "/minecraft:entity/component_groups/goat_baby/minecraft:is_baby/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/llama.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:llama_baby/minecraft:is_baby/",
+        "content": {}
+      }
+    ]
+  },
+  "id": "minecraft:is_baby"
+}

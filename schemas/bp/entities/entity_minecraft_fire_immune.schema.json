@@ -1,0 +1,7 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Fire Immune",
+  "description": "Sets that this entity doesn't take damage from fire.",
+  "properties": {}
+}

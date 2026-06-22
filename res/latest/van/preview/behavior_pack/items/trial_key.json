@@ -1,0 +1,21 @@
+{
+  "format_version": "1.26.30",
+  "minecraft:item": {
+    "description": {
+      "identifier": "minecraft:trial_key",
+      "menu_category": {
+        "category": "items"
+      }
+    },
+    "components": {
+      "minecraft:display_name": {
+        "value": "item.trial_key.name"
+      },
+      "minecraft:icon": {
+        "textures": {
+          "default": "trial_key"
+        }
+      }
+    }
+  }
+}

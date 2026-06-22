@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Client Particles Particle Appearance Billboard",
+  "description": "Controls how particle sprites render and orient toward the camera. The facing_camera_mode determines billboard behavior: 'lookat_xyz' always faces the camera (classic sprites), 'rotate_y' only rotates vertically (tall flames), and direction modes align with particle velocity (arrows, sparks). Size controls particle dimensions using Molang for dynamic scaling.",
+  "properties": {
+    "facing_camera_mode": {
+      "title": "Facing Camera Mode",
+      "description": "The facing mode of the billboard. Controls how the particle faces the camera.",
+      "type": "string",
+      "enum": [
+        "lookat_xyz",
+        "lookat_y",
+        "lookat_direction",
+        "rotate_xyz",
+        "rotate_y",
+        "direction_x",
+        "direction_y",
+        "direction_z",
+        "emitter_transform_xy",
+        "emitter_transform_xz",
+        "emitter_transform_yz"
+      ]
+    },
+    "size": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          }
+        },
+        {
+          "description": "\n\nProperties:\n• expression (string)\n• version (int)",
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "expression": {
+                "title": "Expression",
+                "type": "string"
+              },
+              "version": {
+                "title": "Version",
+                "type": "integer"
+              }
+            }
+          }
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "title": "Size",
+      "description": "The size of the particle billboard, as [width, height] using Molang expressions or numbers."
+    },
+    "direction": {
+      "title": "Direction",
+      "type": "object"
+    },
+    "uv": {
+      "title": "Uv",
+      "type": "object"
+    }
+  },
+  "required": [
+    "size"
+  ]
+}

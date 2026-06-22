@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Block Components Movable",
+  "description": "This defines how a block reacts to being moved by another block like a piston.",
+  "properties": {
+    "movement_type": {
+      "title": "Movement Type",
+      "description": "How the block reacts to being pushed by another block like a piston. The options are: \"push_pull\" - The default value for this field. The block will be pushed and pulled by a piston. \"push\" - The block will only be pulled by a piston and will ignore a sticky piston. \"popped\" - The block is destroyed when moved by a piston. \"immovable\" - The block is unaffected by a piston.",
+      "type": "string",
+      "enum": [
+        "immovable",
+        "popped",
+        "push",
+        "push_pull"
+      ]
+    },
+    "sticky": {
+      "title": "Sticky Type",
+      "description": "How the block should handle adjacent blocks around it when being pushed by another block like a piston. The options are: \"same\" - Adjacent blocks to this block will be moved when moved. This excludes other blocks with the \"same\" property. This will only work with the movement_type: \"push_pull\". \"none\" - The default and will not move adjacent blocks.",
+      "type": "string",
+      "enum": [
+        "none",
+        "same"
+      ],
+      "default": "none"
+    }
+  },
+  "required": [
+    "movement_type"
+  ]
+}

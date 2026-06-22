@@ -1,0 +1,34 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has a group of related trades"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "TradeGroup",
+  "fields": [
+    {
+      "id": "num_to_select",
+      "title": "Num To Select",
+      "dataType": "int",
+      "defaultValue": 0
+    },
+    {
+      "id": "trades",
+      "title": "Trades",
+      "dataType": "objectArray",
+      "minLength": 1,
+      "subFormId": "entity/trade",
+      "isRequired": true
+    }
+  ],
+  "description": "Groups related trade offers that may be randomly selected from within a tier. When an entity unlocks a tier, trades are chosen from groups within that tier. Configure how many trades to select from the group. Enables variety in merchant inventories so not every villager of the same profession offers identical goods.",
+  "title": "Entity TradeGroup"
+}

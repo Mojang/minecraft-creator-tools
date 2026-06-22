@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Texture Set",
+  "description": "\n\nProperties:\n• color (string)\n• normal (string)\n• heightmap (string)\n• metalness_emissive_roughness (string)\n• metalness_emissive_roughness_subsurface (string)",
+  "type": "object",
+  "properties": {
+    "color": {
+      "title": "Color",
+      "description": "The texture name of a textureset layer",
+      "type": "string"
+    },
+    "normal": {
+      "title": "Normal",
+      "description": "The texture name of a textureset layer",
+      "type": "string"
+    },
+    "heightmap": {
+      "title": "Heightmap",
+      "description": "The texture name of a textureset layer",
+      "type": "string"
+    },
+    "metalness_emissive_roughness": {
+      "title": "Metalness Emissive Roughness",
+      "description": "The texture name of a textureset layer",
+      "type": "string"
+    },
+    "metalness_emissive_roughness_subsurface": {
+      "title": "Metalness Emissive Roughness Subsurface",
+      "description": "The texture name of a textureset layer",
+      "type": "string"
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "Texture Set",
+      "description": "Create a Texture Set",
+      "body": {
+        "color": "",
+        "normal": "",
+        "heightmap": "",
+        "metalness_emissive_roughness": "",
+        "metalness_emissive_roughness_subsurface": ""
+      }
+    }
+  ]
+}

@@ -1,0 +1,143 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Explode",
+  "description": "Defines how the entity explodes.",
+  "properties": {
+    "toggles_blocks": {
+      "title": "Toggles Blocks",
+      "description": "If true, the explosion will toggle blocks in the explosion radius.\n\n*Introduced in version 1.21.40*\n\nSample values:\n• breeze_wind_charge_projectile: true",
+      "type": "boolean",
+      "default": false
+    },
+    "knockback_scaling": {
+      "title": "Knockback Scaling",
+      "description": "A scale factor applied to the knockback force caused by the explosion.\n\n*Introduced in version 1.21.40*\n\nSample values:\n• breeze_wind_charge_projectile: 0.6\n• wind_charge_projectile: 1.22",
+      "type": "number",
+      "default": 1
+    },
+    "particle_effect": {
+      "title": "Particle Effect",
+      "description": "The name of the particle effect to use. The accepted strings are 'explosion', 'wind_burst', or 'breeze_wind_burst'.\n\n*Introduced in version 1.21.40*\n\nSample values:\n• breeze_wind_charge_projectile: breeze_wind_burst\n• wind_charge_projectile: wind_burst",
+      "type": "string",
+      "default": "explosion"
+    },
+    "sound_effect": {
+      "title": "Sound Effect",
+      "description": "The name of the sound effect played when the explosion triggers.\n\n*Introduced in version 1.21.40*\n\nSample values:\n• breeze_wind_charge_projectile: breeze_wind_charge.burst\n• wind_charge_projectile: wind_charge.burst",
+      "type": "string",
+      "default": "explode"
+    },
+    "negates_fall_damage": {
+      "title": "Negates Fall Damage",
+      "description": "Defines whether the explosion should apply fall damage negation to Players above the point of collision.\n\n*Introduced in version 1.21.40*\n\nSample values:\n• wind_charge_projectile: true",
+      "type": "boolean",
+      "default": false
+    },
+    "allow_underwater": {
+      "title": "Allow Underwater",
+      "description": "If true, the explosion will affect blocks and entities under water.\n\n*Introduced in version 1.21.40*\n\nSample values:\n• breeze_wind_charge_projectile: true",
+      "type": "boolean",
+      "default": false
+    },
+    "breaks_blocks": {
+      "title": "Breaks Blocks",
+      "description": "If true, the explosion will destroy blocks in the explosion radius.",
+      "type": "boolean",
+      "default": true
+    },
+    "causes_fire": {
+      "title": "Causes Fire",
+      "description": "If true, blocks in the explosion radius will be set on fire.\n\nSample values:\n• fireball: true",
+      "type": "boolean",
+      "default": false
+    },
+    "damage_scaling": {
+      "title": "Damage Scaling",
+      "description": "A scale factor applied to the explosion's damage to entities. A value of 0 prevents the explosion from dealing any damage. Negative values cause the explosion to heal entities instead.",
+      "type": "number",
+      "default": 1
+    },
+    "destroy_affected_by_griefing": {
+      "title": "Destroy Affected By Griefing",
+      "description": "If true, whether the explosion breaks blocks is affected by the mob griefing game rule.\n\nSample values:\n• ender_crystal: true",
+      "type": "boolean",
+      "default": false
+    },
+    "fire_affected_by_griefing": {
+      "title": "Fire Affected By Griefing",
+      "description": "If true, whether the explosion causes fire is affected by the mob griefing game rule.\n\nSample values:\n• fireball: true",
+      "type": "boolean",
+      "default": false
+    },
+    "fuse_length": {
+      "title": "Fuse Length",
+      "description": "The range for the random amount of time the fuse will be lit before exploding, a negative value means the explosion will be immediate.\n\nSample values:\n• tnt_minecart: 4",
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        {
+          "type": "object",
+          "properties": {
+            "min": {
+              "type": "integer",
+              "description": "Minimum value of the range"
+            },
+            "max": {
+              "type": "integer",
+              "description": "Maximum value of the range"
+            }
+          }
+        }
+      ]
+    },
+    "fuse_lit": {
+      "title": "Fuse Lit",
+      "description": "If true, the fuse is already lit when this component is added to the entity.\n\nSample values:\n• ender_crystal: true",
+      "type": "boolean",
+      "default": false
+    },
+    "max_resistance": {
+      "title": "Max Resistance",
+      "description": "A blocks explosion resistance will be capped at this value when an explosion occurs.",
+      "type": "number",
+      "default": 3.40282e+38
+    },
+    "power": {
+      "title": "Power",
+      "description": "The radius of the explosion in blocks and the amount of damage the explosion deals.\n\nSample values:\n• breeze_wind_charge_projectile: 3\n• ender_crystal: 6\n• fireball: 1",
+      "type": "number",
+      "default": 3
+    },
+    "add": {
+      "title": "Add",
+      "description": "\n\nProperties:\n• component_groups (string)\n\nSample values:\n• fireball: {\"component_groups\":[\"minecraft:exploding\"]}",
+      "type": "object",
+      "properties": {
+        "component_groups": {
+          "title": "Component groups",
+          "description": "\n\nSample values:\n• fireball: [\"minecraft:exploding\"]",
+          "type": "string"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Add",
+          "description": "Create a Add",
+          "body": {
+            "component_groups": ""
+          }
+        }
+      ]
+    }
+  }
+}

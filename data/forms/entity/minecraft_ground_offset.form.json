@@ -1,0 +1,41 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "value",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has a ground offset of "
+          },
+          {
+            "type": "value",
+            "field": "value"
+          },
+          {
+            "type": "literal",
+            "text": " blocks"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "The value of the entity's offset from the terrain, in blocks.",
+      "defaultValue": 0,
+      "dataType": "float"
+    }
+  ],
+  "description": "Sets the offset from the ground that the entity is actually at.",
+  "title": "Ground Offset",
+  "id": "minecraft:ground_offset"
+}

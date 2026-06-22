@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Texture Set: Layered textures -->
+  <rect x="1" y="4" width="10" height="10" rx="0.5" fill-opacity="0.2"/>
+  <rect x="3" y="2" width="10" height="10" rx="0.5" fill-opacity="0.4"/>
+  <rect x="5" y="0" width="10" height="10" rx="0.5" fill-opacity="0.6"/>
+  <circle cx="8" cy="3" r="1.5"/>
+  <path d="M6 8L8.5 5L10 6.5L13 3.5V8H6Z"/>
+</svg>

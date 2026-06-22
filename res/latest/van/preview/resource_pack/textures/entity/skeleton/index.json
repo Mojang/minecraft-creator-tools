@@ -1,0 +1,23 @@
+{
+  "files": [
+    "bogged.png",
+    "bogged.texture_set.json",
+    "bogged_clothes.png",
+    "bogged_clothes.texture_set.json",
+    "bogged_clothes_mers.tga",
+    "bogged_mers.tga",
+    "skeleton.png",
+    "skeleton.texture_set.json",
+    "skeleton_mers.tga",
+    "stray.png",
+    "stray.texture_set.json",
+    "stray_mers.tga",
+    "stray_overlay.png",
+    "stray_overlay.texture_set.json",
+    "stray_overlay_mers.tga",
+    "wither_skeleton.png",
+    "wither_skeleton.texture_set.json",
+    "wither_skeleton_mers.tga"
+  ],
+  "folders": []
+}

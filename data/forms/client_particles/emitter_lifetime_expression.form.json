@@ -1,0 +1,92 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "controls emitter activation and expiration via expressions"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "activation_expression",
+      "title": "Activation Expression",
+      "description": "When the expression is non-zero, the emitter is activated. Can be a number or Molang expression.",
+      "dataType": "molang",
+      "defaultValue": 1,
+      "alternates": [
+        {
+          "id": "activation_expression",
+          "dataType": "keyedObjectCollection",
+          "readOnly": true,
+          "subForm": {
+            "id": "activation_expression",
+            "title": "Activation Expression",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "Expression",
+                "dataType": "string",
+                "isRequired": true
+              },
+              {
+                "id": "version",
+                "title": "Version",
+                "dataType": "int",
+                "isRequired": true
+              }
+            ]
+          }
+        },
+        {
+          "id": "activation_expression",
+          "dataType": "float"
+        }
+      ]
+    },
+    {
+      "id": "expiration_expression",
+      "title": "Expiration Expression",
+      "description": "When the expression is non-zero, the emitter expires. Can be a number or Molang expression.",
+      "dataType": "molang",
+      "defaultValue": 0,
+      "alternates": [
+        {
+          "id": "expiration_expression",
+          "dataType": "keyedObjectCollection",
+          "readOnly": true,
+          "subForm": {
+            "id": "expiration_expression",
+            "title": "Expiration Expression",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "Expression",
+                "dataType": "string",
+                "isRequired": true
+              },
+              {
+                "id": "version",
+                "title": "Version",
+                "dataType": "int",
+                "isRequired": true
+              }
+            ]
+          }
+        },
+        {
+          "id": "expiration_expression",
+          "dataType": "float"
+        }
+      ]
+    }
+  ],
+  "description": "Controls when the emitter activates and expires using Molang expressions. The activation expression starts particle emission when it evaluates to non-zero, and the expiration expression stops it. This enables dynamic effects tied to entity state—like flames that only appear when an entity is on fire, or magic particles that pulse with the caster's mana.",
+  "title": "Client Particles Emitter Lifetime Expression",
+  "id": "emitter_lifetime_expression"
+}

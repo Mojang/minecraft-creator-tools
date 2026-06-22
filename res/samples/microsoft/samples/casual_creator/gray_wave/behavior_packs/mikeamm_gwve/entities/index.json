@@ -1,0 +1,13 @@
+{
+  "files": [
+    "axe_turret.behavior.json",
+    "bow_turret.behavior.json",
+    "crossbow_turret.behavior.json",
+    "gray_wave.json",
+    "gray_wave_generator.json",
+    "gray_zombie_leader.behavior.json",
+    "shbullet_turret.behavior.json",
+    "smfireball_turret.behavior.json"
+  ],
+  "folders": []
+}

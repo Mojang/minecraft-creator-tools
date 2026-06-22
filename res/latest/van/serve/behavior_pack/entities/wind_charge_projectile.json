@@ -1,0 +1,73 @@
+{
+  "format_version": "1.26.0",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "minecraft:wind_charge_projectile",
+      "is_summonable": true,
+      "is_spawnable": false
+    },
+    "components": {
+      "minecraft:collision_box": {
+        "height": 0.3125,
+        "width": 0.3125
+      },
+      "minecraft:conditional_bandwidth_optimization": {
+        "default_values": {
+          "max_dropped_ticks": 7,
+          "max_optimized_distance": 80.0,
+          "use_motion_prediction_hints": true
+        }
+      },
+      "minecraft:explode": {
+        "knockback_scaling": 1.22,
+        "damage_scaling": 0,
+        "allow_underwater": true,
+        "breaks_blocks": false,
+        "causes_fire": false,
+        "max_resistance": 0,
+        "negates_fall_damage": true,
+        "particle_effect": "wind_burst",
+        "toggles_blocks": true,
+        "power": 1.2,
+        "sound_effect": "wind_charge.burst"
+      },
+      "minecraft:physics": {},
+      "minecraft:projectile": {
+        "reflect_immunity": 0.5,
+        "gravity": 0.0,
+        "inertia": 1.0,
+        "ignored_entities": [
+          "ender_crystal",
+          "wind_charge_projectile",
+          "breeze_wind_charge_projectile"
+        ],
+        "multiple_targets": false,
+        "liquid_inertia": 1.0,
+        "on_hit": {
+          "impact_damage": {
+            "apply_knockback_to_blocking_targets": true,
+            "damage": 1,
+            "knockback": true,
+            "max_critical_damage": 1.0
+          },
+          "wind_burst_on_hit": {}
+        },
+        "power": 1.5,
+        "reflect_on_hurt": true,
+        "uncertainty_base": 1.0,
+        "uncertainty_multiplier": 0.0
+      },
+      "minecraft:pushable": {
+        "is_pushable": false,
+        "is_pushable_by_piston": true
+      },
+      "minecraft:type_family": {
+        "family": [
+          "wind_charge",
+          "wind_charge_projectile"
+        ]
+      }
+    },
+    "events": null
+  }
+}

@@ -1,0 +1,563 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "power",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can create "
+          },
+          {
+            "type": "switch",
+            "cases": [
+              {
+                "conditions": [
+                  {
+                    "field": "power",
+                    "comparison": ">",
+                    "value": 6
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "a devastating explosion"
+                  }
+                ]
+              },
+              {
+                "conditions": [
+                  {
+                    "field": "power",
+                    "comparison": ">",
+                    "value": 4
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "a powerful explosion"
+                  }
+                ]
+              },
+              {
+                "conditions": [
+                  {
+                    "field": "power",
+                    "comparison": "<",
+                    "value": 2
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "a small explosion"
+                  }
+                ]
+              }
+            ],
+            "default": [
+              {
+                "type": "literal",
+                "text": "an explosion"
+              }
+            ]
+          },
+          {
+            "type": "literal",
+            "text": " (power: "
+          },
+          {
+            "type": "value",
+            "field": "power"
+          },
+          {
+            "type": "literal",
+            "text": ")"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "power",
+            "comparison": "undefined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can explode"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "fuse_length",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "with a "
+          },
+          {
+            "type": "value",
+            "field": "fuse_length"
+          },
+          {
+            "type": "literal",
+            "text": " second fuse"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "causes_fire",
+            "comparison": "==",
+            "value": true
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "that causes fire"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "breaks_blocks",
+            "comparison": "==",
+            "value": false
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "without destroying blocks"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "toggles_blocks",
+      "versionIntroduced": "1.21.40",
+      "samples": {
+        "/vanilla/behavior_pack/entities/breeze_wind_charge_projectile.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:explode/",
+            "content": true
+          }
+        ],
+        "/vanilla/behavior_pack/entities/wind_charge_projectile.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:explode/",
+            "content": true
+          }
+        ]
+      },
+      "defaultValue": false,
+      "dataType": "boolean",
+      "description": "If true, the explosion will toggle blocks in the explosion radius.",
+      "title": "Toggles Blocks"
+    },
+    {
+      "id": "knockback_scaling",
+      "versionIntroduced": "1.21.40",
+      "samples": {
+        "/vanilla/behavior_pack/entities/breeze_wind_charge_projectile.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:explode/",
+            "content": 0.6
+          }
+        ],
+        "/vanilla/behavior_pack/entities/wind_charge_projectile.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:explode/",
+            "content": 1.22
+          }
+        ]
+      },
+      "defaultValue": 1,
+      "dataType": "float",
+      "description": "A scale factor applied to the knockback force caused by the explosion.",
+      "title": "Knockback Scaling"
+    },
+    {
+      "id": "particle_effect",
+      "versionIntroduced": "1.21.40",
+      "samples": {
+        "/vanilla/behavior_pack/entities/breeze_wind_charge_projectile.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:explode/",
+            "content": "breeze_wind_burst"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/wind_charge_projectile.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:explode/",
+            "content": "wind_burst"
+          }
+        ]
+      },
+      "defaultValue": "explosion",
+      "dataType": "string",
+      "description": "The name of the particle effect to use. The accepted strings are 'explosion', 'wind_burst', or 'breeze_wind_burst'.",
+      "title": "Particle Effect"
+    },
+    {
+      "id": "sound_effect",
+      "versionIntroduced": "1.21.40",
+      "samples": {
+        "/vanilla/behavior_pack/entities/breeze_wind_charge_projectile.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:explode/",
+            "content": "breeze_wind_charge.burst"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/wind_charge_projectile.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:explode/",
+            "content": "wind_charge.burst"
+          }
+        ]
+      },
+      "defaultValue": "explode",
+      "dataType": "string",
+      "description": "The name of the sound effect played when the explosion triggers.",
+      "title": "Sound Effect"
+    },
+    {
+      "id": "negates_fall_damage",
+      "versionIntroduced": "1.21.40",
+      "samples": {
+        "/vanilla/behavior_pack/entities/wind_charge_projectile.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:explode/",
+            "content": true
+          }
+        ]
+      },
+      "defaultValue": false,
+      "dataType": "boolean",
+      "description": "Defines whether the explosion should apply fall damage negation to Players above the point of collision.",
+      "title": "Negates Fall Damage"
+    },
+    {
+      "id": "allow_underwater",
+      "versionIntroduced": "1.21.40",
+      "samples": {
+        "/vanilla/behavior_pack/entities/breeze_wind_charge_projectile.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:explode/",
+            "content": true
+          }
+        ],
+        "/vanilla/behavior_pack/entities/wind_charge_projectile.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:explode/",
+            "content": true
+          }
+        ]
+      },
+      "defaultValue": false,
+      "dataType": "boolean",
+      "description": "If true, the explosion will affect blocks and entities under water.",
+      "title": "Allow Underwater"
+    },
+    {
+      "id": "breaks_blocks",
+      "title": "Breaks Blocks",
+      "description": "If true, the explosion will destroy blocks in the explosion radius.",
+      "defaultValue": true,
+      "dataType": "boolean"
+    },
+    {
+      "id": "causes_fire",
+      "title": "Causes Fire",
+      "description": "If true, blocks in the explosion radius will be set on fire.",
+      "defaultValue": false,
+      "dataType": "boolean",
+      "samples": {
+        "/vanilla/behavior_pack/entities/fireball.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:exploding/minecraft:explode/",
+            "content": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "damage_scaling",
+      "title": "Damage Scaling",
+      "description": "A scale factor applied to the explosion's damage to entities. A value of 0 prevents the explosion from dealing any damage. Negative values cause the explosion to heal entities instead.",
+      "defaultValue": 1,
+      "dataType": "float"
+    },
+    {
+      "id": "destroy_affected_by_griefing",
+      "title": "Destroy Affected By Griefing",
+      "description": "If true, whether the explosion breaks blocks is affected by the mob griefing game rule.",
+      "defaultValue": false,
+      "dataType": "boolean",
+      "samples": {
+        "/vanilla/behavior_pack/entities/ender_crystal.json": [
+          {
+            "path": "/minecraft:entity/component_groups/crystal_exploding/minecraft:explode/",
+            "content": true
+          }
+        ],
+        "/vanilla/behavior_pack/entities/fireball.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:exploding/minecraft:explode/",
+            "content": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "fire_affected_by_griefing",
+      "title": "Fire Affected By Griefing",
+      "description": "If true, whether the explosion causes fire is affected by the mob griefing game rule.",
+      "defaultValue": false,
+      "dataType": "boolean",
+      "samples": {
+        "/vanilla/behavior_pack/entities/fireball.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:exploding/minecraft:explode/",
+            "content": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "fuse_length",
+      "title": "Fuse Length",
+      "description": "The range for the random amount of time the fuse will be lit before exploding, a negative value means the explosion will be immediate.",
+      "dataType": "intRange",
+      "samples": {
+        "/vanilla/behavior_pack/entities/tnt_minecart.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:primed_tnt/minecraft:explode/",
+            "content": 4
+          }
+        ]
+      }
+    },
+    {
+      "id": "fuse_lit",
+      "title": "Fuse Lit",
+      "description": "If true, the fuse is already lit when this component is added to the entity.",
+      "defaultValue": false,
+      "dataType": "boolean",
+      "samples": {
+        "/vanilla/behavior_pack/entities/ender_crystal.json": [
+          {
+            "path": "/minecraft:entity/component_groups/crystal_exploding/minecraft:explode/",
+            "content": true
+          }
+        ],
+        "/vanilla/behavior_pack/entities/fireball.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:exploding/minecraft:explode/",
+            "content": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "max_resistance",
+      "title": "Max Resistance",
+      "description": "A blocks explosion resistance will be capped at this value when an explosion occurs.",
+      "defaultValue": 3.40282e+38,
+      "dataType": "float"
+    },
+    {
+      "id": "power",
+      "title": "Power",
+      "description": "The radius of the explosion in blocks and the amount of damage the explosion deals.",
+      "defaultValue": 3,
+      "dataType": "float",
+      "samples": {
+        "/vanilla/behavior_pack/entities/breeze_wind_charge_projectile.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:explode/",
+            "content": 3
+          }
+        ],
+        "/vanilla/behavior_pack/entities/ender_crystal.json": [
+          {
+            "path": "/minecraft:entity/component_groups/crystal_exploding/minecraft:explode/",
+            "content": 6
+          }
+        ],
+        "/vanilla/behavior_pack/entities/fireball.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:exploding/minecraft:explode/",
+            "content": 1
+          }
+        ],
+        "/vanilla/behavior_pack/entities/tnt_minecart.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:instant_explode_tnt/minecraft:explode/",
+            "content": 3
+          }
+        ],
+        "/vanilla/behavior_pack/entities/wind_charge_projectile.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:explode/",
+            "content": 1.2
+          }
+        ]
+      }
+    },
+    {
+      "id": "add",
+      "title": "Add",
+      "dataType": "object",
+      "subForm": {
+        "id": "add",
+        "title": "Add",
+        "fields": [
+          {
+            "id": "component_groups",
+            "title": "Component groups",
+            "dataType": "string",
+            "samples": {
+              "/vanilla/behavior_pack/entities/fireball.json": [
+                {
+                  "path": "component_groups",
+                  "content": [
+                    "minecraft:exploding"
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "samples": {
+        "/vanilla/behavior_pack/entities/fireball.json": [
+          {
+            "path": "/minecraft:entity/events/minecraft:explode/",
+            "content": {
+              "component_groups": [
+                "minecraft:exploding"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Defines how the entity explodes.",
+  "title": "Explode",
+  "samples": {
+    "/vanilla/behavior_pack/entities/breeze_wind_charge_projectile.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:explode/",
+        "content": {
+          "knockback_scaling": 0.6,
+          "damage_scaling": 0,
+          "allow_underwater": true,
+          "breaks_blocks": false,
+          "causes_fire": false,
+          "max_resistance": 0,
+          "negates_fall_damage": false,
+          "particle_effect": "breeze_wind_burst",
+          "toggles_blocks": true,
+          "power": 3,
+          "sound_effect": "breeze_wind_charge.burst"
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/ender_crystal.json": [
+      {
+        "path": "/minecraft:entity/component_groups/crystal_exploding/minecraft:explode/",
+        "content": {
+          "causes_fire": false,
+          "fuse_lit": true,
+          "power": 6,
+          "destroy_affected_by_griefing": true,
+          "fuse_length": 0
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/fireball.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:exploding/minecraft:explode/",
+        "content": {
+          "causes_fire": true,
+          "fire_affected_by_griefing": true,
+          "fuse_lit": true,
+          "power": 1,
+          "destroy_affected_by_griefing": true,
+          "fuse_length": 0
+        }
+      },
+      {
+        "path": "/minecraft:entity/events/minecraft:explode/",
+        "content": {
+          "add": {
+            "component_groups": [
+              "minecraft:exploding"
+            ]
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/tnt_minecart.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:instant_explode_tnt/minecraft:explode/",
+        "content": {
+          "causes_fire": false,
+          "fuse_lit": true,
+          "power": 3,
+          "fuse_length": 0
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:primed_tnt/minecraft:explode/",
+        "content": {
+          "causes_fire": false,
+          "fuse_lit": true,
+          "power": 3,
+          "fuse_length": 4
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/wind_charge_projectile.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:explode/",
+        "content": {
+          "knockback_scaling": 1.22,
+          "damage_scaling": 0,
+          "allow_underwater": true,
+          "breaks_blocks": false,
+          "causes_fire": false,
+          "max_resistance": 0,
+          "negates_fall_damage": true,
+          "particle_effect": "wind_burst",
+          "toggles_blocks": true,
+          "power": 1.2,
+          "sound_effect": "wind_charge.burst"
+        }
+      }
+    ]
+  },
+  "id": "minecraft:explode"
+}

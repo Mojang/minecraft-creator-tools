@@ -1,0 +1,56 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Random Sitting Behavior",
+  "description": "Allows the mob to randomly sit for a duration.",
+  "properties": {
+    "control_flags": {
+      "title": "Control Flags",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "jump",
+          "look",
+          "move"
+        ]
+      }
+    },
+    "cooldown": {
+      "title": "Cooldown",
+      "description": "Time in seconds the mob has to wait before using the goal again",
+      "type": "number",
+      "default": 100
+    },
+    "min_sit_time": {
+      "title": "Min Sit Time",
+      "description": "The minimum amount of time in seconds before the mob will stand back up",
+      "type": "number",
+      "default": 10
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "type": "integer",
+      "default": 0
+    },
+    "start_chance": {
+      "title": "Start Chance",
+      "description": "This is the chance that the mob will start this goal, from 0 to 1",
+      "type": "number",
+      "default": 0.10000000149011612
+    },
+    "stop_chance": {
+      "title": "Stop Chance",
+      "description": "This is the chance that the mob will stop this goal, from 0 to 1",
+      "type": "number",
+      "default": 0.30000001192092896
+    },
+    "cooldown_time": {
+      "title": "Cooldown Time",
+      "description": "Time in seconds the mob has to wait before using the goal again",
+      "type": "number",
+      "default": 0
+    }
+  }
+}

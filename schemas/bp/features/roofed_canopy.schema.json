@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Roofed Canopy",
+  "description": "\n\nProperties:\n• canopy_height (int)\n• core_width (int)\n• outer_radius (int)\n• inner_radius (int)",
+  "type": "object",
+  "properties": {
+    "canopy_height": {
+      "title": "Canopy Height",
+      "description": "Roofed canopies feature a base and a top layer, and an extra cap layer on some occasions, this value controls the number of layers in the middle.",
+      "type": "integer"
+    },
+    "core_width": {
+      "title": "Core Width",
+      "description": "Width of the tree trunk.",
+      "type": "integer"
+    },
+    "outer_radius": {
+      "title": "Outer Radius",
+      "description": "Radius used for the base and top layers.",
+      "type": "integer"
+    },
+    "inner_radius": {
+      "title": "Inner Radius",
+      "description": "Radius used for the middle layers.",
+      "type": "integer"
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "Roofed Canopy",
+      "description": "Create a Roofed Canopy",
+      "body": {
+        "canopy_height": 0,
+        "core_width": 0,
+        "outer_radius": 0,
+        "inner_radius": 0
+      }
+    }
+  ]
+}

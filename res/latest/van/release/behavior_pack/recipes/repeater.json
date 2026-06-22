@@ -1,0 +1,35 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:repeater"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "pattern": [
+      "#X#",
+      "III"
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:redstone_torch"
+      },
+      "X": {
+        "item": "minecraft:redstone"
+      },
+      "I": {
+        "item": "minecraft:stone",
+        "data": 0
+      }
+    },
+    "unlock": [
+      {
+        "item": "minecraft:redstone_torch"
+      }
+    ],
+    "result": {
+      "item": "minecraft:repeater"
+    }
+  }
+}

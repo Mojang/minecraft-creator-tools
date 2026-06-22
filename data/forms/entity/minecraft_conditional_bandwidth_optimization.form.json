@@ -1,0 +1,221 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "optimizes network bandwidth for spatial updates"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "default_values.max_optimized_distance",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "optimizes updates within "
+          },
+          {
+            "type": "value",
+            "field": "default_values.max_optimized_distance"
+          },
+          {
+            "type": "literal",
+            "text": " blocks"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "default_values.max_dropped_ticks",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can skip up to "
+          },
+          {
+            "type": "value",
+            "field": "default_values.max_dropped_ticks"
+          },
+          {
+            "type": "literal",
+            "text": " ticks between updates"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "default_values.use_motion_prediction_hints",
+            "comparison": "=",
+            "value": true
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "uses motion prediction hints"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "conditional_values",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has conditional optimization rules"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "default_values",
+      "title": "Default Values",
+      "description": "The object containing the default bandwidth optimization values.",
+      "dataType": "object",
+      "subForm": {
+        "id": "default_values",
+        "title": "Default Values",
+        "fields": [
+          {
+            "id": "max_optimized_distance",
+            "title": "Max Optimized Distance",
+            "description": "The maximum distance considered during bandwidth optimizations.",
+            "defaultValue": 80,
+            "dataType": "float"
+          },
+          {
+            "id": "max_dropped_ticks",
+            "title": "Max Dropped Ticks",
+            "description": "Determines the maximum ticks spatial update packets can be not sent.",
+            "defaultValue": 10,
+            "dataType": "int"
+          },
+          {
+            "id": "use_motion_prediction_hints",
+            "title": "Use Motion Prediction Hints",
+            "description": "When true, smaller motion packets will be sent during drop packet intervals.",
+            "defaultValue": false,
+            "dataType": "boolean"
+          }
+        ]
+      },
+      "samples": {
+        "/vanilla/behavior_pack/entities/arrow.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:conditional_bandwidth_optimization/",
+            "content": {
+              "max_dropped_ticks": 7,
+              "max_optimized_distance": 80,
+              "use_motion_prediction_hints": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "conditional_values",
+      "title": "Conditional Values",
+      "description": "The object containing the conditional bandwidth optimization values.",
+      "dataType": "objectArray",
+      "subForm": {
+        "id": "",
+        "description": "The object containing the conditional bandwidth optimization values.",
+        "fields": [
+          {
+            "id": "conditional_values",
+            "title": "Conditional Values",
+            "description": "Conditions that must be met for these optimization values to be used.",
+            "dataType": "minecraftFilter"
+          },
+          {
+            "id": "max_dropped_ticks",
+            "title": "Max Dropped Ticks",
+            "description": "In relation to the optimization value, determines the maximum ticks spatial update packets can be not sent.",
+            "defaultValue": 10,
+            "dataType": "int",
+            "validity": [
+              {
+                "comparison": ">=",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "id": "max_optimized_distance",
+            "title": "Max Optimized Distance",
+            "description": "The maximum distance considered during bandwidth optimizations. Any value below the max is interpolated to find optimization, and any value greater than or equal to this max results in max optimization.",
+            "defaultValue": 80,
+            "dataType": "float"
+          },
+          {
+            "id": "use_motion_prediction_hints",
+            "title": "Use Motion Prediction Hints",
+            "description": "When set to true, smaller motion packets will be sent during drop packet intervals, resulting in the same amount of packets being sent as without optimizations but with much less data being sent. This should be used when actors are travelling very quickly or teleporting to prevent visual oddities.",
+            "defaultValue": false,
+            "dataType": "boolean"
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Defines the Conditional Spatial Update Bandwidth Optimizations of this entity.",
+  "title": "Conditional Bandwidth Optimization",
+  "samples": {
+    "/vanilla/behavior_pack/entities/allay.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:conditional_bandwidth_optimization/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/area_effect_cloud.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:conditional_bandwidth_optimization/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/armor_stand.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:conditional_bandwidth_optimization/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/arrow.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:conditional_bandwidth_optimization/",
+        "content": {
+          "default_values": {
+            "max_dropped_ticks": 7,
+            "max_optimized_distance": 80,
+            "use_motion_prediction_hints": true
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/bat.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:conditional_bandwidth_optimization/",
+        "content": {}
+      }
+    ]
+  },
+  "id": "minecraft:conditional_bandwidth_optimization"
+}

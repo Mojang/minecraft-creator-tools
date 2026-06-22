@@ -1,0 +1,45 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines shooter component"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "minecraft:shooter",
+  "fields": [
+    {
+      "id": "ammunition",
+      "title": "Ammunition",
+      "description": "Ammunition.",
+      "dataType": "object",
+      "subFormId": "misc/ammunition"
+    },
+    {
+      "id": "charge_on_draw",
+      "title": "Charge On Draw",
+      "description": "Charge on draw? Default is set to false.",
+      "dataType": "boolean"
+    },
+    {
+      "id": "max_draw_duration",
+      "title": "Max Draw Duration",
+      "description": "Draw Duration. Default is set to 0.",
+      "dataType": "float"
+    },
+    {
+      "id": "scale_power_by_draw_duration",
+      "title": "Scale Power By Draw Duration",
+      "description": "Scale power by draw duration? Default is set to false.",
+      "dataType": "boolean"
+    }
+  ],
+  "description": "Shooter Item Component.",
+  "title": "Minecraft Shooter Misc"
+}

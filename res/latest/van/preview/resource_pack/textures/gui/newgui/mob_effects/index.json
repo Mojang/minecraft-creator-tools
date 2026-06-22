@@ -1,0 +1,26 @@
+{
+  "files": [
+    "bad_omen_effect.png",
+    "blindness_effect.png",
+    "fire_resistance_effect.png",
+    "haste_effect.png",
+    "hunger_effect.png",
+    "invisibility_effect.png",
+    "jump_boost_effect.png",
+    "levitation_effect.png",
+    "mining_fatigue_effect.png",
+    "nausea_effect.png",
+    "night_vision_effect.png",
+    "poison_effect.png",
+    "regeneration_effect.png",
+    "resistance_effect.png",
+    "slowness_effect.png",
+    "speed_effect.png",
+    "strength_effect.png",
+    "village_hero_effect.png",
+    "water_breathing_effect.png",
+    "weakness_effect.png",
+    "wither_effect.png"
+  ],
+  "folders": []
+}

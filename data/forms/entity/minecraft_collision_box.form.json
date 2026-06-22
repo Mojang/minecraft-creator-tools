@@ -1,0 +1,237 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "width",
+            "comparison": ">=",
+            "value": 2
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has a large collision box ("
+          },
+          {
+            "type": "value",
+            "field": "width"
+          },
+          {
+            "type": "literal",
+            "text": " x "
+          },
+          {
+            "type": "value",
+            "field": "height"
+          },
+          {
+            "type": "literal",
+            "text": " blocks)"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "width",
+            "comparison": "<",
+            "value": 0.5
+          },
+          {
+            "field": "width",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has a small collision box ("
+          },
+          {
+            "type": "value",
+            "field": "width"
+          },
+          {
+            "type": "literal",
+            "text": " x "
+          },
+          {
+            "type": "value",
+            "field": "height"
+          },
+          {
+            "type": "literal",
+            "text": " blocks)"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "width",
+            "comparison": ">=",
+            "value": 0.5
+          },
+          {
+            "field": "width",
+            "comparison": "<",
+            "value": 2
+          },
+          {
+            "field": "height",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has a "
+          },
+          {
+            "type": "value",
+            "field": "width"
+          },
+          {
+            "type": "literal",
+            "text": " x "
+          },
+          {
+            "type": "value",
+            "field": "height"
+          },
+          {
+            "type": "literal",
+            "text": " block collision box"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "height",
+      "description": "Height of the collision box in blocks. A negative value will be assumed to be 0.",
+      "samples": {
+        "/vanilla/behavior_pack/entities/allay.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:collision_box/",
+            "content": 0.6
+          }
+        ],
+        "/vanilla/behavior_pack/entities/armor_stand.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:collision_box/",
+            "content": 1.975
+          }
+        ],
+        "/vanilla/behavior_pack/entities/arrow.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:collision_box/",
+            "content": 0.25
+          }
+        ],
+        "/vanilla/behavior_pack/entities/bat.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:collision_box/",
+            "content": 0.9
+          }
+        ],
+        "/vanilla/behavior_pack/entities/blaze.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:collision_box/",
+            "content": 1.8
+          }
+        ]
+      },
+      "defaultValue": 1,
+      "dataType": "float",
+      "title": "Height"
+    },
+    {
+      "id": "width",
+      "title": "Width",
+      "description": "Width of the collision box in blocks. A negative value will be assumed to be 0. Min value is -100000000.000000 Max value is 100000000.000000",
+      "defaultValue": 1,
+      "dataType": "float",
+      "samples": {
+        "/vanilla/behavior_pack/entities/allay.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:collision_box/",
+            "content": 0.35
+          }
+        ],
+        "/vanilla/behavior_pack/entities/armor_stand.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:collision_box/",
+            "content": 0.5
+          }
+        ],
+        "/vanilla/behavior_pack/entities/arrow.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:collision_box/",
+            "content": 0.25
+          }
+        ],
+        "/vanilla/behavior_pack/entities/bat.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:collision_box/",
+            "content": 0.5
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Sets the width and height of the Entity's collision box.",
+  "title": "Collision Box",
+  "samples": {
+    "/vanilla/behavior_pack/entities/allay.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:collision_box/",
+        "content": {
+          "height": 0.6,
+          "width": 0.35
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/armor_stand.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:collision_box/",
+        "content": {
+          "height": 1.975,
+          "width": 0.5
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/arrow.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:collision_box/",
+        "content": {
+          "height": 0.25,
+          "width": 0.25
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/bat.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:collision_box/",
+        "content": {
+          "height": 0.9,
+          "width": 0.5
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/blaze.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:collision_box/",
+        "content": {
+          "height": 1.8,
+          "width": 0.5
+        }
+      }
+    ]
+  },
+  "id": "minecraft:collision_box"
+}
