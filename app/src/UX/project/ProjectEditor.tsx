@@ -1268,7 +1268,15 @@ class ProjectEditor extends Component<IProjectEditorProps, IProjectEditorState> 
     this._handleDialogDoneAndClear();
   }
 
-  private _handleDialogDoneAndClear(clearActiveProjectItem?: boolean, dialog?: ProjectEditorDialog) {
+  private _getDialogProjectItem() {
+    return this.state.dialogActiveItem ?? this.state.activeProjectItem ?? undefined;
+  }
+
+  private _handleDialogDoneAndClear(
+    clearActiveProjectItem?: boolean,
+    dialog?: ProjectEditorDialog,
+    dialogActiveItem?: ProjectItem
+  ) {
     if (this.state !== undefined) {
       this.setState({
         activeProjectItem: clearActiveProjectItem ? null : this.state.activeProjectItem,
@@ -1280,7 +1288,7 @@ class ProjectEditor extends Component<IProjectEditorProps, IProjectEditorState> 
         dragStyle: undefined,
         dialog: dialog,
         dialogData: this.state.dialogData,
-        dialogActiveItem: this.state.dialogActiveItem,
+        dialogActiveItem: dialog ? dialogActiveItem : undefined,
         visualSeed: this.state.visualSeed,
         viewMode: this.state.viewMode,
         allInfoSet: this.props.project.indevInfoSet,
@@ -1337,16 +1345,19 @@ class ProjectEditor extends Component<IProjectEditorProps, IProjectEditorState> 
   }
 
   private async _handleConvertOK() {
+    const dialogData = this.state.dialogData;
+    const dialogActiveItem = this.state.dialogActiveItem;
+
     this._handleDialogDone();
 
-    if (this.state.dialogData && this.state.dialogActiveItem) {
-      let mcworld: MCWorld | undefined = await MCWorld.ensureOnItem(this.state.dialogActiveItem);
+    if (dialogData && dialogActiveItem) {
+      let mcworld: MCWorld | undefined = await MCWorld.ensureOnItem(dialogActiveItem);
 
       if (mcworld) {
         await ProjectExporter.convertWorld(
           this.props.creatorTools,
           this.props.project,
-          this.state.dialogData as IConversionSettings,
+          dialogData as IConversionSettings,
           mcworld
         );
       }
@@ -4002,11 +4013,11 @@ class ProjectEditor extends Component<IProjectEditorProps, IProjectEditorState> 
           break;
         case ProjectEditorItemAction.deleteItem:
           actionType = this.props.intl.formatMessage({ id: "common.delete" });
-          this._handleDialogDoneAndClear(false, ProjectEditorDialog.deleteItem);
+          this._handleDialogDoneAndClear(false, ProjectEditorDialog.deleteItem, projectItem);
           break;
         case ProjectEditorItemAction.renameItem:
           actionType = this.props.intl.formatMessage({ id: "project_editor.common.rename" });
-          this._handleDialogDoneAndClear(false, ProjectEditorDialog.renameItem);
+          this._handleDialogDoneAndClear(false, ProjectEditorDialog.renameItem, projectItem);
           break;
       }
 
@@ -4086,13 +4097,15 @@ class ProjectEditor extends Component<IProjectEditorProps, IProjectEditorState> 
   }
 
   _handleConfirmRename() {
-    if (this.state === null || !this.state.activeProjectItem || this._newItemName === undefined) {
+    const projectItem = this._getDialogProjectItem();
+
+    if (this.state === null || !projectItem || this._newItemName === undefined) {
       return;
     }
 
-    this.state.activeProjectItem.rename(this._newItemName);
+    projectItem.rename(this._newItemName);
 
-    this._handleDialogDoneAndClear(true);
+    this._handleDialogDoneAndClear(projectItem === this.state.activeProjectItem);
   }
 
   async commitTentativeItem() {
@@ -4292,13 +4305,19 @@ class ProjectEditor extends Component<IProjectEditorProps, IProjectEditorState> 
 
   async _handleConfirmDelete() {
     try {
-      if (this.state === null || !this.state.activeProjectItem) {
+      const projectItem = this._getDialogProjectItem();
+
+      if (this.state === null || !projectItem) {
         return;
       }
 
-      await this.state.activeProjectItem.deleteItem();
+      const itemWasActive = projectItem === this.state.activeProjectItem;
+      const openTabs = this.state.openTabs.filter((tab) => tab !== projectItem);
 
-      this._handleDialogDoneAndClear(true);
+      await projectItem.deleteItem();
+
+      this._handleDialogDoneAndClear(itemWasActive);
+      this.setState({ openTabs: openTabs });
 
       this._incrementVisualSeed();
     } catch (e) {
@@ -5646,13 +5665,15 @@ class ProjectEditor extends Component<IProjectEditorProps, IProjectEditorState> 
       }
     }
 
-    if (this.state !== null && this.state.dialog === ProjectEditorDialog.renameItem && this.state.activeProjectItem) {
+    const dialogProjectItem = this._getDialogProjectItem();
+
+    if (this.state !== null && this.state.dialog === ProjectEditorDialog.renameItem && dialogProjectItem) {
       effectArea = (
         <Dialog open={true} key="pil-renameOuter" onClose={this._handleDialogDone}>
           <DialogTitle>
             {this.props.intl.formatMessage(
               { id: "project_editor.dialog.rename_title" },
-              { itemName: this.state.activeProjectItem.name }
+              { itemName: dialogProjectItem.name }
             )}
           </DialogTitle>
           <DialogContent>
@@ -5663,7 +5684,7 @@ class ProjectEditor extends Component<IProjectEditorProps, IProjectEditorState> 
                 onChange={this._handleNewProjectItemName}
               />
               <span className="pil-extension">
-                .{StorageUtilities.getTypeFromName(this.state.activeProjectItem.name)}
+                .{StorageUtilities.getTypeFromName(dialogProjectItem.name)}
               </span>
             </div>
           </DialogContent>
@@ -5678,14 +5699,14 @@ class ProjectEditor extends Component<IProjectEditorProps, IProjectEditorState> 
     } else if (
       this.state !== null &&
       this.state.dialog === ProjectEditorDialog.deleteItem &&
-      this.state.activeProjectItem
+      dialogProjectItem
     ) {
       let warnings = <></>;
 
-      if (this.state.activeProjectItem.parentItems) {
+      if (dialogProjectItem.parentItems) {
         let warningItems = [];
 
-        for (const item of this.state.activeProjectItem.parentItems) {
+        for (const item of dialogProjectItem.parentItems) {
           warningItems.push(
             <li>
               <span className="pil-inlineSource" style={{ backgroundColor: colors.background3 }}>
@@ -5717,14 +5738,14 @@ class ProjectEditor extends Component<IProjectEditorProps, IProjectEditorState> 
           <DialogTitle>
             {this.props.intl.formatMessage(
               { id: "project_editor.dialog.delete_title" },
-              { itemName: this.state.activeProjectItem.name }
+              { itemName: dialogProjectItem.name }
             )}
           </DialogTitle>
           <DialogContent>
             <div className="pil-dialog" key="pil-deleteConfirmDia">
               {this.props.intl.formatMessage({ id: "project_editor.dialog.delete_confirm" })}{" "}
               <span className="pil-inlineSource" style={{ backgroundColor: colors.background3 }}>
-                {this.state.activeProjectItem.title}
+                {dialogProjectItem.title}
               </span>
               ?{warnings}
             </div>
