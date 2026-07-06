@@ -35,7 +35,7 @@ export default function ProjectGrid({ onAppGalleryAction, onSetProject, onProjec
   const [onOpenSnippet, onNewProject] = useGalleryActions(onAppGalleryAction);
   const [creatorTools, isCreatorToolsReady] = useCreatorTools();
   const [isRefreshingTemplates, setIsRefreshingTemplates] = useState(false);
-  const [showGettingStarted, setShowGettingStarted] = useState(!creatorTools?.disableFirstRun);
+  const [showGettingStarted, setShowGettingStarted] = useState(!creatorTools?.dismissedGettingStarted);
   const [goalDialogOpen, setGoalDialogOpen] = useState(false);
   const [goalDialogMounted, setGoalDialogMounted] = useState(false);
   const [pendingGoalAction, setPendingGoalAction] = useState<PostCreateAction | undefined>();
@@ -54,9 +54,11 @@ export default function ProjectGrid({ onAppGalleryAction, onSetProject, onProjec
   const isAdvancedExpanded = isSearchMode || showAdvancedTools;
 
   // Re-evaluate the banner once creatorTools finishes loading persisted settings.
-  // The initial useState may read disableFirstRun before data is available.
+  // The initial useState may read the dismiss flag before data is available. The
+  // banner is intentionally independent of disableFirstRun so it persists past
+  // first-run setup until the user dismisses it specifically.
   useEffect(() => {
-    if (isCreatorToolsReady && creatorTools.disableFirstRun) {
+    if (isCreatorToolsReady && creatorTools.dismissedGettingStarted) {
       setShowGettingStarted(false);
     }
   }, [isCreatorToolsReady, creatorTools]);
@@ -92,6 +94,14 @@ export default function ProjectGrid({ onAppGalleryAction, onSetProject, onProjec
     setTimeout(() => setGoalDialogMounted(false), 300);
   }, []);
 
+  const handleDismissGettingStarted = useCallback(() => {
+    setShowGettingStarted(false);
+    if (creatorTools) {
+      creatorTools.dismissedGettingStarted = true;
+      creatorTools.save();
+    }
+  }, [creatorTools]);
+
   // Find the addonStarter template for goal-based creation
   const addonStarterTemplate = galleryData?.items.find((item) => item.id === "addonStarter");
 
@@ -119,7 +129,9 @@ export default function ProjectGrid({ onAppGalleryAction, onSetProject, onProjec
         })}
       >
         {!isSearchMode && <AddOnOverview />}
-        {showGettingStarted && !isSearchMode && <GettingStartedBanner onGoalSelected={handleGoalSelected} />}
+        {showGettingStarted && !isSearchMode && (
+          <GettingStartedBanner onGoalSelected={handleGoalSelected} onDismiss={handleDismissGettingStarted} />
+        )}
         <Box sx={{ mb: 3 }}>
           <Typography
             variant="caption"
@@ -236,28 +248,41 @@ export default function ProjectGrid({ onAppGalleryAction, onSetProject, onProjec
 
               const renderSection = (sectionTemplates: typeof templates, headingKey: string, keyPrefix: string) =>
                 sectionTemplates.length === 0 ? null : (
-                  <>
-                    <Grid item xs={12} key={`${keyPrefix}-heading`}>
-                      <Typography
-                        variant="overline"
-                        component="h3"
-                        sx={(theme) => ({
-                          mt: keyPrefix === "starter" ? 0 : 1,
-                          mb: 0.5,
-                          color: theme.palette.text.secondary,
-                          fontWeight: 700,
-                          letterSpacing: "0.5px",
-                        })}
-                      >
-                        {intl.formatMessage({ id: headingKey })}
-                      </Typography>
-                    </Grid>
-                    {sectionTemplates.map((template, i) => (
-                      <Grid item key={`${keyPrefix}-${i}`} xs={12} sm={6} lg={3}>
-                        <TemplateCard template={template} onNewProject={onNewProject} />
-                      </Grid>
-                    ))}
-                  </>
+                  <Grid item xs={12} key={`${keyPrefix}-section`}>
+                    <Typography
+                      variant="overline"
+                      component="h3"
+                      sx={(theme) => ({
+                        display: "block",
+                        mt: keyPrefix === "starter" ? 0 : 1,
+                        mb: 0.5,
+                        color: theme.palette.text.secondary,
+                        fontWeight: 700,
+                        letterSpacing: "0.5px",
+                      })}
+                    >
+                      {intl.formatMessage({ id: headingKey })}
+                    </Typography>
+                    <Box
+                      sx={{
+                        display: "grid",
+                        gap: { xs: 2, md: 2.5, lg: 3 },
+                        // Enforce a minimum card width and let the number of columns flow with the
+                        // available space, rather than forcing a fixed 4-up that squeezes cards so
+                        // narrow that the title's box overflows the card. min(240px, 100%) prevents
+                        // horizontal overflow when the container itself is narrower than the minimum.
+                        gridTemplateColumns: "repeat(auto-fill, minmax(min(240px, 100%), 1fr))",
+                      }}
+                    >
+                      {sectionTemplates.map((template, i) => (
+                        <TemplateCard
+                          key={`${keyPrefix}-${i}`}
+                          template={template}
+                          onNewProject={onNewProject}
+                        />
+                      ))}
+                    </Box>
+                  </Grid>
                 );
 
               return (

@@ -7,9 +7,17 @@ interface ImageOverlayProps extends TypographyProps {
   item: IGalleryItem;
   alt: string;
   children?: ReactNode;
+  /**
+   * Vertical placement of the overlaid title/description block within the image area.
+   * Defaults to "bottom" — the text sits on the darkest part of the bottom-up gradient,
+   * which is required when the caption has no solid background of its own (e.g. SnippetCard).
+   * Callers whose text carries its own opaque background (e.g. TemplateCard) can use "top"
+   * so the title hugs the top of the card instead of leaving an image gap above it.
+   */
+  contentAlign?: "top" | "center" | "bottom";
 }
 
-export default function ImageOverlay({ image, item, children, alt }: ImageOverlayProps) {
+export default function ImageOverlay({ image, item, children, alt, contentAlign = "bottom" }: ImageOverlayProps) {
   let backgroundPositionX = undefined;
   let backgroundPositionY = undefined;
   let backgroundSize = undefined;
@@ -58,15 +66,14 @@ export default function ImageOverlay({ image, item, children, alt }: ImageOverla
         sx={{
           position: "absolute",
           display: "flex",
-          // Pin the title/description block to the bottom of the overlay.
-          // The previous `alignContent: flex-end` is ignored on a single-row
-          // flex container, so children flowed from the top and collided with
-          // top-right card badges (e.g. "RECOMMENDED"). Using `alignItems` on
-          // a column flex container keeps content out of the badge zone AND
-          // sits the text on the darkest part of the gradient where contrast
-          // is highest.
+          // Vertical placement is caller-controlled via `contentAlign`. The default "bottom"
+          // sits the caption on the darkest part of the gradient (needed when the caption has
+          // no solid background of its own) and keeps it clear of top-right card badges. "top"
+          // hugs the title to the top of the card — use it only when the caption carries its
+          // own opaque background, otherwise contrast suffers in the lighter top gradient.
           flexDirection: "column",
-          justifyContent: "flex-end",
+          justifyContent:
+            contentAlign === "top" ? "flex-start" : contentAlign === "center" ? "center" : "flex-end",
           inset: 0,
           background: "linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.2) 100%)",
         }}

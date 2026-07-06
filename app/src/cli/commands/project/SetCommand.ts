@@ -23,14 +23,13 @@ import { Command } from "commander";
 import { ICommandMetadata, CommandBase } from "../../core/ICommand";
 import { ICommandContext, ErrorCodes } from "../../core/ICommandContext";
 import { TaskType } from "../../ClUtils";
-import ProjectUtilities from "../../../app/ProjectUtilities";
 
 const AVAILABLE_PROPERTIES = ["name", "title", "description", "bpscriptentrypoint", "bpuuid", "rpuuid"];
 
 export class SetCommand extends CommandBase {
   readonly metadata: ICommandMetadata = {
     name: "set",
-    description: "Sets a project property.",
+    description: "Temporarily disabled in CLI.",
     taskType: TaskType.setProjectProperty,
     aliases: [],
     requiresProjects: true,
@@ -55,109 +54,14 @@ export class SetCommand extends CommandBase {
   };
 
   configure(cmd: Command): void {
-    // --list shows all settable properties; useful for CI / automation.
-    cmd.option("--list", "List all settable property names, then exit.");
+    // Intentionally left blank while this command is disabled.
   }
 
   async execute(context: ICommandContext): Promise<void> {
     this.logStart(context);
 
-    const propertyName = context.subCommand;
-    const propertyValue = context.propertyValue;
-
-    // --list / `mct set list` discovery path.
-    const wantsList = propertyName === "list" || Boolean(context.commandOptions?.list);
-    if (wantsList) {
-      if (context.json) {
-        context.log.data(
-          JSON.stringify({
-            schemaVersion: "1.0.0",
-            command: "set",
-            properties: AVAILABLE_PROPERTIES,
-          })
-        );
-      } else {
-        context.log.info("Settable properties:");
-        for (const p of AVAILABLE_PROPERTIES) {
-          context.log.info(`  ${p}`);
-        }
-      }
-      this.logComplete(context);
-      return;
-    }
-
-    if (!propertyName) {
-      context.log.error(`No property specified. Available properties: ${AVAILABLE_PROPERTIES.join(", ")}`);
-      context.setExitCode(ErrorCodes.INIT_ERROR);
-      return;
-    }
-
-    const trimmedValue = propertyValue?.trim();
-    if (!trimmedValue || trimmedValue.length < 1) {
-      context.log.error("Please specify a valid property value (must be non-empty).");
-      context.setExitCode(ErrorCodes.INIT_ERROR);
-      return;
-    }
-
-    const propCanon = propertyName.trim().toLowerCase();
-
-    if (!AVAILABLE_PROPERTIES.includes(propCanon)) {
-      context.log.error(`Unknown property: '${propertyName}'. Available: ${AVAILABLE_PROPERTIES.join(", ")}`);
-      context.setExitCode(ErrorCodes.INIT_ERROR);
-      return;
-    }
-
-    for (const project of context.projects) {
-      await project.inferProjectItemsFromFiles();
-
-      if (context.dryRun) {
-        context.log.info("Dry run: would set '" + propCanon + "' = '" + trimmedValue + "' in project: " + project.name);
-        continue;
-      }
-
-      if (!context.quiet && !context.json) {
-        context.log.info(`Setting '${propCanon}' = '${trimmedValue}' in project: ${project.name}`);
-      }
-
-      switch (propCanon) {
-        case "name":
-        case "title":
-          await ProjectUtilities.applyTitle(project, trimmedValue);
-          break;
-
-        case "description":
-          await ProjectUtilities.applyDescription(project, trimmedValue);
-          break;
-
-        case "bpscriptentrypoint":
-          await ProjectUtilities.applyScriptEntryPoint(project, trimmedValue);
-          break;
-
-        case "bpuuid":
-          await ProjectUtilities.applyBehaviorPackUniqueId(project, trimmedValue);
-          break;
-
-        case "rpuuid":
-          await ProjectUtilities.applyResourcePackUniqueId(project, trimmedValue);
-          break;
-      }
-
-      if (context.json) {
-        context.log.data(
-          JSON.stringify({
-            schemaVersion: "1.0.0",
-            command: "set",
-            project: project.name,
-            property: propCanon,
-            value: trimmedValue,
-            success: true,
-          })
-        );
-      } else if (!context.quiet) {
-        context.log.success(`Updated ${propCanon} for project: ${project.name}`);
-      }
-    }
-
+    context.log.error("The 'set' command is temporarily disabled in CLI while persistence issues are being resolved.");
+    context.setExitCode(ErrorCodes.INIT_ERROR);
     this.logComplete(context);
   }
 }

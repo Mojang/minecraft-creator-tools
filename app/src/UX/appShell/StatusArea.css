@@ -146,6 +146,13 @@
   padding-left: 3px;
 }
 
+/* Visible keyboard focus indicator for the focusable status-message flyout
+   (WCAG 2.4.7 / 2.1.1). The flyout receives focus when expanded. */
+.sa-list:focus-visible {
+  outline: 2px solid #52a535;
+  outline-offset: -2px;
+}
+
 .sa-progressOuter {
   display: flex;
   align-items: center;

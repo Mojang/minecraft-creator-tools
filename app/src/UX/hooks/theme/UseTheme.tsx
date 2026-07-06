@@ -128,6 +128,16 @@ export function createMcTheme(mode: ThemeMode): Theme {
               boxShadow: "none",
             },
           },
+          // MUI fills a contained primary button with palette primary (the brand
+          // green4 #52a535), which is only 3.09:1 against white text and fails
+          // WCAG 1.4.3 for normal-size labels. Use a darker green so white labels
+          // on primary action buttons clear 4.5:1 (green6 ~7.1:1, green7 ~8.7:1).
+          containedPrimary: {
+            backgroundColor: mcColors.green6,
+            "&:hover": {
+              backgroundColor: mcColors.green7,
+            },
+          },
         },
       },
       MuiCard: {
@@ -179,12 +189,14 @@ export function createMcTheme(mode: ThemeMode): Theme {
               borderRadius: "4px",
               padding: "6px 20px",
             },
-            // Style the last button (primary action) as contained
+            // Style the last button (primary action) as contained. Use a dark
+            // green so white label text clears WCAG 1.4.3 (>=4.5:1) in both the
+            // rest and hover states (green4 #52a535 was only 3.09:1).
             "& .MuiButton-root:last-of-type": {
-              backgroundColor: mcColors.green4,
+              backgroundColor: mcColors.green6,
               color: mcColors.white,
               "&:hover": {
-                backgroundColor: mcColors.green5,
+                backgroundColor: mcColors.green7,
               },
             },
             // Style non-last buttons (Cancel, etc.) as outlined
@@ -202,8 +214,10 @@ export function createMcTheme(mode: ThemeMode): Theme {
         styleOverrides: {
           root: {
             color: isDark ? mcColors.gray2 : mcColors.gray4,
+            // Match the checkbox: the checked indicator must clear 3:1 against the
+            // surface behind it, so use a dark green on light and a bright green on dark.
             "&.Mui-checked": {
-              color: mcColors.green4,
+              color: isDark ? mcColors.green2 : mcColors.green6,
             },
           },
         },
@@ -236,8 +250,12 @@ export function createMcTheme(mode: ThemeMode): Theme {
         styleOverrides: {
           root: {
             color: isDark ? mcColors.gray2 : mcColors.gray4,
+            // MUI's checked check mark is a transparent cut-out that shows the panel
+            // behind the control, so the filled square must clear 3:1 against that
+            // surface. Brand green4 is too light on light-grey panels (and too dark
+            // on dark panels): use a dark green on light, a bright green on dark.
             "&.Mui-checked": {
-              color: mcColors.green4,
+              color: isDark ? mcColors.green2 : mcColors.green6,
             },
           },
         },
@@ -276,6 +294,14 @@ export function createMcTheme(mode: ThemeMode): Theme {
         styleOverrides: {
           root: {
             backgroundColor: isDark ? mcColors.offBlack : mcColors.white,
+            // MUI renders placeholders as currentColor at opacity 0.42 (light) /
+            // 0.5 (dark); in light mode that drops the placeholder to ~2.5:1 on the
+            // white field. Use a muted-but-readable grey at full opacity so the
+            // placeholder meets WCAG 1.4.3 (>=4.5:1) against this field background.
+            "& input::placeholder, & textarea::placeholder": {
+              color: isDark ? mcColors.gray3 : mcColors.gray4,
+              opacity: 1,
+            },
             "&:hover .MuiOutlinedInput-notchedOutline": {
               borderColor: isDark ? mcColors.gray3 : mcColors.gray4,
             },

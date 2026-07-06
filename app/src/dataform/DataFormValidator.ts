@@ -572,7 +572,7 @@ export default class DataFormValidator {
     for (const condition of field.validity) {
       if (condition.comparison === ComparisonType.matchesPattern && condition.value !== undefined) {
         try {
-          const pattern = new RegExp(String(condition.value));
+          const pattern = new RegExp(String(condition.value), condition.patternFlags);
           if (!pattern.test(data)) {
             issues.push({
               message: `At ${path}, value '${data}' does not match required pattern '${condition.value}'.`,

@@ -785,71 +785,20 @@ describe("FixCommand Execution", () => {
 });
 
 describe("SetCommand Execution", () => {
-  it("should error when no property name is specified", async () => {
-    const mockLogger = new MockLogger();
-    const context = createMockContext({
-      log: mockLogger,
-      subCommand: undefined,
-    });
-    const commands = getAllCommands();
-    const setCmd = commands.find((c) => c.metadata.name === "set");
-    expect(setCmd).to.exist;
-    if (setCmd) {
-      await setCmd.execute(context);
-      expect(mockLogger.hasMessage("error", "No property specified")).to.be.true;
-      expect(context.exitCode).to.be.greaterThan(0);
-    }
-  });
-
-  it("should error on unknown property name", async () => {
-    const mockLogger = new MockLogger();
-    const context = createMockContext({
-      log: mockLogger,
-      subCommand: "fakeproperty",
-      propertyValue: "somevalue",
-    });
-    const commands = getAllCommands();
-    const setCmd = commands.find((c) => c.metadata.name === "set");
-    expect(setCmd).to.exist;
-    if (setCmd) {
-      await setCmd.execute(context);
-      expect(mockLogger.hasMessage("error", "Unknown property")).to.be.true;
-      expect(context.exitCode).to.be.greaterThan(0);
-    }
-  });
-
-  it("should error when property value is empty", async () => {
+  it("should return disabled error", async () => {
     const mockLogger = new MockLogger();
     const context = createMockContext({
       log: mockLogger,
       subCommand: "name",
-      propertyValue: "",
+      propertyValue: "value",
     });
     const commands = getAllCommands();
     const setCmd = commands.find((c) => c.metadata.name === "set");
     expect(setCmd).to.exist;
     if (setCmd) {
       await setCmd.execute(context);
-      expect(mockLogger.hasMessage("error", "valid property value")).to.be.true;
+      expect(mockLogger.hasMessage("error", "temporarily disabled")).to.be.true;
       expect(context.exitCode).to.be.greaterThan(0);
-    }
-  });
-
-  it("should accept single character values", async () => {
-    const mockLogger = new MockLogger();
-    const context = createMockContext({
-      log: mockLogger,
-      subCommand: "name",
-      propertyValue: "X",
-      projects: [],
-      projectCount: 0,
-    });
-    const commands = getAllCommands();
-    const setCmd = commands.find((c) => c.metadata.name === "set");
-    expect(setCmd).to.exist;
-    if (setCmd) {
-      await setCmd.execute(context);
-      expect(mockLogger.hasMessage("error", "valid property value")).to.be.false;
     }
   });
 });
@@ -1290,8 +1239,8 @@ describe("SetCommand All Properties", () => {
       expect(setCmd).to.exist;
       if (setCmd) {
         await setCmd.execute(context);
-        // Should NOT get "Unknown property" error
-        expect(mockLogger.hasMessage("error", "Unknown property"), `Property '${prop}' should be accepted`).to.be.false;
+        expect(mockLogger.hasMessage("error", "temporarily disabled"), `Property '${prop}' should be disabled`).to.be
+          .true;
       }
     });
   }
@@ -1341,7 +1290,7 @@ describe("Logger MockLogger", () => {
 // ============================================================================
 
 describe("Dry Run Mode Commands", () => {
-  it("set command should log dry-run message and not error", async () => {
+  it("set command should fail while disabled, even in dry run", async () => {
     const mockLogger = new MockLogger();
     const context = createMockContext({
       log: mockLogger,
@@ -1356,7 +1305,8 @@ describe("Dry Run Mode Commands", () => {
     expect(setCmd).to.exist;
     if (setCmd) {
       await setCmd.execute(context);
-      expect(context.exitCode).to.equal(0);
+      expect(context.exitCode).to.be.greaterThan(0);
+      expect(mockLogger.hasMessage("error", "temporarily disabled")).to.be.true;
     }
   });
 

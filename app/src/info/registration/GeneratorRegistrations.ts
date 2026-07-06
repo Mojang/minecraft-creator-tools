@@ -64,6 +64,7 @@ import CheckWorldPackReferencesGenerator from "../projectGenerators/CheckWorldPa
 import CrossReferenceIndexGenerator from "../projectGenerators/crossReferenceIndex/CrossReferenceIndexGenerator";
 import CustomDimensionWorldDataInfoGenerator from "../CustomDimensionWorldDataInfoGenerator";
 import CheckTextureListGenerator from "../projectGenerators/checkTextureList/CheckTextureListGenerator";
+import VanillaProtectedAssetsInfoGenerator from "../projectGenerators/vanillaProtectedAssetsInfo/VanillaProtectedAssetsInfoGenerator";
 
 export const TestsToExcludeFromDefaultSuite = ["CADDONREQ", "CADDONIREQ", "LANGFILES", "SHARING", "VANDUPES"];
 
@@ -116,6 +117,7 @@ export default class GeneratorRegistrations {
     new CheckWorldPackReferencesGenerator(),
     new CrossReferenceIndexGenerator(),
     new CheckTextureListGenerator(),
+    new VanillaProtectedAssetsInfoGenerator(),
     ...this.managers,
   ];
 

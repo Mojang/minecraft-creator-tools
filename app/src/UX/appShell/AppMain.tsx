@@ -1412,6 +1412,36 @@ export default class AppMain extends Component<AppProps, AppState> {
     }
   }
 
+  /**
+   * Produce a user-facing explanation for a failure while reading an imported
+   * File. The most common cause (especially on mobile, or when files come from
+   * cloud providers / transient content URIs) is that the File's on-disk
+   * snapshot changed or became unreadable between selection and read. That
+   * surfaces as a DOMException from Blob.arrayBuffer()/text() — e.g. "An
+   * operation that depends on state cached in an interface object was made but
+   * the state had changed since it was read from disk." We translate it into
+   * actionable guidance instead of letting it escape as an unhandled rejection.
+   */
+  private _describeImportFileError(e: unknown, fileName?: string): string {
+    const named = fileName ? "'" + fileName + "'" : "the selected file";
+    const raw = e instanceof Error ? e.message : typeof e === "string" ? e : "";
+    const name = typeof (e as any)?.name === "string" ? (e as any).name : "";
+
+    const isStaleOrUnreadableFile =
+      /read from disk|cached in an interface object|could not be read/i.test(raw) ||
+      /NotReadableError|NotFoundError|InvalidStateError/.test(name);
+
+    if (isStaleOrUnreadableFile) {
+      return (
+        "We couldn't read " +
+        named +
+        " — it may have changed, moved, or become unavailable since you selected it. Please try importing it again."
+      );
+    }
+
+    return "We couldn't import " + named + (raw ? " (" + raw + ")" : "") + ". Please try again.";
+  }
+
   private async _handleNewProjectFromImportFiles(
     files: { file: File; name: string; vanillaOverridePath?: string; suggestedFolder?: string }[],
     projectName?: string
@@ -1425,56 +1455,71 @@ export default class AppMain extends Component<AppProps, AppState> {
 
     this._doLog("Creating new project '" + finalProjectName + "' from imported files...");
 
-    const newProject = await ct.createNewProject(
-      finalProjectName,
-      undefined,
-      undefined,
-      undefined,
-      ProjectFocus.general,
-      true,
-      ProjectScriptLanguage.typeScript
-    );
+    // The File objects here are read via arrayBuffer()/text() inside the
+    // integrate/extract helpers, and those reads can reject for a stale or
+    // unreadable picked File. This handler is invoked fire-and-forget from
+    // ImportFiles._handleCreate (the prop is typed `=> void`), so an unguarded
+    // rejection would escape as an unhandledrejection and the import would fail
+    // silently. Catch it, log it, and tell the user what happened.
+    let currentFileName: string | undefined;
 
-    for (const fileInfo of files) {
-      if (fileInfo.vanillaOverridePath) {
-        // Handle vanilla override - use the vanilla override path as the integration path
-        await ProjectEditorUtilities.integrateBrowserFileDefaultAction(
-          newProject,
-          fileInfo.vanillaOverridePath,
-          fileInfo.file
-        );
-      } else if (StorageUtilities.isContainerFile(fileInfo.file.name)) {
-        // For container files (zip, mcworld, mcaddon, etc.), extract contents to project root
-        // Track container file opened
-        const fileExtension = fileInfo.file.name.split(".").pop()?.toLowerCase() || "unknown";
-        telemetryService.trackEvent({
-          name: TelemetryEvents.PROJECT_IMPORTED,
-          properties: {
-            [TelemetryProperties.FILE_FORMAT]: fileExtension,
-            [TelemetryProperties.OPEN_METHOD]: "filePicker",
-            [TelemetryProperties.ACTION_SOURCE]: "importFiles",
-          },
-        });
-        await ProjectEditorUtilities.extractZipContentsToProject(newProject, fileInfo.file);
-      } else {
-        // Default integration for non-container files
-        await ProjectEditorUtilities.integrateBrowserFileDefaultAction(newProject, "", fileInfo.file);
+    try {
+      const newProject = await ct.createNewProject(
+        finalProjectName,
+        undefined,
+        undefined,
+        undefined,
+        ProjectFocus.general,
+        true,
+        ProjectScriptLanguage.typeScript
+      );
+
+      for (const fileInfo of files) {
+        currentFileName = fileInfo.file?.name;
+
+        if (fileInfo.vanillaOverridePath) {
+          // Handle vanilla override - use the vanilla override path as the integration path
+          await ProjectEditorUtilities.integrateBrowserFileDefaultAction(
+            newProject,
+            fileInfo.vanillaOverridePath,
+            fileInfo.file
+          );
+        } else if (StorageUtilities.isContainerFile(fileInfo.file.name)) {
+          // For container files (zip, mcworld, mcaddon, etc.), extract contents to project root
+          // Track container file opened
+          const fileExtension = fileInfo.file.name.split(".").pop()?.toLowerCase() || "unknown";
+          telemetryService.trackEvent({
+            name: TelemetryEvents.PROJECT_IMPORTED,
+            properties: {
+              [TelemetryProperties.FILE_FORMAT]: fileExtension,
+              [TelemetryProperties.OPEN_METHOD]: "filePicker",
+              [TelemetryProperties.ACTION_SOURCE]: "importFiles",
+            },
+          });
+          await ProjectEditorUtilities.extractZipContentsToProject(newProject, fileInfo.file);
+        } else {
+          // Default integration for non-container files
+          await ProjectEditorUtilities.integrateBrowserFileDefaultAction(newProject, "", fileInfo.file);
+        }
       }
-    }
 
-    await newProject.save(true);
-    await ct.save();
+      await newProject.save(true);
+      await ct.save();
 
-    this._updateWindowTitle(AppMode.project, newProject);
+      this._updateWindowTitle(AppMode.project, newProject);
 
-    this.initProject(newProject);
+      this.initProject(newProject);
 
-    if (this.state && this._isMountedInternal) {
-      this.setState((prevState) => ({
-        ...prevState,
-        mode: AppMode.project,
-        activeProject: newProject,
-      }));
+      if (this.state && this._isMountedInternal) {
+        this.setState((prevState) => ({
+          ...prevState,
+          mode: AppMode.project,
+          activeProject: newProject,
+        }));
+      }
+    } catch (e) {
+      Log.error("Failed to create project from imported files: " + (e instanceof Error ? e.message : String(e)));
+      this.setHomeWithError(this._describeImportFileError(e, currentFileName));
     }
   }
 
@@ -1486,31 +1531,44 @@ export default class AppMain extends Component<AppProps, AppState> {
 
     this._doLog("Updating project '" + project.name + "' with imported files...");
 
-    for (const fileInfo of files) {
-      // Find matching item in project
-      for (const item of project.items) {
-        if (item.primaryFile && item.primaryFile.name.toLowerCase() === fileInfo.name.toLowerCase()) {
-          // Update the file content
-          const arrayBuffer = await fileInfo.file.arrayBuffer();
-          const content = new Uint8Array(arrayBuffer);
-          await item.primaryFile.setContent(content);
-          await item.primaryFile.saveContent();
-          break;
+    // See _handleNewProjectFromImportFiles: file.arrayBuffer() can reject for a
+    // stale/unreadable picked File, and this handler is also invoked
+    // fire-and-forget from ImportFiles._handleCreate. Guard so it can't become
+    // an unhandledrejection and so the user gets a clear message on failure.
+    let currentFileName: string | undefined;
+
+    try {
+      for (const fileInfo of files) {
+        currentFileName = fileInfo.file?.name ?? fileInfo.name;
+
+        // Find matching item in project
+        for (const item of project.items) {
+          if (item.primaryFile && item.primaryFile.name.toLowerCase() === fileInfo.name.toLowerCase()) {
+            // Update the file content
+            const arrayBuffer = await fileInfo.file.arrayBuffer();
+            const content = new Uint8Array(arrayBuffer);
+            await item.primaryFile.setContent(content);
+            await item.primaryFile.saveContent();
+            break;
+          }
         }
       }
-    }
 
-    await project.save(true);
-    await ct.save();
+      await project.save(true);
+      await ct.save();
 
-    this._doLog("Project updated successfully.");
+      this._doLog("Project updated successfully.");
 
-    // If this project is currently active, refresh it
-    if (this.state.activeProject === project) {
-      this.forceUpdate();
-    } else {
-      // Switch to the updated project
-      this._setProject(project);
+      // If this project is currently active, refresh it
+      if (this.state.activeProject === project) {
+        this.forceUpdate();
+      } else {
+        // Switch to the updated project
+        this._setProject(project);
+      }
+    } catch (e) {
+      Log.error("Failed to update project from imported files: " + (e instanceof Error ? e.message : String(e)));
+      this.setHomeWithError(this._describeImportFileError(e, currentFileName));
     }
   }
 

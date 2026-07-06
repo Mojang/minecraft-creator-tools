@@ -137,7 +137,10 @@
 .piid-code {
   font-family: "Consolas", "Monaco", monospace;
   font-size: 12px;
-  opacity: 0.8;
+  /* No opacity dimming: non-banded rows are transparent and sit on the darker
+     panel background (gray3 in light mode), where dimming the text toward the
+     background drops it below the 4.5:1 minimum (WCAG 1.4.3). The monospace face
+     and the cell's foreground2 color provide enough visual separation. */
 }
 
 .piid-ruleContainer {
@@ -180,12 +183,12 @@
   cursor: pointer;
   font-family: "Consolas", "Monaco", monospace;
   font-size: 12px;
-  opacity: 0.8;
-  transition: opacity 0.15s ease;
+  /* No opacity dimming: non-banded rows are transparent and sit on the darker
+     panel background (gray3 in light mode), where dimming the path text toward
+     the background drops it below 4.5:1 (WCAG 1.4.3). */
 }
 
 .piid-locationLink:hover {
-  opacity: 1;
   text-decoration: underline;
   color: #52a535;
 }

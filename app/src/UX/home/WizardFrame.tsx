@@ -26,7 +26,7 @@ export default function WizardFrame(props: IWizardFrameProps) {
   return (
     <div className={"cwiz-wizard" + (CreatorToolsHost.theme === CreatorToolsThemeStyle.dark ? " cwiz-dark" : "")}>
       <div className="cwiz-wizard-header">
-        <div className="cwiz-wizard-title">{intl.formatMessage({ id: "wizard.create_type" }, { typeName })}</div>
+        <h2 className="cwiz-wizard-title">{intl.formatMessage({ id: "wizard.create_type" }, { typeName })}</h2>
         <div className="cwiz-wizard-step-indicator">
           {intl.formatMessage({ id: "wizard.step_indicator" }, { current: currentStep + 1, total: totalSteps, title })}
         </div>

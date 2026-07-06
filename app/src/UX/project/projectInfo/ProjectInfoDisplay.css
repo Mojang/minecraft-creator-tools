@@ -127,6 +127,14 @@
   line-height: 16px;
 }
 
+/* In light mode the stat chip resolves to a light grey, where the brand green4
+   count/icon is only ~1.75:1. Use a dark green so the number text meets WCAG 1.4.3
+   (>=4.5:1). Dark mode keeps green4 — its chip is dark, so contrast already passes. */
+body.ct-light .pid-statCount,
+body.ct-light .pid-statIcon {
+  color: var(--mc-green-7);
+}
+
 /* ---- Responsive Layout ---- */
 @media only screen and (min-width: 1100px) {
   .pid-toolArea {
@@ -193,6 +201,14 @@
   outline: 2px solid #52a535;
   outline-offset: 2px;
   border-radius: 4px;
+}
+
+/* In light mode the toolbar behind the tabs is a light grey, where the green4 focus
+   ring is only ~1.78:1. Use a darker green so the focus indicator clears the 3:1
+   non-text-contrast minimum (WCAG 1.4.11). Dark mode keeps green4 — its toolbar is
+   dark, so the ring already passes. */
+body.ct-light .pid-hiddenButton:focus {
+  outline-color: var(--mc-green-7);
 }
 
 /* ---- Minecraft-Style Tabs ---- */
@@ -688,7 +704,9 @@
   font-family: "Consolas", "Monaco", monospace;
   font-weight: 600;
   font-size: 13px;
-  color: #52a535;
+  /* Theme-aware accent (dark green on light, light green on dark) so the monospace
+     stat number clears 4.5:1 on both the white (light) and dark stat cards. */
+  color: var(--mc-accent-label);
   flex-shrink: 0;
   text-align: right;
 }
@@ -780,7 +798,8 @@
   font-family: "Consolas", "Monaco", monospace;
   font-size: 15px;
   font-weight: 600;
-  color: #52a535;
+  /* Theme-aware accent so the monospace metric number clears 4.5:1 on both themes. */
+  color: var(--mc-accent-label);
 }
 
 .pis-metricLabel {

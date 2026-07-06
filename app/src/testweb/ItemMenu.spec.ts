@@ -1,6 +1,10 @@
 import { test, expect, ConsoleMessage } from "@playwright/test";
 import { processMessage, enterEditor } from "./WebTestUtilities";
 
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 /**
  * Tests for the per-item "Item Actions" dropdown menu in the project editor
  * toolbar. When a project item is selected, the toolbar shows an item-name
@@ -122,5 +126,74 @@ test.describe("Item Actions Menu @focused", () => {
     await expect(downloadItem).toBeVisible({ timeout: 3000 });
     const deleteItem = page.getByRole("menuitem", { name: /^delete$/i }).first();
     await expect(deleteItem).toBeVisible({ timeout: 3000 });
+  });
+});
+
+test.describe("Project item context menu @full", () => {
+  const consoleErrors: { url: string; error: string }[] = [];
+  const consoleWarnings: { url: string; error: string }[] = [];
+
+  test.beforeEach(async ({ page }) => {
+    consoleErrors.length = 0;
+    consoleWarnings.length = 0;
+    page.on("console", (msg: ConsoleMessage) => {
+      processMessage(msg, page, consoleErrors, consoleWarnings);
+    });
+  });
+
+  test("delete dialog should target the right-clicked item instead of the active item", async ({ page }) => {
+    test.setTimeout(90000);
+
+    const entered = await enterEditor(page, { editMode: "full" });
+    expect(entered).toBe(true);
+
+    const projectList = page.getByRole("tree", { name: /project items/i });
+    await expect(projectList).toBeVisible({ timeout: 10000 });
+
+    const projectItemRows = projectList.getByRole("treeitem").filter({ has: page.locator(".pil-item") });
+    await expect(projectItemRows.first()).toBeVisible({ timeout: 10000 });
+
+    const visibleItemLabels = await projectItemRows.evaluateAll((rows) =>
+      rows
+        .map((row) => row.getAttribute("aria-label")?.trim() ?? "")
+        .filter((label, index, labels) => label.length > 0 && labels.indexOf(label) === index)
+    );
+    expect(visibleItemLabels.length).toBeGreaterThanOrEqual(2);
+
+    const activeItemLabel = visibleItemLabels.includes("main") ? "main" : visibleItemLabels[0];
+    const targetItemLabel =
+      visibleItemLabels.find(
+        (label) => label !== activeItemLabel && !label.includes(activeItemLabel) && !activeItemLabel.includes(label)
+      ) ?? visibleItemLabels.find((label) => label !== activeItemLabel);
+
+    expect(targetItemLabel).toBeDefined();
+
+    const activeItem = projectList
+      .getByRole("treeitem", { name: activeItemLabel, exact: true })
+      .filter({ has: page.locator(".pil-item") })
+      .first();
+    await activeItem.click();
+
+    const targetItem = projectList
+      .getByRole("treeitem", { name: targetItemLabel!, exact: true })
+      .filter({ has: page.locator(".pil-item") })
+      .first();
+    await targetItem.locator(".pil-itemLabel").first().click({ button: "right" });
+
+    const deleteItem = page.getByRole("menuitem", { name: /^delete$/i }).first();
+    await expect(deleteItem).toBeVisible({ timeout: 3000 });
+    await deleteItem.click();
+
+    const dialog = page.getByRole("dialog").filter({ hasText: /delete/i }).first();
+    await expect(dialog).toBeVisible({ timeout: 5000 });
+
+    const dialogTitle = dialog.locator("h2").first();
+    await expect(dialogTitle).toContainText(new RegExp(`Delete\\s+.*${escapeRegExp(targetItemLabel!)}`, "i"));
+    await expect(dialogTitle).not.toContainText(
+      new RegExp(`Delete\\s+${escapeRegExp(activeItemLabel)}(?:\\b|\\.)`, "i")
+    );
+
+    await dialog.getByRole("button", { name: /^cancel$/i }).click();
+    await expect(dialog).toBeHidden();
   });
 });

@@ -221,16 +221,46 @@ input.ppe-fieldInput:focus,
   border-color: #52a535 !important;
 }
 
-input.ppe-fieldInput:focus-visible,
-.ppe-fieldInput input:focus-visible,
-.ppe-fieldInput .ui-input__input:focus-visible {
-  outline: 2px solid #52a535 !important;
+/* Theme-aware keyboard focus ring (WCAG 2.4.11). Brand green4 is a mid-luminance colour
+   that only measures ~1.1:1 against the light-grey field fill — below the 3:1 minimum for a
+   focus indicator. Use a dark green ring on light surfaces and a light green ring on dark
+   surfaces so the ring always clears 3:1 against the field. (Mirrors the dropdown rule below.) */
+.ppe-light input.ppe-fieldInput:focus-visible,
+.ppe-light .ppe-fieldInput input:focus-visible,
+.ppe-light .ppe-fieldInput .ui-input__input:focus-visible {
+  outline: 2px solid var(--mc-green-7) !important;
+  outline-offset: 2px !important;
+}
+
+.ppe-dark input.ppe-fieldInput:focus-visible,
+.ppe-dark .ppe-fieldInput input:focus-visible,
+.ppe-dark .ppe-fieldInput .ui-input__input:focus-visible {
+  outline: 2px solid var(--mc-green-2) !important;
   outline-offset: 2px !important;
 }
 input.ppe-fieldInput::placeholder,
-.ppe-fieldInput input::placeholder {
+.ppe-fieldInput input::placeholder,
+textarea.ppe-fieldTextArea::placeholder,
+.ppe-fieldTextArea textarea::placeholder {
   font-style: italic;
-  opacity: 0.5;
+  /* Placeholder de-emphasis comes from an explicit muted colour, not opacity:
+     stacking opacity on the browser's already-muted default placeholder dropped
+     it to ~1.8:1. The theme colours below clear 4.5:1 on the field fills. */
+  opacity: 1;
+}
+
+.ppe-light input.ppe-fieldInput::placeholder,
+.ppe-light .ppe-fieldInput input::placeholder,
+.ppe-light textarea.ppe-fieldTextArea::placeholder,
+.ppe-light .ppe-fieldTextArea textarea::placeholder {
+  color: var(--mc-gray-5);
+}
+
+.ppe-dark input.ppe-fieldInput::placeholder,
+.ppe-dark .ppe-fieldInput input::placeholder,
+.ppe-dark textarea.ppe-fieldTextArea::placeholder,
+.ppe-dark .ppe-fieldTextArea textarea::placeholder {
+  color: var(--mc-gray-2);
 }
 
 /* ========================================
@@ -278,16 +308,19 @@ textarea.ppe-fieldTextArea:focus,
   border-color: #52a535 !important;
 }
 
-textarea.ppe-fieldTextArea:focus-visible,
-.ppe-fieldTextArea textarea:focus-visible {
-  outline: 2px solid #52a535 !important;
+/* Theme-aware keyboard focus ring (WCAG 2.4.11) — see the input rule above. */
+.ppe-light textarea.ppe-fieldTextArea:focus-visible,
+.ppe-light .ppe-fieldTextArea textarea:focus-visible {
+  outline: 2px solid var(--mc-green-7) !important;
   outline-offset: 2px !important;
 }
-textarea.ppe-fieldTextArea::placeholder,
-.ppe-fieldTextArea textarea::placeholder {
-  font-style: italic;
-  opacity: 0.5;
+
+.ppe-dark textarea.ppe-fieldTextArea:focus-visible,
+.ppe-dark .ppe-fieldTextArea textarea:focus-visible {
+  outline: 2px solid var(--mc-green-2) !important;
+  outline-offset: 2px !important;
 }
+/* Textarea placeholder styling is unified with the input placeholder rule above. */
 
 /* ========================================
    Dropdowns
@@ -318,7 +351,23 @@ select.ppe-fieldDropdown:hover {
 
 select.ppe-fieldDropdown:focus {
   border-color: #52a535 !important;
-  outline: none;
+}
+
+/* Theme-aware keyboard focus ring (WCAG 2.4.11). Brand green4 is a mid-luminance
+   colour that blends into the medium-grey settings surfaces — only ~1.9:1 against
+   the dark section card — below the 3:1 minimum for a focus indicator. Use a dark
+   green ring on light surfaces and a light green ring on dark surfaces so the ring
+   always clears 3:1 against the surround. */
+.ppe-light select.ppe-fieldDropdown:focus,
+.ppe-light select.ppe-fieldDropdown:focus-visible {
+  outline: 2px solid var(--mc-green-7) !important;
+  outline-offset: 2px !important;
+}
+
+.ppe-dark select.ppe-fieldDropdown:focus,
+.ppe-dark select.ppe-fieldDropdown:focus-visible {
+  outline: 2px solid var(--mc-green-2) !important;
+  outline-offset: 2px !important;
 }
 
 select.ppe-fieldDropdown option {

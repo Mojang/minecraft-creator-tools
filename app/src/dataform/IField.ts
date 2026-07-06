@@ -560,6 +560,11 @@ export default interface IField {
    */
   mustMatchChoices?: boolean;
   /**
+   * For array or keyed-collection fields, whether the values/entries must be unique.
+   * Carried over from the source schema's `uniqueItems` / `x-unique-values` keywords.
+   */
+  mustBeUnique?: boolean;
+  /**
    * Specifies a fixed list of choices for this field.
    */
   choices?: ISimpleReference[];

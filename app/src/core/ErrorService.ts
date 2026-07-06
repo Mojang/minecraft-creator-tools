@@ -28,6 +28,7 @@
 
 import { EventDispatcher } from "ste-events";
 import Log from "./Log";
+import { constants } from "./Constants";
 import telemetryService from "../analytics/Telemetry";
 import { TelemetryProperties, TelemetrySeverity } from "../analytics/TelemetryConstants";
 import CreatorToolsHost, { HostType } from "../app/CreatorToolsHost";
@@ -294,17 +295,7 @@ class ErrorServiceImpl {
    * action. Includes app version + host so issue reports are self-contained.
    */
   public formatForReport(error: CapturedError): string {
-    // Resolve version lazily to avoid a hard dep on Constants in tests.
-    let version = "unknown";
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const constants = require("./Constants").constants;
-      if (constants?.version) {
-        version = constants.version;
-      }
-    } catch {
-      // ignore
-    }
+    const version = constants.version || "unknown";
 
     const lines: string[] = [
       "Minecraft Creator Tools — error report",
@@ -338,17 +329,7 @@ class ErrorServiceImpl {
   public buildGitHubIssueUrl(error: CapturedError): string {
     const base = "https://github.com/Mojang/minecraft-creator-tools/issues/new";
 
-    // Resolve version lazily (same approach as formatForReport).
-    let version = "unknown";
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const constants = require("./Constants").constants;
-      if (constants?.version) {
-        version = constants.version;
-      }
-    } catch {
-      // ignore
-    }
+    const version = constants.version || "unknown";
 
     const host = HostType[CreatorToolsHost.hostType] ?? String(CreatorToolsHost.hostType);
     // `navigator` only exists in browser/webview hosts. The library build
@@ -391,8 +372,7 @@ class ErrorServiceImpl {
       sections.push("", "### Stack trace", "```", error.stack.trim(), "```");
     }
 
-    const buildUrl = (body: string) =>
-      `${base}?title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`;
+    const buildUrl = (body: string) => `${base}?title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`;
 
     let body = sections.join("\n");
     let url = buildUrl(body);

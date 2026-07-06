@@ -7,7 +7,7 @@ import IStatus, { StatusType, StatusTopic } from "../../app/Status";
 import Utilities from "../../core/Utilities";
 import Log, { LogItem } from "../../core/Log";
 import { ProjectStatusAreaMode } from "../project/ProjectEditor";
-import { Box, IconButton, List, ListItem, ListItemButton, ListItemText, Button } from "@mui/material";
+import { Box, IconButton, List, ListItem, ListItemText, Button } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCaretSquareDown,
@@ -46,7 +46,7 @@ const PROGRESS_GRACE_MS = 2000;
 
 export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaState> {
   scrollArea: React.RefObject<HTMLDivElement>;
-  scrollAreaList: React.RefObject<HTMLUListElement>;
+  toggleButtonRef: React.RefObject<HTMLButtonElement>;
   private _isMountedInternal: boolean = false;
   private _fadeoutTimer: number | undefined;
 
@@ -54,7 +54,7 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
     super(props);
 
     this.scrollArea = React.createRef();
-    this.scrollAreaList = React.createRef();
+    this.toggleButtonRef = React.createRef();
 
     this._handleKeyPress = this._handleKeyPress.bind(this);
     this._handleStatusAdded = this._handleStatusAdded.bind(this);
@@ -62,6 +62,7 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
     this._handleLogItemAdded = this._handleLogItemAdded.bind(this);
     this._checkForTimeOut = this._checkForTimeOut.bind(this);
     this._toggleExpandedSize = this._toggleExpandedSize.bind(this);
+    this._collapseAndFocusToggle = this._collapseAndFocusToggle.bind(this);
     this._toggleToEditor = this._toggleToEditor.bind(this);
     this._toggleToMessage = this._toggleToMessage.bind(this);
     this._focusCommandInput = this._focusCommandInput.bind(this);
@@ -171,16 +172,35 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
 
   _toggleExpandedSize() {
     if (this.props.statusAreaMode === ProjectStatusAreaMode.expanded) {
-      this.props.onSetExpandedSize(ProjectStatusAreaMode.minimized);
+      this._collapseAndFocusToggle();
     } else {
       this.props.onSetExpandedSize(ProjectStatusAreaMode.expanded);
-      this.scrollToListBottom();
+
+      // After the parent re-renders with the expanded list mounted, move keyboard
+      // focus into the now-visible flyout so keyboard-only users land inside it and
+      // can scroll/read it (and Escape out). Previously this focused `scrollAreaList`,
+      // a ref that was never attached to any element, so focus never entered the
+      // flyout and the controls inside it were unreachable by keyboard
+      // (WCAG / MAS 2.1.1, Keyboard).
       window.setTimeout(() => {
-        if (this.scrollAreaList && this.scrollAreaList.current) {
-          this.scrollAreaList.current.focus();
+        this.scrollToListBottom();
+        if (this.scrollArea && this.scrollArea.current) {
+          this.scrollArea.current.focus();
         }
       }, 10);
     }
+  }
+
+  _collapseAndFocusToggle() {
+    this.props.onSetExpandedSize(ProjectStatusAreaMode.minimized);
+
+    // Return focus to the disclosure toggle so keyboard focus is not left orphaned
+    // on the now-removed flyout when it collapses.
+    window.setTimeout(() => {
+      if (this.toggleButtonRef && this.toggleButtonRef.current) {
+        this.toggleButtonRef.current.focus();
+      }
+    }, 10);
   }
 
   _toggleToEditor() {
@@ -284,6 +304,17 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
 
     if (event.key === "Escape" && this.state.displayEditor) {
       this._toggleToMessage();
+    } else if (
+      event.key === "Escape" &&
+      this.props.statusAreaMode === ProjectStatusAreaMode.expanded &&
+      !!target &&
+      !!target.closest(".sa-outer")
+    ) {
+      // Collapse the expanded status flyout from the keyboard and return focus to
+      // its toggle so keyboard users can dismiss it (WCAG / MAS 2.1.1).
+      this._collapseAndFocusToggle();
+      event.stopPropagation();
+      event.preventDefault();
     } else if (event.key === "Enter" && this.state.displayEditor) {
       this.props.onActionRequested(ProjectEditorAction.projectListCommit);
       this._toggleToMessage();
@@ -341,6 +372,7 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
         key: "expandStatusArea",
         kind: "toggle",
         active: false,
+        ariaExpanded: false,
         onClick: this._toggleExpandedSize,
         title: "Show more information in the status area",
       });
@@ -568,6 +600,7 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
         key: "hideStatusArea",
         kind: "toggle",
         active: true,
+        ariaExpanded: true,
         onClick: this._toggleExpandedSize,
         title: "Show more information in the status area",
       });
@@ -615,25 +648,27 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
 
       interior = (
         <div className="sa-listOuter">
-          <div className="sa-list" ref={this.scrollArea} tabIndex={0}>
-            <List
-              dense
-              sx={{
-                outline: "none",
-                "&:focus-visible": {
-                  outline: `2px solid ${mcColors.green4}`,
-                  outlineOffset: -2,
-                },
-              }}
-            >
-              {listItems.map((item, idx) => (
-                <ListItem key={item.key} disablePadding>
-                  <ListItemButton
-                    selected={idx === index - 1}
+          <div className="sa-list" ref={this.scrollArea} tabIndex={0} role="group" aria-label="Status messages">
+            <List dense>
+              {listItems.map((item, idx) => {
+                // The status list is a read-only log. Render rows as plain list
+                // items, NOT ListItemButton — focusable role=button rows with no
+                // action announced as activatable controls that did nothing for
+                // keyboard/AT users (WCAG / MAS 2.1.1 + 4.1.2).
+                const isCurrent = idx === index - 1;
+
+                return (
+                  <ListItem
+                    key={item.key}
+                    disablePadding
+                    aria-current={isCurrent ? "true" : undefined}
                     sx={{
-                      "&.Mui-selected": {
-                        backgroundColor: isDarkMode() ? "rgba(82, 165, 53, 0.25)" : "rgba(82, 165, 53, 0.2)",
-                      },
+                      px: 0.5,
+                      backgroundColor: isCurrent
+                        ? isDarkMode()
+                          ? "rgba(82, 165, 53, 0.25)"
+                          : "rgba(82, 165, 53, 0.2)"
+                        : "transparent",
                     }}
                   >
                     <ListItemText
@@ -642,9 +677,9 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
                         sx: { color: isDarkMode() ? mcColors.white : mcColors.gray6 },
                       }}
                     />
-                  </ListItemButton>
-                </ListItem>
-              ))}
+                  </ListItem>
+                );
+              })}
             </List>
           </div>
           {editor}
@@ -676,9 +711,11 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
             {toolbarItems.map((item) => (
               <IconButton
                 key={item.key}
+                ref={item.kind === "toggle" ? this.toggleButtonRef : undefined}
                 onClick={item.onClick}
                 title={item.title}
                 aria-label={item.title}
+                aria-expanded={item.kind === "toggle" ? item.ariaExpanded : undefined}
                 size="small"
                 sx={{
                   color: item.active ? mcColors.green4 : isDarkMode() ? mcColors.white : mcColors.gray6,

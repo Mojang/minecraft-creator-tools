@@ -5,6 +5,7 @@ import { expect } from "chai";
 import CheckManifestGenerator from "./CheckManifestGenerator";
 import { Tests } from "./CheckManifestData";
 import { createStubProjectItem } from "../../../test/stubs/app/projects/StubProjectItem";
+import { createStubPack } from "../../../test/stubs/app/projects/StubPack";
 
 import { PackType } from "../../../minecraft/Pack";
 import { ProjectItemType } from "../../../app/IProjectItemData";
@@ -193,6 +194,54 @@ describe("CheckManifestGenerator", () => {
       const results = await generator.validateManifest(item, { type: PackType.resource });
       const errors = results.filter((r) => r.generatorIndex === Tests.MinEngineVersionForVV.id);
       expect(errors.length).to.equal(1);
+    });
+
+    it("should report HasPBRFilesButNoManifestCapability when a pack has VV content but no pbr capability", async () => {
+      const item = createStubProjectItem({
+        json: createManifestJson(),
+        itemType: ProjectItemType.resourcePackManifestJson,
+      });
+      const pack = createStubPack({ packType: PackType.resource, hasVibrantVisualsContent: true });
+      const results = await generator.validateManifest(item, pack);
+      const errors = results.filter((r) => r.generatorIndex === Tests.HasPBRFilesButNoManifestCapability.id);
+      expect(errors.length).to.equal(1);
+    });
+
+    // Regression for bug 1611504: VV content in one resource pack must not cause a sibling pack
+    // (with no VV content of its own) to fail VV/PBR validation. The flag is read per-pack, so a
+    // pack that reports no VV content stays valid regardless of what other packs in the submission do.
+    it("should NOT report HasPBRFilesButNoManifestCapability for a sibling pack with no VV content", async () => {
+      const nonVvItem = createStubProjectItem({
+        json: createManifestJson(),
+        itemType: ProjectItemType.resourcePackManifestJson,
+      });
+      const nonVvPack = createStubPack({ packType: PackType.resource, hasVibrantVisualsContent: false });
+      const results = await generator.validateManifest(nonVvItem, nonVvPack);
+      const errors = results.filter((r) => r.generatorIndex === Tests.HasPBRFilesButNoManifestCapability.id);
+      expect(errors.length).to.equal(0);
+    });
+
+    it("should evaluate each pack independently in a mixed multi-pack submission", async () => {
+      // RP A: has VV content, manifest omits the pbr capability -> should be flagged.
+      const vvItem = createStubProjectItem({
+        json: createManifestJson(),
+        itemType: ProjectItemType.resourcePackManifestJson,
+      });
+      const vvPack = createStubPack({ packType: PackType.resource, hasVibrantVisualsContent: true });
+
+      // RP B: no VV content, same (capability-free) manifest -> should remain valid.
+      const nonVvItem = createStubProjectItem({
+        json: createManifestJson(),
+        itemType: ProjectItemType.resourcePackManifestJson,
+      });
+      const nonVvPack = createStubPack({ packType: PackType.resource, hasVibrantVisualsContent: false });
+
+      const vvResults = await generator.validateManifest(vvItem, vvPack);
+      const nonVvResults = await generator.validateManifest(nonVvItem, nonVvPack);
+
+      const testId = Tests.HasPBRFilesButNoManifestCapability.id;
+      expect(vvResults.filter((r) => r.generatorIndex === testId).length).to.equal(1);
+      expect(nonVvResults.filter((r) => r.generatorIndex === testId).length).to.equal(0);
     });
   });
 

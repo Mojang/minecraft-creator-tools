@@ -60,7 +60,7 @@
 
 .btlp-id {
   font-size: 10px;
-  opacity: 0.6;
+  color: var(--mc-muted-fg-elevated);
   font-family: monospace;
   white-space: nowrap;
   overflow: hidden;
@@ -134,7 +134,7 @@
 
 .btlp-prop-label {
   font-size: 9px;
-  opacity: 0.7;
+  color: var(--mc-muted-fg-elevated);
   text-transform: uppercase;
 }
 
@@ -170,7 +170,7 @@
 
 .btlp-state-values {
   font-size: 10px;
-  opacity: 0.6;
+  color: var(--mc-muted-fg-elevated);
   max-width: 120px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -202,7 +202,7 @@
 
 .btlp-perm-more {
   font-size: 10px;
-  opacity: 0.6;
+  color: var(--mc-muted-fg-elevated);
   font-style: italic;
   padding: 4px 8px;
 }
@@ -218,7 +218,7 @@
 
 .btlp-group-label {
   font-size: 10px;
-  opacity: 0.7;
+  color: var(--mc-muted-fg-elevated);
   margin-bottom: 4px;
   padding-left: 4px;
 }

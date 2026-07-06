@@ -159,7 +159,7 @@ export interface IGeneratorOptions {
   onProgress?: (message: string, percentComplete?: number) => void;
 
   /**
-   * Server validation mode: compute world metrics from LevelDB metadata only.
+   * Server/Auger mode: compute world metrics from LevelDB metadata only.
    * Avoids LevelDb.keys population, WorldChunk materialization, and block spectra.
    */
   skipWorldDataBlockCounts?: boolean;

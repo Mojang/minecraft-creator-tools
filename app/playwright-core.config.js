@@ -1,5 +1,8 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const webPort = process.env.PLAYWRIGHT_WEB_PORT ?? "3000";
+const baseURL = `http://localhost:${webPort}`;
+
 /**
  * Core web test configuration — a fast subset of tests for CI/build validation.
  *
@@ -50,7 +53,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: "http://localhost:3000",
+    baseURL,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
@@ -68,8 +71,8 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: "npm run web",
-    url: "http://localhost:3000",
+    command: `npm run web -- --host 127.0.0.1 --port ${webPort}`,
+    url: baseURL,
     reuseExistingServer: true,
     timeout: 120 * 1000,
   },

@@ -91,16 +91,10 @@ export default function FileUploadButton({ children, onFileSelect }: FileUploadB
           cursor: "pointer",
           transition: "transform 0.05s ease-out",
           transform: isPressed ? "translateY(1px)" : "none",
-          "&:focus": {
-            outline: `2px solid ${colors.highlight}`,
-            outlineOffset: 2,
-          },
+          // Keyboard focus uses the app's global focus ring (theme-aware, clears 3:1 on
+          // both surfaces); suppress any ring on mouse/click focus.
           "&:focus:not(:focus-visible)": {
             outline: "none",
-          },
-          "&:focus-visible": {
-            outline: `2px solid ${colors.highlight}`,
-            outlineOffset: 2,
           },
         }}
       >

@@ -18,6 +18,7 @@ export const volatileAttributes = [
   "defaultIcon",
 ];
 export const volatileFileExtensions = [".report.html", "deleted"];
+export const defaultValidationReportExcludedTestIds = ["CDWORLDDATA2", "TEXTURELIST2"];
 
 /**
  * Regex patterns that match volatile content within strings.
@@ -112,6 +113,42 @@ function isWithinSizeTolerance(scenarioVal: number, resultVal: number): boolean 
   const diff = Math.abs(scenarioVal - resultVal);
   const tolerance = Math.max(SIZE_TOLERANCE_BYTES, Math.round(scenarioVal * SIZE_TOLERANCE_PERCENT));
   return diff <= tolerance;
+}
+
+/**
+ * Tolerance for "vanilla game texture coverage" — the fraction of vanilla game
+ * textures a pack overrides. Coverage is a ratio whose DENOMINATOR is the number
+ * of vanilla game textures shipped by the current Minecraft version; that count
+ * grows version-over-version as Mojang adds blocks/items/entities. The NUMERATOR
+ * (how many vanilla textures THIS pack overrides) is deterministic and is
+ * asserted exactly elsewhere (`vanillaGameTextureCount` / featureSet
+ * `overrideCount`), and the raw denominator is already stripped as a volatile
+ * attribute (`Vanilla Texture Count` / `vanillaTextureCount`).
+ *
+ * We deliberately do NOT strip the ratio outright: a collapse — e.g. the vanilla
+ * index failing to load and dropping the count from ~2500 to ~100 — should still
+ * fail the test. So we snap the result ratio to the scenario ratio only when it
+ * is within COVERAGE_TOLERANCE_PERCENT relative drift. Because the numerator is
+ * fixed, relative drift in the ratio tracks relative drift in the vanilla texture
+ * count: routine version-over-version growth is absorbed, while order-of-magnitude
+ * changes still surface.
+ */
+const COVERAGE_TOLERANCE_PERCENT = 0.2; // 20% relative drift in the underlying vanilla texture count
+
+/**
+ * TEXTUREIMAGE generator indices whose `d` payload is a vanilla-coverage ratio
+ * (override percent). These drift with the vanilla texture count denominator.
+ * See TextureImageInfoData.ts: 460 texturePackDoesntOverrideVanillaGameTexture,
+ * 461 texturePackDoesntOverrideMostTextures, 462 mashupPackDoesntOverrideMostTextures.
+ */
+const COVERAGE_ITEM_GIXES = new Set([460, 461, 462]);
+
+function isWithinCoverageTolerance(scenarioVal: number, resultVal: number): boolean {
+  if (scenarioVal === 0) {
+    return resultVal === 0;
+  }
+  const relativeDrift = Math.abs(scenarioVal - resultVal) / Math.abs(scenarioVal);
+  return relativeDrift <= COVERAGE_TOLERANCE_PERCENT;
 }
 
 /**
@@ -218,6 +255,93 @@ export function normalizeSizeValues(scenario: any, result: any): any {
       }
 
       return normalized;
+    });
+  }
+
+  return out;
+}
+
+/**
+ * Normalizes vanilla game-texture COVERAGE ratios in the result object by
+ * snapping them to the scenario's value when within COVERAGE_TOLERANCE_PERCENT
+ * relative drift. This absorbs the version-over-version growth of the vanilla
+ * texture count (the ratio's denominator) without losing protection against
+ * order-of-magnitude changes (e.g. the vanilla index failing to load).
+ *
+ * Mirrors normalizeSizeValues. Touches three places the coverage ratio surfaces:
+ *  1. `info.vanillaGameTextureCoverage`
+ *  2. `info.featureSets["*.vanillaGameTextureCoverage"].percent`
+ *  3. items[] with gId "TEXTUREIMAGE" and a coverage gIx (460/461/462), in `d`
+ *
+ * Returns a new object — does not mutate the input.
+ */
+export function normalizeVanillaCoverageValues(scenario: any, result: any): any {
+  if (!scenario || !result || typeof scenario !== "object" || typeof result !== "object") {
+    return result;
+  }
+
+  const out: any = Array.isArray(result) ? [...result] : { ...result };
+
+  if (scenario.info && out.info && typeof out.info === "object") {
+    const info = { ...out.info };
+
+    // 1. Top-level coverage ratio
+    if (
+      typeof info.vanillaGameTextureCoverage === "number" &&
+      typeof scenario.info.vanillaGameTextureCoverage === "number" &&
+      isWithinCoverageTolerance(scenario.info.vanillaGameTextureCoverage, info.vanillaGameTextureCoverage)
+    ) {
+      info.vanillaGameTextureCoverage = scenario.info.vanillaGameTextureCoverage;
+    }
+
+    // 2. featureSets["*.vanillaGameTextureCoverage"].percent — leave the
+    // deterministic `overrideCount` numerator alone, only soften the ratio.
+    if (info.featureSets && typeof info.featureSets === "object" && scenario.info.featureSets) {
+      const featureSets: Record<string, any> = { ...info.featureSets };
+      for (const fsKey of Object.keys(featureSets)) {
+        if (!fsKey.endsWith(".vanillaGameTextureCoverage")) {
+          continue;
+        }
+        const scenarioFs = scenario.info.featureSets[fsKey];
+        const resultFs = featureSets[fsKey];
+        if (
+          resultFs &&
+          typeof resultFs === "object" &&
+          scenarioFs &&
+          typeof scenarioFs === "object" &&
+          typeof resultFs.percent === "number" &&
+          typeof scenarioFs.percent === "number" &&
+          isWithinCoverageTolerance(scenarioFs.percent, resultFs.percent)
+        ) {
+          featureSets[fsKey] = { ...resultFs, percent: scenarioFs.percent };
+        }
+      }
+      info.featureSets = featureSets;
+    }
+
+    out.info = info;
+  }
+
+  // 3. TEXTUREIMAGE coverage items carry the override ratio in `d`.
+  if (Array.isArray(out.items) && Array.isArray(scenario.items)) {
+    out.items = out.items.map((item: any, idx: number) => {
+      const scenarioItem = scenario.items[idx];
+      if (
+        item &&
+        typeof item === "object" &&
+        scenarioItem &&
+        typeof scenarioItem === "object" &&
+        item.gId === "TEXTUREIMAGE" &&
+        scenarioItem.gId === item.gId &&
+        scenarioItem.gIx === item.gIx &&
+        COVERAGE_ITEM_GIXES.has(item.gIx) &&
+        typeof item.d === "number" &&
+        typeof scenarioItem.d === "number" &&
+        isWithinCoverageTolerance(scenarioItem.d, item.d)
+      ) {
+        return { ...item, d: scenarioItem.d };
+      }
+      return item;
     });
   }
 
@@ -341,6 +465,11 @@ export async function ensureReportJsonMatchesScenario(
   // 1-2 byte drifts (a character changed somewhere) don't fail the test while
   // larger drifts (meaningful content regressions) still surface.
   resultObj = normalizeSizeValues(scenarioObj, resultObj);
+
+  // Snap vanilla game-texture coverage ratios within tolerance, so the ratio's
+  // denominator (the vanilla texture count, which grows version-over-version)
+  // doesn't fail the test on small drift while order-of-magnitude changes do.
+  resultObj = normalizeVanillaCoverageValues(scenarioObj, resultObj);
 
   if (excludeTestIds && excludeTestIds.length > 0) {
     scenarioObj = removeExcludedTestItems(scenarioObj, excludeTestIds);

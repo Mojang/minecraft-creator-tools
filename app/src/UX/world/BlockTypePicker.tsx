@@ -655,7 +655,22 @@ export default class BlockTypePicker extends Component<IBlockTypePickerProps, IB
         onKeyDown={this._handleKeyDown}
       >
         {/* Selected block display / input */}
-        <div className="bp-trigger" onClick={() => !disabled && this.setState({ isOpen: !isOpen })}>
+        {/*
+          The trigger must be keyboard-focusable so the picker can be OPENED from
+          the keyboard. `_handleKeyDown` (on the container) already opens the
+          dropdown on Enter/Space/ArrowDown when closed, but a plain <div onClick>
+          never receives focus, so keyboard users could not reach it at all
+          (WCAG 2.1.1). Expose it as a disclosure button with aria-expanded.
+        */}
+        <div
+          className="bp-trigger"
+          role="button"
+          aria-haspopup="listbox"
+          aria-expanded={isOpen}
+          aria-label={placeholder || "Select block type"}
+          tabIndex={disabled ? -1 : 0}
+          onClick={() => !disabled && this.setState({ isOpen: !isOpen })}
+        >
           <div className="bp-selected">
             {currentBlock?.snapshotPath && (
               <img

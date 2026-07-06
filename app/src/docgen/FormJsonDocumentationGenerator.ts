@@ -14,7 +14,7 @@ import { AnnotationCategory } from "../core/ContentIndex";
 import DataFormUtilities from "../dataform/DataFormUtilities";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import ISimpleReference from "../dataform/ISimpleReference";
-import { ComparisonType } from "../dataform/ICondition";
+import ICondition, { ComparisonType } from "../dataform/ICondition";
 import FieldUtilities from "../dataform/FieldUtilities";
 
 export interface JsonTypeSummary {
@@ -54,7 +54,15 @@ export default class FormJsonDocumentationGenerator {
    */
   blockMinecraftPairedNames: Set<string> = new Set();
 
-  public async updateFormSource(folder: IFolder, isPreview?: boolean) {
+  /**
+   * @param folder Output folder for generated form source.
+   * @param isPreview Whether to read the preview (vs. release) vanilla metadata.
+   * @param schemaFolderOverride Optional `json_schemas` folder to read from instead of the
+   *   vanilla preview/release metadata. Lets callers (e.g. `docsupdateformsource --schemas
+   *   <path>`) test an alternate JSON-schema layout without modifying the metadata tree.
+   *   Legacy doc-module content is still sourced from the vanilla metadata folder.
+   */
+  public async updateFormSource(folder: IFolder, isPreview?: boolean, schemaFolderOverride?: IFolder) {
     this.defsById = {};
     this.defsByTitle = {};
 
@@ -66,10 +74,14 @@ export default class FormJsonDocumentationGenerator {
 
     Log.verbose("[FormJsonDocGen] Loaded metadata folder");
 
-    const schemaFolder = metadataFolder?.ensureFolder("json_schemas");
+    const schemaFolder = schemaFolderOverride ?? metadataFolder?.ensureFolder("json_schemas");
 
     if (schemaFolder) {
-      Log.verbose("[FormJsonDocGen] Loading schemas...");
+      if (schemaFolderOverride) {
+        Log.verbose("[FormJsonDocGen] Loading schemas from override folder...");
+      } else {
+        Log.verbose("[FormJsonDocGen] Loading schemas...");
+      }
       await this.loadSchemas(schemaFolder, "misc");
       Log.verbose("[FormJsonDocGen] Schemas loaded");
     }
@@ -1152,17 +1164,16 @@ export default class FormJsonDocumentationGenerator {
           | JSONSchema7
           | boolean
           | undefined;
-        if (
-          candidate &&
-          typeof candidate !== "boolean" &&
-          candidate.$ref &&
-          candidate.$ref.startsWith("#/definitions/")
-        ) {
-          const refId = candidate.$ref.substring(14);
-          if (!refToPropNames[refId]) {
-            refToPropNames[refId] = [];
+        if (candidate && typeof candidate !== "boolean" && candidate.$ref) {
+          // Accept both the legacy `#/definitions/<id>` pointer form and the new path-based
+          // `$ref` form (already normalized to an absolute `$id` key at load time).
+          const refId = this.refToDefKey(candidate.$ref);
+          if (this.defsById[refId]) {
+            if (!refToPropNames[refId]) {
+              refToPropNames[refId] = [];
+            }
+            refToPropNames[refId].push(candidatePropName);
           }
-          refToPropNames[refId].push(candidatePropName);
         }
       }
 
@@ -1177,10 +1188,10 @@ export default class FormJsonDocumentationGenerator {
         // documented elsewhere (e.g. via the legacy doc_modules path); we shouldn't emit
         // empty stubs for them.
         const refStr = propNode.$ref;
-        if (!refStr || !refStr.startsWith("#/definitions/")) {
+        if (!refStr) {
           continue;
         }
-        const refId = refStr.substring(14);
+        const refId = this.refToDefKey(refStr);
         const targetDef = this.defsById[refId];
         if (!targetDef) {
           continue;
@@ -1625,6 +1636,22 @@ export default class FormJsonDocumentationGenerator {
       fields: fields,
     };
 
+    // Version provenance: the split-schema layout stamps every definition file with the format
+    // version it belongs to (`x-format-version`, e.g. "1.26.20"). Record it as the form's
+    // `dataVersion` so downstream docs/editors can show "as of version X". Only top-level
+    // definition files carry this key, so inline/anonymous sub-objects are unaffected (their
+    // `node` has no `x-format-version`). This does NOT influence the output file name, which is
+    // derived from the schema title, not `dataVersion`, in the JSON-schema export path.
+    // Only accept genuine version-like values (digit-led, e.g. "1.26.20", "3.0.0"); sentinel
+    // strings some source files carry (e.g. "legacy", "MISSING VERSION") are ignored.
+    const xFormatVersion = (node as any)["x-format-version"];
+    if (typeof xFormatVersion === "string" && /^\d/.test(xFormatVersion)) {
+      docForm.dataVersion = xFormatVersion;
+    }
+    if ((node as any).deprecated === true) {
+      docForm.isDeprecated = true;
+    }
+
     return docForm;
   }
 
@@ -1663,6 +1690,11 @@ export default class FormJsonDocumentationGenerator {
         const jsonSchema = StorageUtilities.getJsonObject(file) as JSONSchema7 | undefined;
 
         if (jsonSchema) {
+          // Rewrite relative-file-path `$ref`s (new metadata layout, e.g. "./Collision%20Box.json",
+          // "../1.21.40/foo.json") into absolute `$id`-form keys before indexing, so the rest of
+          // the generator can resolve them via `defsById`. No-op for the legacy numeric
+          // `#/definitions/<id>` layout.
+          this.resolveRelativeRefsInPlace(jsonSchema);
           this.processJsonSchemaDefinition(jsonSchema, categoryName);
         }
 
@@ -1678,6 +1710,14 @@ export default class FormJsonDocumentationGenerator {
         // Skip beta schema folders — they contain experimental definitions
         // that should not be included in form generation or documentation.
         if (folder.name === "beta") {
+          continue;
+        }
+
+        // Skip the `protocol/` schema tree (new MinecraftApiMetadata layout). These are
+        // low-level network packet definitions (~970 files), not creator-authored content,
+        // and generating reference forms for them only pollutes the forms output. New
+        // creator-facing areas like `camera/` and `ddui/` are intentionally NOT skipped.
+        if (folder.name === "protocol") {
           continue;
         }
 
@@ -1724,6 +1764,82 @@ export default class FormJsonDocumentationGenerator {
         }
 
         await this.loadSchemas(folder, categoryName);
+      }
+    }
+  }
+
+  /**
+   * Resolves a single relative-file-path `$ref` against a base directory (the `$id` directory
+   * of the schema file that contains the ref), producing an absolute `$id`-form key.
+   *
+   * The new MinecraftApiMetadata layout cross-references sibling schema files by relative path,
+   * e.g. from `/server/block/1.26.20/Components.json` a ref `"./Collision%20Box.json"` targets
+   * the file whose own `$id` is `/server/block/1.26.20/Collision%20Box.json`, and a ref
+   * `"../../../client_server/common/legacy/Color255RGB.json"` walks up the tree. Because
+   * `defsById` is keyed by each file's `$id`, rewriting the ref to that same absolute string lets
+   * every downstream resolver (`getDefinitionFromId`, `getIsStandaloneSchemaFile`,
+   * `getFormPathForJsonSchemaForm`, the container-alias pass) find the target unchanged.
+   *
+   * Path segments are treated opaquely (URL-encoding like `%20` is preserved as-is) since both
+   * `$id`s and `$ref`s in this layout are encoded consistently. Legacy refs (`#/definitions/...`,
+   * bare numeric ids) and already-absolute refs are returned unchanged.
+   */
+  public resolveSchemaRefPath(baseDir: string | undefined, ref: string): string {
+    if (!ref || ref.startsWith("#") || /^\d+$/.test(ref)) {
+      return ref; // legacy internal pointer or numeric id — leave alone
+    }
+    if (ref.startsWith("/")) {
+      return ref; // already absolute $id form
+    }
+    if (!baseDir) {
+      return ref; // no base context to resolve against
+    }
+    // Drop a within-file fragment suffix on the ref if present (e.g. "...json#/foo") before the
+    // path math: `defsById` is keyed by whole-file `$id`, so a fragment can't be represented in
+    // the resolved key and would otherwise corrupt the trailing path segment.
+    const fragmentIndex = ref.indexOf("#");
+    if (fragmentIndex >= 0) {
+      ref = ref.substring(0, fragmentIndex);
+    }
+    const segments = baseDir.split("/").filter((s) => s.length > 0);
+    for (const part of ref.split("/")) {
+      if (part === "" || part === ".") {
+        continue;
+      } else if (part === "..") {
+        segments.pop();
+      } else {
+        segments.push(part);
+      }
+    }
+    return "/" + segments.join("/");
+  }
+
+  /**
+   * Walks a parsed schema object and rewrites every relative-file-path `$ref` to its absolute
+   * `$id`-form key (see `resolveSchemaRefPath`). The base directory is taken from the nearest
+   * enclosing node that carries an absolute (`/`-prefixed) `$id`; nested anonymous nodes (e.g.
+   * `oneOf` / `items` branches) inherit their file's base. No-op for the legacy numeric layout
+   * whose refs are `#/definitions/<id>`.
+   */
+  public resolveRelativeRefsInPlace(node: any, baseDir?: string) {
+    if (!node || typeof node !== "object") {
+      return;
+    }
+    if (Array.isArray(node)) {
+      for (const el of node) {
+        this.resolveRelativeRefsInPlace(el, baseDir);
+      }
+      return;
+    }
+    if (typeof node.$id === "string" && node.$id.startsWith("/")) {
+      const lastSlash = node.$id.lastIndexOf("/");
+      baseDir = lastSlash > 0 ? node.$id.substring(0, lastSlash) : "";
+    }
+    for (const key of Object.keys(node)) {
+      if (key === "$ref" && typeof node.$ref === "string") {
+        node.$ref = this.resolveSchemaRefPath(baseDir, node.$ref);
+      } else {
+        this.resolveRelativeRefsInPlace(node[key], baseDir);
       }
     }
   }
@@ -2567,18 +2683,38 @@ export default class FormJsonDocumentationGenerator {
     return fieldNode;
   }
 
+  /**
+   * Maps a `$ref` string to the key under which its target is stored in `defsById`.
+   * Handles the legacy internal pointer form (`#/definitions/<id>` -> `<id>`) and the new
+   * path-based form (an absolute `$id` such as `/server/block/1.26.20/Collision%20Box.json`,
+   * already normalized from a relative ref at load time), which is used as the key directly.
+   */
+  private refToDefKey(ref: string): string {
+    if (ref.startsWith("#/definitions/")) {
+      return ref.substring(14);
+    }
+    return ref;
+  }
+
   public getDefinitionFromId(definitionString: string) {
     if (definitionString.startsWith("#/definitions/")) {
       definitionString = definitionString.substring(14);
     }
 
-    try {
-      let defId = parseInt(definitionString);
-
-      if (defId !== undefined && !isNaN(defId)) {
+    // Legacy numeric-id layout: defs are keyed by a numeric `$id` string.
+    if (/^\d+$/.test(definitionString)) {
+      const defId = parseInt(definitionString);
+      if (!isNaN(defId)) {
         return this.defsById[defId + ""];
       }
-    } catch (e) {}
+    }
+
+    // New path-based layout: defs are keyed by their absolute `$id` (e.g.
+    // "/server/block/1.26.20/Collision%20Box.json"). Relative refs are normalized to this form
+    // at load time by `resolveRelativeRefsInPlace`, so a direct lookup resolves them.
+    if (this.defsById[definitionString]) {
+      return this.defsById[definitionString];
+    }
 
     return undefined;
   }
@@ -2632,6 +2768,26 @@ export default class FormJsonDocumentationGenerator {
         }
         return 0;
       });
+
+      // A JSON-schema `enum` is a closed set: the value MUST be one of the listed options.
+      // Mark the field accordingly so editors present a strict dropdown (no free-form entry)
+      // and the schema generator keeps the enum restriction.
+      fieldNode.mustMatchChoices = true;
+    }
+
+    // A JSON-schema `const` pins the property to a single allowed value (often a discriminator
+    // such as `"type": { "const": "minecraft:capped" }`). Represent it as a one-option closed
+    // choice so the constraint is preserved and validated.
+    if (childNode.const !== undefined && childNode.const !== null) {
+      const constType = typeof childNode.const;
+      if (constType === "string" || constType === "number" || constType === "boolean") {
+        const constStr = childNode.const.toString();
+        fieldNode.choices = [{ id: constStr, title: Utilities.humanifyJsName(constStr) }];
+        fieldNode.mustMatchChoices = true;
+        if (fieldNode.defaultValue === undefined) {
+          fieldNode.defaultValue = childNode.const as string | number | boolean;
+        }
+      }
     }
 
     if (childNode.default !== undefined) {
@@ -2646,14 +2802,47 @@ export default class FormJsonDocumentationGenerator {
       fieldNode.maxLength = childNode.maxItems;
     }
 
+    // String-length constraints (`minLength`/`maxLength`) map directly onto the field's
+    // min/max length. Guarded so an array's `minItems`/`maxItems` (set above) wins if both
+    // are somehow present on the same node.
+    if (childNode.minLength !== undefined && fieldNode.minLength === undefined) {
+      fieldNode.minLength = childNode.minLength;
+    }
+    if (childNode.maxLength !== undefined && fieldNode.maxLength === undefined) {
+      fieldNode.maxLength = childNode.maxLength;
+    }
+
+    // Object/keyed-collection size limits (`minProperties`/`maxProperties`, e.g.
+    // `minecraft:material_instances` is capped at 64 entries) map onto the same min/max length
+    // "entry count" used for arrays. Guarded so an existing array/string length wins.
+    if (childNode.minProperties !== undefined && fieldNode.minLength === undefined) {
+      fieldNode.minLength = childNode.minProperties;
+    }
+    if (childNode.maxProperties !== undefined && fieldNode.maxLength === undefined) {
+      fieldNode.maxLength = childNode.maxProperties;
+    }
+
+    // Array/collection uniqueness (`uniqueItems`, or the schema's `x-unique-values` extension)
+    // is carried over so editors/validators can enforce distinct entries.
+    if (childNode.uniqueItems === true || (childNode as any)["x-unique-values"] === true) {
+      fieldNode.mustBeUnique = true;
+    }
+
     if (childNode.pattern) {
       if (fieldNode.validity === undefined) {
         fieldNode.validity = [];
       }
-      fieldNode.validity.push({
+      const patternCondition: ICondition = {
         comparison: ComparisonType.matchesPattern,
         value: childNode.pattern,
-      });
+      };
+      // Carry over regex flags (e.g. `x-regex-flags: "ECMAScript,icase"` -> "i") so
+      // case-insensitive and other flagged patterns validate correctly.
+      const patternFlags = this.mapRegexFlags((childNode as any)["x-regex-flags"]);
+      if (patternFlags) {
+        patternCondition.patternFlags = patternFlags;
+      }
+      fieldNode.validity.push(patternCondition);
     }
     if (childNode.required) {
       fieldNode.readOnly = true;
@@ -3030,6 +3219,21 @@ export default class FormJsonDocumentationGenerator {
 
     alreadyProcessedFieldList = alreadyProcessedFieldList.slice();
 
+    // Carry over size/uniqueness constraints declared on the resolved `$ref` target def.
+    // In the split-schema layout these live on the referenced component file (e.g.
+    // `minecraft:material_instances` -> "Material Instances Component" with `maxProperties: 64`),
+    // so they are not visible on the referencing node in `getFieldFromJsonPropertyNode` and
+    // must be propagated here onto the field representing that component.
+    if (subDefNode.maxProperties !== undefined && fieldNode.maxLength === undefined) {
+      fieldNode.maxLength = subDefNode.maxProperties;
+    }
+    if (subDefNode.minProperties !== undefined && fieldNode.minLength === undefined) {
+      fieldNode.minLength = subDefNode.minProperties;
+    }
+    if (subDefNode.uniqueItems === true || (subDefNode as any)["x-unique-values"] === true) {
+      fieldNode.mustBeUnique = true;
+    }
+
     if (subDefNode.oneOf) {
       const altFields: IField[] = [];
       let isFirst = true;
@@ -3135,8 +3339,96 @@ export default class FormJsonDocumentationGenerator {
 
       fieldNode.subForm = subForm;
       fieldNode.dataType = dataType;
+    } else if (Array.isArray(subDefNode.enum) && subDefNode.enum.length > 0) {
+      // The `$ref` target is a primitive enum def (e.g. `control_flags` -> "Goal's control
+      // flags" = { type: "string", enum: ["move","look","jump"] }). Render it as an enum field
+      // carrying its choices instead of a hollow object. In an array context (`items.$ref`)
+      // surface it as a value array with the same choices, matching how the legacy monolithic
+      // layout rendered these (`stringArray` + choices).
+      const isArrayContext = dataType === FieldDataType.objectArray;
+      const isNumeric = subDefNode.type === "integer" || subDefNode.type === "number";
+      if (isArrayContext) {
+        fieldNode.dataType = isNumeric ? FieldDataType.numberArray : FieldDataType.stringArray;
+      } else {
+        fieldNode.dataType = isNumeric ? FieldDataType.intEnum : FieldDataType.stringEnum;
+      }
+      fieldNode.choices = this.buildChoicesFromEnum(subDefNode.enum);
+      // The `$ref` resolves to a closed enum def, so the value must match one of the choices.
+      fieldNode.mustMatchChoices = true;
+    } else if (typeof subDefNode.type === "string" && subDefNode.type !== "object") {
+      // The `$ref` target is a primitive scalar def (string/integer/number/boolean). Map it to
+      // the corresponding field type rather than leaving a hollow object.
+      fieldNode.dataType = this.mapPrimitiveSchemaType(subDefNode.type, dataType === FieldDataType.objectArray);
     } else {
       fieldNode.dataType = dataType;
+    }
+  }
+
+  /**
+   * Translates a JSON-schema `x-regex-flags` token list (e.g. "ECMAScript,icase") into the
+   * corresponding JavaScript `RegExp` flag string (e.g. "i"). Unknown / syntax-mode tokens
+   * such as "ECMAScript" are ignored. Returns an empty string when there are no applicable
+   * flags so callers can treat the result as falsy.
+   */
+  private mapRegexFlags(xRegexFlags: unknown): string {
+    if (typeof xRegexFlags !== "string" || xRegexFlags.length === 0) {
+      return "";
+    }
+    const tokenToFlag: { [token: string]: string } = {
+      icase: "i",
+      ignorecase: "i",
+      multiline: "m",
+      dotall: "s",
+      singleline: "s",
+      global: "g",
+      unicode: "u",
+      sticky: "y",
+    };
+    let flags = "";
+    for (const rawToken of xRegexFlags.split(",")) {
+      const flag = tokenToFlag[rawToken.trim().toLowerCase()];
+      if (flag && !flags.includes(flag)) {
+        flags += flag;
+      }
+    }
+    return flags;
+  }
+
+  /**
+   * Builds a sorted choices list from a JSON-schema `enum` array, mirroring the inline choice
+   * construction used elsewhere in this generator. Used when a `$ref` resolves to a primitive
+   * enum definition (the new split-schema layout factors enums into their own files).
+   */
+  private buildChoicesFromEnum(enumVals: any[]): ISimpleReference[] {
+    const choices: ISimpleReference[] = enumVals
+      .filter((v) => v !== undefined)
+      .map((v) => ({
+        id: v !== null ? v.toString() : "undefined",
+        title: v !== null ? Utilities.humanifyJsName(v.toString()) : "Undefined",
+      }));
+
+    choices.sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
+
+    return choices;
+  }
+
+  /**
+   * Maps a primitive JSON-schema `type` to the corresponding {@link FieldDataType}, choosing an
+   * array variant when the value is reached in an array context (`items.$ref`). Used when a
+   * `$ref` resolves to a primitive (non-enum, non-object) definition.
+   */
+  private mapPrimitiveSchemaType(type: string, isArray: boolean): FieldDataType {
+    switch (type) {
+      case "string":
+        return isArray ? FieldDataType.stringArray : FieldDataType.string;
+      case "integer":
+        return isArray ? FieldDataType.numberArray : FieldDataType.int;
+      case "number":
+        return isArray ? FieldDataType.numberArray : FieldDataType.number;
+      case "boolean":
+        return isArray ? FieldDataType.objectArray : FieldDataType.boolean;
+      default:
+        return isArray ? FieldDataType.objectArray : FieldDataType.object;
     }
   }
 

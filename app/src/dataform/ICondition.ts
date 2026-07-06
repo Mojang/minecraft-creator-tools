@@ -58,4 +58,12 @@ export default interface ICondition {
    * Useful for enum-like checks.
    */
   anyValues?: number[] | string[] | boolean[];
+
+  /**
+   * For `matchesPattern` conditions, optional regular-expression flags (e.g. "i" for
+   * case-insensitive) to apply when compiling the pattern in `value`. Derived from the source
+   * schema's `x-regex-flags` (e.g. "ECMAScript,icase" -> "i"). When omitted, the pattern is
+   * compiled with no flags.
+   */
+  patternFlags?: string;
 }

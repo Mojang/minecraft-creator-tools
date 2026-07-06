@@ -68,12 +68,22 @@
   --mc-surface-bg: var(--mc-gray-5);
   --mc-surface-fg: var(--mc-off-white);
   --mc-muted-fg: var(--mc-gray-3);
+  /* Muted text on ELEVATED dark surfaces (gray-5 cards/dialogs/popovers), where the
+     base muted token (gray-3) only reaches ~3.3:1. Pairs with --mc-surface-bg. */
+  --mc-muted-fg-elevated: var(--mc-gray-2);
   --mc-card-bg: var(--mc-gray-5);
   --mc-card-border: var(--mc-gray-4);
   --mc-input-border: var(--mc-gray-5);
   --mc-code-bg: var(--mc-gray-5);
   --mc-code-fg: var(--mc-off-white);
   --mc-accent-label: var(--mc-green-2); /* Label/accent text that must contrast on dark bg */
+
+  /* Accent count/notification badge — self-contained pill (solid bg + on-accent
+     text). White on green6 is ~6.2:1, so it stays AA (>=4.5:1) in BOTH light and
+     dark with no per-theme override. Use for small count/notification badges
+     instead of painting a mid-tone accent (e.g. green4) as text on a faint tint. */
+  --mc-badge-accent-bg: var(--mc-green-6);
+  --mc-badge-accent-fg: var(--mc-white);
 
   /* Legacy --surface-* aliases (kept for existing consumers) */
   --surface-bg: var(--mc-bg-1);
@@ -108,6 +118,9 @@ body.ct-light {
   --mc-surface-bg: var(--mc-gray-2);
   --mc-surface-fg: var(--mc-gray-6);
   --mc-muted-fg: var(--mc-gray-4);
+  /* Muted text on ELEVATED light surfaces (white/gray-2). gray-5 clears 4.5:1 on a
+     gray-2 surface, where the base muted token (gray-4) would only reach ~3.7:1. */
+  --mc-muted-fg-elevated: var(--mc-gray-5);
   --mc-card-bg: var(--mc-white);
   --mc-card-border: var(--mc-gray-3);
   --mc-input-border: var(--mc-gray-3);
@@ -144,6 +157,7 @@ body.ct-dark {
     --mc-code-bg: Canvas;
     --mc-code-fg: CanvasText;
     --mc-muted-fg: GrayText;
+    --mc-muted-fg-elevated: GrayText;
     --mc-section-border: CanvasText;
   }
 }
@@ -795,6 +809,15 @@ BUTTON {
 .MuiMenuItem-root.Mui-focusVisible {
   outline: 2px solid #52a535 !important;
   outline-offset: 2px !important;
+}
+
+/* In light mode the brand green4 ring is too low-contrast on light surfaces (~1.5:1).
+   Use a darker green so the keyboard focus indicator clears the 3:1 non-text minimum
+   (WCAG 1.4.11). Dark mode keeps green4 — its surfaces are dark, so it already passes. */
+body.ct-light :focus-visible,
+body.ct-light .MuiButtonBase-root.Mui-focusVisible,
+body.ct-light .MuiMenuItem-root.Mui-focusVisible {
+  outline-color: var(--mc-green-7) !important;
 }
 
 /* Minecraft switch styling is handled by MUI theme in UseTheme.tsx */

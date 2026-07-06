@@ -138,15 +138,40 @@ window.addEventListener("unhandledrejection", (evt) => {
   // filters (e.g. cross-origin Script error.) get a chance. Don't call
   // stopImmediatePropagation here — letting the event continue lets 1DS
   // auto-capture also see it as a backstop.
-  const reasonStack: string | undefined = evt?.reason?.stack;
-  const reason = evt?.reason;
-  const message =
-    reason instanceof Error ? reason.message : typeof reason === "string" ? reason : "Unhandled promise rejection";
+  //
+  // Rejection reasons are not always Error instances: DOMExceptions, errors
+  // thrown across realms/iframes (where `instanceof Error` is false), and plain
+  // `{ message, code }` objects (from fetch/IndexedDB/clipboard/3rd-party libs,
+  // common on mobile) all surface here. Extract message/stack structurally so
+  // reports don't collapse to a generic "Unhandled promise rejection" with no
+  // stack, which makes them impossible to triage.
+  const reason: any = evt?.reason;
+  let message: string;
+  let stack: string | undefined;
+
+  if (reason instanceof Error) {
+    message = reason.message;
+    stack = reason.stack;
+  } else if (typeof reason === "string") {
+    message = reason;
+  } else if (reason && typeof reason.message === "string") {
+    message = reason.message;
+    stack = typeof reason.stack === "string" ? reason.stack : undefined;
+  } else {
+    try {
+      const serialized = JSON.stringify(reason);
+      message = serialized && serialized !== "{}" ? serialized : "Unhandled promise rejection";
+    } catch {
+      message = "Unhandled promise rejection";
+    }
+    stack = typeof reason?.stack === "string" ? reason.stack : undefined;
+  }
+
   ErrorService.report({
     kind: ErrorKind.unhandledRejection,
     severity: ErrorSeverity.recoverable,
     message,
-    stack: reason instanceof Error ? reason.stack : reasonStack,
+    stack,
   });
 });
 

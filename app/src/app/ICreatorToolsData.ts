@@ -70,6 +70,9 @@ export default interface ICreatorToolsData {
   worldSettings?: IWorldSettings;
   editPreference?: CreatorToolsEditPreference;
   disableFirstRun?: boolean;
+  // Set when the user dismisses the home-page Getting Started / goal-picker banner.
+  // Independent of disableFirstRun so the banner can persist past first-run setup.
+  dismissedGettingStarted?: boolean;
   editorWorldSettings?: IWorldSettings;
   autoStartMinecraft: boolean;
   showScreenOnConnect: boolean;

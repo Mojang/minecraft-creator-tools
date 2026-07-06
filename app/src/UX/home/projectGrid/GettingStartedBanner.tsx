@@ -1,6 +1,6 @@
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, IconButton, Paper, Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaw } from "@fortawesome/free-solid-svg-icons";
+import { faPaw, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { mcColors } from "../../hooks/theme/mcColors";
 import { useIntl } from "react-intl";
 import GoalPicker from "./GoalPicker";
@@ -8,9 +8,11 @@ import { PostCreateAction } from "../../../app/IProjectSeed";
 
 interface GettingStartedBannerProps {
   onGoalSelected: (action: PostCreateAction) => void;
+  /** When provided, renders a dismiss control that hides the banner for this user. */
+  onDismiss?: () => void;
 }
 
-export default function GettingStartedBanner({ onGoalSelected }: GettingStartedBannerProps) {
+export default function GettingStartedBanner({ onGoalSelected, onDismiss }: GettingStartedBannerProps) {
   const intl = useIntl();
 
   return (
@@ -30,6 +32,22 @@ export default function GettingStartedBanner({ onGoalSelected }: GettingStartedB
         };
       }}
     >
+      {onDismiss && (
+        <IconButton
+          aria-label={intl.formatMessage({ id: "common.dismiss" })}
+          onClick={onDismiss}
+          size="small"
+          sx={(theme) => ({
+            position: "absolute",
+            top: 8,
+            right: 8,
+            color: theme.palette.text.secondary,
+            "&:hover": { color: theme.palette.text.primary },
+          })}
+        >
+          <FontAwesomeIcon icon={faTimes} />
+        </IconButton>
+      )}
       <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 1.5 }}>
         <Box
           sx={(theme) => ({ fontSize: 24, color: theme.palette.mode === "dark" ? mcColors.green3 : mcColors.green5 })}

@@ -125,7 +125,7 @@ export default function TemplateCard({ template, onNewProject }: TemplateCardPro
           };
         }}
       >
-        <CardContent sx={{ flexGrow: 1, p: 0, position: "relative" }}>
+        <CardContent sx={{ flexGrow: 1, p: 0, position: "relative", containerType: "inline-size" }}>
           {template.id === "addonStarter" && (
             <Box
               sx={{
@@ -134,6 +134,13 @@ export default function TemplateCard({ template, onNewProject }: TemplateCardPro
                 right: 6,
                 zIndex: 2,
                 pointerEvents: "none",
+                // The "Recommended" badge is overlaid top-right while the title sits top-left.
+                // On narrow cards (2-up / 4-up grid at smaller widths) they collide, so hide the
+                // badge once the card is too narrow to show both without overlap. CardContent is
+                // the inline-size query container; the "Beginner Friendly" badge below still shows.
+                "@container (max-width: 280px)": {
+                  display: "none",
+                },
               }}
             >
               <McBadge variant="green" size="small">
@@ -145,6 +152,7 @@ export default function TemplateCard({ template, onNewProject }: TemplateCardPro
             image={reader.getGalleryImage(template)}
             item={template}
             alt={intl.formatMessage({ id: "home.template_card.image_alt" })}
+            contentAlign="top"
             sx={{ pt: 0 }}
           >
             <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "2px" }}>

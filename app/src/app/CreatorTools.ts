@@ -289,6 +289,14 @@ export default class CreatorTools {
     this.#data.disableFirstRun = newValue;
   }
 
+  public get dismissedGettingStarted() {
+    return this.#data.dismissedGettingStarted === true;
+  }
+
+  public set dismissedGettingStarted(newValue: boolean) {
+    this.#data.dismissedGettingStarted = newValue;
+  }
+
   public get themePreference() {
     return this.#data.themePreference;
   }

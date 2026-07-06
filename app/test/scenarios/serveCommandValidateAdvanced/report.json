@@ -1328,7 +1328,7 @@
         "110": {
           "defaultMessage": "At minecraft:entity.component_groups.minecraft:pregnant.minecraft:behavior.go_home.on_home, data does not match expected type. Data '{\"event\":\"minecraft:go_lay_egg\",\"target\":\"self\"}' is an object, which does not match type 'Array of objects'.",
           "title": "Data Type Mismatch",
-          "warnings": 3
+          "warnings": 4
         }
       },
       "JSONTAGS": {
@@ -1736,6 +1736,11 @@
           "title": "Texture Images Tier5"
         }
       },
+      "TEXTURELIST": {
+        "2": {
+          "defaultMessage": "No applicable items found for test Texture List Validation (TEXTURELIST)"
+        }
+      },
       "TEXTUREREF": {
         "1": {
           "defaultMessage": "Texture References completed successfully",
@@ -1797,6 +1802,12 @@
           "defaultMessage": "No applicable items found for test Valid files (VALFILE)"
         }
       },
+      "VANPRO": {
+        "1": {
+          "defaultMessage": "Vanilla Protected Assets completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
       "VSCODEFILE": {
         "2": {
           "defaultMessage": "No applicable items found for test VSCode Files (VSCODEFILE)"
@@ -1831,15 +1842,15 @@
     },
     "testFailCount": 1,
     "testFailSummary": "TESTFAIL: [CHKMANIF000] Found 1 error in Manifest Validation check",
-    "testNotApplicableCount": 11,
-    "testSuccessCount": 39,
+    "testNotApplicableCount": 12,
+    "testSuccessCount": 40,
     "textureCount": 5,
     "textureTexelSize": 28672,
     "unknownJsonCount": 0,
     "vanillaGameTextureCount": 0,
     "vanillaGameTextureCoverage": 0,
-    "warningCount": 7,
-    "warningSummary": "WARNING: [JSONF110] (/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json) At minecraft:entity.component_groups.minecraft:pregnant.minecraft:behavior.go_home.on_home, data does not match expected type. Data '{\"event\":\"minecraft:go_lay_egg\",\"target\":\"self\"}' is an object, which does not match type 'Array of objects'.\nWARNING: [JSONF110] (/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json) At geometry.aop_mobs.nardolphle.visible_bounds_offset, data does not match expected type. Data '0,0.75,0' is of type number array, which does not match type 'Array of strings'.\nWARNING: [JSONF110] (/Content/resource_packs/aop_mobsrp/point_lights/global.json) At minecraft:point_light_settings.colors, data does not match any one of the expected types: Data '{\"minecraft:torch\":[239,227,157],\"minecraft:candle\":[239,227...' is an object, which does not match type 'String'.Data '{\"minecraft:torch\":[239,227,157],\"minecraft:candle\":[239,227...' is an object, which does not match type 'Array of numbers'.\nWARNING: [UNLINK310] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:boomfly`\nWARNING: [UNLINK310] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:robot`\nWARNING: [UNLINK399] (/Content/resource_packs/aop_mobsrp/textures/entity/biceson.texture_set.json) Link to texture is not found in this pack: /Content/resource_packs/aop_mobsrp/textures/entity/biceson.texture_set.json to `textures/entity/biceson_mer`\nWARNING: [UNLINK399] (/Content/resource_packs/aop_mobsrp/textures/entity/sheepomelon.texture_set.json) Link to texture is not found in this pack: /Content/resource_packs/aop_mobsrp/textures/entity/sheepomelon.texture_set.json to `textures/entity/sheepomelon_mer`",
+    "warningCount": 8,
+    "warningSummary": "WARNING: [JSONF110] (/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json) At minecraft:entity.component_groups.minecraft:pregnant.minecraft:behavior.go_home.on_home, data does not match expected type. Data '{\"event\":\"minecraft:go_lay_egg\",\"target\":\"self\"}' is an object, which does not match type 'Array of objects'.\nWARNING: [JSONF110] (/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json) At minecraft:entity.components.minecraft:behavior.eat_block.success_chance, data does not match any one of the expected types: Data 'query.is_baby ? 0.02 : 0.001' is of type string, which does not match type 'Keyed set of strings'.Data 'query.is_baby ? 0.02 : 0.001' is of type string, which does not match type 'Named set of objects'.Data 'query.is_baby ? 0.02 : 0.001' is of type string, which does not match type 'Decimal number'.\nWARNING: [JSONF110] (/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json) At geometry.aop_mobs.nardolphle.visible_bounds_offset, data does not match expected type. Data '0,0.75,0' is of type number array, which does not match type 'Array of strings'.\nWARNING: [JSONF110] (/Content/resource_packs/aop_mobsrp/point_lights/global.json) At minecraft:point_light_settings.colors, data does not match any one of the expected types: Data '{\"minecraft:torch\":[239,227,157],\"minecraft:candle\":[239,227...' is an object, which does not match type 'String'.Data '{\"minecraft:torch\":[239,227,157],\"minecraft:candle\":[239,227...' is an object, which does not match type 'Array of numbers'.\nWARNING: [UNLINK310] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:boomfly`\nWARNING: [UNLINK310] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:robot`\nWARNING: [UNLINK399] (/Content/resource_packs/aop_mobsrp/textures/entity/biceson.texture_set.json) Link to texture is not found in this pack: /Content/resource_packs/aop_mobsrp/textures/entity/biceson.texture_set.json to `textures/entity/biceson_mer`\nWARNING: [UNLINK399] (/Content/resource_packs/aop_mobsrp/textures/entity/sheepomelon.texture_set.json) Link to texture is not found in this pack: /Content/resource_packs/aop_mobsrp/textures/entity/sheepomelon.texture_set.json to `textures/entity/sheepomelon_mer`",
     "worldCount": 0,
     "worldLoadErrors": 0,
     "worldNotFound": 0
@@ -2497,6 +2508,13 @@
       "gIx": 110,
       "iTp": 4,
       "p": "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json"
+    },
+    {
+      "gId": "JSONF",
+      "gIx": 110,
+      "iTp": 4,
+      "m": "At minecraft:entity.components.minecraft:behavior.eat_block.success_chance, data does not match any one of the expected types: Data 'query.is_baby ? 0.02 : 0.001' is of type string, which does not match type 'Keyed set of strings'.Data 'query.is_baby ? 0.02 : 0.001' is of type string, which does not match type 'Named set of objects'.Data 'query.is_baby ? 0.02 : 0.001' is of type string, which does not match type 'Decimal number'.",
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json"
     },
     {
       "gId": "JSONF",
@@ -3987,6 +4005,11 @@
       "iTp": 7
     },
     {
+      "gId": "TEXTURELIST",
+      "gIx": 2,
+      "iTp": 8
+    },
+    {
       "gId": "TEXTUREREF",
       "gIx": 1,
       "iTp": 1
@@ -4322,6 +4345,11 @@
       "gId": "VALFILE",
       "gIx": 2,
       "iTp": 8
+    },
+    {
+      "gId": "VANPRO",
+      "gIx": 1,
+      "iTp": 1
     },
     {
       "gId": "VSCODEFILE",

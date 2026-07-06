@@ -423,18 +423,14 @@ describe("setCommandDryRun", async () => {
     });
   });
 
-  it("should have no stderr lines", async () => {
-    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+  it("should exit with non-zero code", async () => {
+    assert.notEqual(exitCode, 0, "set should be disabled");
   }).timeout(10000);
 
-  it("exit code should be zero", async () => {
-    assert.equal(exitCode, 0);
-  }).timeout(10000);
-
-  it("should indicate dry run", () => {
-    const allOutput = stdoutLines.join("\n");
-    const hasDryRun = allOutput.toLowerCase().includes("dry run");
-    assert(hasDryRun, "Should mention dry run. Got: " + stdoutLines.join(" | "));
+  it("should report that set is temporarily disabled", () => {
+    const allOutput = stdoutLines.join("\n") + stderrLines.join("\n");
+    const hasDisableMessage = allOutput.toLowerCase().includes("temporarily disabled");
+    assert(hasDisableMessage, "Should mention temporary disablement. Got: " + stdoutLines.join(" | "));
   }).timeout(10000);
 });
 
@@ -468,10 +464,10 @@ describe("setCommandInvalidProperty", async () => {
     assert.notEqual(exitCode, 0, "Invalid property should fail");
   }).timeout(10000);
 
-  it("should report the unknown property", () => {
+  it("should report that set is temporarily disabled", () => {
     const allOutput = stdoutLines.join("\n") + stderrLines.join("\n");
-    const hasError = allOutput.includes("Unknown property") || allOutput.includes("invalidprop");
-    assert(hasError, "Should report unknown property. Got: " + stdoutLines.join(" | "));
+    const hasDisableMessage = allOutput.toLowerCase().includes("temporarily disabled");
+    assert(hasDisableMessage, "Should mention temporary disablement. Got: " + stdoutLines.join(" | "));
   }).timeout(10000);
 });
 
@@ -494,8 +490,8 @@ describe("setCommandMissingValue", async () => {
     });
   });
 
-  it("should exit with non-zero code for missing value", async () => {
-    assert.notEqual(exitCode, 0, "Missing value should fail");
+  it("should exit with non-zero code while disabled", async () => {
+    assert.notEqual(exitCode, 0, "set should be disabled");
   }).timeout(10000);
 });
 

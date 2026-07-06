@@ -34,6 +34,25 @@ import * as path from "path";
 import * as fs from "fs";
 
 export class RenderVanillaCommand extends CommandBase {
+  private static readonly invalidFileNameCharsRegex = /[<>:"/\\|?*\x00-\x1F]/g;
+
+  public static buildDerivedOutputFileName(prefix: string, identifier: string, replaceUnderscores = false): string {
+    const normalizedIdentifier = replaceUnderscores ? identifier.replace(/_/g, "-") : identifier;
+    const safeIdentifier = RenderVanillaCommand.sanitizeFileNameFragment(normalizedIdentifier);
+
+    return `${prefix}-${safeIdentifier}.png`;
+  }
+
+  private static sanitizeFileNameFragment(value: string): string {
+    const sanitized = value
+      .replace(RenderVanillaCommand.invalidFileNameCharsRegex, "-")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^[.\s-]+|[.\s-]+$/g, "");
+
+    return sanitized || "unnamed";
+  }
+
   readonly metadata: ICommandMetadata = {
     name: "rendervanilla",
     description:
@@ -201,7 +220,7 @@ export class RenderVanillaCommand extends CommandBase {
 
     const items = identifiers.map((id) => ({
       name: id,
-      outputPath: path.join(absoluteOutputDir, `${prefix}-${id.replace(/_/g, "-")}.png`),
+      outputPath: path.join(absoluteOutputDir, RenderVanillaCommand.buildDerivedOutputFileName(prefix, id, true)),
     }));
 
     const startTime = Date.now();
@@ -267,7 +286,7 @@ export class RenderVanillaCommand extends CommandBase {
     outputPath: string | undefined
   ): Promise<void> {
     if (!outputPath) {
-      outputPath = `${prefix}-${identifier}.png`;
+      outputPath = RenderVanillaCommand.buildDerivedOutputFileName(prefix, identifier);
     }
 
     const typeLabel = isBlock ? "block" : isItem ? "item" : "mob";

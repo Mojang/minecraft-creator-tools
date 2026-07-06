@@ -1960,8 +1960,6 @@ class ProjectInfoDisplay extends Component<IProjectInfoDisplayProps, IProjectInf
     const successCount = countsByType[InfoItemType.testCompleteSuccess];
     const failureCount = countsByType[InfoItemType.testCompleteFail];
 
-    const dimmedSx = { opacity: 0.5 };
-
     const toolbarItems = [
       {
         chip: (
@@ -1990,7 +1988,6 @@ class ProjectInfoDisplay extends Component<IProjectInfoDisplayProps, IProjectInf
             icon={isMobile ? <FontAwesomeIcon icon={faCircleExclamation} /> : undefined}
             ariaLabel={`Filter by errors, ${errorCount} items`}
             title={this.props.intl.formatMessage({ id: "project_editor.info.filter_errors_tooltip" })}
-            sx={errorCount === 0 ? dimmedSx : undefined}
           >
             {isMobile
               ? null
@@ -2012,7 +2009,6 @@ class ProjectInfoDisplay extends Component<IProjectInfoDisplayProps, IProjectInf
             icon={isMobile ? <FontAwesomeIcon icon={faCircleQuestion} /> : undefined}
             ariaLabel={`Filter by warnings, ${warningCount} items`}
             title={this.props.intl.formatMessage({ id: "project_editor.info.filter_warnings_tooltip" })}
-            sx={warningCount === 0 ? dimmedSx : undefined}
           >
             {isMobile
               ? null
@@ -2034,7 +2030,6 @@ class ProjectInfoDisplay extends Component<IProjectInfoDisplayProps, IProjectInf
             icon={isMobile ? <FontAwesomeIcon icon={faCircleArrowUp} /> : undefined}
             ariaLabel={`Filter by recommendations, ${recommendationCount} items`}
             title={this.props.intl.formatMessage({ id: "project_editor.info.filter_recommendations_tooltip" })}
-            sx={recommendationCount === 0 ? dimmedSx : undefined}
           >
             {isMobile
               ? null
@@ -2056,7 +2051,6 @@ class ProjectInfoDisplay extends Component<IProjectInfoDisplayProps, IProjectInf
             icon={isMobile ? <FontAwesomeIcon icon={faCircleInfo} /> : undefined}
             ariaLabel={`Filter by info, ${infoCount} items`}
             title={this.props.intl.formatMessage({ id: "project_editor.info.filter_information_tooltip" })}
-            sx={infoCount === 0 ? dimmedSx : undefined}
           >
             {isMobile
               ? null
@@ -2078,7 +2072,6 @@ class ProjectInfoDisplay extends Component<IProjectInfoDisplayProps, IProjectInf
             icon={isMobile ? <FontAwesomeIcon icon={faCircleCheck} /> : undefined}
             ariaLabel={`Filter by passed items, ${successCount} items`}
             title={this.props.intl.formatMessage({ id: "project_editor.info.filter_passed_tooltip" })}
-            sx={successCount === 0 ? dimmedSx : undefined}
           >
             {isMobile
               ? null
@@ -2100,7 +2093,6 @@ class ProjectInfoDisplay extends Component<IProjectInfoDisplayProps, IProjectInf
             icon={isMobile ? <FontAwesomeIcon icon={faCircleXmark} /> : undefined}
             ariaLabel={`Filter by failed items, ${failureCount} items`}
             title={this.props.intl.formatMessage({ id: "project_editor.info.filter_failed_tooltip" })}
-            sx={failureCount === 0 ? dimmedSx : undefined}
           >
             {isMobile
               ? null
@@ -2698,17 +2690,12 @@ class ProjectInfoDisplay extends Component<IProjectInfoDisplayProps, IProjectInf
                     if (this.state.displayInfo) visibleItemTypes.add(InfoItemType.info);
                     if (this.state.displaySuccess) visibleItemTypes.add(InfoItemType.testCompleteSuccess);
                     if (this.state.displayFailure) visibleItemTypes.add(InfoItemType.testCompleteFail);
-                    const hidden = this.state.selectedInfoSet.items.filter((it) => !visibleItemTypes.has(it.itemType))
-                      .length;
+                    const hidden = this.state.selectedInfoSet.items.filter(
+                      (it) => !visibleItemTypes.has(it.itemType)
+                    ).length;
                     return hidden > 0
-                      ? this.props.intl.formatMessage(
-                          { id: "project_editor.info.items_empty_hint_hidden" },
-                          { hidden }
-                        )
-                      : this.props.intl.formatMessage(
-                          { id: "project_editor.info.items_empty_hint" },
-                          { totalItems }
-                        );
+                      ? this.props.intl.formatMessage({ id: "project_editor.info.items_empty_hint_hidden" }, { hidden })
+                      : this.props.intl.formatMessage({ id: "project_editor.info.items_empty_hint" }, { totalItems });
                   })()}
                 </div>
                 <Button

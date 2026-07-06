@@ -390,9 +390,9 @@
     "errorCount": 0,
     "internalProcessingErrorCount": 0,
     "warningCount": 1,
-    "testSuccessCount": 36,
+    "testSuccessCount": 37,
     "testFailCount": 0,
-    "testNotApplicableCount": 15,
+    "testNotApplicableCount": 16,
     "errorSummary": "",
     "internalProcessingErrorSummary": "",
     "warningSummary": "WARNING: [UNLINK191] (/pack_icon.png) Texture does not have any items in this pack that are using this.",
@@ -817,6 +817,11 @@
           "defaultMessage": "Texture Images Tier 5"
         }
       },
+      "TEXTURELIST": {
+        "2": {
+          "defaultMessage": "No applicable items found for test Texture List Validation (TEXTURELIST)"
+        }
+      },
       "TEXTUREREF": {
         "1": {
           "title": "Texture References",
@@ -868,6 +873,12 @@
       "VALFILE": {
         "2": {
           "defaultMessage": "No applicable items found for test Valid files (VALFILE)"
+        }
+      },
+      "VANPRO": {
+        "1": {
+          "defaultMessage": "Vanilla Protected Assets completed successfully",
+          "testCompleteSuccesses": 1
         }
       },
       "VSCODEFILE": {
@@ -1650,6 +1661,11 @@
       }
     },
     {
+      "iTp": 8,
+      "gId": "TEXTURELIST",
+      "gIx": 2
+    },
+    {
       "iTp": 1,
       "gId": "TEXTUREREF",
       "gIx": 1
@@ -1694,6 +1710,11 @@
       "iTp": 8,
       "gId": "VALFILE",
       "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "VANPRO",
+      "gIx": 1
     },
     {
       "iTp": 8,

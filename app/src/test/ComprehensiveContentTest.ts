@@ -9,7 +9,7 @@ import { ProjectItemType } from "../app/IProjectItemData";
 import TestPaths, { ITestEnvironment } from "./TestPaths";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import { ProjectInfoSuite } from "../info/IProjectInfoData";
-import { ensureReportJsonMatchesScenario } from "./TestUtilities";
+import { defaultValidationReportExcludedTestIds, ensureReportJsonMatchesScenario } from "./TestUtilities";
 
 let creatorTools: CreatorTools | undefined = undefined;
 let scenariosFolder: IFolder | undefined = undefined;
@@ -235,15 +235,14 @@ describe("Comprehensive Content Types", async () => {
     // - SCRIPTMODULE1: error count (changes when 114 fires or not)
     // - SCRIPTMODULE100: BP module dependency info (contains beta version string)
     // - SCRIPTMODULE114: beta version outdated error (fires only when version is stale)
-    // Exclude CDWORLDDATA2 / TEXTURELIST2: new generators' "not applicable" entries — avoids
-    // baseline updates when these generators are first added.
+    // Also exclude new default generators' no-finding completion entries to avoid
+    // baseline updates when the generators are first added.
     await ensureReportJsonMatchesScenario(scenariosFolder, resultsFolder, dataObject, "comprehensive", [
       "SCRIPTMODULE0",
       "SCRIPTMODULE1",
       "SCRIPTMODULE100",
       "SCRIPTMODULE114",
-      "CDWORLDDATA2",
-      "TEXTURELIST2",
+      ...defaultValidationReportExcludedTestIds,
     ]);
   });
 });
@@ -441,10 +440,13 @@ describe("Diverse Content Types", async () => {
     await pis.generateForProject();
 
     const dataObject = pis.getDataObject();
-    await ensureReportJsonMatchesScenario(scenariosFolder, resultsFolder, dataObject, "diverse_content", [
-      "CDWORLDDATA2",
-      "TEXTURELIST2",
-    ]);
+    await ensureReportJsonMatchesScenario(
+      scenariosFolder,
+      resultsFolder,
+      dataObject,
+      "diverse_content",
+      defaultValidationReportExcludedTestIds
+    );
   });
 });
 
@@ -512,10 +514,13 @@ describe("Skin Pack Content - Errors", async () => {
     await pis.generateForProject();
 
     const dataObject = pis.getDataObject();
-    await ensureReportJsonMatchesScenario(scenariosFolder, resultsFolder, dataObject, "sample_skins_errors", [
-      "CDWORLDDATA2",
-      "TEXTURELIST2",
-    ]);
+    await ensureReportJsonMatchesScenario(
+      scenariosFolder,
+      resultsFolder,
+      dataObject,
+      "sample_skins_errors",
+      defaultValidationReportExcludedTestIds
+    );
   });
 });
 
@@ -583,9 +588,12 @@ describe("Skin Pack Content - Good", async () => {
     await pis.generateForProject();
 
     const dataObject = pis.getDataObject();
-    await ensureReportJsonMatchesScenario(scenariosFolder, resultsFolder, dataObject, "sample_skins_good", [
-      "CDWORLDDATA2",
-      "TEXTURELIST2",
-    ]);
+    await ensureReportJsonMatchesScenario(
+      scenariosFolder,
+      resultsFolder,
+      dataObject,
+      "sample_skins_good",
+      defaultValidationReportExcludedTestIds
+    );
   });
 });

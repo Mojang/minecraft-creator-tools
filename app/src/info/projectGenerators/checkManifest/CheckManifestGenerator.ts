@@ -6,7 +6,7 @@ import ContentIndex from "../../../core/ContentIndex";
 import { findMissingProperty, notEmpty } from "../../../core/ObjectUtilities";
 import Utilities from "../../../core/Utilities";
 import SemanticVersion from "../../../core/versioning/SemanticVersion";
-import { PackType } from "../../../minecraft/Pack";
+import Pack, { PackType } from "../../../minecraft/Pack";
 import IProjectInfoGenerator from "../../IProjectInfoGenerator";
 import ProjectInfoItem from "../../ProjectInfoItem";
 import { resultFromTest } from "../../tests/TestDefinition";
@@ -218,13 +218,15 @@ export default class CheckManifestGenerator implements IProjectInfoGenerator {
       return results;
     }
 
-    // Check for VV files scoped to THIS pack only, not the entire project.
-    // A project may have multiple resource packs where only some contain PBR content.
-    const owningPack = manifestItem.project.packs.find(
-      (p) => p.projectItem.projectPath && manifestItem.projectPath?.startsWith(p.projectItem.projectPath)
-    );
-
-    const hasVVFilesInPack = owningPack?.hasVibrantVisualsContent() ?? false;
+    // Scope VV/PBR detection to THIS pack only, never the whole submission. A project may contain
+    // several resource packs where only some have PBR content, and one pack's VV content must not
+    // make a sibling pack fail this check. The owning Pack is the `pack` argument here — generate()
+    // maps each pack to [pack.getManifest(), pack] — so read VV content directly from it. We
+    // deliberately do NOT re-derive the pack by path-prefix matching: a prefix match can resolve the
+    // wrong pack when one pack's path is a prefix of another's (e.g. "/rp" vs "/rp_vibrant").
+    const owningPack = pack as Partial<Pack>;
+    const hasVVFilesInPack =
+      typeof owningPack.hasVibrantVisualsContent === "function" ? owningPack.hasVibrantVisualsContent() : false;
 
     const capabilities = manifest.capabilities;
     let hasPbr = false;

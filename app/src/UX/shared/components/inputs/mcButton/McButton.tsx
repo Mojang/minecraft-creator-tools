@@ -33,11 +33,14 @@ interface McButtonProps {
  */
 const colorPalettes = {
   green: {
+    // White labels need a face dark enough to clear 4.5:1 (green4 was only 3.09:1);
+    // green6 gives ~7.3:1. The bevel shades shift to keep the lit-top / shaded-bottom
+    // 3D effect around the darker face.
     border: mcColors.green7,
-    highlight: mcColors.green3,
-    main: mcColors.green4,
-    shadow: mcColors.green6,
-    corner: mcColors.green5,
+    highlight: mcColors.green4,
+    main: mcColors.green6,
+    shadow: mcColors.green7,
+    corner: mcColors.green6,
     text: mcColors.white,
   },
   stone: {
@@ -176,6 +179,7 @@ export default function McButton({
         />
         {/* Center - Main button content */}
         <Box
+          className={"mcb-buttonFace mcb-buttonFace-" + variant}
           sx={{
             gridColumn: 2,
             gridRow: 2,

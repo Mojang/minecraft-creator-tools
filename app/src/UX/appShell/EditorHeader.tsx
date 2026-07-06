@@ -41,7 +41,7 @@ import IColor from "../../core/IColor";
 import ProjectItemTypeIcon from "../project/projectNavigation/ProjectItemTypeIcon";
 import "./EditorHeader.css";
 import IProjectTheme from "../types/IProjectTheme";
-import CreatorToolsHost, { CreatorToolsThemeStyle } from "../../app/CreatorToolsHost";
+import { mcColors } from "../hooks/theme/mcColors";
 
 // Pixel size for Minecraft-style bevels (2px looks best at most resolutions)
 const PX = 2;
@@ -49,17 +49,15 @@ const PX = 2;
 /**
  * Generates a stone color palette tinted by the type color.
  * The tint is subtle - primarily gray with a hint of the type hue.
- * Uses a lighter base stone in light mode for better contrast.
  */
 function getStoneColors(typeColor: IColor) {
-  const isDark = CreatorToolsHost.theme === CreatorToolsThemeStyle.dark;
+  // Base stone for the chip face. The chip text is white, so the stone must stay
+  // dark enough for white text to clear 4.5:1 in BOTH themes after the type-color
+  // tint below — a lighter stone dropped white text to ~2.68:1. stoneMid keeps
+  // white text >=5.5:1 across every item-type tint, in light and dark.
+  const baseStone: IColor = ColorUtilities.fromCss(mcColors.stoneMid);
 
-  // Base stone colors - lighter in light mode
-  const baseStone: IColor = isDark
-    ? { red: 107, green: 107, blue: 107, alpha: 1 } // #6b6b6b dark mode
-    : { red: 160, green: 160, blue: 160, alpha: 1 }; // #a0a0a0 light mode
-
-  // Blend type color into stone (10% type color, 90% stone)
+  // Blend type color into stone (12% type color, 88% stone)
   const tintAmount = 0.12;
   const tintedStone: IColor = {
     red: Math.round(baseStone.red * (1 - tintAmount) + typeColor.red * tintAmount),
@@ -175,7 +173,7 @@ export const EditorHeaderBar: React.FC<IEditorHeaderBarProps> = (props) => {
       {props.displayName ? (
         <span className="editor-header-title-group">
           <span className="editor-header-title">{props.displayName}</span>
-          <span className="editor-header-subtitle" style={{ fontSize: "0.85em", opacity: 0.6, marginLeft: "8px" }}>
+          <span className="editor-header-subtitle" style={{ fontSize: "0.85em", marginLeft: "8px" }}>
             ({props.itemId})
           </span>
         </span>

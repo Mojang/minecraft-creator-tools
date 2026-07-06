@@ -25,11 +25,18 @@ interface McChipProps {
 }
 
 /**
- * Color palettes for each chip variant (unselected state)
+ * Color palettes for each chip variant.
+ *
+ * Unselected (filter OFF) chips use a SOLID dark fill rather than a translucent tint:
+ * a 15%-opacity tint let the medium-grey inspector toolbar show through, so the light
+ * variant-coloured text measured only ~1.6-2.7:1 against it (WCAG 1.4.3 needs 4.5:1).
+ * A solid dark fill makes that same light text clear 4.5:1 regardless of the surface.
+ * Selected (filter ON) chips keep the bright `backgroundSelected` fill, so the
+ * active/inactive states read as "lit" (bright) vs "unlit" (dark).
  */
 const colorPalettes = {
   green: {
-    background: "rgba(82, 165, 53, 0.15)",
+    background: "#15310d",
     backgroundSelected: mcColors.green4,
     border: "rgba(82, 165, 53, 0.4)",
     borderSelected: "#1e4d14",
@@ -39,7 +46,7 @@ const colorPalettes = {
     shadow: mcColors.green6,
   },
   stone: {
-    background: "rgba(107, 107, 107, 0.15)",
+    background: "#222222",
     backgroundSelected: mcColors.stone,
     border: "rgba(107, 107, 107, 0.4)",
     borderSelected: "#3a3a3a",
@@ -49,7 +56,7 @@ const colorPalettes = {
     shadow: mcColors.stoneDark,
   },
   error: {
-    background: "rgba(211, 47, 47, 0.15)",
+    background: "#2e0f0f",
     backgroundSelected: "#d32f2f",
     border: "rgba(211, 47, 47, 0.4)",
     borderSelected: "#8b1c1c",
@@ -59,7 +66,7 @@ const colorPalettes = {
     shadow: "#a12525",
   },
   warning: {
-    background: "rgba(245, 166, 35, 0.15)",
+    background: "#2e2207",
     backgroundSelected: "#f5a623",
     border: "rgba(245, 166, 35, 0.4)",
     borderSelected: "#a16e0f",
@@ -69,7 +76,7 @@ const colorPalettes = {
     shadow: "#c7850a",
   },
   info: {
-    background: "rgba(25, 118, 210, 0.15)",
+    background: "#0a1c2e",
     backgroundSelected: "#1976d2",
     border: "rgba(25, 118, 210, 0.4)",
     borderSelected: "#0d4a82",
@@ -79,7 +86,7 @@ const colorPalettes = {
     shadow: "#125ea5",
   },
   passed: {
-    background: "rgba(82, 165, 53, 0.15)",
+    background: "#15310d",
     backgroundSelected: mcColors.green4,
     border: "rgba(82, 165, 53, 0.4)",
     borderSelected: "#1e4d14",
@@ -89,7 +96,7 @@ const colorPalettes = {
     shadow: mcColors.green6,
   },
   recommendation: {
-    background: "rgba(245, 166, 35, 0.15)",
+    background: "#2e2207",
     backgroundSelected: "#f5a623",
     border: "rgba(245, 166, 35, 0.4)",
     borderSelected: "#a16e0f",
@@ -241,6 +248,7 @@ export default function McChip({
             />
             {/* Center - Chip content */}
             <Box
+              className="mcc-chipContent"
               sx={{
                 gridColumn: 2,
                 gridRow: 2,
@@ -321,6 +329,7 @@ export default function McChip({
         ) : (
           /* Unselected state - simpler flat appearance */
           <Box
+            className="mcc-chipContent"
             sx={{
               backgroundColor: bgColor,
               color: textColor,

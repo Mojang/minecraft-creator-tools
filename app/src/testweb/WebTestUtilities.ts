@@ -984,3 +984,78 @@ export async function setupJsonEditor(
   console.log(`setupJsonEditor: Successfully opened "${filePattern}" in Monaco editor`);
   return true;
 }
+
+/**
+ * WCAG rendered-contrast helper. Returns the text/background contrast ratio for
+ * every element matching `selector`, compositing any semi-transparent backgrounds
+ * over their ancestors AND factoring in CSS `opacity` applied to the text element
+ * (and ancestors up to the element that paints the background), so the result
+ * reflects what the user actually sees. Use it for color-contrast (WCAG 1.4.3)
+ * regression tests, and run it in both light and dark themes.
+ *
+ * NOTE: this reads computed styles, which can capture a value mid-CSS-transition.
+ * When measuring right after a state change (e.g. selecting a card whose
+ * background-color animates), neutralize transitions first, e.g.:
+ *   await page.addStyleTag({ content: "*{transition-duration:0s !important}" });
+ */
+export async function getRenderedContrast(page: Page, selector: string): Promise<number[]> {
+  return await page.evaluate((sel) => {
+    function parse(c: string): [number, number, number, number] {
+      const m = c.match(/rgba?\(([^)]+)\)/);
+      if (!m) return [255, 255, 255, 1];
+      const parts = m[1].split(",").map((p) => parseFloat(p.trim()));
+      return [parts[0] || 0, parts[1] || 0, parts[2] || 0, parts[3] === undefined ? 1 : parts[3]];
+    }
+    function over(fg: number[], bg: number[]): number[] {
+      const a = fg[3];
+      return [fg[0] * a + bg[0] * (1 - a), fg[1] * a + bg[1] * (1 - a), fg[2] * a + bg[2] * (1 - a)];
+    }
+    // Effective opaque background behind an element: fold ancestor bgs over an opaque white base.
+    function effectiveBg(el: Element): number[] {
+      const stack: [number, number, number, number][] = [];
+      let node: Element | null = el;
+      while (node) {
+        stack.push(parse(getComputedStyle(node).backgroundColor));
+        node = node.parentElement;
+      }
+      let base = [255, 255, 255];
+      for (let i = stack.length - 1; i >= 0; i--) {
+        if (stack[i][3] > 0) base = over(stack[i], base);
+      }
+      return base;
+    }
+    // Cumulative opacity applied to the text only: from the element up to (but not
+    // including) the nearest ancestor that paints a background — opacity on that
+    // ancestor (or above) dims text AND background together, so it preserves the
+    // ratio; opacity between the text and its background dims only the text.
+    function textOpacity(el: Element): number {
+      let op = parseFloat(getComputedStyle(el).opacity || "1");
+      let node: Element | null = el.parentElement;
+      while (node) {
+        if (parse(getComputedStyle(node).backgroundColor)[3] > 0) break;
+        op *= parseFloat(getComputedStyle(node).opacity || "1");
+        node = node.parentElement;
+      }
+      return op;
+    }
+    function lum(rgb: number[]): number {
+      const ch = rgb.map((v) => {
+        const s = v / 255;
+        return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+      });
+      return 0.2126 * ch[0] + 0.7152 * ch[1] + 0.0722 * ch[2];
+    }
+    function ratio(a: number, b: number): number {
+      const hi = Math.max(a, b);
+      const lo = Math.min(a, b);
+      return (hi + 0.05) / (lo + 0.05);
+    }
+    return Array.from(document.querySelectorAll(sel)).map((el) => {
+      const bg = effectiveBg(el);
+      const c = parse(getComputedStyle(el).color);
+      const alpha = c[3] * textOpacity(el);
+      const text = alpha < 1 ? over([c[0], c[1], c[2], alpha], bg) : [c[0], c[1], c[2]];
+      return Math.round(ratio(lum(text), lum(bg)) * 100) / 100;
+    });
+  }, selector);
+}

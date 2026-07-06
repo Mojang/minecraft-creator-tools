@@ -25,8 +25,11 @@ export class DocsUpdateFormSourceCommand extends CommandBase implements ICommand
     internal: true,
   };
 
-  public configure(_cmd: Commander): void {
-    // No additional options needed - all configuration is in metadata
+  public configure(cmd: Commander): void {
+    cmd.option(
+      "--schemas <folder>",
+      "Override the json_schemas folder to read JSON schemas from (defaults to the vanilla preview metadata). Useful for testing an alternate schema layout."
+    );
   }
 
   public async execute(context: ICommandContext): Promise<void> {
@@ -74,7 +77,24 @@ export class DocsUpdateFormSourceCommand extends CommandBase implements ICommand
 
     const formJsonDocGen = new FormJsonDocumentationGenerator();
 
-    await formJsonDocGen.updateFormSource(outFolder, true);
+    // Optional schema-folder override (--schemas). Lets us point form generation at an
+    // alternate json_schemas layout without touching the vanilla metadata tree.
+    let schemaFolderOverride;
+    const schemasOption = context.commandOptions?.schemas;
+    if (schemasOption && typeof schemasOption === "string") {
+      const schemasStorage = new NodeStorage(schemasOption, "");
+      schemaFolderOverride = schemasStorage.rootFolder;
+
+      if (!(await schemaFolderOverride.exists())) {
+        log.error(`Schema override folder does not exist: ${schemasOption}`);
+        context.setExitCode(ErrorCodes.INIT_ERROR);
+        return;
+      }
+
+      log.info(`Using schema override folder: ${schemasOption}`);
+    }
+
+    await formJsonDocGen.updateFormSource(outFolder, true, schemaFolderOverride);
 
     log.info("Form source update complete.");
     return;

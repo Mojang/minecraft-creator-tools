@@ -16,7 +16,7 @@ import ProjectItem from "../app/ProjectItem";
 import { ProjectItemType, ProjectItemStorageType } from "../app/IProjectItemData";
 import ProjectUtilities from "../app/ProjectUtilities";
 import ProjectItemUtilities from "../app/ProjectItemUtilities";
-import { ensureReportJsonMatchesScenario, folderMatches } from "./TestUtilities";
+import { defaultValidationReportExcludedTestIds, ensureReportJsonMatchesScenario, folderMatches } from "./TestUtilities";
 import TestPaths, { ITestEnvironment } from "./TestPaths";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import { ProjectInfoSuite } from "../info/IProjectInfoData";
@@ -131,10 +131,13 @@ describe("simple", async () => {
 
     const dataObject = pis.getDataObject();
 
-    await ensureReportJsonMatchesScenario(scenariosFolder, resultsFolder, dataObject, "simple", [
-      "CDWORLDDATA2",
-      "TEXTURELIST2",
-    ]);
+    await ensureReportJsonMatchesScenario(
+      scenariosFolder,
+      resultsFolder,
+      dataObject,
+      "simple",
+      defaultValidationReportExcludedTestIds
+    );
   });
 });
 

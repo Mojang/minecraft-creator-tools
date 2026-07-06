@@ -1,9 +1,15 @@
 import { assert } from "chai";
 import { ChildProcessWithoutNullStreams, spawn } from "child_process";
+import * as net from "net";
 import Utilities from "../core/Utilities";
 import IFile from "../storage/IFile";
 import axios, { AxiosResponse } from "axios";
-import { volatileFileExtensions, ensureReportJsonMatchesScenario, folderMatches } from "./TestUtilities";
+import {
+  defaultValidationReportExcludedTestIds,
+  ensureReportJsonMatchesScenario,
+  folderMatches,
+  volatileFileExtensions,
+} from "./TestUtilities";
 import {
   sampleFolder,
   scenariosFolder,
@@ -13,11 +19,36 @@ import {
 } from "./CommandLineTestHelpers";
 
 const SERVER_STARTUP_TIMEOUT_MS = 15000;
+const SERVER_HOST = "127.0.0.1";
+
+async function canConnectToServer(port: number): Promise<boolean> {
+  return new Promise((resolve) => {
+    const socket = net.createConnection({ host: SERVER_HOST, port }, () => {
+      socket.end();
+      resolve(true);
+    });
+
+    socket.setTimeout(250);
+    socket.on("error", () => {
+      socket.destroy();
+      resolve(false);
+    });
+    socket.on("timeout", () => {
+      socket.destroy();
+      resolve(false);
+    });
+  });
+}
 
 /**
  * POSTs `body` to `url` with the given headers, retrying briefly on transient
  * connection errors (ECONNREFUSED / ECONNRESET / EAI_AGAIN and the
- * AggregateErrors that wrap them). Non-network errors are rethrown immediately.
+ * AggregateErrors that wrap them). The serve command logs its "Web UI
+ * available at:" line just before — or in CI, sometimes microseconds before —
+ * the underlying socket transitions to listening, so a single early POST can
+ * race the listen() callback and fail. This helper papers over that race
+ * without masking real validation failures (non-network errors are rethrown
+ * immediately).
  */
 async function postWithRetry(
   url: string,
@@ -87,7 +118,9 @@ async function waitForServerStartup(
     );
 
     if (hasStartupSignal) {
-      return;
+      if (await canConnectToServer(port)) {
+        return;
+      }
     }
 
     if (serverProcess.exitCode !== null || serverProcess.killed) {
@@ -161,12 +194,19 @@ function createServeValidationTest(
         ...extraHeaders,
       };
 
-      const response: AxiosResponse = await postWithRetry(`http://127.0.0.1:${port}/api/validate/`, content, headers);
+      const response: AxiosResponse = await postWithRetry(
+        `http://${SERVER_HOST}:${port}/api/validate/`,
+        content,
+        headers
+      );
 
-      await ensureReportJsonMatchesScenario(scenariosFolder, resultsFolder, response.data, suiteName, [
-        "CDWORLDDATA2",
-        "TEXTURELIST2",
-      ]);
+      await ensureReportJsonMatchesScenario(
+        scenariosFolder,
+        resultsFolder,
+        response.data,
+        suiteName,
+        defaultValidationReportExcludedTestIds
+      );
 
       await new Promise<void>((resolve) => {
         if (serverProcess) {

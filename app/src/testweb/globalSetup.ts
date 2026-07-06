@@ -9,7 +9,8 @@
 
 import { chromium } from "@playwright/test";
 
-const BASE_URL = "http://localhost:3000";
+const webPort = process.env.PLAYWRIGHT_WEB_PORT ?? "3000";
+const BASE_URL = `http://localhost:${webPort}`;
 const WARMUP_TIMEOUT_MS = 120_000; // 2 minutes — matches webServer.timeout
 
 async function globalSetup(): Promise<void> {

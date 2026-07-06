@@ -303,16 +303,35 @@ export default function NewProjectDialog({ template, open, close, onNewProject }
         }}
       >
         <Box
-          sx={{
+          sx={(theme) => ({
             position: "absolute",
-            bottom: 16,
-            left: 24,
-            right: 24,
+            bottom: 0,
+            left: 0,
+            right: 0,
             zIndex: 1,
-          }}
+            px: 3,
+            pt: 1.5,
+            pb: 2,
+            // Solid scrim so the hero text keeps >= 4.5:1 contrast over ANY template
+            // screenshot: a translucent gradient can't guarantee this for small text
+            // across arbitrary, variable-luminance artwork.
+            backgroundColor: theme.palette.background.default,
+            // Soften the transition from the image above into the solid caption band.
+            "&::before": {
+              content: '""',
+              position: "absolute",
+              left: 0,
+              right: 0,
+              bottom: "100%",
+              height: 24,
+              background: `linear-gradient(to top, ${theme.palette.background.default}, transparent)`,
+              pointerEvents: "none",
+            },
+          })}
         >
           <Typography
             variant="overline"
+            className="npd-heroOverline"
             sx={(theme) => {
               const isDark = theme.palette.mode === "dark";
               return {
@@ -409,8 +428,10 @@ export default function NewProjectDialog({ template, open, close, onNewProject }
               cursor: "pointer",
               mt: 1,
               mb: 0.5,
-              opacity: 0.7,
-              "&:hover": { opacity: 1 },
+              // De-emphasise via a muted-but-compliant colour rather than opacity:
+              // stacked opacity dimmed the hint below the 4.5:1 text-contrast minimum.
+              color: "text.secondary",
+              "&:hover": { color: "text.primary" },
               userSelect: "none",
             }}
           >
@@ -421,7 +442,7 @@ export default function NewProjectDialog({ template, open, close, onNewProject }
               })}
             </Typography>
             {!showAdvanced && (
-              <Typography variant="caption" sx={{ fontSize: "10px", opacity: 0.6, ml: 1 }}>
+              <Typography variant="caption" className="npd-advancedHint" sx={{ fontSize: "10px", ml: 1 }}>
                 {intl.formatMessage({ id: "home.new_project.advanced_summary" })}
               </Typography>
             )}
