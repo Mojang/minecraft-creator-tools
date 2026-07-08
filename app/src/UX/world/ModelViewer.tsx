@@ -1183,7 +1183,9 @@ class ModelViewer extends Component<IModelViewerProps, IModelViewerState> {
               <Select
                 value={this.state.selectedTextureVariant || ""}
                 onChange={this._handleTextureVariantChange}
-                aria-label={this.props.intl.formatMessage({ id: "viewer.model.variant_aria" })}
+                SelectDisplayProps={{
+                  "aria-label": this.props.intl.formatMessage({ id: "viewer.model.variant_aria" }),
+                }}
                 sx={{
                   fontSize: "0.75rem",
                   height: 28,
@@ -1223,7 +1225,11 @@ class ModelViewer extends Component<IModelViewerProps, IModelViewerState> {
           <div className="mov-toolbar-area">
             <div className="mov-toolbar-inner">
               <Stack direction="row" spacing={1} alignItems="center" aria-label="Model viewer toolbar">
-                <IconButton onClick={this._resetViewClick} title={this.props.intl.formatMessage({ id: "viewer.model.reset_camera" })} size="small">
+                <IconButton
+                  onClick={this._resetViewClick}
+                  title={this.props.intl.formatMessage({ id: "viewer.model.reset_camera" })}
+                  size="small"
+                >
                   <VideoLabel />
                 </IconButton>
                 {this.state?.model && (
@@ -1266,7 +1272,9 @@ class ModelViewer extends Component<IModelViewerProps, IModelViewerState> {
                     <Select
                       value={this.state.selectedTextureVariant || ""}
                       onChange={this._handleTextureVariantChange}
-                      aria-label={this.props.intl.formatMessage({ id: "viewer.model.variant_aria" })}
+                      SelectDisplayProps={{
+                        "aria-label": this.props.intl.formatMessage({ id: "viewer.model.variant_aria" }),
+                      }}
                       sx={{ fontSize: "0.8rem", height: 32, minWidth: 120 }}
                     >
                       {this.state.textureVariants.map((variant) => (

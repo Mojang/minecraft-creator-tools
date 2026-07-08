@@ -9,6 +9,7 @@ import CreatorToolsHost, { HostType } from "../app/CreatorToolsHost";
 import StorageUtilities from "./StorageUtilities";
 import IFile from "./IFile";
 import SecurityUtilities from "../core/SecurityUtilities";
+import ZipImportError, { ZipImportErrorCode } from "./ZipImportError";
 
 export default class ZipStorage extends StorageBase implements IStorage {
   private _jsz: JSZip;
@@ -214,7 +215,7 @@ export default class ZipStorage extends StorageBase implements IStorage {
     if (!SecurityUtilities.validateFileSize(data.byteLength)) {
       this.errorMessage = `ZIP file too large: ${data.byteLength} bytes (max: ${SecurityUtilities.MAX_UPLOAD_SIZE})`;
       this.errorStatus = StorageErrorStatus.unprocessable;
-      throw new Error(this.errorMessage);
+      throw new ZipImportError(ZipImportErrorCode.uploadTooLarge, this.errorMessage, 413);
     }
 
     try {
@@ -234,7 +235,7 @@ export default class ZipStorage extends StorageBase implements IStorage {
     if (fileCount > SecurityUtilities.MAX_ZIP_FILES) {
       this.errorMessage = `ZIP contains too many files: ${fileCount} (max: ${SecurityUtilities.MAX_ZIP_FILES})`;
       this.errorStatus = StorageErrorStatus.unprocessable;
-      throw new Error(this.errorMessage);
+      throw new ZipImportError(ZipImportErrorCode.tooManyFiles, this.errorMessage, 422);
     }
 
     // Security: Validate paths in ZIP
@@ -242,26 +243,46 @@ export default class ZipStorage extends StorageBase implements IStorage {
       if (!SecurityUtilities.validatePath(filePath)) {
         this.errorMessage = `ZIP contains invalid path: ${filePath}`;
         this.errorStatus = StorageErrorStatus.unprocessable;
-        throw new Error(this.errorMessage);
+        throw new ZipImportError(ZipImportErrorCode.invalidPath, this.errorMessage, 422);
       }
     }
 
-    // Security: Validate total decompressed size against bomb threshold
-    let totalDecompressedSize = 0;
-    for (const filePath of filePaths) {
-      const file = this._jsz.files[filePath];
-      if (file && !file.dir) {
-        const fileData = (file as any)._data;
-        if (fileData && typeof fileData.uncompressedSize === "number") {
-          totalDecompressedSize += fileData.uncompressedSize;
+    // Security: Validate decompressed sizes.
+    //  - The 2 GiB total ceiling is the lower-level unzip safety limit (zip-bomb guard).
+    //  - The 500 MiB content ceiling applies ONLY to files under the top-level "Content/"
+    //    folder, so non-content files cannot push an otherwise-valid package over the limit.
+    const sizeEntries = filePaths
+      .map((filePath) => {
+        const file = this._jsz.files[filePath];
+
+        if (file && !file.dir) {
+          const fileData = (file as any)._data;
+
+          if (fileData && typeof fileData.uncompressedSize === "number") {
+            return { path: filePath, uncompressedSize: fileData.uncompressedSize as number };
+          }
         }
-      }
+
+        return undefined;
+      })
+      .filter((entry): entry is { path: string; uncompressedSize: number } => entry !== undefined);
+
+    const sizeCheck = SecurityUtilities.checkDecompressedSizeLimits(sizeEntries);
+
+    if (sizeCheck.violation === "total") {
+      this.errorMessage =
+        `This package is too large to import: total decompressed size ${sizeCheck.totalSize} bytes ` +
+        `exceeds the unzip safety limit of ${SecurityUtilities.MAX_DECOMPRESSED_SIZE} bytes.`;
+      this.errorStatus = StorageErrorStatus.unprocessable;
+      throw new ZipImportError(ZipImportErrorCode.packageSizeExceeded, this.errorMessage, 413);
     }
 
-    if (totalDecompressedSize > SecurityUtilities.MAX_DECOMPRESSED_SIZE) {
-      this.errorMessage = `This file is too large to import: decompressed size ${totalDecompressedSize} bytes exceeds limit of ${SecurityUtilities.MAX_DECOMPRESSED_SIZE} bytes`;
+    if (sizeCheck.violation === "content") {
+      this.errorMessage =
+        `The Content/ folder is too large: decompressed Content/ size ${sizeCheck.contentSize} bytes ` +
+        `exceeds the limit of ${SecurityUtilities.MAX_CONTENT_DECOMPRESSED_SIZE} bytes.`;
       this.errorStatus = StorageErrorStatus.unprocessable;
-      throw new Error(this.errorMessage);
+      throw new ZipImportError(ZipImportErrorCode.contentSizeExceeded, this.errorMessage, 413);
     }
 
     this.name = name;

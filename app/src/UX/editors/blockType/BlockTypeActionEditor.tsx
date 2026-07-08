@@ -33,8 +33,9 @@ import { ProjectScriptLanguage } from "../../../app/IProjectData";
 import SetNamespacedId from "../../project/naming/SetNamespacedId";
 import ProjectItemRelations from "../../../app/ProjectItemRelations";
 import IProjectTheme from "../../types/IProjectTheme";
+import { withLocalization, WithLocalizationProps } from "../../withLocalization";
 
-interface IBlockTypeActionEditorProps extends IFileProps {
+interface IBlockTypeActionEditorProps extends IFileProps, WithLocalizationProps {
   isVisualsMode: boolean;
   heightOffset: number;
   readOnly: boolean;
@@ -59,7 +60,7 @@ export enum BlockTypeActionEditorDialogMode {
   newActionComponent = 1,
 }
 
-export default class BlockTypeActionEditor extends Component<IBlockTypeActionEditorProps, IBlockTypeActionEditorState> {
+class BlockTypeActionEditor extends Component<IBlockTypeActionEditorProps, IBlockTypeActionEditorState> {
   private _lastFileEdited?: IFile;
 
   constructor(props: IBlockTypeActionEditorProps) {
@@ -354,7 +355,14 @@ export default class BlockTypeActionEditor extends Component<IBlockTypeActionEdi
       if (compIdArr && Array.isArray(compIdArr) && compIdArr.length > 0) {
         dropdownArea = (
           <FormControl size="small" fullWidth>
-            <Select value={this.state.selectedActionComponentId || ""} onChange={this._handleActionChange} displayEmpty>
+            <Select
+              // MUI drops a top-level aria-label on the role="combobox" element; name it via
+              // SelectDisplayProps, mirroring the disabled placeholder option. (WCAG 4.1.2)
+              SelectDisplayProps={{ "aria-label": this.props.intl.formatMessage({ id: "project_editor.block_action.select_component_aria" }) }}
+              value={this.state.selectedActionComponentId || ""}
+              onChange={this._handleActionChange}
+              displayEmpty
+            >
               <MenuItem value="" disabled>
                 Select an action component
               </MenuItem>
@@ -398,3 +406,5 @@ export default class BlockTypeActionEditor extends Component<IBlockTypeActionEdi
     }
   }
 }
+
+export default withLocalization(BlockTypeActionEditor);

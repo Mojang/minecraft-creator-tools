@@ -1,4 +1,4 @@
-import { Component, SyntheticEvent, KeyboardEvent } from "react";
+import { Component, SyntheticEvent } from "react";
 import "./ProjectInfoItemDisplay.css";
 import IAppProps from "../../appShell/IAppProps";
 import { InfoItemCommand } from "./ProjectInfoDisplay";
@@ -21,6 +21,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Link,
   Menu,
   MenuItem,
   Tooltip,
@@ -30,11 +31,12 @@ import ProjectInfoSet from "../../../info/ProjectInfoSet";
 import Utilities from "../../../core/Utilities";
 import { getThemeColors } from "../../hooks/theme/useThemeColors";
 import IProjectTheme from "../../types/IProjectTheme";
+import { withLocalization, WithLocalizationProps } from "../../withLocalization";
 
 export const PT_TILE_LARGE = 0;
 export const PT_TILE_SMALL = 1;
 
-interface IProjectInfoItemDisplayProps extends IAppProps {
+interface IProjectInfoItemDisplayProps extends IAppProps, WithLocalizationProps {
   item: ProjectInfoItem;
   itemSet: ProjectInfoSet;
   isBand: boolean;
@@ -48,7 +50,7 @@ interface IProjectInfoItemDisplayState {
   menuAnchorEl: HTMLElement | null;
 }
 
-export default class ProjectInfoItemDisplay extends Component<
+class ProjectInfoItemDisplay extends Component<
   IProjectInfoItemDisplayProps,
   IProjectInfoItemDisplayState
 > {
@@ -61,7 +63,6 @@ export default class ProjectInfoItemDisplay extends Component<
     };
 
     this._projectClick = this._projectClick.bind(this);
-    this._handleRowKeyDown = this._handleRowKeyDown.bind(this);
     this._contextMenuClick = this._contextMenuClick.bind(this);
     this._toggleInfoDialog = this._toggleInfoDialog.bind(this);
     this._handleMenuOpen = this._handleMenuOpen.bind(this);
@@ -76,13 +77,6 @@ export default class ProjectInfoItemDisplay extends Component<
 
   _toggleInfoDialog() {
     this.setState({ isInfoDialogOpen: !this.state.isInfoDialogOpen });
-  }
-
-  _handleRowKeyDown(event: KeyboardEvent<HTMLTableRowElement>) {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      this._projectClick();
-    }
   }
 
   _handleMenuOpen(e: React.MouseEvent<HTMLElement>) {
@@ -341,6 +335,40 @@ export default class ProjectInfoItemDisplay extends Component<
       </>
     );
 
+    // Keyboard-accessible navigation control. The whole row keeps an onClick for
+    // mouse convenience, but the row element itself must stay a plain table row
+    // (its implicit "row" role) — putting role="button" on a <tr> breaks table
+    // semantics and nests the row's own info/fix buttons inside an interactive
+    // element (WCAG 4.1.2 Name/Role/Value, axe nested-interactive). So the file
+    // path is rendered as a real <button> styled as a link, giving keyboard and
+    // screen-reader users a focusable target inside the cell. stopPropagation
+    // prevents the bubbled click from also firing the row's mouse onClick.
+    const locationElement = location ? (
+      <Link
+        component="button"
+        type="button"
+        underline="none"
+        className="piid-locationLink"
+        aria-label={this.props.intl.formatMessage({ id: "project_editor.info.go_to_aria" }, { location })}
+        onClick={(event) => {
+          event.stopPropagation();
+          this._projectClick();
+        }}
+        sx={{
+          color: "inherit",
+          padding: 0,
+          border: 0,
+          background: "none",
+          cursor: "pointer",
+          textAlign: "left",
+          textDecoration: "none",
+          verticalAlign: "baseline",
+        }}
+      >
+        {location}
+      </Link>
+    ) : null;
+
     if (this.props.isMobile) {
       return (
         <div
@@ -349,8 +377,6 @@ export default class ProjectInfoItemDisplay extends Component<
             backgroundColor: this.props.isBand ? colors.background2 : "transparent",
           }}
           onClick={canNavigate ? this._projectClick : undefined}
-          tabIndex={canNavigate ? 0 : -1}
-          role={canNavigate ? "button" : undefined}
         >
           <div className="piid-cardHeader">
             <div className="piid-typeContainer">
@@ -375,13 +401,8 @@ export default class ProjectInfoItemDisplay extends Component<
               </div>
             )}
             {location && (
-              <div
-                className="piid-cardLocation"
-                style={{ color: colors.foreground2 }}
-                title={location}
-                onClick={location ? this._projectClick : undefined}
-              >
-                <span className="piid-locationLink">{location}</span>
+              <div className="piid-cardLocation" style={{ color: colors.foreground2 }} title={location}>
+                {locationElement}
               </div>
             )}
           </div>
@@ -396,9 +417,6 @@ export default class ProjectInfoItemDisplay extends Component<
           backgroundColor: this.props.isBand ? colors.background2 : "transparent",
         }}
         onClick={canNavigate ? this._projectClick : undefined}
-        onKeyDown={canNavigate ? this._handleRowKeyDown : undefined}
-        tabIndex={canNavigate ? 0 : -1}
-        role={canNavigate ? "button" : undefined}
       >
         {/* Type indicator column */}
         <td className={"piid-cell piid-typeCell " + indicatorCellBg} aria-label={typeLabel}>
@@ -446,9 +464,8 @@ export default class ProjectInfoItemDisplay extends Component<
             color: colors.foreground2,
           }}
           title={location}
-          onClick={location ? this._projectClick : undefined}
         >
-          {location && <span className="piid-locationLink">{location}</span>}
+          {locationElement}
         </td>
 
         {/* Actions column - info button + fix button */}
@@ -467,3 +484,5 @@ export default class ProjectInfoItemDisplay extends Component<
     );
   }
 }
+
+export default withLocalization(ProjectInfoItemDisplay);

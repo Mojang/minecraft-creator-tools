@@ -241,9 +241,6 @@ export default class ProjectInfoSet {
     // Build the itemsByStoragePath index from items array
     this._rebuildItemsByStoragePath();
 
-    // Aggregate features from info items (needed for summary display)
-    this.aggregateFeatures();
-
     // Build contentIndex from project files.
     // The web worker path doesn't populate the contentIndex (it only streams
     // validation items), so we must build it on the main thread.
@@ -253,6 +250,9 @@ export default class ProjectInfoSet {
     // These are normally populated by generators running in the worker,
     // but the worker's ContentIndex is not transferred back.
     await this._populateContentIndexAnnotationsAsync();
+
+    this.generateProjectMetaInfo();
+    this.populateSummaryInfo();
   }
 
   /**
@@ -1101,33 +1101,9 @@ export default class ProjectInfoSet {
       const pendingLoad = this._pendingGenerateRequests;
       this._pendingGenerateRequests = [];
 
-      this.info.errorCount = this.getCountByType(InfoItemType.error);
-      this.info.internalProcessingErrorCount = this.getCountByType(InfoItemType.internalProcessingError);
-      this.info.warningCount = this.getCountByType(InfoItemType.warning);
-      this.info.testSuccessCount = this.getCountByType(InfoItemType.testCompleteSuccess);
-      this.info.testFailCount = this.getCountByType(InfoItemType.testCompleteFail);
-      this.info.testNotApplicableCount = this.getCountByType(InfoItemType.testCompleteNoApplicableItemsFound);
-
-      this.info.errorSummary = this.getSummaryByType(InfoItemType.error);
-      this.info.internalProcessingErrorSummary = this.getSummaryByType(InfoItemType.internalProcessingError);
-      this.info.warningSummary = this.getSummaryByType(InfoItemType.warning);
-      this.info.testFailSummary = this.getSummaryByType(InfoItemType.testCompleteFail);
-
       const generationEndTime = Date.now();
 
-      this.info.infoGenerationTime = generationEndTime - generationStartTime;
-
-      if (this.project) {
-        this.info.endToEndGenerationTime = generationEndTime - this.project.creationTime;
-      }
-
-      if (
-        this.suite === ProjectInfoSuite.defaultInDevelopment ||
-        this.suite === ProjectInfoSuite.sharing ||
-        this.suite === ProjectInfoSuite.sharingStrict
-      ) {
-        this.info.reds = this.getRed();
-      }
+      this.populateSummaryInfo(generationStartTime, generationEndTime);
 
       this._isGenerating = false;
 
@@ -2621,6 +2597,36 @@ function _addReportJson(data) {
     }
 
     this.aggregateFeatures();
+  }
+
+  populateSummaryInfo(generationStartTime?: number, generationEndTime: number = Date.now()) {
+    this.info.errorCount = this.getCountByType(InfoItemType.error);
+    this.info.internalProcessingErrorCount = this.getCountByType(InfoItemType.internalProcessingError);
+    this.info.warningCount = this.getCountByType(InfoItemType.warning);
+    this.info.testSuccessCount = this.getCountByType(InfoItemType.testCompleteSuccess);
+    this.info.testFailCount = this.getCountByType(InfoItemType.testCompleteFail);
+    this.info.testNotApplicableCount = this.getCountByType(InfoItemType.testCompleteNoApplicableItemsFound);
+
+    this.info.errorSummary = this.getSummaryByType(InfoItemType.error);
+    this.info.internalProcessingErrorSummary = this.getSummaryByType(InfoItemType.internalProcessingError);
+    this.info.warningSummary = this.getSummaryByType(InfoItemType.warning);
+    this.info.testFailSummary = this.getSummaryByType(InfoItemType.testCompleteFail);
+
+    if (generationStartTime !== undefined) {
+      this.info.infoGenerationTime = generationEndTime - generationStartTime;
+    }
+
+    if (this.project) {
+      this.info.endToEndGenerationTime = generationEndTime - this.project.creationTime;
+    }
+
+    if (
+      this.suite === ProjectInfoSuite.defaultInDevelopment ||
+      this.suite === ProjectInfoSuite.sharing ||
+      this.suite === ProjectInfoSuite.sharingStrict
+    ) {
+      this.info.reds = this.getRed();
+    }
   }
 
   addObjectsToArray(validatorName: string, validatorId: number, parentArray: object[]) {

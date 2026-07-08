@@ -19,6 +19,7 @@ export enum TextureImageInfoGeneratorTest {
   pngJpgImageProcessingNoResults = 408,
   invalidTieringConfiguration = 409,
   invalidTieringForVibrantVisuals = 410,
+  individualTextureHighestResolutionMipExceedsFourMiB = 411,
 
   totalTextureMemoryExceedsBudgetErrorBase = 420,
   totalTextureMemoryExceedsBudgetWarningBase = 440,

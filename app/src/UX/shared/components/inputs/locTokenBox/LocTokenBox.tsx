@@ -19,7 +19,6 @@ export default class LocTokenBox extends Component<ILocTokenBoxProps, ILocTokenB
   constructor(props: ILocTokenBoxProps) {
     super(props);
 
-    this._handleClick = this._handleClick.bind(this);
     this._load = this._load.bind(this);
 
     this.state = {
@@ -52,23 +51,25 @@ export default class LocTokenBox extends Component<ILocTokenBoxProps, ILocTokenB
     this._isMountedInternal = false;
   }
 
-  _handleClick() {}
-
   render() {
     if (this.props === undefined) {
       return;
     }
 
+    // Display-only: LocTokenBox resolves a localization token and shows its
+    // value. It has no interactive behavior, so it must not expose a button
+    // role / tab stop — doing so makes screen readers announce a non-functional
+    // button (and is invalid when the value is rendered inside a heading).
     if (this.state && this.state.token) {
       return (
-        <span className="ltb-outer" onClick={this._handleClick} onKeyDown={(e: React.KeyboardEvent) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); this._handleClick(); } }} role="button" tabIndex={0}>
+        <span className="ltb-outer">
           <span className="ltb-title">{this.state.token.value}</span>
         </span>
       );
     }
 
     return (
-      <span className="ltb-outer" onClick={this._handleClick} onKeyDown={(e: React.KeyboardEvent) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); this._handleClick(); } }} role="button" tabIndex={0}>
+      <span className="ltb-outer">
         <span className="ltb-title">{this.props.value}</span>
       </span>
     );

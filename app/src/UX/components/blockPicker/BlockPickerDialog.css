@@ -15,7 +15,13 @@
   padding: 0 !important;
   display: flex;
   flex-direction: column;
-  min-height: 360px;
+  /* This is the dialog's scroll region (the MUI DialogContent). It must be able to
+     shrink below its content height so it fits a short/zoomed viewport and only the
+     inner grid scrolls. A hard min-height (e.g. 360px) overrides the flexbox
+     auto→0 min-size rule and, combined with max-height: 70vh, forces the content
+     taller than the dialog can show at 400% zoom (WCAG 1.4.10 Reflow). The block
+     grid still fills the dialog by default because it normally lists many blocks. */
+  min-height: 0;
   max-height: 70vh;
 }
 

@@ -34,3 +34,22 @@
 .lidz-drop-zone-icon {
   font-size: 16px;
 }
+
+/* ── Light theme overrides (body.ct-light) ──────────────────────────────────
+   Remap the dark-theme defaults so the drop zone's dashed border and prompt
+   text stay legible in Light Mode. */
+body.ct-light .lidz-drop-zone {
+  border-color: rgba(0, 0, 0, 0.2);
+  color: #5e5a55;
+}
+
+body.ct-light .lidz-drop-zone:hover {
+  border-color: rgba(0, 0, 0, 0.3);
+  color: #1a1918;
+}
+
+body.ct-light .lidz-drop-zone-active {
+  border-color: #2e7d32;
+  background: rgba(76, 175, 80, 0.12);
+  color: #2e7d32;
+}

@@ -299,8 +299,11 @@ function EntityWizardInner({
         stepContent = (
           <div className="cwiz-step-content">
             <div className="cwiz-field">
-              <label>{intl.formatMessage({ id: "wizard.health" }, { value: entityHealth })}</label>
+              <label id="cwiz-healthLabel">
+                {intl.formatMessage({ id: "wizard.health" }, { value: entityHealth })}
+              </label>
               <Slider
+                aria-labelledby="cwiz-healthLabel"
                 min={1}
                 max={100}
                 value={entityHealth}
@@ -309,8 +312,11 @@ function EntityWizardInner({
               />
             </div>
             <div className="cwiz-field">
-              <label>{intl.formatMessage({ id: "wizard.attack_damage" }, { value: entityDamage })}</label>
+              <label id="cwiz-attackDamageLabel">
+                {intl.formatMessage({ id: "wizard.attack_damage" }, { value: entityDamage })}
+              </label>
               <Slider
+                aria-labelledby="cwiz-attackDamageLabel"
                 min={0}
                 max={20}
                 value={entityDamage}
@@ -319,8 +325,11 @@ function EntityWizardInner({
               />
             </div>
             <div className="cwiz-field">
-              <label>{intl.formatMessage({ id: "wizard.movement_speed" }, { value: entitySpeed.toFixed(2) })}</label>
+              <label id="cwiz-movementSpeedLabel">
+                {intl.formatMessage({ id: "wizard.movement_speed" }, { value: entitySpeed.toFixed(2) })}
+              </label>
               <Slider
+                aria-labelledby="cwiz-movementSpeedLabel"
                 min={0.1}
                 max={1.0}
                 step={0.05}
@@ -338,9 +347,10 @@ function EntityWizardInner({
         stepContent = (
           <div className="cwiz-step-content">
             <div className="cwiz-field">
-              <label>{intl.formatMessage({ id: "wizard.body_type" })}</label>
+              <label id="cwiz-bodyTypeLabel">{intl.formatMessage({ id: "wizard.body_type" })}</label>
               <Select
                 fullWidth
+                SelectDisplayProps={{ "aria-labelledby": "cwiz-bodyTypeLabel" }}
                 value={entityBodyType}
                 onChange={(e) => {
                   setEntityBodyType(e.target.value as string);
@@ -362,13 +372,19 @@ function EntityWizardInner({
               </Select>
             </div>
             <div className="cwiz-field">
-              <label>{intl.formatMessage({ id: "wizard.primary_color" })}</label>
-              <input type="color" value={entityPrimaryColor} onChange={(e) => setEntityPrimaryColor(e.target.value)} />
-            </div>
-            <div className="cwiz-field">
-              <label>{intl.formatMessage({ id: "wizard.secondary_color" })}</label>
+              <label id="cwiz-primaryColorLabel">{intl.formatMessage({ id: "wizard.primary_color" })}</label>
               <input
                 type="color"
+                aria-labelledby="cwiz-primaryColorLabel"
+                value={entityPrimaryColor}
+                onChange={(e) => setEntityPrimaryColor(e.target.value)}
+              />
+            </div>
+            <div className="cwiz-field">
+              <label id="cwiz-secondaryColorLabel">{intl.formatMessage({ id: "wizard.secondary_color" })}</label>
+              <input
+                type="color"
+                aria-labelledby="cwiz-secondaryColorLabel"
                 value={entitySecondaryColor}
                 onChange={(e) => setEntitySecondaryColor(e.target.value)}
               />

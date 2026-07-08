@@ -840,7 +840,11 @@ class ProjectAddButton extends Component<IProjectAddButtonProps, IProjectAddButt
     }
 
     if (this.props.project) {
-      await this.props.project.save();
+      try {
+        await this.props.project.save();
+      } catch (e) {
+        Log.error("Failed to save project after adding a new block type: " + e);
+      }
     }
 
     // Find the newly created block type by comparing items before/after creation
@@ -893,7 +897,11 @@ class ProjectAddButton extends Component<IProjectAddButtonProps, IProjectAddButt
     }
 
     if (this.props.project) {
-      await this.props.project.save();
+      try {
+        await this.props.project.save();
+      } catch (e) {
+        Log.error("Failed to save project after adding a new entity type: " + e);
+      }
     }
 
     // Find the newly created entity type by comparing items before/after creation
@@ -941,7 +949,11 @@ class ProjectAddButton extends Component<IProjectAddButtonProps, IProjectAddButt
     }
 
     if (this.props.project) {
-      await this.props.project.save();
+      try {
+        await this.props.project.save();
+      } catch (e) {
+        Log.error("Failed to save project after adding a new item type: " + e);
+      }
     }
 
     // Find the newly created item type by comparing items before/after creation
@@ -1087,9 +1099,22 @@ class ProjectAddButton extends Component<IProjectAddButtonProps, IProjectAddButt
       }
     }
 
-    await this.props.project.save();
+    // Persist the new item. A save failure (e.g. a storage or connection error)
+    // must NOT abort this handler before the dialog is closed below — otherwise
+    // the item is created but its "add" dialog stays stuck open. Guard the save so
+    // we always fall through to closing the dialog.
+    try {
+      await this.props.project.save();
+    } catch (e) {
+      Log.error("Failed to save project after adding a new item: " + e);
+    }
 
-    this.props.project.processRelations(true);
+    // Rebuild the cross-item relationship graph in the background. This can be slow
+    // on large projects, so it is intentionally not awaited; the .catch keeps a
+    // failure from surfacing as an unhandled rejection.
+    this.props.project.processRelations(true).catch((e) => {
+      Log.error("Failed to process relations after adding a new item: " + e);
+    });
 
     // Ensure the item's category is expanded so it's visible
     this._ensureItemTypeExpanded(projectItem);

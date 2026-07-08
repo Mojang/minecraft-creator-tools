@@ -28,6 +28,7 @@
 import { Component } from "react";
 import { Button, ButtonBase, Dialog, DialogTitle, DialogContent, IconButton, TextField } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import SectionHeading from "../../shared/components/feedback/sectionHeading/SectionHeading";
 import { faTimes, faMagnifyingGlass, faPlus } from "@fortawesome/free-solid-svg-icons";
 import LookupUtilities from "../../../app/LookupUtilities";
 import BlockTypeUtilities from "../../../minecraft/BlockTypeUtilities";
@@ -253,14 +254,18 @@ export default class BlockPickerDialog extends Component<IBlockPickerDialogProps
 
           {projectOpts.length > 0 && (
             <>
-              <div className="bpd-sectionHeader">Project Blocks</div>
+              <SectionHeading level={2} className="bpd-sectionHeader">
+                Project Blocks
+              </SectionHeading>
               <div className="bpd-grid">{projectOpts.map((opt) => this._renderTile(opt))}</div>
             </>
           )}
 
           {vanillaOpts.length > 0 && (
             <>
-              <div className="bpd-sectionHeader">Vanilla Blocks</div>
+              <SectionHeading level={2} className="bpd-sectionHeader">
+                Vanilla Blocks
+              </SectionHeading>
               <div className="bpd-grid">{vanillaOpts.map((opt) => this._renderTile(opt))}</div>
             </>
           )}

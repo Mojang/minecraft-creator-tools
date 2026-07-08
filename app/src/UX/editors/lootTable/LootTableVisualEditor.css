@@ -85,3 +85,35 @@
 .ltve-error {
   margin: 12px;
 }
+
+/* ── Light theme overrides (body.ct-light) ──────────────────────────────────
+   Remap the dark-theme defaults so the Simple/Advanced sub-tabs, panel
+   dividers, and loading text stay legible in Light Mode. The tab bar would
+   otherwise inherit a mid-gray editor surface (~0.4 luminance) on which no
+   text clears 4.5:1, so give it an explicit light surface and use a darker
+   green for the active tab. */
+body.ct-light .ltve-tab-bar {
+  background: #e7e4e2;
+  border-bottom-color: rgba(0, 0, 0, 0.12);
+}
+
+body.ct-light .ltve-tab {
+  color: #46433f;
+}
+
+body.ct-light .ltve-tab:hover {
+  color: #1a1918;
+}
+
+body.ct-light .ltve-tab-active {
+  color: #1b5e20;
+  border-bottom-color: #2e7d32;
+}
+
+body.ct-light .ltve-picker-panel {
+  border-right-color: rgba(0, 0, 0, 0.1);
+}
+
+body.ct-light .ltve-loading {
+  color: #5e5a55;
+}

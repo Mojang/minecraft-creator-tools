@@ -101,6 +101,28 @@
   image-rendering: pixelated;
 }
 
+/* High-contrast / forced-colors mode: the selected-vs-unselected distinction
+   above is pure author color (green vs grey), which forced-colors strips —
+   leaving the active tab indistinguishable. Mark the selected tab with the
+   system Highlight pairing so it stays differentiable (MAS 4.3.1). Editor-header
+   tab bars layer a more specific rule of the same intent on top. */
+@media (forced-colors: active) {
+  .label-tab {
+    background-color: Highlight !important;
+    color: HighlightText !important;
+  }
+
+  /* The label text sits in a transparent .label-text span; in forced colors the UA
+     paints a Canvas backplate behind it, which with HighlightText (often white)
+     text becomes white-on-white. Give the span the Highlight surface and opt it
+     out of the backplate so the selected tab's label stays readable. */
+  .label-tab .label-text {
+    background-color: Highlight !important;
+    color: HighlightText !important;
+    forced-color-adjust: none;
+  }
+}
+
 /* Minecraft-styled tab — unselected (raised stone button) */
 .label-deseltab {
   padding-left: 10px;

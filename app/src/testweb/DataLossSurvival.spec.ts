@@ -47,6 +47,7 @@ import {
   clickTemplateCreateButton,
   preferBrowserStorageInProjectDialog,
   fillRequiredProjectDialogFields,
+  waitForMonacoEditor,
 } from "./WebTestUtilities";
 
 // ---------------------------------------------------------------------------
@@ -787,8 +788,10 @@ test.describe("Data-Loss Survival Tests @full", () => {
       return;
     }
 
+    // Monaco fetches its ~3.5MB bundle from /dist/vs and can take 10-25s on the dev
+    // server under contention; wait for it (DOM + API) before reading its model.
+    expect(await waitForMonacoEditor(page)).toBe(true);
     const monaco = page.locator(".monaco-editor").first();
-    await expect(monaco).toBeVisible({ timeout: 8000 });
 
     const original = await getMonacoContent(page);
     if (!original) {
@@ -830,7 +833,7 @@ test.describe("Data-Loss Survival Tests @full", () => {
     if (!reopenedDirty) {
       await openFileInMonaco(page, "manifest");
     }
-    await expect(monaco).toBeVisible({ timeout: 8000 });
+    expect(await waitForMonacoEditor(page)).toBe(true);
     await expect
       .poll(async () => (await getAllMonacoContentMatching(page, "manifest")).length, {
         timeout: 15000,
@@ -1102,8 +1105,10 @@ test.describe("Data-Loss Survival Tests @full", () => {
     await enableAllFileTypes(page).catch(() => {});
     await openFileInMonaco(page, "manifest");
 
+    // Monaco fetches its ~3.5MB bundle from /dist/vs and can take 10-25s on the dev
+    // server under contention; wait for it (DOM + API) before snapshotting models.
+    expect(await waitForMonacoEditor(page)).toBe(true);
     const monaco = page.locator(".monaco-editor").first();
-    await expect(monaco).toBeVisible({ timeout: 8000 });
 
     // Snapshot the content of EVERY manifest model in the project, keyed by
     // URI, so we can detect mutation of either the BP or RP manifest.
@@ -1132,7 +1137,7 @@ test.describe("Data-Loss Survival Tests @full", () => {
       await page.waitForTimeout(1500);
     }
     await openFileInMonaco(page, "manifest");
-    await expect(monaco).toBeVisible({ timeout: 8000 });
+    expect(await waitForMonacoEditor(page)).toBe(true);
     await page.waitForTimeout(1500);
 
     const afterSnapshot = await page.evaluate(() => {

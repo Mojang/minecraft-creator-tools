@@ -116,3 +116,42 @@
 .lee-done-btn:hover {
   background: rgba(76, 175, 80, 0.25);
 }
+
+/* ── Light theme overrides (body.ct-light) ──────────────────────────────────
+   Remap the dark-theme defaults so labels, inputs, selects, and hints in the
+   inline entry editor stay legible in Light Mode. */
+body.ct-light .lee-container {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.12);
+  border-left-color: #2e7d32;
+}
+
+body.ct-light .lee-label {
+  color: #5e5a55;
+}
+
+body.ct-light .lee-input {
+  background: #ffffff;
+  color: #1a1918;
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+body.ct-light .lee-select {
+  background: #ffffff;
+  color: #1a1918;
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+body.ct-light .lee-probability-hint {
+  color: #5e5a55;
+}
+
+body.ct-light .lee-quantity-separator {
+  color: #5e5a55;
+}
+
+body.ct-light .lee-done-btn {
+  border-color: rgba(46, 125, 50, 0.5);
+  background: rgba(76, 175, 80, 0.15);
+  color: #2e7d32;
+}

@@ -35,6 +35,7 @@ import {
   preferBrowserStorageInProjectDialog,
   clickTemplateCreateButton,
   getTemplateCard,
+  waitForMonacoEditor,
 } from "./WebTestUtilities";
 
 const SCREENSHOT_DIR = "debugoutput/screenshots/json-enhancements";
@@ -51,6 +52,10 @@ test.describe("JSON Editor Enhancements @full", () => {
   const consoleWarnings: { url: string; error: string }[] = [];
 
   test.beforeEach(async ({ page }) => {
+    // Monaco @full tests pay the editor cold-load cost (enterEditor ~40-50s on the
+    // Vite dev server) plus Monaco load, file open, and raw-mode switch. That can
+    // exceed the default budget under parallel-worker contention, so give them more.
+    test.setTimeout(180000);
     page.on("console", (msg: ConsoleMessage) => {
       processMessage(msg, page, consoleErrors, consoleWarnings);
     });
@@ -105,9 +110,10 @@ test.describe("JSON Editor Enhancements @full", () => {
 
       await takeScreenshot(page, `${SCREENSHOT_DIR}/03-main-opened`);
 
-      // Verify Monaco editor is visible for TypeScript file
-      const monacoEditor = page.locator(".monaco-editor").first();
-      await expect(monacoEditor).toBeVisible({ timeout: 5000 });
+      // Verify Monaco loads for the TypeScript file. Monaco fetches its ~3.5MB
+      // bundle from /dist/vs and can take 10-25s on the dev server under contention
+      // (a "Loading code editor..." placeholder shows until then).
+      expect(await waitForMonacoEditor(page), "Monaco editor should load for main.ts").toBe(true);
 
       console.log("Successfully loaded Monaco editor for main.ts");
     } else {
@@ -133,18 +139,15 @@ test.describe("JSON Editor Enhancements @full", () => {
       return;
     }
 
-    // Wait for Monaco editor and form definitions to load asynchronously.
-    // The hover provider needs FormDefinitionCache to be populated.
-    await page.waitForTimeout(3000);
-
-    // Find the Monaco editor
-    const editor = page.locator(".monaco-editor").first();
-    const editorVisible = await editor.isVisible({ timeout: 5000 }).catch(() => false);
-
-    if (!editorVisible) {
+    // Wait for Monaco to finish loading (its ~3.5MB bundle from /dist/vs can take
+    // 10-25s on the dev server under contention) before driving its hover provider.
+    if (!(await waitForMonacoEditor(page))) {
       await switchToRawMode(page);
-      await page.waitForTimeout(1000);
+      await waitForMonacoEditor(page);
     }
+
+    // Give the hover provider time to populate FormDefinitionCache.
+    await page.waitForTimeout(3000);
 
     // Find a JSON key INSIDE the "header" object (e.g., "name", "description")
     // where form field definitions provide hover documentation.
@@ -274,17 +277,12 @@ test.describe("JSON Editor Enhancements @full", () => {
       return;
     }
 
-    // Wait for Monaco editor and form definitions to load asynchronously.
-    await page.waitForTimeout(3000);
-
-    // Ensure Monaco is visible
-    let monacoEditor = page.locator(".monaco-editor").first();
-    let editorVisible = await monacoEditor.isVisible({ timeout: 3000 }).catch(() => false);
-
+    // Wait for Monaco to finish loading (its ~3.5MB bundle from /dist/vs can take
+    // 10-25s on the dev server under contention) before triggering autocomplete.
+    let editorVisible = await waitForMonacoEditor(page);
     if (!editorVisible) {
       await switchToRawMode(page);
-      await page.waitForTimeout(1000);
-      editorVisible = await monacoEditor.isVisible({ timeout: 3000 }).catch(() => false);
+      editorVisible = await waitForMonacoEditor(page);
     }
 
     if (!editorVisible) {

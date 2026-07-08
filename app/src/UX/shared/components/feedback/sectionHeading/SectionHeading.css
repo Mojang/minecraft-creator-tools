@@ -1,0 +1,10 @@
+/* Base reset for the reusable SectionHeading. Wrapped in :where() so it has ZERO
+   specificity — it only strips the browser's default heading margin/size/weight
+   so a styled <div> can be swapped for a real <h1>–<h6> with no visual change.
+   The call site's own class (font size/weight/color, and any margin it sets)
+   always wins, regardless of stylesheet order. */
+:where(.msh-sectionHeading) {
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+}

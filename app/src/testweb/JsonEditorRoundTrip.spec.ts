@@ -18,6 +18,7 @@ import {
   openFileInMonaco,
   takeScreenshot,
   switchToRawMode,
+  waitForMonacoEditor,
 } from "./WebTestUtilities";
 
 /**
@@ -122,7 +123,9 @@ test.describe("JSON Editor Round-Trip Tests @full", () => {
   // Test 1 – manifest JSON round-trip through raw editing
   // -----------------------------------------------------------------------
   test("manifest JSON round-trip through raw editing @full", async ({ page }) => {
-    test.setTimeout(90000);
+    // enterEditor cold load (~40-50s on the Vite dev server) plus Monaco load and
+    // round-trip editing can exceed a shorter budget under worker contention.
+    test.setTimeout(180000);
 
     const entered = await enterEditor(page, { editMode: "raw" });
     expect(entered).toBe(true);
@@ -133,8 +136,10 @@ test.describe("JSON Editor Round-Trip Tests @full", () => {
     const opened = await openFileInMonaco(page, "manifest");
     expect(opened).toBe(true);
 
+    // Monaco fetches its ~3.5MB bundle from /dist/vs and can take 10-25s on the dev
+    // server under contention; wait for it to be ready before round-tripping content.
+    expect(await waitForMonacoEditor(page), "Monaco editor should load for manifest").toBe(true);
     const monacoEditor = page.locator(".monaco-editor").first();
-    await expect(monacoEditor).toBeVisible({ timeout: 5000 });
 
     await takeScreenshot(page, "debugoutput/screenshots/jrt-manifest-01-opened");
 

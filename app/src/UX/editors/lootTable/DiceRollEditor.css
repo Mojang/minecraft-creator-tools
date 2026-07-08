@@ -29,7 +29,7 @@
 .dre-explanation {
   font-size: 12px;
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.65);
+  color: rgba(255, 255, 255, 0.78);
   padding: 6px 10px;
   border-radius: 3px;
   background: rgba(255, 255, 255, 0.03);
@@ -157,4 +157,81 @@
   font-size: 10px;
   color: rgba(255, 255, 255, 0.35);
   font-style: italic;
+}
+
+/* ── Light theme overrides (body.ct-light) ──────────────────────────────────
+   Default colors above target the dark theme (white text on dark surfaces).
+   In Light Mode they would paint near-white text on a light surface; remap
+   text, surfaces, inputs, and borders so the roll editor stays legible. */
+body.ct-light .dre-container {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+body.ct-light .dre-header {
+  color: #1a1918;
+}
+
+body.ct-light .dre-header-icon {
+  color: #2e7d32;
+}
+
+body.ct-light .dre-explanation {
+  color: #46433f;
+  background: rgba(0, 0, 0, 0.03);
+  border-left-color: #2e7d32;
+}
+
+body.ct-light .dre-explanation-highlight {
+  color: #2e7d32;
+}
+
+body.ct-light .dre-mode-toggle {
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+body.ct-light .dre-mode-btn {
+  background: rgba(0, 0, 0, 0.04);
+  color: #46433f;
+}
+
+body.ct-light .dre-mode-btn:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+body.ct-light .dre-mode-btn-active {
+  background: rgba(76, 175, 80, 0.18);
+  color: #2e7d32;
+}
+
+body.ct-light .dre-input-label {
+  color: #5e5a55;
+}
+
+body.ct-light .dre-input {
+  background: #ffffff;
+  color: #1a1918;
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+body.ct-light .dre-range-separator {
+  color: #5e5a55;
+}
+
+body.ct-light .dre-bonus-section {
+  border-top-color: rgba(0, 0, 0, 0.08);
+}
+
+body.ct-light .dre-bonus-label {
+  color: #5e5a55;
+}
+
+body.ct-light .dre-bonus-input {
+  background: #ffffff;
+  color: #1a1918;
+  border-color: rgba(0, 0, 0, 0.18);
+}
+
+body.ct-light .dre-bonus-tooltip {
+  color: #5e5a55;
 }

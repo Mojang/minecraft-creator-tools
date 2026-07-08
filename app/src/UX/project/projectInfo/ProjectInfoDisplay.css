@@ -392,12 +392,18 @@ body.ct-light .pid-hiddenButton:focus {
 }
 
 /* ---- Area Headers ---- */
+/* Rendered as <h2> (card section header) or <h3> (nested sub-header) for
+   semantic structure (heading navigation, WCAG 1.3.1). margin and font-weight
+   are set explicitly so the native heading defaults (top margin, bold weight)
+   don't alter the styled appearance — matching the .pid-heroTitle / .pid-title
+   heading convention in this file. */
 .pis-areaHeader {
   font-family: "Minecrafter", "Noto Sans", sans-serif;
   font-size: 16px;
+  font-weight: normal;
   padding-top: 20px;
   padding-bottom: 12px;
-  margin-bottom: 8px;
+  margin: 0 0 8px 0;
   border-bottom: 2px solid #52a535;
   display: flex;
   align-items: center;
@@ -414,11 +420,15 @@ body.ct-light .pid-hiddenButton:focus {
 }
 
 /* ---- Content Summary Grid ---- */
+/* Rendered as <h2> for semantic structure (heading navigation, WCAG 1.3.1).
+   margin and font-weight are set explicitly so the native heading defaults
+   (bottom margin, bold weight) don't alter the styled appearance. */
 .pis-contentSummaryHeader {
   font-family: "Minecrafter", "Noto Sans", sans-serif;
   font-size: 16px;
+  font-weight: normal;
   padding: 16px 0 12px 0;
-  margin-top: 24px;
+  margin: 24px 0 0 0;
   border-bottom: 2px solid #52a535;
   display: flex;
   align-items: center;

@@ -15,8 +15,9 @@ import ICommandOptions from "../../../actions/ICommandOptions";
 import Project from "../../../app/Project";
 import Action from "../../../actions/Action";
 import IProjectTheme from "../../types/IProjectTheme";
+import { withLocalization, WithLocalizationProps } from "../../withLocalization";
 
-interface IWorldTestAreaEditorProps {
+interface IWorldTestAreaEditorProps extends WithLocalizationProps {
   area: WorldTestArea;
   creatorTools: CreatorTools;
   objectKey: string;
@@ -31,7 +32,7 @@ interface IWorldTestAreaEditorState {
   selectedScriptIndex: number | undefined;
 }
 
-export default class WorldTestAreaEditor extends Component<IWorldTestAreaEditorProps, IWorldTestAreaEditorState> {
+class WorldTestAreaEditor extends Component<IWorldTestAreaEditorProps, IWorldTestAreaEditorState> {
   private _commandsToRun: string[] = [];
   private _commandIndex = 0;
 
@@ -186,6 +187,9 @@ export default class WorldTestAreaEditor extends Component<IWorldTestAreaEditorP
       scriptDropdown = (
         <FormControl size="small" sx={{ minWidth: 200 }}>
           <Select
+            // MUI drops a top-level aria-label on the role="combobox" element; the accessible
+            // name must be supplied via SelectDisplayProps. No visible label exists here. (WCAG 4.1.2)
+            SelectDisplayProps={{ "aria-label": this.props.intl.formatMessage({ id: "project_editor.world_test.select_script_aria" }) }}
             value={selectedScript}
             disabled={worldTestArea.scripts.length === 0}
             displayEmpty
@@ -262,7 +266,12 @@ export default class WorldTestAreaEditor extends Component<IWorldTestAreaEditorP
           <div className="wtae-actionsAreaDropdown">{scriptDropdown}</div>
           <div className="wtae-actionsAreaToolbar">
             <Stack direction="row" spacing={1} aria-label="World test area actions">
-              <IconButton onClick={this._addScriptClick} title="Add a new script" aria-label="Add a new script" size="small">
+              <IconButton
+                onClick={this._addScriptClick}
+                title={this.props.intl.formatMessage({ id: "project_editor.world_test.add_script_aria" })}
+                aria-label={this.props.intl.formatMessage({ id: "project_editor.world_test.add_script_aria" })}
+                size="small"
+              >
                 <FontAwesomeIcon icon={faPlusCircle} className="fa-lg" />
               </IconButton>
               <IconButton onClick={this._runSimulation} title="Run simulation" aria-label="Run simulation" size="small">
@@ -277,3 +286,5 @@ export default class WorldTestAreaEditor extends Component<IWorldTestAreaEditorP
     );
   }
 }
+
+export default withLocalization(WorldTestAreaEditor);

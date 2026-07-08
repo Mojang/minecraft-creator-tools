@@ -9,9 +9,12 @@ export default defineConfig({
   // Warm up Vite dev server before running tests — prevents cold-start timeouts
   globalSetup: "./src/testweb/globalSetup.ts",
 
-  // Default test timeout — 60s accommodates enterEditor() waits and UI interactions.
-  // Individual tests that need more time can override with test.setTimeout().
-  timeout: 60000,
+  // Default test timeout. The Vite dev server serves the app as ~1300 unbundled
+  // ESM modules on demand, so a cold page load in a fresh browser context can take
+  // 30-60s under parallel-worker contention (see globalSetup.ts). 90s gives a
+  // lightweight test enough budget for a slow enterEditor() navigation plus its UI
+  // work. Individual heavier tests still override with test.setTimeout().
+  timeout: 90000,
 
   // Exclude ServerUI tests - they require a running MCT server and have their own config
   // Run ServerUI tests separately with: npm run test-server-ui
@@ -37,6 +40,14 @@ export default defineConfig({
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL: "http://localhost:3000",
+
+    // Page navigations (page.goto / waitForLoadState) default to a 30s timeout in
+    // Playwright. That is too tight for this app's Vite dev cold load — the home
+    // page eagerly pulls the full editor + Minecraft definition module graph
+    // (~1300 requests), which routinely exceeds 30s under 4-worker contention and
+    // makes enterEditor()'s `page.goto("/", { waitUntil: "load" })` throw. 90s lets
+    // those legitimate-but-slow loads complete instead of failing the whole suite.
+    navigationTimeout: 90000,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",

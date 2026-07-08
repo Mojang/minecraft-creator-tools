@@ -222,6 +222,23 @@ async function collectAllUnlocalized(page: Page): Promise<UnlocalizedString[]> {
   return [...textResults, ...attrResults];
 }
 
+/**
+ * Fill the required "Creator Name" field in the New Project dialog.
+ *
+ * The creation dialog pre-fills Title and Description but intentionally leaves
+ * Creator Name empty and marks it required. Submitting without a value triggers
+ * native "Please fill out this field" validation and keeps the modal open, which
+ * later blocks any click that lands behind the modal backdrop. Tests that need to
+ * reach the editor must populate this field first. It renders as an MUI TextField
+ * with id/name "creator".
+ */
+async function fillCreatorName(page: Page, value = "Test Creator"): Promise<void> {
+  const creatorInput = page.locator("#creator");
+  if (await creatorInput.isVisible({ timeout: 3000 }).catch(() => false)) {
+    await creatorInput.fill(value);
+  }
+}
+
 // ── Test suite ──
 
 test.describe("Pseudo-Locale Coverage @locale", () => {
@@ -283,6 +300,9 @@ test.describe("Pseudo-Locale Coverage @locale", () => {
     }
 
     await page.waitForTimeout(1500);
+
+    // Creator Name is required and not pre-filled, so populate it before submitting.
+    await fillCreatorName(page);
 
     // Click Create Project (or its pseudo-localized variant)
     const createButton = page.getByTestId("submit-button");
@@ -439,6 +459,9 @@ test.describe("Pseudo-Locale Coverage @locale", () => {
     }
 
     await page.waitForTimeout(1500);
+
+    // Creator Name is required and not pre-filled, so populate it before submitting.
+    await fillCreatorName(page);
 
     const createButton = page.getByTestId("submit-button");
     if (await createButton.isVisible({ timeout: 3000 }).catch(() => false)) {

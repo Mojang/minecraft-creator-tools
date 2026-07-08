@@ -427,6 +427,8 @@ export default class VolumeEditor extends Component<IVolumeEditorProps, IVolumeE
   private _engine: BABYLON.Engine | null = null;
   private _scene: BABYLON.Scene | null = null;
   private _camera: BABYLON.FreeCamera | null = null;
+  /** Center the model-preview camera orbits/zooms around (set in resetCamera). */
+  private _modelTarget: BABYLON.Vector3 | null = null;
   private _meshes: { [id: string]: BABYLON.Mesh | undefined } = {};
   private _selectionPlaceholderMesh: BABYLON.Mesh | undefined;
   private _uiTexture: GUI.AdvancedDynamicTexture | undefined;
@@ -622,6 +624,59 @@ export default class VolumeEditor extends Component<IVolumeEditorProps, IVolumeE
 
     if (this.props.viewMode === VolumeEditorViewMode.SingleBlock) {
       return;
+    }
+
+    // Model-preview mode is a keyboard-operable 3D viewer: while the canvas holds
+    // focus, arrow keys orbit the model and +/- dolly the camera — the keyboard
+    // equivalents of mouse drag-to-rotate and scroll-to-zoom (WCAG 2.1.1). Gate
+    // on canvas focus so these keys don't capture arrow navigation elsewhere.
+    if (this.props.viewMode === VolumeEditorViewMode.ModelPreview) {
+      if (document.activeElement !== this._canvas) {
+        return;
+      }
+
+      // The canvas is a single composite control, not a focus trap: Tab /
+      // Shift+Tab must move focus OUT of it (WCAG 2.1.2 No Keyboard Trap).
+      // Babylon's camera input is attached to the canvas and swallows the Tab
+      // keydown, so move focus to the adjacent tab stop ourselves.
+      if (event.key === "Tab") {
+        this._focusAdjacentTabStop(event.shiftKey);
+        event.preventDefault();
+        return;
+      }
+
+      const orbitStep = event.shiftKey ? 0.26 : 0.13;
+
+      switch (event.key) {
+        case "ArrowLeft":
+          this._orbitCamera(-orbitStep, 0);
+          event.preventDefault();
+          return;
+        case "ArrowRight":
+          this._orbitCamera(orbitStep, 0);
+          event.preventDefault();
+          return;
+        case "ArrowUp":
+          this._orbitCamera(0, -orbitStep);
+          event.preventDefault();
+          return;
+        case "ArrowDown":
+          this._orbitCamera(0, orbitStep);
+          event.preventDefault();
+          return;
+        case "+":
+        case "=":
+          this._dollyCamera(-1);
+          event.preventDefault();
+          return;
+        case "-":
+        case "_":
+          this._dollyCamera(1);
+          event.preventDefault();
+          return;
+        default:
+          return;
+      }
     }
 
     // Handle Ctrl+D for Deselect (Minecraft Editor convention)
@@ -1966,7 +2021,28 @@ export default class VolumeEditor extends Component<IVolumeEditorProps, IVolumeE
         this._canvas = document.createElement("canvas") as HTMLCanvasElement;
         this._canvas.addEventListener("click", this._handleCanvasClick);
         this._canvas.setAttribute("data-testid", "mob-viewer-canvas");
-        this._canvas.setAttribute("aria-label", "3D model preview of entity");
+        // Make the 3D viewer focusable and keyboard-operable. Babylon would
+        // otherwise leave the canvas with a positive tabindex; force tabindex 0
+        // so it sits in normal document order, and (in model-preview mode) spell
+        // out the keyboard controls so the rotate/zoom affordances are not
+        // mouse-only (WCAG 2.1.1). The matching key handling lives in
+        // _handleKeyDown / _orbitCamera / _dollyCamera.
+        this._canvas.setAttribute("tabindex", "0");
+        // Name the canvas for its actual view mode. This same component also backs
+        // the structure and world editors (viewMode Structure), so a blanket
+        // "3D model preview of entity" label would mislead screen-reader users in
+        // those views (WCAG 1.3.1 / 4.1.2). Only model-preview mode is a keyboard
+        // orbit/zoom viewer, so only it spells out the arrow/+/- controls.
+        let canvasAriaLabel: string;
+        if (this.props.viewMode === VolumeEditorViewMode.ModelPreview) {
+          canvasAriaLabel =
+            "3D model preview of entity. Use the arrow keys to rotate and the plus and minus keys to zoom.";
+        } else if (this.props.viewMode === VolumeEditorViewMode.SingleBlock) {
+          canvasAriaLabel = "3D block preview";
+        } else {
+          canvasAriaLabel = "3D structure editor";
+        }
+        this._canvas.setAttribute("aria-label", canvasAriaLabel);
 
         this._applyCanvasProps();
       } else if (this._canvasOuterDiv != null) {
@@ -2216,6 +2292,12 @@ export default class VolumeEditor extends Component<IVolumeEditorProps, IVolumeE
 
       // This attaches the camera to the canvas
       this._camera.attachControl(this._canvas, true);
+
+      // Babylon's input attach sets a positive tabindex on the canvas; normalize
+      // it back to 0 so the viewer keeps a sane position in the tab order.
+      if (this._canvas) {
+        this._canvas.tabIndex = 0;
+      }
     }
 
     // Use shared lighting pipeline (hemispheric ambient + directional sun)
@@ -2429,6 +2511,7 @@ export default class VolumeEditor extends Component<IVolumeEditorProps, IVolumeE
       }
 
       this._camera.position = new BABYLON.Vector3(this.props.cameraX, this.props.cameraY, this.props.cameraZ);
+      this._modelTarget = new BABYLON.Vector3(targetX, targetY, targetZ);
       this._camera.setTarget(new BABYLON.Vector3(targetX, targetY, targetZ));
 
       // Save last camera position for change detection
@@ -2501,12 +2584,104 @@ export default class VolumeEditor extends Component<IVolumeEditorProps, IVolumeE
       );
 
       // Look at the entity's center mass
+      this._modelTarget = new BABYLON.Vector3(targetX, targetY, targetZ);
       this._camera.setTarget(new BABYLON.Vector3(targetX, targetY, targetZ));
     } else {
       this._camera.position = new BABYLON.Vector3((-maxX * 3) / 4, maxY + (maxY * 3) / 4, (-maxZ * 3) / 4);
 
       this._camera.setTarget(new BABYLON.Vector3((maxX * 7) / 16, (maxY * 7) / 16, (maxZ * 7) / 16));
     }
+  }
+
+  /**
+   * Moves keyboard focus to the focusable element immediately before/after the
+   * 3D canvas in document order, so Tab / Shift+Tab are never trapped on the
+   * canvas (WCAG 2.1.2). Babylon attaches its camera input to the canvas and
+   * would otherwise consume the Tab keydown, leaving focus stuck on the viewer.
+   */
+  private _focusAdjacentTabStop(backwards: boolean) {
+    if (!this._canvas) {
+      return;
+    }
+
+    const selector =
+      "a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), " +
+      'textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+    const focusables = Array.from(document.querySelectorAll<HTMLElement>(selector)).filter((el) => {
+      if (el.tabIndex < 0) {
+        return false;
+      }
+      const rect = el.getBoundingClientRect();
+      return rect.width > 0 && rect.height > 0;
+    });
+
+    const index = focusables.indexOf(this._canvas);
+    if (index === -1) {
+      return;
+    }
+
+    const target = focusables[backwards ? index - 1 : index + 1];
+    if (target) {
+      target.focus();
+    }
+  }
+
+  /**
+   * Orbits the model-preview camera around the model center. deltaYaw rotates
+   * around world up (left/right); deltaPitch tilts (up/down), clamped so the view
+   * never tumbles over the poles. Re-targets after each move so the model stays
+   * centered — the keyboard counterpart of mouse drag-to-rotate.
+   */
+  private _orbitCamera(deltaYaw: number, deltaPitch: number) {
+    if (this._camera === null) {
+      return;
+    }
+
+    const target = this._modelTarget ?? this._camera.getTarget();
+    let offset = this._camera.position.subtract(target);
+
+    if (deltaYaw !== 0) {
+      offset = BABYLON.Vector3.TransformCoordinates(offset, BABYLON.Matrix.RotationY(deltaYaw));
+    }
+
+    if (deltaPitch !== 0) {
+      const right = BABYLON.Vector3.Cross(BABYLON.Axis.Y, offset);
+      if (right.lengthSquared() > 1e-6) {
+        right.normalize();
+        const rotated = BABYLON.Vector3.TransformCoordinates(offset, BABYLON.Matrix.RotationAxis(right, deltaPitch));
+        // Don't let the view tumble over the top/bottom poles.
+        const cosToUp = BABYLON.Vector3.Dot(BABYLON.Vector3.Normalize(rotated), BABYLON.Axis.Y);
+        if (Math.abs(cosToUp) < 0.985) {
+          offset = rotated;
+        }
+      }
+    }
+
+    this._camera.position = target.add(offset);
+    this._camera.setTarget(target);
+  }
+
+  /**
+   * Dollies (zooms) the model-preview camera toward (direction < 0) or away from
+   * (direction > 0) the model, clamped to a sensible range — the keyboard
+   * counterpart of scroll-to-zoom.
+   */
+  private _dollyCamera(direction: number) {
+    if (this._camera === null) {
+      return;
+    }
+
+    const target = this._modelTarget ?? this._camera.getTarget();
+    const offset = this._camera.position.subtract(target);
+    const distance = offset.length();
+    if (distance < 1e-4) {
+      return;
+    }
+
+    const newDistance = Math.min(Math.max(distance * (1 + direction * 0.12), 1.5), distance * 4 + 50);
+    this._camera.position = target.add(offset.scale(newDistance / distance));
+    this._camera.setTarget(target);
   }
 
   _handleBlockPointerOver(event: BABYLON.ActionEvent) {
@@ -5539,7 +5714,13 @@ export default class VolumeEditor extends Component<IVolumeEditorProps, IVolumeE
         {/* Main content area */}
         <div className={`ve-main-area ${showRightPanel ? "ve-with-panels" : ""}`}>
           {/* 3D Canvas */}
-          <div className="ve-canvas-wrapper" ref={(c: HTMLDivElement) => this._setCanvasOuter(c)} />
+          <div
+            className={
+              "ve-canvas-wrapper" +
+              (this.props.viewMode === VolumeEditorViewMode.ModelPreview ? " ve-canvas-wrapper--preview" : "")
+            }
+            ref={(c: HTMLDivElement) => this._setCanvasOuter(c)}
+          />
 
           {/* Overlays for Structure mode only (when chrome is visible) */}
           {isStructureMode && !hideChrome && (

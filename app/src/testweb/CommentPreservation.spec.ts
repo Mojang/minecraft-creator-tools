@@ -681,6 +681,10 @@ test.describe("Monaco JSONC Editor Behavior @full", () => {
   const consoleWarnings: { url: string; error: string }[] = [];
 
   test.beforeEach(async ({ page }) => {
+    // Monaco @full tests pay the editor cold-load cost (enterEditor ~40-50s on the
+    // Vite dev server) plus Monaco load, file open, and typing. That can exceed the
+    // default budget under parallel-worker contention, so give them more.
+    test.setTimeout(180000);
     consoleErrors.length = 0;
     consoleWarnings.length = 0;
 
@@ -757,8 +761,6 @@ test.describe("Monaco JSONC Editor Behavior @full", () => {
   });
 
   test("should syntax-highlight comments in Monaco editor", async ({ page }) => {
-    test.setTimeout(90000);
-
     // This test verifies that comments get syntax highlighting (not plain text).
 
     // Step 1: Enter editor in raw mode and open manifest

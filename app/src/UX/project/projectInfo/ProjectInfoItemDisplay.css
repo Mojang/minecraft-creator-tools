@@ -183,6 +183,15 @@
   cursor: pointer;
   font-family: "Consolas", "Monaco", monospace;
   font-size: 12px;
+  /* The path link is a real <button> (so it is keyboard reachable without
+     making the whole <tr> an interactive element). Constrain and truncate it so
+     it behaves like the inline text it replaced inside the ellipsizing cell. */
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: bottom;
   /* No opacity dimming: non-banded rows are transparent and sit on the darker
      panel background (gray3 in light mode), where dimming the path text toward
      the background drops it below 4.5:1 (WCAG 1.4.3). */
@@ -191,6 +200,11 @@
 .piid-locationLink:hover {
   text-decoration: underline;
   color: #52a535;
+}
+
+.piid-locationLink:focus-visible {
+  outline: 2px solid rgba(82, 165, 53, 0.8);
+  outline-offset: 2px;
 }
 
 /* Actions cell */

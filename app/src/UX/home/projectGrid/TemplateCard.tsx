@@ -73,7 +73,7 @@ export default function TemplateCard({ template, onNewProject }: TemplateCardPro
       : "./res/images/templates/redflower_darkbg.png"
   );
   const baseDescription = template.descriptionKey
-    ? intl.formatMessage({ id: template.descriptionKey })
+    ? intl.formatMessage({ id: template.descriptionKey, defaultMessage: template.description })
     : template.description;
   const templateDescription = beginnerTemplateIds.includes(template.id)
     ? intl.formatMessage({ id: `home.template.desc_${template.id}` })
@@ -170,7 +170,9 @@ export default function TemplateCard({ template, onNewProject }: TemplateCardPro
                   borderRadius: "2px",
                 }}
               >
-                {template.titleKey ? intl.formatMessage({ id: template.titleKey }) : template.title}
+                {template.titleKey
+                  ? intl.formatMessage({ id: template.titleKey, defaultMessage: template.title })
+                  : template.title}
               </Typography>
               <Box sx={{ display: "flex", flexDirection: "row", flexWrap: "wrap", gap: "4px" }}>
                 {template.difficulty === "beginner" && (

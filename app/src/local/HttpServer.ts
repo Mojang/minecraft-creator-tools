@@ -143,6 +143,7 @@ import * as crypto from "crypto";
 import { IAuthenticationToken, ServerPermissionLevel } from "./IAuthenticationToken";
 import Log from "../core/Log";
 import ZipStorage from "../storage/ZipStorage";
+import ZipImportError from "../storage/ZipImportError";
 import CreatorTools from "../app/CreatorTools";
 import CreatorToolsHost from "../app/CreatorToolsHost";
 import { ISlotConfig } from "../app/CreatorToolsAuthentication";
@@ -2289,6 +2290,11 @@ export default class HttpServer {
               try {
                 await zipStorage.loadFromUint8Array(contentUint);
               } catch (e) {
+                if (ZipImportError.is(e)) {
+                  this.sendZipImportError(e, req, res);
+                  return;
+                }
+
                 this.sendErrorRequest(400, "Error processing passed-in validation package.", req, res);
                 return;
               }
@@ -3347,6 +3353,36 @@ export default class HttpServer {
     });
   }
 
+  /**
+   * Surfaces a structured zip-import failure (e.g. Content/ over the 500 MiB limit, or the
+   * package over the 2 GiB unzip safety ceiling) to the caller as a JSON body carrying a
+   * stable `code` and a specific `message`, using the status code the error recommends. This
+   * keeps these cases from collapsing into a single generic "Error processing..." string so
+   * downstream callers can react to the specific failure.
+   */
+  sendZipImportError(error: ZipImportError, req: http.IncomingMessage, res: http.ServerResponse) {
+    Log.message(
+      HttpUtilities.getShortReqDescription(req) + "Zip import error (" + error.code + "): " + error.message
+    );
+
+    if (!res.headersSent) {
+      const corsHeaders = this.getCorsHeaders(req);
+      res.writeHead(error.statusCode, { ...corsHeaders, "Content-Type": "application/json" });
+    }
+
+    res.end(
+      JSON.stringify({
+        error: error.message,
+        code: error.code,
+        message: error.message,
+      })
+    );
+
+    if (this._serverManager.runOnce) {
+      this._serverManager.shutdown("Shutting down due to completion of one validation operation in runOnce mode.");
+    }
+  }
+
   sendErrorRequest(statusCode: number, message: string, req: http.IncomingMessage, res: http.ServerResponse) {
     Log.message(HttpUtilities.getShortReqDescription(req) + "Error request: " + message);
     if (!res.headersSent) {
@@ -3611,6 +3647,12 @@ export default class HttpServer {
         await zipStorage.loadFromUint8Array(contentUint);
       } catch (e) {
         Log.debug("Failed to load zip from upload: " + e);
+
+        if (ZipImportError.is(e)) {
+          this.sendZipImportError(e, req, res);
+          return;
+        }
+
         res.writeHead(400, corsHeaders);
         res.end();
         return;

@@ -63,10 +63,7 @@ interface IEntityTypeOverviewPanelState {
   hideWhatsNext: boolean;
 }
 
-class EntityTypeOverviewPanel extends Component<
-  IEntityTypeOverviewPanelProps,
-  IEntityTypeOverviewPanelState
-> {
+class EntityTypeOverviewPanel extends Component<IEntityTypeOverviewPanelProps, IEntityTypeOverviewPanelState> {
   constructor(props: IEntityTypeOverviewPanelProps) {
     super(props);
 
@@ -350,22 +347,29 @@ class EntityTypeOverviewPanel extends Component<
   _renderComponentGroup(group: IComponentGroupSummary) {
     return (
       <div key={group.groupId} className="etop-componentGroupSection">
-        <div
-          className="etop-groupHeader"
-          onClick={() => this._handleGroupClick(group.groupId)}
-          onKeyDown={(e: React.KeyboardEvent) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              this._handleGroupClick(group.groupId);
-            }
-          }}
-          role="button"
-          tabIndex={0}
-          title={this.props.intl.formatMessage({ id: "project_editor.entity_overview.states_tooltip" })}
-        >
-          <span className="etop-groupName">{group.displayName}</span>
-          <span className="etop-groupLink" title={this.props.intl.formatMessage({ id: "project_editor.entity_overview.edit_state_tooltip" })}>{this.props.intl.formatMessage({ id: "project_editor.entity_overview.edit_state" })}</span>
-        </div>
+        <h3 className="etop-groupHeading">
+          <div
+            className="etop-groupHeader"
+            onClick={() => this._handleGroupClick(group.groupId)}
+            onKeyDown={(e: React.KeyboardEvent) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                this._handleGroupClick(group.groupId);
+              }
+            }}
+            role="button"
+            tabIndex={0}
+            title={this.props.intl.formatMessage({ id: "project_editor.entity_overview.states_tooltip" })}
+          >
+            <span className="etop-groupName">{group.displayName}</span>
+            <span
+              className="etop-groupLink"
+              title={this.props.intl.formatMessage({ id: "project_editor.entity_overview.edit_state_tooltip" })}
+            >
+              {this.props.intl.formatMessage({ id: "project_editor.entity_overview.edit_state" })}
+            </span>
+          </div>
+        </h3>
         {this._renderComponentList(group.components, group.groupId)}
       </div>
     );
@@ -423,88 +427,111 @@ class EntityTypeOverviewPanel extends Component<
         }
       >
         <div className="etop-modelSection">
-          <EditorContentPanel theme={this.props.theme} variant="raised" header={this.props.intl.formatMessage({ id: "project_editor.entity_overview.model_preview" })}>
-            <div className="etop-modelViewer" role="img" aria-label={this.props.intl.formatMessage({ id: "project_editor.entity_overview.model_aria" })}>
-              {modelViewerContent}
+          <EditorContentPanel
+            theme={this.props.theme}
+            variant="raised"
+            header={this.props.intl.formatMessage({ id: "project_editor.entity_overview.model_preview" })}
+          >
+            {/* No role="img" wrapper here: the 3D preview is an interactive,
+                keyboard-operable canvas that carries its own tabindex and a
+                descriptive aria-label (with the rotate/zoom key hints). A wrapping
+                role="img" treats the subtree as a single static image and prunes
+                that focusable canvas from the accessibility tree, hiding the
+                control from assistive technology and keyboard users (WCAG 2.1.1). */}
+            <div className="etop-modelViewer">{modelViewerContent}</div>
+            <div className="etop-modelHint">
+              {this.props.intl.formatMessage({ id: "project_editor.entity_overview.drag_hint" })}
             </div>
-            <div className="etop-modelHint">{this.props.intl.formatMessage({ id: "project_editor.entity_overview.drag_hint" })}</div>
           </EditorContentPanel>
         </div>
         <div className="etop-behaviorsSection">
-          <EditorContentPanel theme={this.props.theme} variant="raised" header={this.props.intl.formatMessage({ id: "project_editor.entity_overview.behaviors" })}>
+          <EditorContentPanel
+            theme={this.props.theme}
+            variant="raised"
+            header={this.props.intl.formatMessage({ id: "project_editor.entity_overview.behaviors" })}
+          >
             <div className="etop-behaviorsScroll">
               {/* What's Next? Guidance - dismissible, hidden once user clicks close */}
               {!this.state.hideWhatsNext && (
-              <div
-                style={{
-                  margin: "8px 12px 12px",
-                  padding: "12px 16px",
-                  backgroundColor: isDark ? `${mcColors.green4}18` : `${mcColors.green5}14`,
-                  border: `1px solid ${isDark ? mcColors.green4 + "45" : mcColors.green5 + "35"}`,
-                  borderRadius: "4px",
-                  position: "relative",
-                }}
-              >
-                <button
-                  onClick={this._handleDismissWhatsNext}
-                  title={this.props.intl.formatMessage({ id: "common.dismiss" })}
-                  aria-label={this.props.intl.formatMessage({ id: "project_editor.entity_overview.dismiss_aria" })}
-                  style={{
-                    position: "absolute",
-                    top: 4,
-                    right: 4,
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
-                    fontSize: "14px",
-                    opacity: 0.6,
-                    color: "inherit",
-                    padding: "2px 6px",
-                    lineHeight: 1,
-                  }}
-                >
-                  ✕
-                </button>
                 <div
                   style={{
-                    fontSize: "13px",
-                    fontWeight: 700,
-                    color: isDark ? mcColors.green3 : mcColors.green5,
-                    marginBottom: "6px",
+                    margin: "8px 12px 12px",
+                    padding: "12px 16px",
+                    backgroundColor: isDark ? `${mcColors.green4}18` : `${mcColors.green5}14`,
+                    border: `1px solid ${isDark ? mcColors.green4 + "45" : mcColors.green5 + "35"}`,
+                    borderRadius: "4px",
+                    position: "relative",
                   }}
                 >
-                  {this.props.intl.formatMessage({ id: "project_editor.entity_overview.whats_next" })}
+                  <button
+                    onClick={this._handleDismissWhatsNext}
+                    title={this.props.intl.formatMessage({ id: "common.dismiss" })}
+                    aria-label={this.props.intl.formatMessage({ id: "project_editor.entity_overview.dismiss_aria" })}
+                    style={{
+                      position: "absolute",
+                      top: 4,
+                      right: 4,
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                      fontSize: "14px",
+                      opacity: 0.6,
+                      color: "inherit",
+                      padding: "2px 6px",
+                      lineHeight: 1,
+                    }}
+                  >
+                    ✕
+                  </button>
+                  <div
+                    style={{
+                      fontSize: "13px",
+                      fontWeight: 700,
+                      color: isDark ? mcColors.green3 : mcColors.green5,
+                      marginBottom: "6px",
+                    }}
+                  >
+                    {this.props.intl.formatMessage({ id: "project_editor.entity_overview.whats_next" })}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "12px",
+                      color: isDark ? mcColors.gray3 : mcColors.gray4,
+                      lineHeight: 1.6,
+                    }}
+                  >
+                    {this.props.intl.formatMessage({ id: "project_editor.entity_overview.whats_next_body" })}
+                  </div>
                 </div>
-                <div
-                  style={{
-                    fontSize: "12px",
-                    color: isDark ? mcColors.gray3 : mcColors.gray4,
-                    lineHeight: 1.6,
-                  }}
-                >
-                  {this.props.intl.formatMessage({ id: "project_editor.entity_overview.whats_next_body" })}
-                </div>
-              </div>
               )}
 
               {/* Default Properties section */}
               <div className="etop-componentGroupSection">
-                <div
-                  className="etop-groupHeader"
-                  onClick={this._handleDefaultClick}
-                  onKeyDown={(e: React.KeyboardEvent) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      this._handleDefaultClick();
-                    }
-                  }}
-                  role="button"
-                  tabIndex={0}
-                  title={this.props.intl.formatMessage({ id: "project_editor.entity_overview.base_tooltip" })}
-                >
-                  <span className="etop-groupName">{this.props.intl.formatMessage({ id: "project_editor.entity_overview.base_behaviors" })}</span>
-                  <span className="etop-groupLink" title={this.props.intl.formatMessage({ id: "project_editor.entity_overview.edit_base" })}>{this.props.intl.formatMessage({ id: "common.edit" })}</span>
-                </div>
+                <h3 className="etop-groupHeading">
+                  <div
+                    className="etop-groupHeader"
+                    onClick={this._handleDefaultClick}
+                    onKeyDown={(e: React.KeyboardEvent) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        this._handleDefaultClick();
+                      }
+                    }}
+                    role="button"
+                    tabIndex={0}
+                    title={this.props.intl.formatMessage({ id: "project_editor.entity_overview.base_tooltip" })}
+                  >
+                    <span className="etop-groupName">
+                      {this.props.intl.formatMessage({ id: "project_editor.entity_overview.base_behaviors" })}
+                    </span>
+                    <span
+                      className="etop-groupLink"
+                      title={this.props.intl.formatMessage({ id: "project_editor.entity_overview.edit_base" })}
+                    >
+                      {this.props.intl.formatMessage({ id: "common.edit" })}
+                    </span>
+                  </div>
+                </h3>
                 {this._renderComponentList(this.state.defaultComponents, "default")}
               </div>
 

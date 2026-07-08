@@ -91,7 +91,10 @@ enum EntityTypeDiagramType {
 }
 
 function getDiagramTypeStrings(intl: IntlShape): string[] {
-  return [intl.formatMessage({ id: "project_editor.entity_diag.groups_events" }), intl.formatMessage({ id: "project_editor.entity_diag.states_connections" })];
+  return [
+    intl.formatMessage({ id: "project_editor.entity_diag.groups_events" }),
+    intl.formatMessage({ id: "project_editor.entity_diag.states_connections" }),
+  ];
 }
 
 interface IEntityTypeDiagramEditorProps extends IAppProps, WithLocalizationProps {
@@ -134,10 +137,7 @@ export class EntityTypeGroupsAndEventsDiagramContext {
   entityEventsAdded: { [name: string]: Node } = {};
 }
 
-class EntityTypeDiagramEditor extends Component<
-  IEntityTypeDiagramEditorProps,
-  IEntityTypeDiagramEditorState
-> {
+class EntityTypeDiagramEditor extends Component<IEntityTypeDiagramEditorProps, IEntityTypeDiagramEditorState> {
   constructor(props: IEntityTypeDiagramEditorProps) {
     super(props);
 
@@ -780,6 +780,7 @@ class EntityTypeDiagramEditor extends Component<
           <div className="etde-dropdownArea">
             <FormControl size="small">
               <Select
+                SelectDisplayProps={{ "aria-label": this.props.intl.formatMessage({ id: "project_editor.entity_diag.type_aria" }) }}
                 value={getDiagramTypeStrings(this.props.intl)[this.state.activeDiagramType ?? 0]}
                 onChange={this._handleDiagramTypeChange}
               >
@@ -792,8 +793,15 @@ class EntityTypeDiagramEditor extends Component<
             </FormControl>
           </div>
           <div className="etde-toolBar">
-            <Stack direction="row" spacing={1} aria-label={this.props.intl.formatMessage({ id: "project_editor.entity_diag.aria_editing" })}>
-              <Button onClick={this._handleEventAddComponentGroup} title={this.props.intl.formatMessage({ id: "project_editor.entity_diag.add_group" })}>
+            <Stack
+              direction="row"
+              spacing={1}
+              aria-label={this.props.intl.formatMessage({ id: "project_editor.entity_diag.aria_editing" })}
+            >
+              <Button
+                onClick={this._handleEventAddComponentGroup}
+                title={this.props.intl.formatMessage({ id: "project_editor.entity_diag.add_group" })}
+              >
                 <CustomLabel
                   isCompact={false}
                   text={this.props.intl.formatMessage({ id: "project_editor.entity_diag.add_group" })}

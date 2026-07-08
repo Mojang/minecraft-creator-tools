@@ -11,6 +11,7 @@ import IGalleryItem, { GalleryItemType } from "../../../app/IGalleryItem";
 import ItemGallery, { GalleryItemCommand } from "../../project/itemGallery/ItemGallery";
 import { ItemTileButtonDisplayMode } from "../../project/itemGallery/ItemTileButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import SectionHeading from "../../shared/components/feedback/sectionHeading/SectionHeading";
 import { faGem, faPencil } from "@fortawesome/free-solid-svg-icons";
 import { getThemeColors } from "../../hooks/theme/useThemeColors";
 import IProjectTheme from "../../types/IProjectTheme";
@@ -193,10 +194,10 @@ export default class NewItemType extends Component<INewItemTypeProps, INewItemTy
     return (
       <div className="nitem-outer">
         <div className="nitem-section">
-          <div className="nitem-sectionHeader" style={sectionHeaderStyle}>
+          <SectionHeading level={2} className="nitem-sectionHeader" style={sectionHeaderStyle}>
             <FontAwesomeIcon icon={faPencil} className="nitem-sectionIcon" />
             Item Name
-          </div>
+          </SectionHeading>
           <div className="nitem-inputWrapper" style={inputStyle}>
             <TextField
               aria-label="Item type name"
@@ -212,10 +213,10 @@ export default class NewItemType extends Component<INewItemTypeProps, INewItemTy
           </div>
         </div>
         <div className="nitem-section">
-          <div className="nitem-sectionHeader" style={sectionHeaderStyle}>
+          <SectionHeading level={2} className="nitem-sectionHeader" style={sectionHeaderStyle}>
             <FontAwesomeIcon icon={faGem} className="nitem-sectionIcon" />
             Base Template
-          </div>
+          </SectionHeading>
           <div className="nitem-sectionSubtitle">Select an existing item to use as a starting point</div>
           <div className="nitem-projectGallery" style={galleryStyle}>
             <ItemGallery

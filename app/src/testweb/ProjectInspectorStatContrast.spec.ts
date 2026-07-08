@@ -12,7 +12,7 @@
  */
 
 import { test, expect, ConsoleMessage } from "@playwright/test";
-import { enterEditor, processMessage, getRenderedContrast } from "./WebTestUtilities";
+import { enterEditor, processMessage, getRenderedContrast, waitForInspectorValidationComplete } from "./WebTestUtilities";
 
 const MIN_CONTRAST = 4.5;
 
@@ -31,6 +31,9 @@ for (const theme of ["light", "dark"] as const) {
     // Open the Project Inspector and switch to the Summary view (the stats bar lives there).
     await page.getByText("Check for Problems").first().click();
     await expect(page.locator("h2.pid-title")).toBeVisible({ timeout: 20000 });
+    // Validation runs in a worker and is slow on the Vite dev server; wait for it to
+    // finish so the Summary stats are actually rendered before asserting on them.
+    await waitForInspectorValidationComplete(page);
     await page.locator("#pid-tab-summary").click();
     await page.locator(".pid-statCount").first().waitFor({ timeout: 20000 });
     await page.mouse.move(0, 0);

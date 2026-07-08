@@ -273,7 +273,7 @@ async function waitForServerExit(serverInfo: EditServerInfo): Promise<boolean> {
   });
 }
 
-test.describe("MCTools Edit Command Tests @focused", () => {
+test.describe("MCTools Edit Command Tests", () => {
   const consoleErrors: { url: string; error: string }[] = [];
   const consoleWarnings: { url: string; error: string }[] = [];
 

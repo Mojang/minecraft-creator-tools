@@ -478,7 +478,7 @@ export default class NewProject extends Component<INewProjectProps, INewProjectS
         <div className="nepro-newTrackInput">
           <FormControl fullWidth size="small">
             <Select
-              aria-labelledby="nepro-newTrackLabel"
+              SelectDisplayProps={{ "aria-labelledby": "nepro-newTrackLabel" }}
               defaultValue={targetStrings[0]}
               onChange={this._handleTrackChange}
             >

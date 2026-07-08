@@ -325,6 +325,13 @@
   border-bottom: "2px outset";
 }
 
+/* The splitter is a keyboard-operable ARIA separator; show a clear focus ring
+   on the narrow handle so keyboard users can see it has focus before resizing. */
+.pe-itemSplitter:focus-visible {
+  outline: 2px solid #52a535;
+  outline-offset: -1px;
+}
+
 .pe-col3and4 {
   grid-column-start: 3;
   grid-column-end: 5;

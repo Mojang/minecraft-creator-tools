@@ -164,7 +164,7 @@ test.describe("Structure Viewer @full", () => {
   });
 
   test("should show error for invalid structure URL", async ({ page }) => {
-    test.setTimeout(30000);
+    test.setTimeout(90000);
 
     await page.goto("/?mode=structureviewer&structure=/nonexistent/file.mcstructure&skipVanillaResources=true");
     await page.waitForLoadState("networkidle");
@@ -183,7 +183,7 @@ test.describe("Structure Viewer @full", () => {
   });
 
   test("should show error when no structure URL provided", async ({ page }) => {
-    test.setTimeout(30000);
+    test.setTimeout(90000);
 
     await page.goto("/?mode=structureviewer&skipVanillaResources=true");
     await page.waitForLoadState("networkidle");
@@ -646,7 +646,7 @@ test.describe("Structure Editor Screenshots @full", () => {
 
   for (const [filename, displayName] of editorStructures) {
     test(`should render ${displayName} in editor`, async ({ page }) => {
-      test.setTimeout(45000);
+      test.setTimeout(90000);
 
       await openEditorView(page, filename);
       await waitForEditorRender(page);
@@ -656,7 +656,7 @@ test.describe("Structure Editor Screenshots @full", () => {
   }
 
   test("should show editor toolbar and info bar", async ({ page }) => {
-    test.setTimeout(45000);
+    test.setTimeout(90000);
 
     // Render without hideChrome so the StructureViewer toolbar is also visible
     await page.goto(

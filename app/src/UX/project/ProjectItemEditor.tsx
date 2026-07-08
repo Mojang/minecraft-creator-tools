@@ -1294,6 +1294,7 @@ class ProjectItemEditor extends Component<IProjectItemEditorProps, IProjectItemE
             <FormControl fullWidth size="small">
               <Select
                 id="inptDrop"
+                SelectDisplayProps={{ "aria-label": this.props.intl.formatMessage({ id: "project_editor.item_editor.select_view_aria" }) }}
                 value={dropdownVal}
                 onChange={this._handleDrodownValChange}
                 sx={{

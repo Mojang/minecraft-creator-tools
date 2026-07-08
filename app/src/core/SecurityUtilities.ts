@@ -5,14 +5,26 @@
  * Security utilities for input validation and sanitization
  */
 export default class SecurityUtilities {
-  // Maximum upload size: 700MB
-  public static readonly MAX_UPLOAD_SIZE = 700 * 1024 * 1024;
+  // Lower-level unzip safety ceiling: 2 GiB. This is the absolute total decompressed
+  // size we are willing to inflate. It is intentionally well above the Marketplace
+  // content limit so MCT can fully inspect a package (including non-content files) and
+  // return a specific, structured content-size error rather than aborting mid-decompress.
+  public static readonly MAX_DECOMPRESSED_SIZE = 2 * 1024 * 1024 * 1024;
+
+  // Maximum compressed upload size. Keep this aligned with the unzip safety ceiling so
+  // large-but-inspectable packages can return specific decompressed-size errors.
+  public static readonly MAX_UPLOAD_SIZE = SecurityUtilities.MAX_DECOMPRESSED_SIZE;
 
   // Maximum number of files in a ZIP
   public static readonly MAX_ZIP_FILES = 50000;
 
-  // Maximum decompressed size: 500MB
-  public static readonly MAX_DECOMPRESSED_SIZE = 500 * 1024 * 1024;
+  // Marketplace content limit: 500 MiB. This applies ONLY to files under the top-level
+  // "Content/" folder. Non-content files (e.g. build artifacts, docs) do not count toward
+  // this limit, so they cannot push an otherwise-valid package over the content ceiling.
+  public static readonly MAX_CONTENT_DECOMPRESSED_SIZE = 500 * 1024 * 1024;
+
+  // Top-level folder whose decompressed size is governed by MAX_CONTENT_DECOMPRESSED_SIZE.
+  public static readonly CONTENT_PATH_PREFIX = "Content/";
 
   // Rate limiting: max attempts per IP
   private static readonly authAttempts: Map<string, { count: number; resetTime: number }> = new Map();
@@ -138,6 +150,69 @@ export default class SecurityUtilities {
    */
   public static validateFileSize(size: number, maxSize: number = SecurityUtilities.MAX_UPLOAD_SIZE): boolean {
     return size > 0 && size <= maxSize;
+  }
+
+  /**
+   * Returns whether a zip-relative path lives under the top-level "Content/" folder.
+   * Marketplace content (the thing governed by the 500 MiB limit) lives here; everything
+   * else (build artifacts, docs, etc.) is excluded from the content-size budget.
+   */
+  public static isContentPath(path: string): boolean {
+    if (!path) {
+      return false;
+    }
+
+    // Normalize separators and strip a leading slash so "/Content/..." and "Content/..." match.
+    let normalized = path.replace(/\\/g, "/");
+
+    if (normalized.startsWith("/")) {
+      normalized = normalized.substring(1);
+    }
+
+    return normalized.startsWith(SecurityUtilities.CONTENT_PATH_PREFIX);
+  }
+
+  /**
+   * Evaluates decompressed-size limits for a set of zip entries.
+   *
+   * Two distinct ceilings are enforced:
+   *  - maxContentSize: applies only to entries under "Content/" (the Marketplace content limit).
+   *  - maxTotalSize: the lower-level unzip safety ceiling across ALL entries.
+   *
+   * The total/safety ceiling is evaluated first: if the package as a whole is too large to
+   * safely inflate we report "total" and don't bother distinguishing content. Otherwise, if
+   * the Content/ subtree is over budget we report "content". Limits are parameters (defaulting
+   * to the production constants) so tests can exercise the logic with small synthetic values.
+   */
+  public static checkDecompressedSizeLimits(
+    entries: { path: string; uncompressedSize: number }[],
+    maxContentSize: number = SecurityUtilities.MAX_CONTENT_DECOMPRESSED_SIZE,
+    maxTotalSize: number = SecurityUtilities.MAX_DECOMPRESSED_SIZE
+  ): { totalSize: number; contentSize: number; violation?: "content" | "total" } {
+    let totalSize = 0;
+    let contentSize = 0;
+
+    for (const entry of entries) {
+      if (!entry || typeof entry.uncompressedSize !== "number" || entry.uncompressedSize <= 0) {
+        continue;
+      }
+
+      totalSize += entry.uncompressedSize;
+
+      if (SecurityUtilities.isContentPath(entry.path)) {
+        contentSize += entry.uncompressedSize;
+      }
+    }
+
+    let violation: "content" | "total" | undefined = undefined;
+
+    if (totalSize > maxTotalSize) {
+      violation = "total";
+    } else if (contentSize > maxContentSize) {
+      violation = "content";
+    }
+
+    return { totalSize, contentSize, violation };
   }
 
   /**

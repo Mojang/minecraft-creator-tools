@@ -45,6 +45,9 @@ interface IEditorContentPanelProps {
   theme: IProjectTheme;
   /** Optional header text */
   header?: string;
+  /** Heading level (1-6) for the header text, so it participates in the page's
+   *  heading outline. Defaults to 2 (section heading). */
+  headingLevel?: 1 | 2 | 3 | 4 | 5 | 6;
   /** Optional tooltip for the header */
   title?: string;
   /** Panel content */
@@ -129,6 +132,7 @@ export function EditorContentPanel({
   itemType,
   theme,
   header,
+  headingLevel = 2,
   title,
   children,
   className = "",
@@ -137,11 +141,17 @@ export function EditorContentPanel({
 }: IEditorContentPanelProps) {
   const panelColors = getPanelColors(theme, variant);
   const cssVars = panelColors as React.CSSProperties;
+  const HeaderTag = `h${headingLevel}` as keyof JSX.IntrinsicElements;
 
   return (
     <div className={`editor-content-panel editor-panel-${variant} ${className}`} style={{ ...cssVars, ...style }}>
       {header && (
-        <div className={`editor-panel-header ${compactHeader ? "editor-panel-header-compact" : ""}`} title={title}>{header}</div>
+        <HeaderTag
+          className={`editor-panel-header ${compactHeader ? "editor-panel-header-compact" : ""}`}
+          title={title}
+        >
+          {header}
+        </HeaderTag>
       )}
       <div className="editor-panel-content">{children}</div>
     </div>

@@ -19,6 +19,7 @@ import {
   takeScreenshot,
   switchToRawMode,
   openFileInMonaco,
+  waitForMonacoEditor,
 } from "./WebTestUtilities";
 
 async function switchSettingsEditMode(page: Page, modeLabel: "Focused" | "Full" | "Raw"): Promise<boolean> {
@@ -743,7 +744,7 @@ test.describe("Lossless Mode Switching @full", () => {
   });
 
   test("should preserve advanced JSON through focused/full/raw transitions", async ({ page }) => {
-    test.setTimeout(120000);
+    test.setTimeout(180000);
 
     const entered = await enterEditor(page, { editMode: "full" });
     expect(entered).toBe(true);
@@ -773,8 +774,9 @@ test.describe("Lossless Mode Switching @full", () => {
     for (const pattern of candidatePatterns) {
       const opened = await openFileInMonaco(page, pattern);
       if (!opened) continue;
-      const monacoEditor = page.locator(".monaco-editor").first();
-      if (!(await monacoEditor.isVisible({ timeout: 3000 }).catch(() => false))) {
+      // Monaco fetches its ~3.5MB bundle from /dist/vs and can take 10-25s on the dev
+      // server under contention; wait for it rather than racing a short visibility check.
+      if (!(await waitForMonacoEditor(page))) {
         console.log(`Lossless test: pattern "${pattern}" opened but Monaco not visible; trying next`);
         continue;
       }

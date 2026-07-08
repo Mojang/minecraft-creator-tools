@@ -43,6 +43,8 @@
   letter-spacing: 0.8px;
   color: var(--panel-header-text, #888);
   border-bottom: 1px solid var(--panel-border, rgba(128, 128, 128, 0.15));
+  /* Rendered as a heading (default <h2>); strip the UA heading margin. */
+  margin: 0;
 }
 
 .editor-panel-header-compact {

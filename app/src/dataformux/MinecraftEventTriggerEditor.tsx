@@ -25,8 +25,9 @@ import MinecraftUtilities from "../minecraft/MinecraftUtilities";
 import MinecraftEventTrigger from "../minecraft/jsoncommon/MinecraftEventTrigger";
 import IField from "./../dataform/IField";
 import IProjectTheme from "../UX/types/IProjectTheme";
+import { withLocalization, WithLocalizationProps } from "../UX/withLocalization";
 
-export interface IMinecraftEventTriggerEditorProps extends IFormComponentProps {
+export interface IMinecraftEventTriggerEditorProps extends IFormComponentProps, WithLocalizationProps {
   data: MinecraftEventTrigger;
   objectKey: string | undefined;
   creatorTools: CreatorTools;
@@ -56,7 +57,7 @@ export enum MinecraftEventTriggerEditorDialog {
   addEvent = 1,
 }
 
-export default class MinecraftEventTriggerEditor extends Component<
+class MinecraftEventTriggerEditor extends Component<
   IMinecraftEventTriggerEditorProps,
   IMinecraftEventTriggerEditorState
 > {
@@ -206,6 +207,7 @@ export default class MinecraftEventTriggerEditor extends Component<
             <div className="miet-actionListDropdown">
               <Select
                 size="small"
+                SelectDisplayProps={{ "aria-label": this.props.intl.formatMessage({ id: "dataform.event_trigger.select_action_aria" }) }}
                 value={this.props.data.event || ""}
                 onChange={this._handleEventChanged}
                 displayEmpty
@@ -238,3 +240,5 @@ export default class MinecraftEventTriggerEditor extends Component<
     }
   }
 }
+
+export default withLocalization(MinecraftEventTriggerEditor);

@@ -85,7 +85,9 @@ export default function SnippetCard({ snippet, onOpen }: SnippetCardProps) {
               textShadow: "1px 1px 2px rgba(0,0,0,0.6)",
             }}
           >
-            {snippet.titleKey ? intl.formatMessage({ id: snippet.titleKey }) : snippet.title}
+            {snippet.titleKey
+              ? intl.formatMessage({ id: snippet.titleKey, defaultMessage: snippet.title })
+              : snippet.title}
           </Typography>
           <Typography
             variant="body2"

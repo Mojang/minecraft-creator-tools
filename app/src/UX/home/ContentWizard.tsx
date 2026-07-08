@@ -40,6 +40,7 @@ import { renderBlockTraitIcon, renderItemTraitIcon } from "../shared/components/
 import EntityWizard from "./EntityWizard";
 import WizardFrame from "./WizardFrame";
 import { BLOCK_TRAITS, ITEM_TRAITS, ITraitInfo, getTraitIconColor, getTraitCardThemeStyle } from "../types/TraitData";
+import { clickableKeyHandler } from "../shared/accessibilityUtils";
 import IProjectTheme from "../types/IProjectTheme";
 import CreatorToolsHost, { CreatorToolsThemeStyle } from "../../app/CreatorToolsHost";
 import { WithLocalizationProps, withLocalization } from "../withLocalization";
@@ -511,7 +512,12 @@ class ContentWizard extends Component<IContentWizardProps, IContentWizardState> 
       const isExpanded = expandedSections.includes(sectionId);
       return (
         <div className="cwiz-section" key={sectionId}>
-          <div className="cwiz-section-header" onClick={() => this._toggleSection(sectionId)}>
+          <div
+            className="cwiz-section-header"
+            onClick={() => this._toggleSection(sectionId)}
+            aria-expanded={isExpanded}
+            {...clickableKeyHandler(() => this._toggleSection(sectionId))}
+          >
             <FontAwesomeIcon icon={isExpanded ? faChevronDown : faChevronRight} />
             <span>{title}</span>
             <span className="cwiz-section-count">({items.length})</span>
@@ -524,6 +530,7 @@ class ContentWizard extends Component<IContentWizardProps, IContentWizardState> 
                   className="cwiz-section-item"
                   onClick={() => this._handleGalleryItemClick(item)}
                   title={item.description}
+                  {...clickableKeyHandler(() => this._handleGalleryItemClick(item))}
                 >
                   <FontAwesomeIcon icon={faFile} className="cwiz-section-item-icon" />
                   <span>{item.title}</span>
@@ -549,9 +556,9 @@ class ContentWizard extends Component<IContentWizardProps, IContentWizardState> 
           <div className="cwiz-wizard-section cwiz-guided-section">
             <div className="cwiz-section-headingRow">
               <div>
-                <div className="cwiz-wizard-section-title">
+                <h2 className="cwiz-wizard-section-title">
                   ⭐ {this.props.intl.formatMessage({ id: "wizard.guided_title" })}
-                </div>
+                </h2>
                 <div className="cwiz-wizard-section-copy">
                   {this.props.intl.formatMessage({ id: "wizard.guided_desc" })}
                 </div>
@@ -562,6 +569,7 @@ class ContentWizard extends Component<IContentWizardProps, IContentWizardState> 
                 className="cwiz-launcher-option"
                 data-testid="wizard-new-mob"
                 onClick={() => this._handleWizardTypeSelect(ContentWizardType.entity)}
+                {...clickableKeyHandler(() => this._handleWizardTypeSelect(ContentWizardType.entity))}
               >
                 <div className="cwiz-launcher-option-icon">
                   <img
@@ -583,6 +591,7 @@ class ContentWizard extends Component<IContentWizardProps, IContentWizardState> 
                 className="cwiz-launcher-option"
                 data-testid="wizard-new-block"
                 onClick={() => this._handleWizardTypeSelect(ContentWizardType.block)}
+                {...clickableKeyHandler(() => this._handleWizardTypeSelect(ContentWizardType.block))}
               >
                 <div className="cwiz-launcher-option-icon">
                   <img
@@ -604,6 +613,7 @@ class ContentWizard extends Component<IContentWizardProps, IContentWizardState> 
                 className="cwiz-launcher-option"
                 data-testid="wizard-new-item"
                 onClick={() => this._handleWizardTypeSelect(ContentWizardType.item)}
+                {...clickableKeyHandler(() => this._handleWizardTypeSelect(ContentWizardType.item))}
               >
                 <div className="cwiz-launcher-option-icon">
                   <img
@@ -628,9 +638,9 @@ class ContentWizard extends Component<IContentWizardProps, IContentWizardState> 
           <div className="cwiz-wizard-section cwiz-example-section">
             <div className="cwiz-section-headingRow">
               <div>
-                <div className="cwiz-wizard-section-title">
+                <h2 className="cwiz-wizard-section-title">
                   {this.props.intl.formatMessage({ id: "wizard.existing_example_title" })}
-                </div>
+                </h2>
                 <div className="cwiz-wizard-section-copy">
                   {this.props.intl.formatMessage({ id: "wizard.existing_example_desc" })}
                 </div>
@@ -641,6 +651,7 @@ class ContentWizard extends Component<IContentWizardProps, IContentWizardState> 
                 className="cwiz-main-option"
                 data-testid="wizard-mob-from-mc"
                 onClick={() => this._handleQuickAction(ContentWizardAction.entityFromVanilla)}
+                {...clickableKeyHandler(() => this._handleQuickAction(ContentWizardAction.entityFromVanilla))}
               >
                 <img
                   src={CreatorToolsHost.contentWebRoot + "res/images/icons/copy_mob_240.png"}
@@ -660,6 +671,7 @@ class ContentWizard extends Component<IContentWizardProps, IContentWizardState> 
                 className="cwiz-main-option"
                 data-testid="wizard-block-from-mc"
                 onClick={() => this._handleQuickAction(ContentWizardAction.basicBlockType)}
+                {...clickableKeyHandler(() => this._handleQuickAction(ContentWizardAction.basicBlockType))}
               >
                 <img
                   src={CreatorToolsHost.contentWebRoot + "res/images/icons/copy_block_240.png"}
@@ -679,6 +691,7 @@ class ContentWizard extends Component<IContentWizardProps, IContentWizardState> 
                 className="cwiz-main-option"
                 data-testid="wizard-item-from-mc"
                 onClick={() => this._handleQuickAction(ContentWizardAction.basicItemType)}
+                {...clickableKeyHandler(() => this._handleQuickAction(ContentWizardAction.basicItemType))}
               >
                 <img
                   src={CreatorToolsHost.contentWebRoot + "res/images/icons/copy_item_240.png"}
@@ -695,7 +708,11 @@ class ContentWizard extends Component<IContentWizardProps, IContentWizardState> 
                 </div>
               </div>
               {spawnRuleItem ? (
-                <div className="cwiz-main-option" onClick={() => this._handleGalleryItemClick(spawnRuleItem)}>
+                <div
+                  className="cwiz-main-option"
+                  onClick={() => this._handleGalleryItemClick(spawnRuleItem)}
+                  {...clickableKeyHandler(() => this._handleGalleryItemClick(spawnRuleItem))}
+                >
                   <img
                     src={CreatorToolsHost.contentWebRoot + "res/images/icons/spawn_240.png"}
                     alt=""
@@ -712,6 +729,7 @@ class ContentWizard extends Component<IContentWizardProps, IContentWizardState> 
                 <div
                   className="cwiz-main-option"
                   onClick={() => this._handleQuickAction(ContentWizardAction.newSpawnRule)}
+                  {...clickableKeyHandler(() => this._handleQuickAction(ContentWizardAction.newSpawnRule))}
                 >
                   <img
                     src={CreatorToolsHost.contentWebRoot + "res/images/icons/spawn_240.png"}
@@ -727,7 +745,11 @@ class ContentWizard extends Component<IContentWizardProps, IContentWizardState> 
                 </div>
               )}
               {lootTableItem ? (
-                <div className="cwiz-main-option" onClick={() => this._handleGalleryItemClick(lootTableItem)}>
+                <div
+                  className="cwiz-main-option"
+                  onClick={() => this._handleGalleryItemClick(lootTableItem)}
+                  {...clickableKeyHandler(() => this._handleGalleryItemClick(lootTableItem))}
+                >
                   <img
                     src={CreatorToolsHost.contentWebRoot + "res/images/icons/drops_240.png"}
                     alt=""
@@ -744,6 +766,7 @@ class ContentWizard extends Component<IContentWizardProps, IContentWizardState> 
                 <div
                   className="cwiz-main-option"
                   onClick={() => this._handleQuickAction(ContentWizardAction.newLootTable)}
+                  {...clickableKeyHandler(() => this._handleQuickAction(ContentWizardAction.newLootTable))}
                 >
                   <img
                     src={CreatorToolsHost.contentWebRoot + "res/images/icons/drops_240.png"}
@@ -763,7 +786,12 @@ class ContentWizard extends Component<IContentWizardProps, IContentWizardState> 
 
           {/* More Content Options */}
           <div className="cwiz-section" key="cwiz-more-content">
-            <div className="cwiz-section-header" onClick={() => this._toggleSection("more-content")}>
+            <div
+              className="cwiz-section-header"
+              onClick={() => this._toggleSection("more-content")}
+              aria-expanded={expandedSections.includes("more-content")}
+              {...clickableKeyHandler(() => this._toggleSection("more-content"))}
+            >
               <FontAwesomeIcon icon={expandedSections.includes("more-content") ? faChevronDown : faChevronRight} />
               <span>{this.props.intl.formatMessage({ id: "wizard.more_options" })}</span>
               {!expandedSections.includes("more-content") && <span className="cwiz-section-badge">2</span>}
@@ -774,6 +802,7 @@ class ContentWizard extends Component<IContentWizardProps, IContentWizardState> 
                   className="cwiz-section-item"
                   onClick={() => this._handleQuickAction(ContentWizardAction.newTypeScript)}
                   title={this.props.intl.formatMessage({ id: "wizard.script_file_tooltip" })}
+                  {...clickableKeyHandler(() => this._handleQuickAction(ContentWizardAction.newTypeScript))}
                 >
                   <FontAwesomeIcon icon={faCode} className="cwiz-section-item-icon" />
                   <span>
@@ -787,6 +816,7 @@ class ContentWizard extends Component<IContentWizardProps, IContentWizardState> 
                   className="cwiz-section-item"
                   onClick={() => this._handleQuickAction(ContentWizardAction.newFunction)}
                   title={this.props.intl.formatMessage({ id: "wizard.function_file_tooltip" })}
+                  {...clickableKeyHandler(() => this._handleQuickAction(ContentWizardAction.newFunction))}
                 >
                   <FontAwesomeIcon icon={faTerminal} className="cwiz-section-item-icon" />
                   <span>{this.props.intl.formatMessage({ id: "wizard.function_file" })}</span>
@@ -796,6 +826,7 @@ class ContentWizard extends Component<IContentWizardProps, IContentWizardState> 
                   data-testid="wizard-new-empty-file"
                   onClick={() => this._handleQuickAction(ContentWizardAction.newEmptyFile)}
                   title="Create an empty stub file at a chosen folder — useful when you want full control over the contents"
+                  {...clickableKeyHandler(() => this._handleQuickAction(ContentWizardAction.newEmptyFile))}
                 >
                   <FontAwesomeIcon icon={faFile} className="cwiz-section-item-icon" />
                   <span>{this.props.intl.formatMessage({ id: "wizard.empty_file_advanced" })}</span>
@@ -805,6 +836,7 @@ class ContentWizard extends Component<IContentWizardProps, IContentWizardState> 
                   data-testid="wizard-new-empty-file"
                   onClick={() => this._handleQuickAction(ContentWizardAction.newEmptyFile)}
                   title="Create an empty stub file at a chosen folder — useful when you want full control over the contents"
+                  {...clickableKeyHandler(() => this._handleQuickAction(ContentWizardAction.newEmptyFile))}
                 >
                   <FontAwesomeIcon icon={faFile} className="cwiz-section-item-icon" />
                   <span>Empty File (advanced)</span>
@@ -814,7 +846,12 @@ class ContentWizard extends Component<IContentWizardProps, IContentWizardState> 
           </div>
 
           <div className="cwiz-section" key="cwiz-worldgen-top">
-            <div className="cwiz-section-header" onClick={() => this._toggleSection("worldgen-top")}>
+            <div
+              className="cwiz-section-header"
+              onClick={() => this._toggleSection("worldgen-top")}
+              aria-expanded={expandedSections.includes("worldgen-top")}
+              {...clickableKeyHandler(() => this._toggleSection("worldgen-top"))}
+            >
               <FontAwesomeIcon icon={expandedSections.includes("worldgen-top") ? faChevronDown : faChevronRight} />
               <span>{this.props.intl.formatMessage({ id: "wizard.world_generation" })}</span>
               {!expandedSections.includes("worldgen-top") && (
@@ -829,6 +866,7 @@ class ContentWizard extends Component<IContentWizardProps, IContentWizardState> 
                     className="cwiz-section-item"
                     onClick={() => this._handleGalleryItemClick(featureItem)}
                     title={featureItem.description}
+                    {...clickableKeyHandler(() => this._handleGalleryItemClick(featureItem))}
                   >
                     <FontAwesomeIcon icon={faFile} className="cwiz-section-item-icon" />
                     <span>{this.props.intl.formatMessage({ id: "wizard.feature" })}</span>
@@ -840,6 +878,7 @@ class ContentWizard extends Component<IContentWizardProps, IContentWizardState> 
                     className="cwiz-section-item"
                     onClick={() => this._handleGalleryItemClick(featureRuleItem)}
                     title={featureRuleItem.description}
+                    {...clickableKeyHandler(() => this._handleGalleryItemClick(featureRuleItem))}
                   >
                     <FontAwesomeIcon icon={faFile} className="cwiz-section-item-icon" />
                     <span>{this.props.intl.formatMessage({ id: "wizard.feature_rule" })}</span>
@@ -850,6 +889,7 @@ class ContentWizard extends Component<IContentWizardProps, IContentWizardState> 
                   className="cwiz-section-item"
                   onClick={() => this._handleQuickAction(ContentWizardAction.newStructure)}
                   title={this.props.intl.formatMessage({ id: "wizard.structure_tooltip" })}
+                  {...clickableKeyHandler(() => this._handleQuickAction(ContentWizardAction.newStructure))}
                 >
                   <FontAwesomeIcon icon={faFile} className="cwiz-section-item-icon" />
                   <span>{this.props.intl.formatMessage({ id: "wizard.structure" })}</span>
@@ -860,7 +900,12 @@ class ContentWizard extends Component<IContentWizardProps, IContentWizardState> 
 
           {/* Single Files (Advanced) Section */}
           <div className="cwiz-advanced-section">
-            <div className="cwiz-advanced-header" onClick={() => this._toggleSection("advanced")}>
+            <div
+              className="cwiz-advanced-header"
+              onClick={() => this._toggleSection("advanced")}
+              aria-expanded={expandedSections.includes("advanced")}
+              {...clickableKeyHandler(() => this._toggleSection("advanced"))}
+            >
               <FontAwesomeIcon icon={expandedSections.includes("advanced") ? faChevronDown : faChevronRight} />
               <span>{this.props.intl.formatMessage({ id: "wizard.advanced_file_types" })}</span>
               {!expandedSections.includes("advanced") && (
@@ -953,41 +998,43 @@ class ContentWizard extends Component<IContentWizardProps, IContentWizardState> 
           const shapeTraits = BLOCK_TRAITS.filter((t) => t.exclusiveGroup === "shape");
           const behaviorTraits = BLOCK_TRAITS.filter((t) => !t.exclusiveGroup);
 
-          const renderTraitCard = (trait: ITraitInfo) => (
-            <div
-              key={trait.id}
-              className={`cwiz-trait ${
-                this.state.blockTraits.includes(trait.id as BlockTraitId) ? "cwiz-trait-selected" : ""
-              }`}
-              onClick={() => {
-                let traits = [...this.state.blockTraits];
-                const idx = traits.indexOf(trait.id as BlockTraitId);
-                if (idx >= 0) {
-                  traits.splice(idx, 1);
-                } else {
-                  if (trait.exclusiveGroup) {
-                    const exclusiveIds = BLOCK_TRAITS.filter(
-                      (t) => t.exclusiveGroup === trait.exclusiveGroup && t.id !== trait.id
-                    ).map((t) => t.id as BlockTraitId);
-                    traits = traits.filter((t) => !exclusiveIds.includes(t));
-                  }
-                  traits.push(trait.id as BlockTraitId);
+          const renderTraitCard = (trait: ITraitInfo) => {
+            const isSelected = this.state.blockTraits.includes(trait.id as BlockTraitId);
+            const toggle = () => {
+              let traits = [...this.state.blockTraits];
+              const idx = traits.indexOf(trait.id as BlockTraitId);
+              if (idx >= 0) {
+                traits.splice(idx, 1);
+              } else {
+                if (trait.exclusiveGroup) {
+                  const exclusiveIds = BLOCK_TRAITS.filter(
+                    (t) => t.exclusiveGroup === trait.exclusiveGroup && t.id !== trait.id
+                  ).map((t) => t.id as BlockTraitId);
+                  traits = traits.filter((t) => !exclusiveIds.includes(t));
                 }
-                this.setState({ blockTraits: traits });
-              }}
-            >
-              <div className="cwiz-trait-icon" style={{ color: getTraitIconColor(trait) }}>
-                {renderBlockTraitIcon(trait.id)}
+                traits.push(trait.id as BlockTraitId);
+              }
+              this.setState({ blockTraits: traits });
+            };
+            return (
+              <div
+                key={trait.id}
+                className={`cwiz-trait ${isSelected ? "cwiz-trait-selected" : ""}`}
+                onClick={toggle}
+                aria-pressed={isSelected}
+                {...clickableKeyHandler(toggle)}
+              >
+                <div className="cwiz-trait-icon" style={{ color: getTraitIconColor(trait) }}>
+                  {renderBlockTraitIcon(trait.id)}
+                </div>
+                <div className="cwiz-trait-text">
+                  <div className="cwiz-trait-label">{trait.label}</div>
+                  <div className="cwiz-trait-desc">{trait.description}</div>
+                </div>
+                {isSelected && <div className="cwiz-trait-check">&#10003;</div>}
               </div>
-              <div className="cwiz-trait-text">
-                <div className="cwiz-trait-label">{trait.label}</div>
-                <div className="cwiz-trait-desc">{trait.description}</div>
-              </div>
-              {this.state.blockTraits.includes(trait.id as BlockTraitId) && (
-                <div className="cwiz-trait-check">&#10003;</div>
-              )}
-            </div>
-          );
+            );
+          };
 
           stepContent = (
             <div className="cwiz-step-content" style={getTraitCardThemeStyle(this.props.theme)}>
@@ -1063,13 +1110,14 @@ class ContentWizard extends Component<IContentWizardProps, IContentWizardState> 
         stepContent = (
           <div className="cwiz-step-content">
             <div className="cwiz-field">
-              <label>
+              <label id="cwiz-miningSpeedLabel">
                 {this.props.intl.formatMessage(
                   { id: "wizard.mining_speed" },
                   { value: this.state.blockDestroyTime.toFixed(1) }
                 )}
               </label>
               <Slider
+                aria-labelledby="cwiz-miningSpeedLabel"
                 min={0}
                 max={10}
                 step={0.5}
@@ -1080,13 +1128,14 @@ class ContentWizard extends Component<IContentWizardProps, IContentWizardState> 
               <div className="cwiz-field-hint">{this.props.intl.formatMessage({ id: "wizard.mining_speed_hint" })}</div>
             </div>
             <div className="cwiz-field">
-              <label>
+              <label id="cwiz-lightEmissionLabel">
                 {this.props.intl.formatMessage(
                   { id: "wizard.light_emission" },
                   { value: this.state.blockLightEmission }
                 )}
               </label>
               <Slider
+                aria-labelledby="cwiz-lightEmissionLabel"
                 min={0}
                 max={15}
                 value={this.state.blockLightEmission}
@@ -1098,9 +1147,10 @@ class ContentWizard extends Component<IContentWizardProps, IContentWizardState> 
               </div>
             </div>
             <div className="cwiz-field">
-              <label>{this.props.intl.formatMessage({ id: "wizard.block_color" })}</label>
+              <label id="cwiz-blockColorLabel">{this.props.intl.formatMessage({ id: "wizard.block_color" })}</label>
               <input
                 type="color"
+                aria-labelledby="cwiz-blockColorLabel"
                 value={this.state.blockPrimaryColor}
                 onChange={(e) => this.setState({ blockPrimaryColor: e.target.value })}
               />
@@ -1126,41 +1176,43 @@ class ContentWizard extends Component<IContentWizardProps, IContentWizardState> 
           const typeTraits = ITEM_TRAITS.filter((t) => t.exclusiveGroup === "type");
           const behaviorTraits = ITEM_TRAITS.filter((t) => !t.exclusiveGroup);
 
-          const renderItemTraitCard = (trait: ITraitInfo) => (
-            <div
-              key={trait.id}
-              className={`cwiz-trait ${
-                this.state.itemTraits.includes(trait.id as ItemTraitId) ? "cwiz-trait-selected" : ""
-              }`}
-              onClick={() => {
-                let traits = [...this.state.itemTraits];
-                const idx = traits.indexOf(trait.id as ItemTraitId);
-                if (idx >= 0) {
-                  traits.splice(idx, 1);
-                } else {
-                  if (trait.exclusiveGroup) {
-                    const exclusiveIds = ITEM_TRAITS.filter(
-                      (t) => t.exclusiveGroup === trait.exclusiveGroup && t.id !== trait.id
-                    ).map((t) => t.id as ItemTraitId);
-                    traits = traits.filter((t) => !exclusiveIds.includes(t));
-                  }
-                  traits.push(trait.id as ItemTraitId);
+          const renderItemTraitCard = (trait: ITraitInfo) => {
+            const isSelected = this.state.itemTraits.includes(trait.id as ItemTraitId);
+            const toggle = () => {
+              let traits = [...this.state.itemTraits];
+              const idx = traits.indexOf(trait.id as ItemTraitId);
+              if (idx >= 0) {
+                traits.splice(idx, 1);
+              } else {
+                if (trait.exclusiveGroup) {
+                  const exclusiveIds = ITEM_TRAITS.filter(
+                    (t) => t.exclusiveGroup === trait.exclusiveGroup && t.id !== trait.id
+                  ).map((t) => t.id as ItemTraitId);
+                  traits = traits.filter((t) => !exclusiveIds.includes(t));
                 }
-                this.setState({ itemTraits: traits });
-              }}
-            >
-              <div className="cwiz-trait-icon" style={{ color: getTraitIconColor(trait) }}>
-                {renderItemTraitIcon(trait.id)}
+                traits.push(trait.id as ItemTraitId);
+              }
+              this.setState({ itemTraits: traits });
+            };
+            return (
+              <div
+                key={trait.id}
+                className={`cwiz-trait ${isSelected ? "cwiz-trait-selected" : ""}`}
+                onClick={toggle}
+                aria-pressed={isSelected}
+                {...clickableKeyHandler(toggle)}
+              >
+                <div className="cwiz-trait-icon" style={{ color: getTraitIconColor(trait) }}>
+                  {renderItemTraitIcon(trait.id)}
+                </div>
+                <div className="cwiz-trait-text">
+                  <div className="cwiz-trait-label">{trait.label}</div>
+                  <div className="cwiz-trait-desc">{trait.description}</div>
+                </div>
+                {isSelected && <div className="cwiz-trait-check">&#10003;</div>}
               </div>
-              <div className="cwiz-trait-text">
-                <div className="cwiz-trait-label">{trait.label}</div>
-                <div className="cwiz-trait-desc">{trait.description}</div>
-              </div>
-              {this.state.itemTraits.includes(trait.id as ItemTraitId) && (
-                <div className="cwiz-trait-check">&#10003;</div>
-              )}
-            </div>
-          );
+            );
+          };
 
           stepContent = (
             <div className="cwiz-step-content" style={getTraitCardThemeStyle(this.props.theme)}>
@@ -1234,10 +1286,11 @@ class ContentWizard extends Component<IContentWizardProps, IContentWizardState> 
         stepContent = (
           <div className="cwiz-step-content">
             <div className="cwiz-field">
-              <label>
+              <label id="cwiz-maxStackLabel">
                 {this.props.intl.formatMessage({ id: "wizard.max_stack_size" }, { value: this.state.itemMaxStack })}
               </label>
               <Slider
+                aria-labelledby="cwiz-maxStackLabel"
                 min={1}
                 max={64}
                 value={this.state.itemMaxStack}
@@ -1246,12 +1299,13 @@ class ContentWizard extends Component<IContentWizardProps, IContentWizardState> 
               />
             </div>
             <div className="cwiz-field">
-              <label>
+              <label id="cwiz-durabilityLabel">
                 {this.state.itemDurability
                   ? this.props.intl.formatMessage({ id: "wizard.durability" }, { value: this.state.itemDurability })
                   : this.props.intl.formatMessage({ id: "wizard.durability_none" })}
               </label>
               <Slider
+                aria-labelledby="cwiz-durabilityLabel"
                 min={0}
                 max={2000}
                 step={50}
@@ -1262,9 +1316,10 @@ class ContentWizard extends Component<IContentWizardProps, IContentWizardState> 
               <div className="cwiz-field-hint">{this.props.intl.formatMessage({ id: "wizard.durability_hint" })}</div>
             </div>
             <div className="cwiz-field">
-              <label>{this.props.intl.formatMessage({ id: "wizard.item_color" })}</label>
+              <label id="cwiz-itemColorLabel">{this.props.intl.formatMessage({ id: "wizard.item_color" })}</label>
               <input
                 type="color"
+                aria-labelledby="cwiz-itemColorLabel"
                 value={this.state.itemPrimaryColor}
                 onChange={(e) => this.setState({ itemPrimaryColor: e.target.value })}
               />

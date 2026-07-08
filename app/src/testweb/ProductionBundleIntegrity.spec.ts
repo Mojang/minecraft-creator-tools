@@ -64,7 +64,12 @@ test.describe("Production Bundle Integrity", () => {
   test("page loads without uncaught JavaScript errors", async ({ page }) => {
     const { pageErrors, consoleErrors } = attachErrorCollectors(page);
 
-    await page.goto("/", { waitUntil: "networkidle", timeout: 30000 });
+    // "load" (not "networkidle") + a generous timeout: the Vite dev server serves
+    // ~1300 unbundled modules on a cold load, which can exceed 30s under contention.
+    // The error collectors capture exceptions during module execution regardless of
+    // the wait condition, so "load" preserves this test's intent on both dev and
+    // production builds.
+    await page.goto("/", { waitUntil: "load", timeout: 90000 });
 
     // Wait a bit for any deferred module initialization
     await page.waitForTimeout(2000);
@@ -79,7 +84,7 @@ test.describe("Production Bundle Integrity", () => {
   test("React app renders content in #root", async ({ page }) => {
     const { pageErrors } = attachErrorCollectors(page);
 
-    await page.goto("/", { waitUntil: "networkidle", timeout: 30000 });
+    await page.goto("/", { waitUntil: "load", timeout: 90000 });
     await page.waitForTimeout(2000);
 
     // Verify no errors first
@@ -105,7 +110,7 @@ test.describe("Production Bundle Integrity", () => {
       }
     });
 
-    await page.goto("/", { waitUntil: "networkidle", timeout: 30000 });
+    await page.goto("/", { waitUntil: "load", timeout: 90000 });
     await page.waitForTimeout(2000);
 
     // All vendor chunks should load without triggering pageerror

@@ -215,7 +215,11 @@ class MinecraftToolEditor extends Component<IMinecraftToolEditorProps, IMinecraf
     this._commandValues = [];
 
     for (let i = 0; i < 9; i++) {
-      const name = this.props.intl.formatMessage({ id: "project_editor.mc_tool.ctrl_prefix" }) + (i + 1).toString() + ": " + this.getNameForTool(i);
+      const name =
+        this.props.intl.formatMessage({ id: "project_editor.mc_tool.ctrl_prefix" }) +
+        (i + 1).toString() +
+        ": " +
+        this.getNameForTool(i);
 
       this._commandValues.push(name);
     }
@@ -281,6 +285,7 @@ class MinecraftToolEditor extends Component<IMinecraftToolEditorProps, IMinecraf
           <div className="mts-toolPicker">
             <FormControl size="small" fullWidth>
               <Select
+                SelectDisplayProps={{ "aria-label": this.props.intl.formatMessage({ id: "project_editor.mc_tool.select_command_aria" }) }}
                 value={"Ctrl-" + (this.state.activeCommandIndex + 1).toString() + ": " + this.state.toolName}
                 onChange={this._handleCommandChange}
                 displayEmpty
@@ -318,10 +323,18 @@ class MinecraftToolEditor extends Component<IMinecraftToolEditorProps, IMinecraf
               size="small"
               aria-label={this.props.intl.formatMessage({ id: "project_editor.mc_tool.type_aria" })}
             >
-              <ToggleButton value="Commands" title={this.props.intl.formatMessage({ id: "project_editor.mc_tool.type_commands" })} aria-label={this.props.intl.formatMessage({ id: "project_editor.mc_tool.type_commands" })}>
+              <ToggleButton
+                value="Commands"
+                title={this.props.intl.formatMessage({ id: "project_editor.mc_tool.type_commands" })}
+                aria-label={this.props.intl.formatMessage({ id: "project_editor.mc_tool.type_commands" })}
+              >
                 <span className="mts-typeIcon">/say</span>
               </ToggleButton>
-              <ToggleButton value="Script" title={this.props.intl.formatMessage({ id: "project_editor.mc_tool.type_script" })} aria-label={this.props.intl.formatMessage({ id: "project_editor.mc_tool.type_script" })}>
+              <ToggleButton
+                value="Script"
+                title={this.props.intl.formatMessage({ id: "project_editor.mc_tool.type_script" })}
+                aria-label={this.props.intl.formatMessage({ id: "project_editor.mc_tool.type_script" })}
+              >
                 <span className="mts-typeIcon">&#123; &#125;</span>
               </ToggleButton>
             </ToggleButtonGroup>

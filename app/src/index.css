@@ -176,6 +176,17 @@ body {
   color: var(--mc-fg-1);
 }
 
+/* Below the sm breakpoint (e.g. 400% browser zoom ≈ 320px wide) the home layout
+   flows into a single scrolling document instead of the desktop app shell, so the
+   body itself must scroll vertically — otherwise the reflowed content below the
+   viewport is unreachable (WCAG 1.4.10 Reflow). Horizontal scrolling stays
+   suppressed. Mirrors the breakpoint in components/layout/Layout.tsx. */
+@media (max-width: 599.95px) {
+  body {
+    overflow-y: auto;
+  }
+}
+
 /* ═══════════════════════════════════════════════════════════════
    Global Minecraft-themed scrollbars
    Applies consistently across the entire app.
@@ -806,7 +817,8 @@ BUTTON {
 /* Global focus-visible ring for keyboard navigation */
 :focus-visible,
 .MuiButtonBase-root.Mui-focusVisible,
-.MuiMenuItem-root.Mui-focusVisible {
+.MuiMenuItem-root.Mui-focusVisible,
+.MuiSlider-thumb.Mui-focusVisible {
   outline: 2px solid #52a535 !important;
   outline-offset: 2px !important;
 }
@@ -816,7 +828,8 @@ BUTTON {
    (WCAG 1.4.11). Dark mode keeps green4 — its surfaces are dark, so it already passes. */
 body.ct-light :focus-visible,
 body.ct-light .MuiButtonBase-root.Mui-focusVisible,
-body.ct-light .MuiMenuItem-root.Mui-focusVisible {
+body.ct-light .MuiMenuItem-root.Mui-focusVisible,
+body.ct-light .MuiSlider-thumb.Mui-focusVisible {
   outline-color: var(--mc-green-7) !important;
 }
 

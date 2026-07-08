@@ -122,13 +122,17 @@ export default class MinecraftGameSettingsPanel extends Component<
     return (
       <div className="migs-outer">
         <div className="migs-header">Minecraft Windows app connection</div>
-        <div className="migs-label migs-modelabel" key="modelabel">
+        <div className="migs-label migs-modelabel" key="modelabel" id="migs-modelabel-id">
           Connect and deploy to:
         </div>
 
         <div className="migs-modeinput" key="modeinput">
           <FormControl size="small" fullWidth>
-            <Select value={this.modeOptions[mode]} onChange={this._handleModeChanged}>
+            <Select
+              value={this.modeOptions[mode]}
+              onChange={this._handleModeChanged}
+              SelectDisplayProps={{ "aria-labelledby": "migs-modelabel-id" }}
+            >
               {this.modeOptions.map((option) => (
                 <MenuItem key={option} value={option}>
                   {option}

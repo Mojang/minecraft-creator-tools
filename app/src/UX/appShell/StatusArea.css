@@ -153,6 +153,13 @@
   outline-offset: -2px;
 }
 
+/* Each status row is a listbox option with a roving tab stop; show the same
+   focus ring when keyboard focus lands on a row (WCAG 2.4.7 / 2.1.1). */
+.sa-list [role="option"]:focus-visible {
+  outline: 2px solid #52a535;
+  outline-offset: -2px;
+}
+
 .sa-progressOuter {
   display: flex;
   align-items: center;

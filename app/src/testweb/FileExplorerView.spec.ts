@@ -608,7 +608,9 @@ test.describe("MCTools Web Editor - File Explorer View Tests @full", () => {
   });
 
   test("should display ImageManager when clicking on pack_icon.png file", async ({ page }, testInfo) => {
-    testInfo.setTimeout(60000);
+    // The heavier Full Add-On template plus the Vite dev cold load can exceed a 60s
+    // budget under worker contention.
+    testInfo.setTimeout(120000);
     /**
      * TEST PURPOSE:
      * This test validates that PNG files correctly display in ImageManager instead of

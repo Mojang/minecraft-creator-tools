@@ -125,7 +125,9 @@ class NewVariant extends Component<INewVariantProps, INewVariantState> {
     return (
       <div className="newvar-outer">
         <div className="newvar-options">
-          <div className="newvar-variantLabel">{this.props.intl.formatMessage({ id: "project_editor.new_variant.label" })}</div>
+          <div className="newvar-variantLabel">
+            {this.props.intl.formatMessage({ id: "project_editor.new_variant.label" })}
+          </div>
           <div className="newvar-variantCombo">
             <Autocomplete
               freeSolo
@@ -134,13 +136,22 @@ class NewVariant extends Component<INewVariantProps, INewVariantState> {
               onChange={this._handleLabelTextChange}
               size="small"
               fullWidth
-              renderInput={(params) => <TextField {...params} placeholder={this.props.intl.formatMessage({ id: "project_editor.new_variant.placeholder" })} variant="outlined" />}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  placeholder={this.props.intl.formatMessage({ id: "project_editor.new_variant.placeholder" })}
+                  variant="outlined"
+                />
+              )}
             />
           </div>
-          <div className="newvar-basedOnLabel">{this.props.intl.formatMessage({ id: "project_editor.new_variant.based_on" })}</div>
+          <div className="newvar-basedOnLabel" id="newvar-basedOnLabel">
+            {this.props.intl.formatMessage({ id: "project_editor.new_variant.based_on" })}
+          </div>
           <div className="newvar-basedOnDropdown">
             <FormControl fullWidth size="small">
               <Select
+                SelectDisplayProps={{ "aria-labelledby": "newvar-basedOnLabel" }}
                 defaultValue={variantLabels.length > 0 ? variantLabels[0] : ""}
                 onChange={this._handleBasedOnTextChange}
               >

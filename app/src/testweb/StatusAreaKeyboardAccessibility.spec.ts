@@ -88,4 +88,33 @@ test.describe("status area flyout keyboard accessibility", () => {
       )
       .toBe(true);
   });
+
+  test("status log rows are keyboard-navigable list options", async ({ page }) => {
+    expect(await enterEditor(page, { editMode: "full" })).toBe(true);
+
+    await expandStatusAreaWithKeyboard(page);
+
+    // Each status row must be exposed as a listbox option (not inert text), so a
+    // keyboard user can move through the log — the read-only single-region pattern
+    // left the individual rows unreachable.
+    const optionCount = await page.locator('.sa-list [role="option"]').count();
+    expect(optionCount, "status rows should be navigable options").toBeGreaterThan(0);
+
+    // After keyboard-expanding, the roving tab stop puts focus on a row; arrow keys
+    // move focus between rows (WCAG / MAS 2.1.1).
+    await page.keyboard.press("ArrowUp");
+    const focusedOption = () =>
+      page.evaluate(() => {
+        const ae = document.activeElement;
+        return !!ae && ae.getAttribute("role") === "option" && !!ae.closest(".sa-list") ? ae.id || "option" : null;
+      });
+    const firstId = await focusedOption();
+    expect(firstId, "Arrow key should move focus onto a status row option").not.toBeNull();
+
+    // A second navigation keystroke must move focus to a different row.
+    await page.keyboard.press("ArrowUp");
+    const secondId = await focusedOption();
+    expect(secondId, "second arrow key should keep focus on an option").not.toBeNull();
+    expect(secondId).not.toBe(firstId);
+  });
 });

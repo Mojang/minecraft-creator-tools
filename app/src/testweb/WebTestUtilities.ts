@@ -434,6 +434,59 @@ export async function waitForEditorReady(page: Page, timeoutMs: number = 15000):
 }
 
 /**
+ * Waits for the Project Inspector's in-development validation pass to finish.
+ *
+ * Opening "Check for Problems" kicks off a validation that runs in a web worker.
+ * Until it completes, the inspector renders a `.pid-validating` placeholder and
+ * neither the Summary stats/headers nor the Items filter chips are present. On the
+ * Vite dev server this validation routinely takes ~25s (the worker lazily loads
+ * hundreds of modules over HTTP), so a fixed short wait races it and the
+ * inspector content never appears in time. Wait for `.pid-validating` to detach
+ * before asserting on inspector content. Resolves immediately if validation has
+ * already completed (no `.pid-validating` element present).
+ *
+ * Call this after the inspector has opened (e.g. once `h2.pid-title` is visible),
+ * at which point the placeholder is already in the DOM.
+ *
+ * @param page - The Playwright page object
+ * @param timeoutMs - Max time to wait for validation to finish (default 120s)
+ */
+export async function waitForInspectorValidationComplete(page: Page, timeoutMs: number = 120000): Promise<void> {
+  await page.locator(".pid-validating").waitFor({ state: "detached", timeout: timeoutMs });
+}
+
+/**
+ * Waits for the Monaco code editor to finish loading and be ready to drive.
+ *
+ * Monaco fetches its ~3.5MB editor bundle from `/dist/vs` via the AMD loader. On the
+ * Vite dev server, under parallel-worker contention, that cold load can take 10-25s,
+ * during which a "Loading code editor..." placeholder is shown instead of the editor.
+ * Tests that assert on `.monaco-editor` or drive `monaco.editor.getEditors()` must
+ * wait for BOTH the editor DOM to mount AND the global `monaco` API to expose a live
+ * editor instance, otherwise they race the load and fail spuriously.
+ *
+ * @param page - The Playwright page object
+ * @param timeoutMs - Max time to wait for Monaco to be ready (default 30s)
+ * @returns true if Monaco mounted and the API is ready, false on timeout
+ */
+export async function waitForMonacoEditor(page: Page, timeoutMs: number = 30000): Promise<boolean> {
+  try {
+    await page.locator(".monaco-editor").first().waitFor({ state: "visible", timeout: timeoutMs });
+    await page.waitForFunction(
+      () => {
+        const m = (window as any).monaco;
+        return !!(m && m.editor && typeof m.editor.getEditors === "function" && m.editor.getEditors().length > 0);
+      },
+      undefined,
+      { timeout: timeoutMs }
+    );
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Enters the editor by creating a new project.
  *
  * This is the standard way to get into the editor interface:

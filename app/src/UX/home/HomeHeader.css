@@ -77,6 +77,11 @@
   padding-right: 6px;
   gap: 2px;
   align-items: center;
+  /* Wrap to additional rows (and let the header grow via min-height) instead of
+     dropping links when the row is too narrow — required so every top link stays
+     reachable at 400% zoom / 320px (WCAG 1.4.10 Reflow). */
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .hhdr-mobileLinks a,

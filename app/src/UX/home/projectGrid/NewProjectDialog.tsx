@@ -1,4 +1,4 @@
-import { Box, Collapse, FormControlLabel, FormHelperText, Radio, RadioGroup, Typography, Zoom } from "@mui/material";
+import { Box, ButtonBase, Collapse, FormControlLabel, FormHelperText, Radio, RadioGroup, Typography, Zoom } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -221,8 +221,6 @@ export default function NewProjectDialog({ template, open, close, onNewProject }
       fullScreen={isMobile}
       TransitionComponent={PopOutTransition}
       PaperProps={{
-        component: "form",
-        onSubmit: onFormSubmit,
         sx: (theme) => {
           const isDark = theme.palette.mode === "dark";
           return {
@@ -280,463 +278,500 @@ export default function NewProjectDialog({ template, open, close, onNewProject }
       >
         <FontAwesomeIcon icon={faXmark} />
       </Button>
-      {/* Hero Header with Template Image */}
+      {/* The dialog's <form> lives INSIDE the dialog rather than on the Dialog
+          Paper: a <form> element may not carry role="dialog" (which MUI applies
+          to the Paper). This flex column reproduces the Paper's layout so the
+          hero stays fixed, the content scrolls, and the actions pin to the
+          bottom. */}
       <Box
-        sx={(theme) => {
-          const isDark = theme.palette.mode === "dark";
-          return {
-            position: "relative",
-            height: 140,
-            backgroundImage: `url("${templateImage}")`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            imageRendering: "pixelated",
-            "&::after": {
-              content: '""',
-              position: "absolute",
-              inset: 0,
-              background: isDark
-                ? `linear-gradient(to top, ${theme.palette.background.default} 0%, ${theme.palette.background.default}B3 40%, ${theme.palette.background.default}4D 100%)`
-                : `linear-gradient(to top, ${theme.palette.background.default} 0%, ${theme.palette.background.default}B3 40%, ${theme.palette.background.default}4D 100%)`,
-            },
-          };
-        }}
+        component="form"
+        onSubmit={onFormSubmit}
+        sx={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0 }}
       >
-        <Box
-          sx={(theme) => ({
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            zIndex: 1,
-            px: 3,
-            pt: 1.5,
-            pb: 2,
-            // Solid scrim so the hero text keeps >= 4.5:1 contrast over ANY template
-            // screenshot: a translucent gradient can't guarantee this for small text
-            // across arbitrary, variable-luminance artwork.
-            backgroundColor: theme.palette.background.default,
-            // Soften the transition from the image above into the solid caption band.
-            "&::before": {
-              content: '""',
-              position: "absolute",
-              left: 0,
-              right: 0,
-              bottom: "100%",
-              height: 24,
-              background: `linear-gradient(to top, ${theme.palette.background.default}, transparent)`,
-              pointerEvents: "none",
-            },
-          })}
-        >
-          <Typography
-            variant="overline"
-            className="npd-heroOverline"
-            sx={(theme) => {
-              const isDark = theme.palette.mode === "dark";
-              return {
-                color: isDark ? theme.palette.secondary.main : theme.palette.secondary.main,
-                fontWeight: 600,
-                letterSpacing: 2,
-                textShadow: isDark ? "1px 1px 2px rgba(0,0,0,0.8)" : "none",
-              };
-            }}
-          >
-            {intl.formatMessage({ id: "home.new_project.creating_from_template" })}
-          </Typography>
-          <Typography
-            variant="h4"
-            sx={(theme) => {
-              const isDark = theme.palette.mode === "dark";
-              return {
-                fontWeight: 700,
-                fontFamily: '"Noto Sans", "Segoe UI", sans-serif',
-                color: isDark ? theme.palette.text.primary : theme.palette.primary.dark,
-                textShadow: isDark ? "2px 2px 4px rgba(0,0,0,0.8)" : "none",
-              };
-            }}
-          >
-            {template.titleKey ? intl.formatMessage({ id: template.titleKey }) : template.title}
-          </Typography>
-        </Box>
-      </Box>
-
-      <DialogContent sx={{ pt: 3 }}>
-        {/* Project Details Section */}
+        {/* Hero Header with Template Image */}
         <Box
           sx={(theme) => {
             const isDark = theme.palette.mode === "dark";
             return {
-              bgcolor: isDark ? "rgba(0,0,0,0.2)" : "rgba(0,0,0,0.03)",
-              borderRadius: "4px",
-              p: 2,
-              mb: 2,
-              border: `1px solid ${theme.palette.divider}`,
-            };
-          }}
-        >
-          <Typography
-            variant="subtitle2"
-            sx={(theme) => ({
-              color: theme.palette.secondary.main,
-              mb: 2,
-              fontWeight: 600,
-              textTransform: "uppercase",
-              letterSpacing: 1,
-            })}
-          >
-            <FontAwesomeIcon icon={faFileLines} style={{ marginRight: 8 }} />
-            {intl.formatMessage({ id: "home.new_project.project_details" })}
-          </Typography>
-          <FormField
-            required
-            defaultValue={suggestedName}
-            id="title"
-            label={intl.formatMessage({ id: "home.new_project.title" })}
-            autoFocus
-          />
-          <FormField
-            required
-            id="creator"
-            label={intl.formatMessage({ id: "home.new_project.creator" })}
-            placeholder={intl.formatMessage({ id: "home.new_project.creator_placeholder" })}
-            error={Boolean(creatorError)}
-            helperText={creatorError}
-            onChange={(e) => {
-              const v = (e.target as HTMLInputElement).value;
-              setCreatorError(v.trim() ? null : intl.formatMessage({ id: "home.new_project.creator_required" }));
-            }}
-            onBlur={(e) => {
-              const v = (e.target as HTMLInputElement).value;
-              if (!v.trim()) {
-                setCreatorError(intl.formatMessage({ id: "home.new_project.creator_required" }));
-              }
-            }}
-          />
-          <FormField
-            defaultValue={suggestedDesc}
-            id="description"
-            label={intl.formatMessage({ id: "home.new_project.description" })}
-            type="textarea"
-          />
-          <Box
-            onClick={() => setShowAdvanced(!showAdvanced)}
-            sx={{
+              position: "relative",
+              // minHeight (not a fixed height) plus flexShrink: 0 so the hero keeps its
+              // size — and can grow for its caption — instead of being squeezed to a
+              // sliver when the dialog is vertically constrained (e.g. 200% zoom),
+              // which previously pushed the overline off the scrim band. The caption
+              // is laid out in normal flow, anchored to the bottom.
+              minHeight: 140,
+              flexShrink: 0,
               display: "flex",
-              alignItems: "center",
-              gap: 1,
-              cursor: "pointer",
-              mt: 1,
-              mb: 0.5,
-              // De-emphasise via a muted-but-compliant colour rather than opacity:
-              // stacked opacity dimmed the hint below the 4.5:1 text-contrast minimum.
-              color: "text.secondary",
-              "&:hover": { color: "text.primary" },
-              userSelect: "none",
-            }}
-          >
-            <FontAwesomeIcon icon={showAdvanced ? faChevronDown : faChevronRight} style={{ fontSize: 10 }} />
-            <Typography variant="caption" sx={{ fontWeight: 500 }}>
-              {intl.formatMessage({
-                id: showAdvanced ? "home.new_project.hide_advanced" : "home.new_project.show_advanced",
-              })}
-            </Typography>
-            {!showAdvanced && (
-              <Typography variant="caption" className="npd-advancedHint" sx={{ fontSize: "10px", ml: 1 }}>
-                {intl.formatMessage({ id: "home.new_project.advanced_summary" })}
-              </Typography>
-            )}
-          </Box>
-          <Collapse in={showAdvanced}>
-            <Box sx={{ display: "flex", gap: 2 }}>
-              <Box sx={{ flex: 1 }}>
-                <FormField
-                  defaultValue={suggestedShortName}
-                  id="shortName"
-                  label={intl.formatMessage({ id: "home.new_project.folder_name" })}
-                  helperText={intl.formatMessage({ id: "home.new_project.folder_name_helper" })}
-                />
-              </Box>
-              <Box sx={{ flex: 1 }}>
-                <FormField
-                  required
-                  select
-                  id="target"
-                  label={intl.formatMessage({ id: "home.new_project.target_platform" })}
-                  defaultValue={MinecraftTrack.main}
-                  SelectProps={{ native: true }}
-                >
-                  {targets.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {intl.formatMessage({ id: option.labelId })}
-                    </option>
-                  ))}
-                </FormField>
-              </Box>
-            </Box>
-          </Collapse>
-        </Box>
-
-        {/* Storage Section */}
-        <Box
-          sx={(theme) => {
-            const isDark = theme.palette.mode === "dark";
-            return {
-              bgcolor: isDark ? "rgba(0,0,0,0.2)" : "rgba(0,0,0,0.03)",
-              borderRadius: "4px",
-              p: 2,
-              border: `1px solid ${theme.palette.divider}`,
+              flexDirection: "column",
+              justifyContent: "flex-end",
+              backgroundImage: `url("${templateImage}")`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              imageRendering: "pixelated",
+              "&::after": {
+                content: '""',
+                position: "absolute",
+                inset: 0,
+                background: isDark
+                  ? `linear-gradient(to top, ${theme.palette.background.default} 0%, ${theme.palette.background.default}B3 40%, ${theme.palette.background.default}4D 100%)`
+                  : `linear-gradient(to top, ${theme.palette.background.default} 0%, ${theme.palette.background.default}B3 40%, ${theme.palette.background.default}4D 100%)`,
+              },
             };
           }}
         >
-          <Typography
-            variant="subtitle2"
-            id="store-project-location"
+          <Box
             sx={(theme) => ({
-              color: theme.palette.secondary.main,
-              mb: 1,
-              fontWeight: 600,
-              textTransform: "uppercase",
-              letterSpacing: 1,
+              position: "relative",
+              zIndex: 1,
+              px: 3,
+              pt: 1.5,
+              pb: 2,
+              // Solid scrim so the hero text keeps >= 4.5:1 contrast over ANY template
+              // screenshot: a translucent gradient can't guarantee this for small text
+              // across arbitrary, variable-luminance artwork.
+              backgroundColor: theme.palette.background.default,
+              // Soften the transition from the image above into the solid caption band.
+              "&::before": {
+                content: '""',
+                position: "absolute",
+                left: 0,
+                right: 0,
+                bottom: "100%",
+                height: 24,
+                background: `linear-gradient(to top, ${theme.palette.background.default}, transparent)`,
+                pointerEvents: "none",
+              },
             })}
           >
-            <FontAwesomeIcon icon={faFloppyDisk} style={{ marginRight: 8 }} />
-            {intl.formatMessage({ id: "home.new_project.storage_location" })}
-          </Typography>
-          <RadioGroup
-            color="secondary"
-            aria-labelledby="store-project-location"
-            name="storeProjectLocation"
-            defaultValue={isElectron ? "documents" : "browser"}
-            onChange={(_, value) => setProjectStore(value)}
-            sx={{ mb: 1, alignItems: "flex-start" }}
-          >
-            {(isElectron
-              ? [
-                  {
-                    value: "documents",
-                    title: intl.formatMessage({ id: "home.new_project.storage_documents_title" }),
-                    description: intl.formatMessage({ id: "home.new_project.storage_documents_desc" }),
-                    isFirst: true,
-                  },
-                  {
-                    value: "custom",
-                    title: intl.formatMessage({ id: "home.new_project.storage_custom_title" }),
-                    description: intl.formatMessage({ id: "home.new_project.storage_custom_desc" }),
-                    isFirst: false,
-                  },
-                ]
-              : [
-                  {
-                    value: "browser",
-                    title: intl.formatMessage({ id: "home.new_project.storage_browser_title" }),
-                    description: intl.formatMessage({ id: "home.new_project.storage_browser_desc" }),
-                    isFirst: true,
-                  },
-                  {
-                    value: "device",
-                    title: intl.formatMessage({ id: "home.new_project.storage_device_title" }),
-                    description: intl.formatMessage({ id: "home.new_project.storage_device_desc" }),
-                    isFirst: false,
-                  },
-                ]
-            ).map((opt) => (
-              <FormControlLabel
-                key={opt.value}
-                value={opt.value}
-                control={
-                  <Radio
-                    sx={(theme) => ({
-                      color: theme.palette.text.secondary,
-                      "&.Mui-checked": { color: theme.palette.secondary.main },
-                    })}
-                  />
-                }
-                label={
-                  <Box>
-                    <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                      {opt.title}
-                    </Typography>
-                  </Box>
-                }
-                sx={{ alignItems: "center", ...(opt.isFirst ? { mr: 4 } : {}) }}
-              />
-            ))}
-          </RadioGroup>
+            <Typography
+              variant="overline"
+              className="npd-heroOverline"
+              sx={(theme) => {
+                const isDark = theme.palette.mode === "dark";
+                return {
+                  color: isDark ? theme.palette.secondary.main : theme.palette.secondary.main,
+                  fontWeight: 600,
+                  letterSpacing: 2,
+                  textShadow: isDark ? "1px 1px 2px rgba(0,0,0,0.8)" : "none",
+                };
+              }}
+            >
+              {intl.formatMessage({ id: "home.new_project.creating_from_template" })}
+            </Typography>
+            <Typography
+              variant="h4"
+              sx={(theme) => {
+                const isDark = theme.palette.mode === "dark";
+                return {
+                  fontWeight: 700,
+                  fontFamily: '"Noto Sans", "Segoe UI", sans-serif',
+                  color: isDark ? theme.palette.text.primary : theme.palette.primary.dark,
+                  textShadow: isDark ? "2px 2px 4px rgba(0,0,0,0.8)" : "none",
+                };
+              }}
+            >
+              {template.titleKey
+                ? intl.formatMessage({ id: template.titleKey, defaultMessage: template.title })
+                : template.title}
+            </Typography>
+          </Box>
+        </Box>
 
+        <DialogContent sx={{ pt: 3 }}>
+          {/* Project Details Section */}
           <Box
             sx={(theme) => {
               const isDark = theme.palette.mode === "dark";
               return {
-                display: "flex",
-                alignItems: "flex-start",
-                gap: 1.5,
-                mt: 1.5,
-                mb: 1,
-                p: 1.5,
+                bgcolor: isDark ? "rgba(0,0,0,0.2)" : "rgba(0,0,0,0.03)",
                 borderRadius: "4px",
+                p: 2,
+                mb: 2,
                 border: `1px solid ${theme.palette.divider}`,
-                backgroundColor: isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.025)",
               };
             }}
           >
-            <Box
+            <Typography
+              variant="subtitle2"
               sx={(theme) => ({
-                width: 26,
-                height: 26,
-                borderRadius: "4px",
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                bgcolor: theme.palette.primary.main,
-                color: theme.palette.primary.contrastText,
-                flexShrink: 0,
-                mt: 0.25,
+                color: theme.palette.secondary.main,
+                mb: 2,
+                fontWeight: 600,
+                textTransform: "uppercase",
+                letterSpacing: 1,
               })}
             >
-              <FontAwesomeIcon icon={faFloppyDisk} />
-            </Box>
-            <Box>
-              <Typography variant="caption" sx={{ display: "block", fontWeight: 700, letterSpacing: 0.5, mb: 0.5 }}>
-                {intl.formatMessage({ id: "home.new_project.storage_summary_title" })}
+              <FontAwesomeIcon icon={faFileLines} style={{ marginRight: 8 }} />
+              {intl.formatMessage({ id: "home.new_project.project_details" })}
+            </Typography>
+            <FormField
+              required
+              defaultValue={suggestedName}
+              id="title"
+              label={intl.formatMessage({ id: "home.new_project.title" })}
+              autoFocus
+            />
+            <FormField
+              required
+              id="creator"
+              label={intl.formatMessage({ id: "home.new_project.creator" })}
+              placeholder={intl.formatMessage({ id: "home.new_project.creator_placeholder" })}
+              error={Boolean(creatorError)}
+              helperText={creatorError}
+              onChange={(e) => {
+                const v = (e.target as HTMLInputElement).value;
+                setCreatorError(v.trim() ? null : intl.formatMessage({ id: "home.new_project.creator_required" }));
+              }}
+              onBlur={(e) => {
+                const v = (e.target as HTMLInputElement).value;
+                if (!v.trim()) {
+                  setCreatorError(intl.formatMessage({ id: "home.new_project.creator_required" }));
+                }
+              }}
+            />
+            <FormField
+              defaultValue={suggestedDesc}
+              id="description"
+              label={intl.formatMessage({ id: "home.new_project.description" })}
+              type="textarea"
+            />
+            <ButtonBase
+              type="button"
+              onClick={() => setShowAdvanced(!showAdvanced)}
+              aria-expanded={showAdvanced}
+              aria-controls="npd-advanced-fields"
+              disableRipple
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-start",
+                gap: 1,
+                width: "fit-content",
+                cursor: "pointer",
+                mt: 1,
+                mb: 0.5,
+                // De-emphasise via a muted-but-compliant colour rather than opacity:
+                // stacked opacity dimmed the hint below the 4.5:1 text-contrast minimum.
+                color: "text.secondary",
+                "&:hover": { color: "text.primary" },
+                // Guarantee a visible keyboard focus indicator (WCAG 2.4.7); the
+                // toggle is styled as subtle text, so rely on an explicit outline.
+                "&.Mui-focusVisible": {
+                  outline: "2px solid",
+                  outlineColor: "primary.main",
+                  outlineOffset: "2px",
+                  borderRadius: "2px",
+                },
+                userSelect: "none",
+              }}
+            >
+              <FontAwesomeIcon icon={showAdvanced ? faChevronDown : faChevronRight} style={{ fontSize: 10 }} />
+              <Typography variant="caption" sx={{ fontWeight: 500 }}>
+                {intl.formatMessage({
+                  id: showAdvanced ? "home.new_project.hide_advanced" : "home.new_project.show_advanced",
+                })}
               </Typography>
-              <Typography variant="body2" sx={{ lineHeight: 1.5 }}>
-                {intl.formatMessage(
-                  { id: storageSummaryId },
-                  selectedStorageFolder ? { folderName: selectedStorageFolder } : undefined
-                )}
-              </Typography>
-            </Box>
+              {!showAdvanced && (
+                <Typography variant="caption" className="npd-advancedHint" sx={{ fontSize: "10px", ml: 1 }}>
+                  {intl.formatMessage({ id: "home.new_project.advanced_summary" })}
+                </Typography>
+              )}
+            </ButtonBase>
+            <Collapse in={showAdvanced} id="npd-advanced-fields">
+              <Box sx={{ display: "flex", gap: 2 }}>
+                <Box sx={{ flex: 1 }}>
+                  <FormField
+                    defaultValue={suggestedShortName}
+                    id="shortName"
+                    label={intl.formatMessage({ id: "home.new_project.folder_name" })}
+                    helperText={intl.formatMessage({ id: "home.new_project.folder_name_helper" })}
+                  />
+                </Box>
+                <Box sx={{ flex: 1 }}>
+                  <FormField
+                    required
+                    select
+                    id="target"
+                    label={intl.formatMessage({ id: "home.new_project.target_platform" })}
+                    defaultValue={MinecraftTrack.main}
+                    SelectProps={{ native: true }}
+                  >
+                    {targets.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {intl.formatMessage({ id: option.labelId })}
+                      </option>
+                    ))}
+                  </FormField>
+                </Box>
+              </Box>
+            </Collapse>
           </Box>
 
-          {showElectronFolderSelect && (
+          {/* Storage Section */}
+          <Box
+            sx={(theme) => {
+              const isDark = theme.palette.mode === "dark";
+              return {
+                bgcolor: isDark ? "rgba(0,0,0,0.2)" : "rgba(0,0,0,0.03)",
+                borderRadius: "4px",
+                p: 2,
+                border: `1px solid ${theme.palette.divider}`,
+              };
+            }}
+          >
+            <Typography
+              variant="subtitle2"
+              id="store-project-location"
+              sx={(theme) => ({
+                color: theme.palette.secondary.main,
+                mb: 1,
+                fontWeight: 600,
+                textTransform: "uppercase",
+                letterSpacing: 1,
+              })}
+            >
+              <FontAwesomeIcon icon={faFloppyDisk} style={{ marginRight: 8 }} />
+              {intl.formatMessage({ id: "home.new_project.storage_location" })}
+            </Typography>
+            <RadioGroup
+              color="secondary"
+              aria-labelledby="store-project-location"
+              name="storeProjectLocation"
+              defaultValue={isElectron ? "documents" : "browser"}
+              onChange={(_, value) => setProjectStore(value)}
+              sx={{ mb: 1, alignItems: "flex-start" }}
+            >
+              {(isElectron
+                ? [
+                    {
+                      value: "documents",
+                      title: intl.formatMessage({ id: "home.new_project.storage_documents_title" }),
+                      description: intl.formatMessage({ id: "home.new_project.storage_documents_desc" }),
+                      isFirst: true,
+                    },
+                    {
+                      value: "custom",
+                      title: intl.formatMessage({ id: "home.new_project.storage_custom_title" }),
+                      description: intl.formatMessage({ id: "home.new_project.storage_custom_desc" }),
+                      isFirst: false,
+                    },
+                  ]
+                : [
+                    {
+                      value: "browser",
+                      title: intl.formatMessage({ id: "home.new_project.storage_browser_title" }),
+                      description: intl.formatMessage({ id: "home.new_project.storage_browser_desc" }),
+                      isFirst: true,
+                    },
+                    {
+                      value: "device",
+                      title: intl.formatMessage({ id: "home.new_project.storage_device_title" }),
+                      description: intl.formatMessage({ id: "home.new_project.storage_device_desc" }),
+                      isFirst: false,
+                    },
+                  ]
+              ).map((opt) => (
+                <FormControlLabel
+                  key={opt.value}
+                  value={opt.value}
+                  control={
+                    <Radio
+                      sx={(theme) => ({
+                        color: theme.palette.text.secondary,
+                        "&.Mui-checked": { color: theme.palette.secondary.main },
+                      })}
+                    />
+                  }
+                  label={
+                    <Box>
+                      <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                        {opt.title}
+                      </Typography>
+                    </Box>
+                  }
+                  sx={{ alignItems: "center", ...(opt.isFirst ? { mr: 4 } : {}) }}
+                />
+              ))}
+            </RadioGroup>
+
             <Box
               sx={(theme) => {
-                const hasFolder = Boolean(electronFolderPath);
+                const isDark = theme.palette.mode === "dark";
                 return {
                   display: "flex",
-                  alignItems: "center",
-                  gap: 2,
-                  mt: 2,
+                  alignItems: "flex-start",
+                  gap: 1.5,
+                  mt: 1.5,
+                  mb: 1,
                   p: 1.5,
-                  bgcolor: hasFolder
-                    ? theme.palette.mode === "dark"
-                      ? "rgba(82,165,53,0.14)"
-                      : "rgba(82,165,53,0.1)"
-                    : theme.palette.mode === "dark"
-                      ? "rgba(0,0,0,0.2)"
-                      : "rgba(0,0,0,0.03)",
                   borderRadius: "4px",
-                  border: hasFolder ? `1px solid ${theme.palette.success.main}` : `1px dashed ${theme.palette.divider}`,
+                  border: `1px solid ${theme.palette.divider}`,
+                  backgroundColor: isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.025)",
                 };
               }}
             >
-              <Button
-                size="small"
-                variant="contained"
-                onClick={handleElectronPickFolder}
-                startIcon={<FontAwesomeIcon icon={faFolderOpen} />}
-                sx={(theme) => {
-                  return {
-                    bgcolor: theme.palette.primary.main,
-                    color: theme.palette.primary.contrastText,
-                    border: `2px solid ${theme.palette.primary.light}`,
-                    borderBottom: `3px solid ${theme.palette.primary.dark}`,
-                    "&:hover": {
-                      bgcolor: theme.palette.primary.light,
-                    },
-                  };
-                }}
-              >
-                {intl.formatMessage({ id: "home.new_project.choose_folder" })}
-              </Button>
-              <Typography
-                variant="body2"
+              <Box
                 sx={(theme) => ({
-                  opacity: electronFolderPath ? 1 : 0.6,
-                  fontWeight: electronFolderPath ? 600 : 400,
-                  color: electronFolderPath ? theme.palette.text.primary : theme.palette.text.secondary,
-                })}
-              >
-                {electronFolderPath || intl.formatMessage({ id: "home.new_project.no_folder_selected" })}
-              </Typography>
-            </Box>
-          )}
-
-          {showDirectorySelect && (
-            <Box
-              sx={(theme) => {
-                const hasFolder = Boolean(directory);
-                return {
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 2,
-                  mt: 2,
-                  p: 1.5,
-                  bgcolor: hasFolder
-                    ? theme.palette.mode === "dark"
-                      ? "rgba(82,165,53,0.14)"
-                      : "rgba(82,165,53,0.1)"
-                    : theme.palette.mode === "dark"
-                      ? "rgba(0,0,0,0.2)"
-                      : "rgba(0,0,0,0.03)",
+                  width: 26,
+                  height: 26,
                   borderRadius: "4px",
-                  border: hasFolder ? `1px solid ${theme.palette.success.main}` : `1px dashed ${theme.palette.divider}`,
-                };
-              }}
-            >
-              <Button
-                size="small"
-                variant="contained"
-                onClick={pickDirectory}
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  bgcolor: theme.palette.primary.main,
+                  color: theme.palette.primary.contrastText,
+                  flexShrink: 0,
+                  mt: 0.25,
+                })}
+              >
+                <FontAwesomeIcon icon={faFloppyDisk} />
+              </Box>
+              <Box>
+                <Typography variant="caption" sx={{ display: "block", fontWeight: 700, letterSpacing: 0.5, mb: 0.5 }}>
+                  {intl.formatMessage({ id: "home.new_project.storage_summary_title" })}
+                </Typography>
+                <Typography variant="body2" sx={{ lineHeight: 1.5 }}>
+                  {intl.formatMessage(
+                    { id: storageSummaryId },
+                    selectedStorageFolder ? { folderName: selectedStorageFolder } : undefined
+                  )}
+                </Typography>
+              </Box>
+            </Box>
+
+            {showElectronFolderSelect && (
+              <Box
                 sx={(theme) => {
+                  const hasFolder = Boolean(electronFolderPath);
                   return {
-                    bgcolor: theme.palette.primary.main,
-                    color: theme.palette.primary.contrastText,
-                    border: `2px solid ${theme.palette.primary.light}`,
-                    borderBottom: `3px solid ${theme.palette.primary.dark}`,
-                    "&:hover": {
-                      bgcolor: theme.palette.primary.light,
-                    },
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 2,
+                    mt: 2,
+                    p: 1.5,
+                    bgcolor: hasFolder
+                      ? theme.palette.mode === "dark"
+                        ? "rgba(82,165,53,0.14)"
+                        : "rgba(82,165,53,0.1)"
+                      : theme.palette.mode === "dark"
+                        ? "rgba(0,0,0,0.2)"
+                        : "rgba(0,0,0,0.03)",
+                    borderRadius: "4px",
+                    border: hasFolder
+                      ? `1px solid ${theme.palette.success.main}`
+                      : `1px dashed ${theme.palette.divider}`,
                   };
                 }}
               >
-                {intl.formatMessage({ id: "home.new_project.choose_folder" })}
-              </Button>
-              <Typography
-                variant="body2"
-                sx={(theme) => ({
-                  opacity: directory ? 1 : 0.6,
-                  fontWeight: directory ? 600 : 400,
-                  color: directory ? theme.palette.text.primary : theme.palette.text.secondary,
-                })}
-              >
-                {directory?.name || intl.formatMessage({ id: "home.new_project.no_folder_selected" })}
-              </Typography>
-            </Box>
-          )}
-          <FormHelperText sx={{ color: (theme) => theme.palette.warning.main }}>
-            {directoryError?.message}
-          </FormHelperText>
-          <FormHelperText sx={{ color: (theme) => theme.palette.warning.main }}>{dirErrorMessage}</FormHelperText>
-        </Box>
-      </DialogContent>
+                <Button
+                  size="small"
+                  variant="contained"
+                  onClick={handleElectronPickFolder}
+                  startIcon={<FontAwesomeIcon icon={faFolderOpen} />}
+                  sx={(theme) => {
+                    return {
+                      bgcolor: theme.palette.primary.main,
+                      color: theme.palette.primary.contrastText,
+                      border: `2px solid ${theme.palette.primary.light}`,
+                      borderBottom: `3px solid ${theme.palette.primary.dark}`,
+                      "&:hover": {
+                        bgcolor: theme.palette.primary.light,
+                      },
+                    };
+                  }}
+                >
+                  {intl.formatMessage({ id: "home.new_project.choose_folder" })}
+                </Button>
+                <Typography
+                  variant="body2"
+                  sx={(theme) => ({
+                    opacity: electronFolderPath ? 1 : 0.6,
+                    fontWeight: electronFolderPath ? 600 : 400,
+                    color: electronFolderPath ? theme.palette.text.primary : theme.palette.text.secondary,
+                  })}
+                >
+                  {electronFolderPath || intl.formatMessage({ id: "home.new_project.no_folder_selected" })}
+                </Typography>
+              </Box>
+            )}
 
-      <DialogActions sx={{ p: 2, pt: 1.5, gap: 1 }}>
-        <McButton variant="stone" onClick={close}>
-          {intl.formatMessage({ id: "common.cancel" })}
-        </McButton>
-        <McButton
-          variant="green"
-          dataTestId="submit-button"
-          onClick={(e) => {
-            const form = (e.currentTarget as HTMLElement).closest("form");
-            if (form) form.requestSubmit();
-          }}
-        >
-          {intl.formatMessage({ id: "home.new_project.create_project" })}
-        </McButton>
-      </DialogActions>
+            {showDirectorySelect && (
+              <Box
+                sx={(theme) => {
+                  const hasFolder = Boolean(directory);
+                  return {
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 2,
+                    mt: 2,
+                    p: 1.5,
+                    bgcolor: hasFolder
+                      ? theme.palette.mode === "dark"
+                        ? "rgba(82,165,53,0.14)"
+                        : "rgba(82,165,53,0.1)"
+                      : theme.palette.mode === "dark"
+                        ? "rgba(0,0,0,0.2)"
+                        : "rgba(0,0,0,0.03)",
+                    borderRadius: "4px",
+                    border: hasFolder
+                      ? `1px solid ${theme.palette.success.main}`
+                      : `1px dashed ${theme.palette.divider}`,
+                  };
+                }}
+              >
+                <Button
+                  size="small"
+                  variant="contained"
+                  onClick={pickDirectory}
+                  sx={(theme) => {
+                    return {
+                      bgcolor: theme.palette.primary.main,
+                      color: theme.palette.primary.contrastText,
+                      border: `2px solid ${theme.palette.primary.light}`,
+                      borderBottom: `3px solid ${theme.palette.primary.dark}`,
+                      "&:hover": {
+                        bgcolor: theme.palette.primary.light,
+                      },
+                    };
+                  }}
+                >
+                  {intl.formatMessage({ id: "home.new_project.choose_folder" })}
+                </Button>
+                <Typography
+                  variant="body2"
+                  sx={(theme) => ({
+                    opacity: directory ? 1 : 0.6,
+                    fontWeight: directory ? 600 : 400,
+                    color: directory ? theme.palette.text.primary : theme.palette.text.secondary,
+                  })}
+                >
+                  {directory?.name || intl.formatMessage({ id: "home.new_project.no_folder_selected" })}
+                </Typography>
+              </Box>
+            )}
+            <FormHelperText sx={{ color: (theme) => theme.palette.warning.main }}>
+              {directoryError?.message}
+            </FormHelperText>
+            <FormHelperText sx={{ color: (theme) => theme.palette.warning.main }}>{dirErrorMessage}</FormHelperText>
+          </Box>
+        </DialogContent>
+
+        <DialogActions sx={{ p: 2, pt: 1.5, gap: 1 }}>
+          <McButton variant="stone" onClick={close}>
+            {intl.formatMessage({ id: "common.cancel" })}
+          </McButton>
+          <McButton
+            variant="green"
+            dataTestId="submit-button"
+            onClick={(e) => {
+              const form = (e.currentTarget as HTMLElement).closest("form");
+              if (form) form.requestSubmit();
+            }}
+          >
+            {intl.formatMessage({ id: "home.new_project.create_project" })}
+          </McButton>
+        </DialogActions>
+      </Box>
     </Dialog>
   );
 }

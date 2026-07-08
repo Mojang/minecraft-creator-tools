@@ -34,6 +34,30 @@ function cleanDir(dir: string) {
   fs.mkdirSync(dir, { recursive: true });
 }
 
+/**
+ * Runs execSync, retrying when it fails with a transient ETIMEDOUT.
+ *
+ * The `timeout` option on execSync is a wall-clock timer, not a CPU-time
+ * budget. If the machine suspends (sleep/hibernate) while the command is
+ * running, the timer can elapse even though the command made no real progress,
+ * surfacing as a spawn-level ETIMEDOUT. Retrying lets the test recover from
+ * such ambient interruptions instead of failing the entire suite.
+ */
+function execWithRetry(command: string, options: Parameters<typeof execSync>[1], retries = 2): string | Buffer {
+  for (let attempt = 0; ; attempt++) {
+    try {
+      return execSync(command, options);
+    } catch (e) {
+      const err = e as NodeJS.ErrnoException & { errno?: string };
+      const isTransientTimeout = err && (err.code === "ETIMEDOUT" || err.errno === "ETIMEDOUT");
+      if (isTransientTimeout && attempt < retries) {
+        continue;
+      }
+      throw e;
+    }
+  }
+}
+
 describe("PackageValidation", function () {
   this.timeout(120000);
 
@@ -61,7 +85,7 @@ describe("PackageValidation", function () {
   describe("npm pack", function () {
     it("should create a .tgz package", function () {
       // npm pack outputs the filename of the created tarball to stdout
-      const packOutput = execSync("npm pack --pack-destination " + JSON.stringify(packagesDir), {
+      const packOutput = execWithRetry("npm pack --pack-destination " + JSON.stringify(packagesDir), {
         cwd: jsnDir,
         encoding: "utf-8",
         timeout: 120000,
@@ -88,7 +112,7 @@ describe("PackageValidation", function () {
       }
 
       // tar xzf extracts into a "package/" subdirectory by convention
-      execSync("tar xzf " + JSON.stringify(tgzPath), {
+      execWithRetry("tar xzf " + JSON.stringify(tgzPath), {
         cwd: unpackedDir,
         timeout: 30000,
       });
@@ -137,7 +161,7 @@ describe("PackageValidation", function () {
       }
 
       // Install production dependencies only
-      execSync("npm install --omit=dev --ignore-scripts", {
+      execWithRetry("npm install --omit=dev --ignore-scripts", {
         cwd: packageDir,
         encoding: "utf-8",
         timeout: 60000,
@@ -151,7 +175,7 @@ describe("PackageValidation", function () {
       const binEntries = Object.values(pkg.bin) as string[];
       const cliPath = path.join(packageDir, binEntries[0]);
 
-      const result = execSync(`node ${JSON.stringify(cliPath)} --help`, {
+      const result = execWithRetry(`node ${JSON.stringify(cliPath)} --help`, {
         cwd: packageDir,
         encoding: "utf-8",
         timeout: 15000,
@@ -166,7 +190,7 @@ describe("PackageValidation", function () {
       const binEntries = Object.values(pkg.bin) as string[];
       const cliPath = path.join(packageDir, binEntries[0]);
 
-      const result = execSync(`node ${JSON.stringify(cliPath)} version`, {
+      const result = execWithRetry(`node ${JSON.stringify(cliPath)} version`, {
         cwd: packageDir,
         encoding: "utf-8",
         timeout: 15000,

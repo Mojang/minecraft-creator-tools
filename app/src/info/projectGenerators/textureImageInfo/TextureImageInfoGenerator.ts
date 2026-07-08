@@ -25,6 +25,8 @@ const TextureTiersBase = 200;
 const MashupResourcePackThresholdErrorPercent = 0.6; // for a global resource pack in content that also has a world (i.e., a mashup), return an error if it doesn't override at least 60% of vanilla game textures.
 const TextureOverrideThresholdPercent = 0.7; // if you override at least 70% of vanilla game textures, we assume you're trying to create a "texture pack" and should warn when you're not "covering" a vanilla texture.
 const TextureOverrideThresholdErrorPercent = 0.95; // if you override at least 95% of vanilla game textures, we assume you're trying to create a "texture pack" and should error if you don't have 95% coverage.
+const HighestResolutionMipMemoryBudget = 4 * 1024 * 1024;
+const HighestResolutionMipMemoryBudgetLabel = `${HighestResolutionMipMemoryBudget / (1024 * 1024)} MiB`;
 
 const ExemptVanillaOverridePaths = [
   "/entity/npc/",
@@ -521,12 +523,31 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
 
             if (imageWidth >= 0 && imageHeight >= 0) {
               const textureMem = imageWidth * imageHeight * 4;
+              const variantProjectPath = variant.projectPath ?? projectItem.projectPath ?? variantFile.storageRelativePath;
               let isAtlasTexture = false;
 
               textureImagePi.spectrumIntFeature("Width", imageWidth);
               textureImagePi.spectrumIntFeature("Height", imageHeight);
               textureImagePi.spectrumIntFeature("Texels", imageWidth * imageHeight);
               textureImagePi.spectrumIntFeature("Texture Memory", textureMem);
+
+              if (textureMem > HighestResolutionMipMemoryBudget) {
+                items.push(
+                  new ProjectInfoItem(
+                    InfoItemType.warning,
+                    this.id,
+                    TextureImageInfoGeneratorTest.individualTextureHighestResolutionMipExceedsFourMiB,
+                    `Texture ${variantProjectPath ?? projectItem.name} has a highest-resolution mip of ${Utilities.formatByteSize(
+                      textureMem
+                    )}, which exceeds the ${HighestResolutionMipMemoryBudgetLabel} budget.`,
+                    undefined,
+                    textureMem,
+                    undefined,
+                    undefined,
+                    variantProjectPath ?? projectItem.projectPath
+                  )
+                );
+              }
 
               if (pathInRp) {
                 for (const totalTextureMemoryByTier of totalTextureMemoryByTierToUpdate) {

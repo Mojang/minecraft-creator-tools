@@ -149,10 +149,21 @@
   cursor: pointer;
 }
 
+/* Heading wrapper around the interactive group-header row. The <h3> exposes the
+   group name to screen-reader heading navigation while the inner role="button"
+   div stays the actionable control (WCAG 1.3.1 / 4.1.2). Strip the UA heading
+   margins and font sizing so the flex row layout is unchanged. */
+.etop-groupHeading {
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
 .etop-groupName {
   font-size: 13px;
   font-weight: 600;
   color: var(--etop-text);
+  margin: 0;
 }
 
 .etop-groupLink {

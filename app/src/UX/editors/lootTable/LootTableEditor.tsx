@@ -2,6 +2,7 @@ import { Component } from "react";
 import IFileProps from "../../project/fileExplorer/IFileProps";
 import IFile from "../../../storage/IFile";
 import "./LootTableEditor.css";
+import SectionHeading from "../../shared/components/feedback/sectionHeading/SectionHeading";
 import Database from "../../../minecraft/Database";
 import DataForm, { IDataFormProps } from "../../../dataformux/DataForm";
 import IProperty from "../../../dataform/IProperty";
@@ -170,7 +171,11 @@ class LootTableEditor extends Component<ILootTableEditorProps, ILootTableEditorS
 
     let header = <></>;
     if (this.props.displayHeader === undefined || this.props.displayHeader) {
-      header = <div className="ltb-header">{this.props.intl.formatMessage({ id: "project_editor.loot_table.header" })}</div>;
+      header = (
+        <SectionHeading level={2} className="ltb-header">
+          {this.props.intl.formatMessage({ id: "project_editor.loot_table.header" })}
+        </SectionHeading>
+      );
     }
 
     if (!form) {

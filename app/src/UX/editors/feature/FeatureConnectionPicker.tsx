@@ -295,8 +295,9 @@ export default class FeatureConnectionPicker extends Component<
               <div className="fcp-create-mode">
                 {/* Feature type dropdown */}
                 <div className="fcp-field">
-                  <label>Feature Type</label>
+                  <label id="fcp-feature-type-label">Feature Type</label>
                   <Select
+                    SelectDisplayProps={{ "aria-labelledby": "fcp-feature-type-label" }}
                     value={this.state.selectedNewType}
                     onChange={this._handleNewTypeChange}
                     fullWidth

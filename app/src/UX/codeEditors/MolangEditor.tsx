@@ -2,6 +2,7 @@ import { Component } from "react";
 import IFile from "../../storage/IFile";
 import Editor from "@monaco-editor/react";
 import "./MolangEditor.css";
+import SectionHeading from "../shared/components/feedback/sectionHeading/SectionHeading";
 import type * as MonacoType from "monaco-editor";
 import IPersistable from "../types/IPersistable";
 import CreatorTools from "../../app/CreatorTools";
@@ -327,25 +328,25 @@ class MolangEditor extends Component<IMolangEditorProps, IMolangEditorState> {
 
         interior = (
           <MonacoErrorBoundary>
-          <Editor
-            height={editorHeight}
-            theme={"mcCommandsTheme" + this.props.roleId}
-            language="mcCommands"
-            options={{
-              lineNumbers: "off",
-              minimap: {
-                enabled: false,
-              },
-              glyphMargin: true,
-              fontSize: this.props.preferredTextSize,
-              readOnly: this.props.readOnly,
-            }}
-            defaultValue={content}
-            value={content}
-            beforeMount={this._handleEditorWillMount}
-            onMount={this._handleEditorDidMount}
-            onChange={this._handleContentUpdated}
-          />
+            <Editor
+              height={editorHeight}
+              theme={"mcCommandsTheme" + this.props.roleId}
+              language="mcCommands"
+              options={{
+                lineNumbers: "off",
+                minimap: {
+                  enabled: false,
+                },
+                glyphMargin: true,
+                fontSize: this.props.preferredTextSize,
+                readOnly: this.props.readOnly,
+              }}
+              defaultValue={content}
+              value={content}
+              beforeMount={this._handleEditorWillMount}
+              onMount={this._handleEditorDidMount}
+              onChange={this._handleContentUpdated}
+            />
           </MonacoErrorBoundary>
         );
       }
@@ -358,15 +359,27 @@ class MolangEditor extends Component<IMolangEditorProps, IMolangEditorState> {
 
     toolBarArea = (
       <div className="mcme-toolBarArea">
-        <div className="mcme-title">
+        <SectionHeading level={2} className="mcme-title">
           <span>{this.props.intl.formatMessage({ id: "project_editor.molang_ed.title" })}</span>
-        </div>
+        </SectionHeading>
         <div className="mcme-toolbar">
-          <Stack direction="row" spacing={0.5} aria-label={this.props.intl.formatMessage({ id: "project_editor.molang_ed.toolbar_aria" })}>
-            <IconButton onClick={this._zoomIn} title={this.props.intl.formatMessage({ id: "project_editor.molang_ed.zoom_in_title" })} aria-label="Zoom in">
+          <Stack
+            direction="row"
+            spacing={0.5}
+            aria-label={this.props.intl.formatMessage({ id: "project_editor.molang_ed.toolbar_aria" })}
+          >
+            <IconButton
+              onClick={this._zoomIn}
+              title={this.props.intl.formatMessage({ id: "project_editor.molang_ed.zoom_in_title" })}
+              aria-label={this.props.intl.formatMessage({ id: "project_editor.molang_ed.zoom_in_aria" })}
+            >
               <FontAwesomeIcon icon={faSearchPlus} className="fa-lg" />
             </IconButton>
-            <IconButton onClick={this._zoomOut} title={this.props.intl.formatMessage({ id: "project_editor.molang_ed.zoom_in_title" })} aria-label="Zoom out">
+            <IconButton
+              onClick={this._zoomOut}
+              title={this.props.intl.formatMessage({ id: "project_editor.molang_ed.zoom_in_title" })}
+              aria-label={this.props.intl.formatMessage({ id: "project_editor.molang_ed.zoom_out_aria" })}
+            >
               <FontAwesomeIcon icon={faSearchMinus} className="fa-lg" />
             </IconButton>
           </Stack>

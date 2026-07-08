@@ -2,10 +2,13 @@
 // Licensed under the MIT License.
 
 import IFile from "../../../../storage/IFile";
+import StorageUtilities from "../../../../storage/StorageUtilities";
 
 export interface StubFileOptions {
   name: string;
   content?: string | Uint8Array | null;
+  /** File extension/type reported by IFile.type. Defaults to the extension from name. */
+  type?: string;
   /** Overrides the computed extendedPath (used by CheckProjectIntegrityGenerator). */
   extendedPath?: string;
   /**
@@ -33,7 +36,13 @@ export function createStubFile(options: StubFileOptions): IFile {
     content: options.content !== undefined ? options.content : null,
     isContentLoaded: options.content != null,
     isString: options.isString ?? typeof options.content === "string",
-    coreContentLength: typeof options.content === "string" ? options.content.length : 0,
+    coreContentLength:
+      typeof options.content === "string"
+        ? options.content.replace(/\s/g, "").length
+        : options.content instanceof Uint8Array
+        ? options.content.length
+        : 0,
+    type: options.type ?? StorageUtilities.getTypeFromName(options.name),
     loadContent: async () => {},
     onFileContentUpdated: noOpEvent,
   } as unknown as IFile;

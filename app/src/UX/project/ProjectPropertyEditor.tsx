@@ -904,18 +904,18 @@ class ProjectPropertyEditor extends Component<IProjectPropertyEditorProps, IProj
 
     return (
       <div className={"ppe-outer" + (isDarkMode ? " ppe-dark" : " ppe-light")} style={outerStyle}>
-        <div className="ppe-header">
+        <h1 className="ppe-header">
           <FontAwesomeIcon icon={faCubes} className="ppe-headerIcon" />
           {this.props.intl.formatMessage({ id: "project_editor.props.header" })}
-        </div>
+        </h1>
 
         <div className="ppe-content" style={contentStyle}>
           {/* Basic Info Section */}
           <div className="ppe-section" style={sectionStyle}>
-            <div className="ppe-sectionHeader" style={sectionHeaderStyle}>
+            <h2 className="ppe-sectionHeader" style={sectionHeaderStyle}>
               <FontAwesomeIcon icon={faUser} className="ppe-sectionIcon" />
               {this.props.intl.formatMessage({ id: "project_editor.props.basic_information" })}
-            </div>
+            </h2>
             <div className="ppe-sectionContent">
               <div className="ppe-field">
                 <label className="ppe-fieldLabel" style={labelStyle} id="ppe-creatorlabel">
@@ -1037,10 +1037,10 @@ class ProjectPropertyEditor extends Component<IProjectPropertyEditorProps, IProj
 
           {/* Project Settings Section */}
           <div className="ppe-section" style={sectionStyle}>
-            <div className="ppe-sectionHeader" style={sectionHeaderStyle}>
+            <h2 className="ppe-sectionHeader" style={sectionHeaderStyle}>
               <FontAwesomeIcon icon={faFileSignature} className="ppe-sectionIcon" />
               {this.props.intl.formatMessage({ id: "project_editor.props.project_settings" })}
-            </div>
+            </h2>
             <div className="ppe-sectionContent">
               <div className="ppe-field">
                 <label className="ppe-fieldLabel" style={labelStyle} id="ppe-focuslabel">
@@ -1093,10 +1093,10 @@ class ProjectPropertyEditor extends Component<IProjectPropertyEditorProps, IProj
 
           {/* Script Settings Section */}
           <div className="ppe-section" style={sectionStyle}>
-            <div className="ppe-sectionHeader" style={sectionHeaderStyle}>
+            <h2 className="ppe-sectionHeader" style={sectionHeaderStyle}>
               <FontAwesomeIcon icon={faCode} className="ppe-sectionIcon" />
               {this.props.intl.formatMessage({ id: "project_editor.props.script_settings" })}
-            </div>
+            </h2>
             <div className="ppe-sectionContent">
               <div className="ppe-field">
                 <label className="ppe-fieldLabel" style={labelStyle} id="ppe-scriptLanguagelabel">
@@ -1141,10 +1141,10 @@ class ProjectPropertyEditor extends Component<IProjectPropertyEditorProps, IProj
           {/* GitHub Section */}
           {CreatorToolsHost.hostType === HostType.webPlusServices && (
             <div className="ppe-section" style={sectionStyle}>
-              <div className="ppe-sectionHeader" style={sectionHeaderStyle}>
+              <h2 className="ppe-sectionHeader" style={sectionHeaderStyle}>
                 <FontAwesomeIcon icon={faGithub} className="ppe-sectionIcon" />
                 {this.props.intl.formatMessage({ id: "project_editor.props.github_integration" })}
-              </div>
+              </h2>
               <div className="ppe-sectionContent">
                 {gitHubInner}
                 <div className="ppe-ghActions">{gitHubConnect}</div>
@@ -1157,20 +1157,20 @@ class ProjectPropertyEditor extends Component<IProjectPropertyEditorProps, IProj
           {/* Tools Section - only shown when there are tools available */}
           {localTools.length > 0 && (
             <div className="ppe-section" style={sectionStyle}>
-              <div className="ppe-sectionHeader" style={sectionHeaderStyle}>
+              <h2 className="ppe-sectionHeader" style={sectionHeaderStyle}>
                 <FontAwesomeIcon icon={faWrench} className="ppe-sectionIcon" />
                 {this.props.intl.formatMessage({ id: "project_editor.props.tools_section" })}
-              </div>
+              </h2>
               <div className="ppe-sectionContent ppe-toolsContent">{localTools}</div>
             </div>
           )}
 
           {/* Advanced Section */}
           <div className="ppe-section ppe-section-advanced" style={sectionStyle}>
-            <div className="ppe-sectionHeader" style={advancedSectionHeaderStyle}>
+            <h2 className="ppe-sectionHeader" style={advancedSectionHeaderStyle}>
               <FontAwesomeIcon icon={faFingerprint} className="ppe-sectionIcon" />
               {this.props.intl.formatMessage({ id: "project_editor.props.advanced_uuids" })}
-            </div>
+            </h2>
             <div className="ppe-sectionContent">
               <div className="ppe-uuidField" style={uuidFieldStyle}>
                 <label className="ppe-fieldLabel" style={labelStyle} id="ppe-bpuniqueidlabel">
@@ -1273,4 +1273,3 @@ class ProjectPropertyEditor extends Component<IProjectPropertyEditorProps, IProj
 }
 
 export default withLocalization(ProjectPropertyEditor);
-

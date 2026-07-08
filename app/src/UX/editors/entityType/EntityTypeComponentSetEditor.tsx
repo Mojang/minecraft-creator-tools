@@ -935,6 +935,7 @@ class EntityTypeComponentSetEditor extends Component<
               <div className="etcse-componentDropdown">
                 <FormControl size="small" fullWidth>
                   <Select
+                    SelectDisplayProps={{ "aria-label": this.props.intl.formatMessage({ id: "project_editor.entity_components.list_aria" }) }}
                     value={componentDropdown[selectedIndexDropdown] || ""}
                     onChange={this._handleComponentSelectedFromDropdown}
                   >

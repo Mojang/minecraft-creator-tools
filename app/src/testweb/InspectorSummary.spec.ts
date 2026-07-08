@@ -1,5 +1,5 @@
 import { test, expect, ConsoleMessage } from "@playwright/test";
-import { processMessage, enterEditor } from "./WebTestUtilities";
+import { processMessage, enterEditor, waitForInspectorValidationComplete } from "./WebTestUtilities";
 
 /**
  * Tests for the Inspector Summary view, which displays project validation statistics
@@ -55,6 +55,7 @@ test.describe("MCTools Web - Inspector Summary View @full", () => {
 
     // Wait for Inspector to load and validation to run
     await page.waitForTimeout(5000);
+    await waitForInspectorValidationComplete(page);
 
     // Take screenshot of Inspector view
     await page.screenshot({
@@ -90,11 +91,16 @@ test.describe("MCTools Web - Inspector Summary View @full", () => {
     // Take screenshot of Summary view
     await page.screenshot({ path: "debugoutput/screenshots/inspector-summary-03-summary-tab.png", fullPage: true });
 
+    const minPerfTierStat = page.locator(".pid-stat").filter({ hasText: "Min Perf Tier" });
+    await expect(minPerfTierStat).toBeVisible({ timeout: 20000 });
+    await expect(minPerfTierStat.locator(".pid-statCount")).toHaveText(/\d+/);
+
     // Verify no critical console errors
     expect(consoleErrors.length).toBeLessThanOrEqual(5);
   });
 
   test("should display categorized statistics with collapsible sections", async ({ page }) => {
+    test.setTimeout(120000);
     // Enter the editor and navigate to Inspector
     const enteredEditor = await enterEditor(page, { editMode: "full" });
     expect(enteredEditor).toBe(true);
@@ -106,8 +112,9 @@ test.describe("MCTools Web - Inspector Summary View @full", () => {
     await expect(inspectorItem).toBeVisible({ timeout: 10000 });
     await inspectorItem.click();
 
-    // Wait for validation to complete
+    // Wait for the worker validation pass to finish so the Summary stat cards render.
     await page.waitForTimeout(8000);
+    await waitForInspectorValidationComplete(page);
 
     // Click on Summary tab (role=tab, id=pid-tab-summary)
     const summaryTab = page.locator("#pid-tab-summary");
@@ -160,7 +167,7 @@ test.describe("MCTools Web - Inspector Summary View @full", () => {
   });
 
   test("should display combined lines/size statistics correctly", async ({ page }) => {
-    test.setTimeout(60000);
+    test.setTimeout(120000);
     // Enter the editor and navigate to Inspector
     const enteredEditor = await enterEditor(page, { editMode: "full" });
     expect(enteredEditor).toBe(true);
@@ -172,8 +179,9 @@ test.describe("MCTools Web - Inspector Summary View @full", () => {
     await expect(inspectorItem).toBeVisible({ timeout: 10000 });
     await inspectorItem.click();
 
-    // Wait for validation to complete (can take a while)
+    // Wait for the worker validation pass to finish (can take a while on dev server).
     await page.waitForTimeout(10000);
+    await waitForInspectorValidationComplete(page);
 
     // Click on Summary tab
     const summaryTab = page.locator("#pid-tab-summary");
@@ -319,8 +327,9 @@ test.describe("MCTools Web - Inspector Summary View @full", () => {
     await expect(inspectorItem).toBeVisible({ timeout: 10000 });
     await inspectorItem.click();
 
-    // Wait for validation to complete
+    // Wait for the worker validation pass to finish so the formatted stats render.
     await page.waitForTimeout(10000);
+    await waitForInspectorValidationComplete(page);
 
     // Click on Summary tab
     const summaryTab = page.locator("#pid-tab-summary");

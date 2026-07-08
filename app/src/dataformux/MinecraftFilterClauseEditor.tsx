@@ -9,6 +9,7 @@ import MinecraftUtilities from "../minecraft/MinecraftUtilities";
 import DataFormUtilities from "./../dataform/DataFormUtilities";
 import { FieldDataType } from "./../dataform/IField";
 import { MinecraftFilterClause } from "../minecraft/jsoncommon/MinecraftFilterClause";
+import { withLocalization, WithLocalizationProps } from "../UX/withLocalization";
 
 export interface IMinecraftFilterClauseEditorProps {
   data: MinecraftFilterClause;
@@ -27,11 +28,11 @@ interface IMinecraftFilterClauseEditorState {
   filterIds?: string[];
 }
 
-export default class MinecraftFilterClauseEditor extends Component<
-  IMinecraftFilterClauseEditorProps,
+class MinecraftFilterClauseEditor extends Component<
+  IMinecraftFilterClauseEditorProps & WithLocalizationProps,
   IMinecraftFilterClauseEditorState
 > {
-  constructor(props: IMinecraftFilterClauseEditorProps) {
+  constructor(props: IMinecraftFilterClauseEditorProps & WithLocalizationProps) {
     super(props);
 
     this._handleOperatorChange = this._handleOperatorChange.bind(this);
@@ -251,6 +252,7 @@ export default class MinecraftFilterClauseEditor extends Component<
         <div className={prefix + "cell"}>
           <Select
             size="small"
+            SelectDisplayProps={{ "aria-label": this.props.intl.formatMessage({ id: "dataform.filter_clause.operator_aria" }) }}
             value={this.state.operator === "==" ? "=" : this.state.operator || "="}
             onChange={this._handleOperatorChange}
           >
@@ -295,13 +297,23 @@ export default class MinecraftFilterClauseEditor extends Component<
         {narrowClose}
         <div className={prefix + "inner"}>
           <div className={prefix + "cell"}>
-            <Select size="small" value={this.state.subject || "self"} onChange={this._handleSubjectChange}>
+            <Select
+              size="small"
+              SelectDisplayProps={{ "aria-label": this.props.intl.formatMessage({ id: "dataform.filter_clause.subject_aria" }) }}
+              value={this.state.subject || "self"}
+              onChange={this._handleSubjectChange}
+            >
               <MenuItem value="self">Self</MenuItem>
               <MenuItem value="other">Other</MenuItem>
             </Select>
           </div>
           <div className={prefix + "cell " + prefix + "test"}>
-            <Select size="small" value={this.state.test || ""} onChange={this._handleTestChange}>
+            <Select
+              size="small"
+              SelectDisplayProps={{ "aria-label": this.props.intl.formatMessage({ id: "dataform.filter_clause.test_aria" }) }}
+              value={this.state.test || ""}
+              onChange={this._handleTestChange}
+            >
               {filterItems.map((item) => (
                 <MenuItem key={item.key} value={item.key}>
                   {item.content}
@@ -318,3 +330,5 @@ export default class MinecraftFilterClauseEditor extends Component<
     );
   }
 }
+
+export default withLocalization(MinecraftFilterClauseEditor);

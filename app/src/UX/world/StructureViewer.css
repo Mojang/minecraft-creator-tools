@@ -215,6 +215,24 @@
     border-color: ButtonText;
   }
 
+  /* The toolbar buttons hard-code a light-grey foreground for the dark theme,
+     which is unreadable once the toolbar background is forced to Canvas (white
+     in light high-contrast). Re-map them to the system button palette so they
+     keep guaranteed contrast in either high-contrast scheme. */
+  .sv-toolbar-button,
+  .sv-render-banner-dismiss {
+    color: ButtonText;
+    background-color: ButtonFace;
+    border-color: ButtonText;
+  }
+
+  .sv-toolbar-button:hover,
+  .sv-render-banner-dismiss:hover {
+    color: HighlightText;
+    background-color: Highlight;
+    border-color: Highlight;
+  }
+
   .sv-spinner {
     forced-color-adjust: none;
   }

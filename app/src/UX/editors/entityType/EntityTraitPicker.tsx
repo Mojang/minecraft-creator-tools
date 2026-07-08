@@ -30,6 +30,7 @@ import EntityTypeDefinition from "../../../minecraft/EntityTypeDefinition";
 import TraitDetector from "../../../minecraft/TraitDetector";
 import { ITraitDetectionResult } from "../../../minecraft/TraitDetector";
 import { renderEntityTraitIcon } from "../../shared/components/icons/TraitIcons";
+import SectionHeading from "../../shared/components/feedback/sectionHeading/SectionHeading";
 import {
   ITraitInfo,
   EXCLUSIVE_GROUP_LABELS,
@@ -40,6 +41,7 @@ import {
   getTraitCardThemeStyle,
 } from "../../types/TraitData";
 import IProjectTheme from "../../types/IProjectTheme";
+import { clickableKeyHandler } from "../../shared/accessibilityUtils";
 
 // ============================================================================
 // PROPS & STATE
@@ -167,17 +169,17 @@ export default class EntityTraitPicker extends Component<IEntityTraitPickerProps
         {groupedTraits.map((section) => (
           <div key={section.group || "other"} className="cwiz-trait-section">
             {section.group && (
-              <div className="cwiz-trait-group-header">
+              <SectionHeading level={3} className="cwiz-trait-group-header">
                 <span className="cwiz-trait-group-icon">{EXCLUSIVE_GROUP_ICONS[section.group] || ""}</span>
                 {EXCLUSIVE_GROUP_LABELS[section.group] || section.group}
                 <span className="cwiz-trait-group-line" />
-              </div>
+              </SectionHeading>
             )}
             {!section.group && (
-              <div className="cwiz-trait-group-header">
+              <SectionHeading level={3} className="cwiz-trait-group-header">
                 Additional Traits
                 <span className="cwiz-trait-group-line" />
-              </div>
+              </SectionHeading>
             )}
             <div className="cwiz-traits-grid">
               {section.traits.map((trait) => {
@@ -189,7 +191,9 @@ export default class EntityTraitPicker extends Component<IEntityTraitPickerProps
                     key={trait.id}
                     className={`cwiz-trait ${isSelected ? "cwiz-trait-selected" : ""}`}
                     onClick={() => this._handleTraitClick(trait)}
+                    aria-pressed={isSelected}
                     title={confidenceLabel ? `${trait.description} (${confidenceLabel})` : trait.description}
+                    {...clickableKeyHandler(() => this._handleTraitClick(trait))}
                   >
                     <div className="cwiz-trait-icon" style={{ color: getTraitIconColor(trait) }}>
                       {renderEntityTraitIcon(trait.id)}

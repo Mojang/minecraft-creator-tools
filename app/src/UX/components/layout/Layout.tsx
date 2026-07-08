@@ -24,8 +24,28 @@ export default function Layout({ children, isApp, onSaveBackups }: LayoutProps) 
     // ThemeProvider, and Cssbase line should maybe be moved up to App.tsx, but that currently conflicts with the northstar stuff
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Box sx={{ display: "flex", flexDirection: "column", height: "100vh" }}>
-        <AppBar position="fixed">
+      {/*
+        Layout switches between two modes:
+        - Desktop (sm and up): an "app shell" — a 100vh container with a fixed
+          header, a footer pinned at the bottom, and an internally-scrolling main
+          region.
+        - Narrow / zoomed (below sm, e.g. 400% browser zoom ≈ 320px wide): the
+          fixed header + pinned footer would consume nearly the whole viewport and
+          squeeze the main content into an unusable sliver (WCAG 1.4.10 Reflow). So
+          below sm we flow everything into one document that scrolls as a whole:
+          the header is static, the main region has no top offset and no inner
+          scroll, and the container grows past the viewport. The companion rule in
+          index.css re-enables body vertical scrolling at the same width.
+      */}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          minHeight: "100vh",
+          height: { xs: "auto", sm: "100vh" },
+        }}
+      >
+        <AppBar position="fixed" sx={{ position: { xs: "static", sm: "fixed" } }}>
           {isApp && <ElectronTitleBar mode={AppMode.home} />}
           <HomeHeader isApp={isApp} toggleThemeMode={toggleMode} mode={mode} />
         </AppBar>
@@ -33,11 +53,11 @@ export default function Layout({ children, isApp, onSaveBackups }: LayoutProps) 
           id="main-content"
           component="main"
           sx={{
-            mt: contentVerticalSpacing,
+            mt: { xs: 0, sm: contentVerticalSpacing },
             backgroundColor: "background.default",
             flexGrow: 1,
-            overflow: "auto",
-            overflowX: "hidden",
+            overflowX: { xs: "visible", sm: "hidden" },
+            overflowY: { xs: "visible", sm: "auto" },
           }}
         >
           {!isApp && <HeroBanner />}

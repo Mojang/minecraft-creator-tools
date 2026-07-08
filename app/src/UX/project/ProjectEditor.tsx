@@ -240,6 +240,12 @@ const HEIGHT_OFFSET_VSCODE = 9;
 const BORDER_INSET_LIGHT = "inset 4px #f1f1f1";
 const BORDER_INSET_DARK = "inset 4px #6b6562";
 const SPLITTER_DRAG_TIMEOUT = 2;
+/** Width the item-list panel resets to on a double-click of the splitter
+ *  (matches CreatorTools.itemSidePaneWidth's default). */
+const SidePaneDefaultWidth = 300;
+/** Keyboard resize increments for the item-panel splitter (arrow vs page keys). */
+const SidePaneKeyboardStep = 24;
+const SidePaneKeyboardLargeStep = 96;
 const ASYNC_LOADING_TIMEOUT = 2000;
 const FILE_DRAG_OUT_THRESHOLD = 10;
 const FILE_DRAG_OVER_THRESHOLD = 10;
@@ -424,6 +430,8 @@ class ProjectEditor extends Component<IProjectEditorProps, IProjectEditorState> 
 
     this._handleNewVariantRequested = this._handleNewVariantRequested.bind(this);
     this._handleSplitterDrag = this._handleSplitterDrag.bind(this);
+    this._handleSplitterKeyDown = this._handleSplitterKeyDown.bind(this);
+    this._handleSplitterReset = this._handleSplitterReset.bind(this);
     this._openInExplorerClick = this._openInExplorerClick.bind(this);
     this._handleExportMenuOpen = this._handleExportMenuOpen.bind(this);
     this._handleDeployMenuOpen = this._handleDeployMenuOpen.bind(this);
@@ -1560,6 +1568,9 @@ class ProjectEditor extends Component<IProjectEditorProps, IProjectEditorState> 
     this.props.creatorTools.save();
 
     this._splitterDrag = undefined;
+
+    // Re-render so the separator's aria-valuenow reflects the dragged-to width.
+    this.forceUpdate();
   }
 
   private _handleSplitterDrag(ev: React.MouseEvent<HTMLDivElement>) {
@@ -1567,6 +1578,96 @@ class ProjectEditor extends Component<IProjectEditorProps, IProjectEditorState> 
     if (this.gridElt && this.gridElt.current) {
       this.gridElt.current.style.gridTemplateColumns = this.getGridColumnWidths();
     }
+  }
+
+  /**
+   * Keyboard resize for the item-panel splitter (WAI-ARIA window splitter
+   * pattern). Arrow/Page keys grow or shrink the panel; Home/End jump to the
+   * min/max. Provides the non-dragging keyboard path required by WCAG 2.1.1 and
+   * a single-pointer-free way to resize (WCAG 2.5.7).
+   */
+  private _handleSplitterKeyDown(ev: React.KeyboardEvent<HTMLDivElement>) {
+    switch (ev.key) {
+      case "ArrowLeft":
+      case "ArrowDown":
+        ev.preventDefault();
+        this._adjustSidePaneWidth(-SidePaneKeyboardStep);
+        break;
+      case "ArrowRight":
+      case "ArrowUp":
+        ev.preventDefault();
+        this._adjustSidePaneWidth(SidePaneKeyboardStep);
+        break;
+      case "PageDown":
+        ev.preventDefault();
+        this._adjustSidePaneWidth(-SidePaneKeyboardLargeStep);
+        break;
+      case "PageUp":
+        ev.preventDefault();
+        this._adjustSidePaneWidth(SidePaneKeyboardLargeStep);
+        break;
+      case "Home":
+        ev.preventDefault();
+        this._setSidePaneWidth(SidePaneMinWidth);
+        break;
+      case "End":
+        ev.preventDefault();
+        this._setSidePaneWidth(SidePaneMaxWidth);
+        break;
+      default:
+        break;
+    }
+  }
+
+  /**
+   * Single-pointer alternative to dragging: double-clicking the splitter resets
+   * the panel to its default width (WCAG 2.5.7).
+   */
+  private _handleSplitterReset(ev: React.MouseEvent<HTMLDivElement>) {
+    ev.preventDefault();
+    this._setSidePaneWidth(SidePaneDefaultWidth);
+  }
+
+  private _adjustSidePaneWidth(deltaPx: number) {
+    this._setSidePaneWidth(this.props.creatorTools.itemSidePaneWidth + deltaPx);
+  }
+
+  private _setSidePaneWidth(width: number) {
+    const clamped = Math.max(SidePaneMinWidth, Math.min(SidePaneMaxWidth, Math.round(width)));
+    this.props.creatorTools.itemSidePaneWidth = clamped;
+    if (this.gridElt && this.gridElt.current) {
+      this.gridElt.current.style.gridTemplateColumns = this.getGridColumnWidths();
+    }
+    this.props.creatorTools.save();
+    this.forceUpdate();
+  }
+
+  /**
+   * Renders the resizable item-panel splitter as an accessible ARIA separator:
+   * focusable, keyboard-operable (see _handleSplitterKeyDown), and resettable
+   * via double-click — not just a mouse drag target.
+   */
+  private _renderItemSplitter(columnClass: string, style: React.CSSProperties) {
+    const width = Math.round(this.props.creatorTools.itemSidePaneWidth);
+    return (
+      <div
+        className={columnClass + " pe-itemSplitter"}
+        style={style}
+        role="separator"
+        tabIndex={0}
+        aria-orientation="vertical"
+        aria-valuenow={width}
+        aria-valuemin={SidePaneMinWidth}
+        aria-valuemax={SidePaneMaxWidth}
+        aria-label={this.props.intl.formatMessage({ id: "project_editor.aria.resize_item_panel" })}
+        title={this.props.intl.formatMessage({ id: "project_editor.resize_item_panel_hint" })}
+        onMouseDown={this._handleSplitterDrag}
+        onKeyDown={this._handleSplitterKeyDown}
+        onDoubleClick={this._handleSplitterReset}
+      >
+        &#160;
+      </div>
+    );
   }
 
   private async _handleFileDrop(ev: DragEvent): Promise<any> {
@@ -5702,9 +5803,7 @@ class ProjectEditor extends Component<IProjectEditorProps, IProjectEditorState> 
                 placeholder={this.props.intl.formatMessage({ id: "project_editor.dialog.rename_placeholder" })}
                 onChange={this._handleNewProjectItemName}
               />
-              <span className="pil-extension">
-                .{StorageUtilities.getTypeFromName(dialogProjectItem.name)}
-              </span>
+              <span className="pil-extension">.{StorageUtilities.getTypeFromName(dialogProjectItem.name)}</span>
             </div>
           </DialogContent>
           <DialogActions>
@@ -5715,11 +5814,7 @@ class ProjectEditor extends Component<IProjectEditorProps, IProjectEditorState> 
           </DialogActions>
         </Dialog>
       );
-    } else if (
-      this.state !== null &&
-      this.state.dialog === ProjectEditorDialog.deleteItem &&
-      dialogProjectItem
-    ) {
+    } else if (this.state !== null && this.state.dialog === ProjectEditorDialog.deleteItem && dialogProjectItem) {
       let warnings = <></>;
 
       if (dialogProjectItem.parentItems) {
@@ -6049,19 +6144,11 @@ class ProjectEditor extends Component<IProjectEditorProps, IProjectEditorState> 
           {itemList}
         </section>
       );
-      column2 = (
-        <div
-          className="pe-col2 pe-itemSplitter"
-          style={{
-            borderLeft: border,
-            borderTop: border,
-            borderBottom: border,
-          }}
-          onMouseDown={this._handleSplitterDrag}
-        >
-          &#160;
-        </div>
-      );
+      column2 = this._renderItemSplitter("pe-col2", {
+        borderLeft: border,
+        borderTop: border,
+        borderBottom: border,
+      });
       column3 = (
         <main
           aria-label={this.props.intl.formatMessage({ id: "project_editor.aria.main_content" })}
@@ -6161,19 +6248,11 @@ class ProjectEditor extends Component<IProjectEditorProps, IProjectEditorState> 
         </main>
       );
 
-      column2 = (
-        <div
-          className="pe-col3 pe-itemSplitter"
-          style={{
-            borderRight: border,
-            borderTop: border,
-            borderBottom: border,
-          }}
-          onMouseDown={this._handleSplitterDrag}
-        >
-          &#160;
-        </div>
-      );
+      column2 = this._renderItemSplitter("pe-col3", {
+        borderRight: border,
+        borderTop: border,
+        borderBottom: border,
+      });
 
       column3 = (
         <section

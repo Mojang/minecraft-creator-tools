@@ -13,10 +13,11 @@ import IContentSource from "../../app/IContentSource";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWandMagicSparkles, faEye, faCode, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import IProjectTheme from "../types/IProjectTheme";
+import { withLocalization, WithLocalizationProps } from "../withLocalization";
 
 export const CreatorToolsEditorPreferenceLabels = ["Focused", "Full", "Raw"];
 
-interface ICreatorToolsSettingsPanelProps extends IAppProps {
+interface ICreatorToolsSettingsPanelProps extends IAppProps, WithLocalizationProps {
   theme: IProjectTheme;
   setActivePersistable?: (persistObject: IPersistable) => void;
   onEditPreferenceChanged?: () => void;
@@ -33,7 +34,7 @@ interface ICreatorToolsSettingsPanelState {
   savedFlashKey: number;
 }
 
-export default class CreatorToolsSettingsPanel extends Component<
+class CreatorToolsSettingsPanel extends Component<
   ICreatorToolsSettingsPanelProps,
   ICreatorToolsSettingsPanelState
 > {
@@ -366,7 +367,7 @@ export default class CreatorToolsSettingsPanel extends Component<
       <div className="csp-themeinput" key="csp-themeinput">
         <Select
           value={this.state.themePreference}
-          aria-labelledby="csp-themelabel"
+          SelectDisplayProps={{ "aria-labelledby": "csp-themelabel" }}
           onChange={this._handleThemePreferenceChange}
           size="small"
           sx={{ minWidth: 240 }}
@@ -384,15 +385,19 @@ export default class CreatorToolsSettingsPanel extends Component<
         Format JSON and script on save
         <div className="csp-propertyNote" style={{ fontSize: 12, opacity: 0.7, marginTop: 4 }}>
           Off by default for pro safety. Turn on if you want the editor to auto-format hand-written JSON each save.
-          Note: enabling may rewrite whitespace, normalize array layouts, and remove comments inside JSON files you
-          have not opened.
+          Note: enabling may rewrite whitespace, normalize array layouts, and remove comments inside JSON files you have
+          not opened.
         </div>
       </div>
     );
 
     coreProps.push(
       <div className="csp-formatbeforesave" key="csp-formatbeforesave">
-        <Checkbox checked={this.props.creatorTools.formatBeforeSave} onChange={this._handleFormatBeforeSaveChanged} />
+        <Checkbox
+          checked={this.props.creatorTools.formatBeforeSave}
+          onChange={this._handleFormatBeforeSaveChanged}
+          inputProps={{ "aria-label": this.props.intl.formatMessage({ id: "settings.format_on_save_aria" }) }}
+        />
       </div>
     );
 
@@ -423,7 +428,7 @@ export default class CreatorToolsSettingsPanel extends Component<
       <div className="csp-defaultDeployTarget" key="csp-defaultDeployTarget">
         <Select
           value={contentSourceIds[0] || ""}
-          aria-labelledby="csp-defaultDeployTargetlabel"
+          SelectDisplayProps={{ "aria-labelledby": "csp-defaultDeployTargetlabel" }}
           onChange={this._handleEditPreferenceChange}
           size="small"
           sx={{ minWidth: 240 }}
@@ -440,7 +445,7 @@ export default class CreatorToolsSettingsPanel extends Component<
 
     // Row 5: Target Minecraft - label left, dropdown right
     coreProps.push(
-      <div className="csp-label csp-tracklabel" key="csp-tracklabel">
+      <div className="csp-label csp-tracklabel" key="csp-tracklabel" id="csp-tracklabel">
         Target Minecraft
       </div>
     );
@@ -454,6 +459,7 @@ export default class CreatorToolsSettingsPanel extends Component<
           onChange={this._handleTrackChange}
           size="small"
           sx={{ minWidth: 240 }}
+          SelectDisplayProps={{ "aria-labelledby": "csp-tracklabel" }}
         >
           {CreatorToolsTargetSettings.map((setting) => (
             <MenuItem key={setting} value={setting}>
@@ -476,7 +482,11 @@ export default class CreatorToolsSettingsPanel extends Component<
 
     coreProps.push(
       <div className="csp-showwelcome" key="csp-showwelcome">
-        <Checkbox checked={!this.state.disableFirstRun} onChange={this._handleDisableFirstRunChanged} />
+        <Checkbox
+          checked={!this.state.disableFirstRun}
+          onChange={this._handleDisableFirstRunChanged}
+          inputProps={{ "aria-label": this.props.intl.formatMessage({ id: "settings.show_welcome_aria" }) }}
+        />
       </div>
     );
 
@@ -494,7 +504,11 @@ export default class CreatorToolsSettingsPanel extends Component<
 
       serverProps.push(
         <div className="csp-autostart" key="csp-as">
-          <Checkbox checked={this.props.creatorTools.autoStartMinecraft} onChange={this._handleAutoStartChanged} />
+          <Checkbox
+            checked={this.props.creatorTools.autoStartMinecraft}
+            onChange={this._handleAutoStartChanged}
+            inputProps={{ "aria-label": this.props.intl.formatMessage({ id: "settings.start_services_aria" }) }}
+          />
         </div>
       );
 
@@ -516,7 +530,7 @@ export default class CreatorToolsSettingsPanel extends Component<
             <TextField
               value={this.state.serverFolderPath}
               onChange={this._handleServerPathChanged}
-              aria-labelledby="csp-nl"
+              inputProps={{ "aria-labelledby": "csp-nl" }}
               size="small"
             />
             {openFolderCtrl}
@@ -538,3 +552,5 @@ export default class CreatorToolsSettingsPanel extends Component<
     );
   }
 }
+
+export default withLocalization(CreatorToolsSettingsPanel);

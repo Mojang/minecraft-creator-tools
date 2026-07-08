@@ -25,8 +25,9 @@ import { mcColors } from "../hooks/theme/mcColors";
 import { isDarkMode, getThemeColors } from "../hooks/theme/useThemeColors";
 import { CreatorToolsEditPreference } from "../../app/ICreatorToolsData";
 import IProjectTheme from "../types/IProjectTheme";
+import { withLocalization, WithLocalizationProps } from "../withLocalization";
 
-interface IStatusAreaProps extends IAppProps {
+interface IStatusAreaProps extends IAppProps, WithLocalizationProps {
   onSetExpandedSize: (newMode: ProjectStatusAreaMode) => void;
   onFilterTextChanged: (newFilterText: string | undefined) => void;
   onActionRequested: (action: ProjectEditorAction) => void;
@@ -39,12 +40,15 @@ interface IStatusAreaProps extends IAppProps {
 interface IStatusAreaState {
   displayEditor: boolean;
   activeOperations: number;
+  // Index of the status row that holds the roving tab stop (the row keyboard
+  // focus lands on / moves within). -1 means "default to the most recent row".
+  activeListIndex: number;
 }
 
 const MESSAGE_FADEOUT_TIME = 20000;
 const PROGRESS_GRACE_MS = 2000;
 
-export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaState> {
+class StatusArea extends Component<IStatusAreaProps, IStatusAreaState> {
   scrollArea: React.RefObject<HTMLDivElement>;
   toggleButtonRef: React.RefObject<HTMLButtonElement>;
   private _isMountedInternal: boolean = false;
@@ -63,6 +67,8 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
     this._checkForTimeOut = this._checkForTimeOut.bind(this);
     this._toggleExpandedSize = this._toggleExpandedSize.bind(this);
     this._collapseAndFocusToggle = this._collapseAndFocusToggle.bind(this);
+    this._handleListKeyDown = this._handleListKeyDown.bind(this);
+    this._setActiveListIndex = this._setActiveListIndex.bind(this);
     this._toggleToEditor = this._toggleToEditor.bind(this);
     this._toggleToMessage = this._toggleToMessage.bind(this);
     this._focusCommandInput = this._focusCommandInput.bind(this);
@@ -73,6 +79,7 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
     this.state = {
       displayEditor: false,
       activeOperations: 0,
+      activeListIndex: -1,
     };
   }
 
@@ -178,16 +185,68 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
 
       // After the parent re-renders with the expanded list mounted, move keyboard
       // focus into the now-visible flyout so keyboard-only users land inside it and
-      // can scroll/read it (and Escape out). Previously this focused `scrollAreaList`,
+      // can read/navigate it (and Escape out). Previously this focused `scrollAreaList`,
       // a ref that was never attached to any element, so focus never entered the
       // flyout and the controls inside it were unreachable by keyboard
-      // (WCAG / MAS 2.1.1, Keyboard).
+      // (WCAG / MAS 2.1.1, Keyboard). Land on the most recent row so Up/Down then
+      // navigate the log; fall back to the scroll container when the log is empty.
       window.setTimeout(() => {
         this.scrollToListBottom();
-        if (this.scrollArea && this.scrollArea.current) {
-          this.scrollArea.current.focus();
+        const list = this.scrollArea.current;
+        const options = list ? Array.from(list.querySelectorAll<HTMLElement>('[role="option"]')) : [];
+        if (options.length > 0) {
+          options[options.length - 1].focus();
+        } else if (list) {
+          list.focus();
         }
       }, 10);
+    }
+  }
+
+  /**
+   * Roving-tabindex keyboard navigation for the status log listbox: Up/Down move
+   * between rows, Home/End jump to the first/last row. The focused row carries the
+   * single tab stop (see render); Tab therefore enters/leaves the list as one stop
+   * while these keys navigate within it (WCAG / MAS 2.1.1).
+   */
+  _handleListKeyDown(event: React.KeyboardEvent) {
+    const key = event.key;
+    if (key !== "ArrowDown" && key !== "ArrowUp" && key !== "Home" && key !== "End") {
+      return;
+    }
+
+    const list = this.scrollArea.current;
+    if (!list) {
+      return;
+    }
+
+    const options = Array.from(list.querySelectorAll<HTMLElement>('[role="option"]'));
+    if (options.length === 0) {
+      return;
+    }
+
+    const currentIndex = options.findIndex((option) => option === document.activeElement);
+    let nextIndex = currentIndex;
+    if (key === "ArrowDown") {
+      nextIndex = currentIndex < 0 ? 0 : Math.min(currentIndex + 1, options.length - 1);
+    } else if (key === "ArrowUp") {
+      nextIndex = currentIndex < 0 ? options.length - 1 : Math.max(currentIndex - 1, 0);
+    } else if (key === "Home") {
+      nextIndex = 0;
+    } else if (key === "End") {
+      nextIndex = options.length - 1;
+    }
+
+    if (nextIndex >= 0 && nextIndex < options.length) {
+      event.preventDefault();
+      event.stopPropagation();
+      options[nextIndex].focus();
+    }
+  }
+
+  _setActiveListIndex(index: number) {
+    if (this.state.activeListIndex !== index) {
+      this.setState({ activeListIndex: index });
     }
   }
 
@@ -648,20 +707,34 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
 
       interior = (
         <div className="sa-listOuter">
-          <div className="sa-list" ref={this.scrollArea} tabIndex={0} role="group" aria-label="Status messages">
-            <List dense>
+          <div className="sa-list" ref={this.scrollArea} tabIndex={-1}>
+            {/* The status log is a navigable list: each row is a listbox option with
+                a roving tab stop, so keyboard users land on a row (Tab) and move
+                between rows (Up/Down/Home/End) per the project's roving-tabindex
+                convention. Rows are read-only options, NOT ListItemButtons — those
+                were announced as activatable controls that did nothing for
+                keyboard/AT users (WCAG / MAS 2.1.1 + 4.1.2). */}
+            <List dense role="listbox" aria-label={this.props.intl.formatMessage({ id: "project_editor.status.messages_aria" })} onKeyDown={this._handleListKeyDown}>
               {listItems.map((item, idx) => {
-                // The status list is a read-only log. Render rows as plain list
-                // items, NOT ListItemButton — focusable role=button rows with no
-                // action announced as activatable controls that did nothing for
-                // keyboard/AT users (WCAG / MAS 2.1.1 + 4.1.2).
                 const isCurrent = idx === index - 1;
+                // The focused row holds the single tab stop; default it to the most
+                // recent (last) row when the user has not navigated yet.
+                const tabStopIndex =
+                  this.state.activeListIndex >= 0 && this.state.activeListIndex < listItems.length
+                    ? this.state.activeListIndex
+                    : listItems.length - 1;
+                const isTabStop = idx === tabStopIndex;
 
                 return (
                   <ListItem
                     key={item.key}
-                    disablePadding
+                    id={`sa-opt-${idx}`}
+                    role="option"
+                    tabIndex={isTabStop ? 0 : -1}
+                    aria-selected={isTabStop}
                     aria-current={isCurrent ? "true" : undefined}
+                    onFocus={() => this._setActiveListIndex(idx)}
+                    disablePadding
                     sx={{
                       px: 0.5,
                       backgroundColor: isCurrent
@@ -738,3 +811,5 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
     );
   }
 }
+
+export default withLocalization(StatusArea);

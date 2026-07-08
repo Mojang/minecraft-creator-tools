@@ -178,9 +178,12 @@ export default class EventActionDesign extends Component<IEventActionDesignProps
           <div className={prefix + "triggerTitle"}>Triggers</div>
           <div className="ead-info">{defaultTriggers}</div>
           <div className={prefix + "addTriggerArea"}>
-            <div className={prefix + "addTriggerInstruction"}>Add a trigger:</div>
+            <div className={prefix + "addTriggerInstruction"} id={prefix + "addTriggerInstruction"}>
+              Add a trigger:
+            </div>
             <div className={prefix + "addTriggerDropdown"}>
               <Select
+                SelectDisplayProps={{ "aria-labelledby": prefix + "addTriggerInstruction" }}
                 value={this.state.selectedTrigger}
                 onChange={this._handleAddTriggerChange}
                 displayEmpty

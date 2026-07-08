@@ -49,3 +49,22 @@
   font-size: 28px;
   color: rgba(255, 255, 255, 0.2);
 }
+
+/* ── Light theme overrides (body.ct-light) ──────────────────────────────────
+   Remap the dark-theme defaults so the Entries header and empty-state text
+   stay legible in Light Mode. */
+body.ct-light .lpve-entries-title {
+  color: #1a1918;
+}
+
+body.ct-light .lpve-entry-count {
+  color: #5e5a55;
+}
+
+body.ct-light .lpve-empty-state {
+  color: #5e5a55;
+}
+
+body.ct-light .lpve-empty-icon {
+  color: rgba(0, 0, 0, 0.25);
+}

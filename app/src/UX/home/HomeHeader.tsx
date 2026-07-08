@@ -30,7 +30,7 @@ export default function HomeHeader({ isApp, toggleThemeMode, mode }: IHomeHeader
         px: 1,
         pt: 1,
         pb: 1.2,
-        height: "96px",
+        minHeight: "96px",
         display: "flex",
         borderTop: "1px solid",
         borderColor: "divider",
@@ -163,6 +163,12 @@ export default function HomeHeader({ isApp, toggleThemeMode, mode }: IHomeHeader
           rel="noreferrer noopener"
         >
           {intl.formatMessage({ id: "common.docs" })}
+        </a>
+        <a href={"https://www.npmjs.com/package/@minecraft/creator-tools"} target="_blank" rel="noreferrer noopener">
+          {intl.formatMessage({ id: "home.header.command_line" })}
+        </a>
+        <a href={constants.repositoryUrl} target="_blank" rel="noreferrer noopener">
+          {intl.formatMessage({ id: "common.github" })}
         </a>
         {showModeButton && (
           <IconButton

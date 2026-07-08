@@ -342,6 +342,9 @@ class WorldTestEditor extends Component<IWorldTestEditorProps, IWorldTestEditorS
         areaDropdown = (
           <FormControl size="small" sx={{ minWidth: 200 }}>
             <Select
+              // MUI drops a top-level aria-label on the role="combobox" element; the accessible
+              // name must be supplied via SelectDisplayProps. No visible label exists here. (WCAG 4.1.2)
+              SelectDisplayProps={{ "aria-label": this.props.intl.formatMessage({ id: "project_editor.world_test.select_area_aria" }) }}
               disabled={worldTest.areas.length === 0}
               value={selectedAreaTitle}
               displayEmpty
@@ -385,7 +388,16 @@ class WorldTestEditor extends Component<IWorldTestEditorProps, IWorldTestEditorS
           <div className="wte-topZone">
             <div className="wte-topWorld">
               <FormControl size="small" sx={{ minWidth: 200 }}>
-                <Select value={worldSelection} displayEmpty onChange={this._handleWorldChange}>
+                <Select
+                  // MUI drops a top-level aria-label on the role="combobox" element; name it via
+                  // SelectDisplayProps, reusing the localized placeholder text. (WCAG 4.1.2)
+                  SelectDisplayProps={{
+                    "aria-label": this.props.intl.formatMessage({ id: "project_editor.world_test.select_world" }),
+                  }}
+                  value={worldSelection}
+                  displayEmpty
+                  onChange={this._handleWorldChange}
+                >
                   <MenuItem value="" disabled>
                     {this.props.intl.formatMessage({ id: "project_editor.world_test.select_world" })}
                   </MenuItem>
@@ -408,7 +420,11 @@ class WorldTestEditor extends Component<IWorldTestEditorProps, IWorldTestEditorS
               </Button>
             </div>
             <div className="wte-topTools">
-              <Stack direction="row" spacing={1} aria-label={this.props.intl.formatMessage({ id: "project_editor.world_test.actions_aria" })}></Stack>
+              <Stack
+                direction="row"
+                spacing={1}
+                aria-label={this.props.intl.formatMessage({ id: "project_editor.world_test.actions_aria" })}
+              ></Stack>
             </div>
           </div>
         </div>

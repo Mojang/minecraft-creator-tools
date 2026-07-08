@@ -2,8 +2,8 @@ import { test, expect } from "@playwright/test";
 
 const SHOT_DIR = "debugoutput/screenshots/adhoc";
 
-test.describe("RC Adhoc Quality Checks @focused", () => {
-  test("home: capture Docs and footer hrefs @focused", async ({ page }) => {
+test.describe("RC Adhoc Quality Checks", () => {
+  test("home: capture Docs and footer hrefs", async ({ page }) => {
     page.on("console", (msg) => {
       if (msg.type() === "error" || msg.type() === "warning") {
         console.log(`[console.${msg.type()}]`, msg.text());
@@ -26,7 +26,7 @@ test.describe("RC Adhoc Quality Checks @focused", () => {
     await page.screenshot({ path: `${SHOT_DIR}/home-baseline.png`, fullPage: false });
   });
 
-  test("docs route loads with no 404 @focused", async ({ page }) => {
+  test("docs route loads with no 404", async ({ page }) => {
     await page.goto("/docs", { waitUntil: "domcontentloaded" });
     await page.waitForTimeout(1500);
     await page.screenshot({ path: `${SHOT_DIR}/docs-route-render.png`, fullPage: true });
@@ -34,7 +34,7 @@ test.describe("RC Adhoc Quality Checks @focused", () => {
     expect(bodyText).not.toContain("404");
   });
 
-  test("home: click each header link, observe destination @focused", async ({ page, context }) => {
+  test("home: click each header link, observe destination", async ({ page, context }) => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await page.waitForTimeout(2000);
 
@@ -45,7 +45,7 @@ test.describe("RC Adhoc Quality Checks @focused", () => {
     console.log("HEADER_LINKS:", JSON.stringify(headerLinks, null, 2));
   });
 
-  test("explore: home keyboard focus tour @focused", async ({ page }) => {
+  test("explore: home keyboard focus tour", async ({ page }) => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await page.waitForTimeout(1500);
     for (let i = 0; i < 8; i++) {
@@ -65,7 +65,7 @@ test.describe("RC Adhoc Quality Checks @focused", () => {
     console.log("FOCUSED_AFTER_8_TABS:", JSON.stringify(focused));
   });
 
-  test("explore: open Settings from header, look for raw text and theme/feature labels @focused", async ({ page }) => {
+  test("explore: open Settings from header, look for raw text and theme/feature labels", async ({ page }) => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await page.waitForTimeout(1500);
     await page.screenshot({ path: `${SHOT_DIR}/before-settings.png`, fullPage: false });
@@ -79,7 +79,7 @@ test.describe("RC Adhoc Quality Checks @focused", () => {
     }
   });
 
-  test("explore: scroll home page and capture full content @focused", async ({ page }) => {
+  test("explore: scroll home page and capture full content", async ({ page }) => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await page.waitForTimeout(2500);
     await page.screenshot({ path: `${SHOT_DIR}/home-fullpage.png`, fullPage: true });

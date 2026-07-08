@@ -2,6 +2,7 @@ import { Component } from "react";
 import IFileProps from "../project/fileExplorer/IFileProps";
 import IFile from "../../storage/IFile";
 import "./GeneralFormEditor.css";
+import SectionHeading from "../shared/components/feedback/sectionHeading/SectionHeading";
 import Database from "../../minecraft/Database";
 import DataForm, { IDataFormProps } from "../../dataformux/DataForm";
 import IProperty from "../../dataform/IProperty";
@@ -106,7 +107,9 @@ class GeneralFormEditor extends Component<IGeneralFormEditorProps, IGeneralFormE
       this.state.isLoaded === false ||
       this.state.jsonObject === undefined
     ) {
-      return <div className="gfe-loading">{this.props.intl.formatMessage({ id: "project_editor.gen_form.loading" })}</div>;
+      return (
+        <div className="gfe-loading">{this.props.intl.formatMessage({ id: "project_editor.gen_form.loading" })}</div>
+      );
     }
 
     if (this.props.setActivePersistable !== undefined) {
@@ -117,7 +120,11 @@ class GeneralFormEditor extends Component<IGeneralFormEditorProps, IGeneralFormE
 
     let header = <></>;
     if (this.props.displayHeader === undefined || this.props.displayHeader) {
-      header = <div className="gfe-header">{this.props.intl.formatMessage({ id: "project_editor.gen_form.header" })}</div>;
+      header = (
+        <SectionHeading level={2} className="gfe-header">
+          {this.props.intl.formatMessage({ id: "project_editor.gen_form.header" })}
+        </SectionHeading>
+      );
     }
 
     let jsonO: object | undefined = this.state.jsonObject;
@@ -127,7 +134,11 @@ class GeneralFormEditor extends Component<IGeneralFormEditorProps, IGeneralFormE
     }
 
     if (!form) {
-      return <div className="gfe-loading">{this.props.intl.formatMessage({ id: "project_editor.gen_form.form_not_found" })}</div>;
+      return (
+        <div className="gfe-loading">
+          {this.props.intl.formatMessage({ id: "project_editor.gen_form.form_not_found" })}
+        </div>
+      );
     }
 
     return (

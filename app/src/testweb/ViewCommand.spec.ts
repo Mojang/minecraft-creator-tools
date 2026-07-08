@@ -229,7 +229,7 @@ async function waitForServerExit(serverInfo: ViewServerInfo): Promise<boolean> {
   });
 }
 
-test.describe("MCTools View Command Tests @focused", () => {
+test.describe("MCTools View Command Tests", () => {
   const consoleErrors: { url: string; error: string }[] = [];
   const consoleWarnings: { url: string; error: string }[] = [];
 

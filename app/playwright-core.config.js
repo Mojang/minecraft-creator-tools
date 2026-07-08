@@ -28,6 +28,18 @@ export default defineConfig({
   // axe-core accessibility scans, and cold-start Vite dev server startup.
   timeout: 60000,
 
+  // Overall wall-clock budget for the entire core suite. The `build` CI job has a
+  // 45-minute `timeout-minutes` cap that also covers install, preparedevenv,
+  // mc/CLI builds, content processing, and unit tests (~18-20 min) before this
+  // step even starts. Without a globalTimeout, a slow or flaky core run gets
+  // silently killed by that job cap — surfacing only "Error: The operation was
+  // canceled." with no HTML report. This makes the suite self-abort first with a
+  // clear "Global timeout exceeded" message and preserves the report artifact.
+  // NOTE: at 25 min this sits close to the remaining job budget (~25 min left
+  // after the build steps above), so it mainly guards against a hung/runaway
+  // suite; raising the 45-min job cap would give it more margin to fire first.
+  globalTimeout: 25 * 60 * 1000,
+
   // Only run tests tagged @focused
   grep: /@focused/,
 

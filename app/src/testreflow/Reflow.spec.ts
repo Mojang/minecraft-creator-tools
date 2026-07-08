@@ -63,6 +63,55 @@ test.describe("Reflow: Home Page @reflow", () => {
     // Allow a small tolerance (2px) for sub-pixel rounding
     expect(scrollWidth).toBeLessThanOrEqual(clientWidth + 2);
   });
+
+  test("header keeps all top links (Docs, Command Line, GitHub) reachable when zoomed", async ({ page }) => {
+    setupConsoleTracking(page);
+
+    await page.goto("/");
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(1000);
+
+    // The header swaps between a full row of links and a compact, wrapping set
+    // depending on width. Whichever variant is active, every top link must stay
+    // present — at narrow (reflow) widths the compact set previously dropped
+    // Command Line and GitHub entirely (WCAG 1.4.10 Reflow loss of function).
+    const header = page.locator(".hhdr-sublink:visible, .hhdr-mobileLinks:visible");
+
+    await expect(header.getByRole("link", { name: "Docs" })).toBeVisible();
+    await expect(header.getByRole("link", { name: "Command Line" })).toBeVisible();
+    await expect(header.getByRole("link", { name: "GitHub" })).toBeVisible();
+  });
+
+  test("home page leaves a usable content band between header and footer", async ({ page }) => {
+    setupConsoleTracking(page);
+
+    await page.goto("/");
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(1500);
+
+    // The desktop app shell pins a fixed header at the top and the footer at the
+    // bottom of a 100vh container, with the main region scrolling internally. At
+    // narrow / zoomed widths that chrome must NOT consume the viewport and squeeze
+    // the content into an unusable sliver — the layout must reflow so a meaningful
+    // band remains for content (WCAG 1.4.10).
+    const metrics = await page.evaluate(() => {
+      const vh = window.innerHeight;
+      const header = document.querySelector(".MuiAppBar-root");
+      const footer = document.querySelector("footer");
+      const hb = header ? header.getBoundingClientRect() : null;
+      const fb = footer ? footer.getBoundingClientRect() : null;
+      const headerBottom = hb ? Math.min(Math.max(hb.bottom, 0), vh) : 0;
+      const footerTop = fb ? Math.min(Math.max(fb.top, 0), vh) : vh;
+      return { vh, headerBottom, footerTop, available: footerTop - headerBottom };
+    });
+
+    expect(
+      metrics.available,
+      `usable content band is only ${Math.round(metrics.available)}px of ${metrics.vh}px (header bottom ${Math.round(
+        metrics.headerBottom
+      )}, footer top ${Math.round(metrics.footerTop)})`
+    ).toBeGreaterThanOrEqual(metrics.vh * 0.5);
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -194,5 +243,56 @@ test.describe("Reflow: Project Editor @reflow", () => {
     const clientWidth = await page.evaluate(() => document.documentElement.clientWidth);
 
     expect(scrollWidth).toBeLessThanOrEqual(clientWidth + 50);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Content wizard dialog reflow
+// ---------------------------------------------------------------------------
+
+test.describe("Reflow: Content Wizard @reflow", () => {
+  test("wizard title and step indicator stay in view when navigating backward at zoom", async ({ page }, testInfo) => {
+    setupConsoleTracking(page);
+
+    await page.goto("/");
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(1000);
+
+    // Open the "Create Mob" wizard dialog from the home page.
+    await page.evaluate(() => {
+      const heading = Array.from(document.querySelectorAll("h3")).find(
+        (e) => (e.textContent || "").trim() === "Make a Mob"
+      );
+      const button = heading && heading.closest("button");
+      if (button) (button as HTMLElement).click();
+    });
+
+    const header = page.locator(".cwiz-wizard-header");
+    const title = page.locator(".cwiz-wizard-title"); // "Create Mob"
+    const stepIndicator = page.locator(".cwiz-wizard-step-indicator"); // "Step 1 of N: ..."
+    await expect(header).toBeVisible({ timeout: 15000 });
+
+    // The title and step indicator must be visible when the dialog opens.
+    await expect(title).toBeInViewport();
+    await expect(stepIndicator).toBeInViewport();
+
+    // Navigate forward then back. A scrollable body with a hard min-height used to
+    // overflow the fixed-height dialog, so activating a footer control scrolled the
+    // whole dialog and pushed the header text off the top — most visibly when
+    // navigating backward (WCAG 1.4.4 Resize Text / 1.4.10 Reflow). The header is
+    // fixed, so only the body should scroll and the title text must stay put.
+    const footer = page.locator(".cwiz-wizard-footer");
+    await footer.getByRole("button", { name: /^Next/i }).first().click();
+    await page.waitForTimeout(400);
+    await footer.getByRole("button", { name: /^Back/i }).first().click();
+    await page.waitForTimeout(400);
+
+    await page.screenshot({
+      path: `debugoutput/screenshots/reflow-content-wizard-${zoomLabel(testInfo)}.png`,
+      fullPage: true,
+    });
+
+    await expect(title).toBeInViewport();
+    await expect(stepIndicator).toBeInViewport();
   });
 });

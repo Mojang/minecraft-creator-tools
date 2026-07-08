@@ -69,11 +69,12 @@ import Project from "../../app/Project";
 import CreatorToolsHost from "../../app/CreatorToolsHost";
 import ModelViewer from "./ModelViewer";
 import { WorldViewMode, WorldViewMenuState } from "./WorldViewTypes";
+import { withLocalization, WithLocalizationProps } from "../withLocalization";
 
 // Re-export types for backward compatibility
 export { WorldViewMode, WorldViewMenuState } from "./WorldViewTypes";
 
-interface IWorldDisplayProps {
+interface IWorldDisplayProps extends WithLocalizationProps {
   world?: MCWorld;
   project?: Project;
   file?: IFile;
@@ -104,7 +105,7 @@ interface IWorldDisplayState {
 
 export const DimensionNames = ["Overworld", "Nether", "The End"];
 
-export default class WorldDisplay extends Component<IWorldDisplayProps, IWorldDisplayState> {
+class WorldDisplay extends Component<IWorldDisplayProps, IWorldDisplayState> {
   _lastFileViewed?: IFile;
   _lastFolderViewed?: IFolder;
   _activeMap?: WorldMap;
@@ -1181,6 +1182,7 @@ export default class WorldDisplay extends Component<IWorldDisplayProps, IWorldDi
                 displayEmpty
                 onChange={this._handleAnchorRegionSelect}
                 renderValue={() => dimName}
+                SelectDisplayProps={{ "aria-label": this.props.intl.formatMessage({ id: "project_editor.world_display.anchor_region_aria" }) }}
               >
                 {anchorRegions.map((item) => (
                   <MenuItem key={item} value={item}>
@@ -1196,3 +1198,5 @@ export default class WorldDisplay extends Component<IWorldDisplayProps, IWorldDi
     );
   }
 }
+
+export default withLocalization(WorldDisplay);

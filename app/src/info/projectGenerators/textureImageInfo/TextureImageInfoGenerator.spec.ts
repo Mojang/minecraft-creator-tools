@@ -9,6 +9,51 @@ import TextureImageInfoGenerator, {
 import { createStubProject } from "../../../test/stubs/app/projects/StubProject";
 import ContentIndex from "../../../core/ContentIndex";
 import { InfoItemType } from "../../IInfoItemData";
+import { createStubProjectItem } from "../../../test/stubs/app/projects/StubProjectItem";
+import { ProjectItemType } from "../../../app/IProjectItemData";
+import ImageCodecNode from "../../../local/ImageCodecNode";
+import { createStubFile } from "../../../test/stubs/app/io/StubFile";
+import ProjectItem from "../../../app/ProjectItem";
+
+function createPngTextureItem(
+  name: string,
+  width: number,
+  height: number,
+  projectPath = `/resource_pack/textures/ui/${name}`,
+  variantProjectPath = projectPath
+): ProjectItem {
+  const pngData = ImageCodecNode.encodeToPng(new Uint8Array(width * height * 4), width, height);
+
+  expect(pngData, `Failed to encode test PNG ${name}`).to.not.be.undefined;
+
+  const file = createStubFile({
+    name,
+    content: pngData!,
+    isString: false,
+    type: "png",
+    extendedPath: variantProjectPath,
+  });
+
+  const projectItem = createStubProjectItem({
+    file,
+    itemType: ProjectItemType.texture,
+    name,
+    projectPath,
+  });
+
+  return {
+    ...projectItem,
+    getVariantList: () => [
+      {
+        label: "",
+        file,
+        projectPath: variantProjectPath,
+        projectVariant: { isDefault: true },
+      },
+    ],
+    getPackRelativePath: async () => `textures/ui/${name}`,
+  } as unknown as ProjectItem;
+}
 
 describe("TextureImageInfoGenerator", () => {
   let gen: TextureImageInfoGenerator;
@@ -113,6 +158,30 @@ describe("TextureImageInfoGenerator", () => {
       const results = await gen.generate(createStubProject(), new ContentIndex());
       const nonAggregate = results.filter((r) => r.itemType !== InfoItemType.featureAggregate);
       expect(nonAggregate.length).to.equal(0);
+    });
+
+    it("warns only when a texture's highest-resolution mip exceeds 4 MiB", async () => {
+      const atLimit = createPngTextureItem("texture_at_limit.png", 1024, 1024);
+      const overLimitPath = "/resource_pack/subpacks/hd/textures/ui/texture_over_limit.png";
+      const overLimit = createPngTextureItem(
+        "texture_over_limit.png",
+        1025,
+        1024,
+        "/resource_pack/textures/ui/texture_over_limit.png",
+        overLimitPath
+      );
+      const project = createStubProject([atLimit, overLimit]);
+
+      const results = await gen.generate(project, new ContentIndex());
+      const warnings = results.filter(
+        (item) => item.itemType === InfoItemType.warning && item.message?.includes("highest-resolution mip")
+      );
+
+      expect(warnings.length).to.equal(1);
+      expect(warnings[0].projectItemPath).to.equal(overLimitPath);
+      expect(warnings[0].message).to.include(overLimitPath);
+      expect(warnings[0].message).to.include("4 MiB");
+      expect(warnings[0].data).to.equal(1025 * 1024 * 4);
     });
   });
 });

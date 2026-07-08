@@ -305,3 +305,91 @@
   border-radius: 4px;
   border: 1px solid #555;
 }
+
+/* ── Light theme overrides (body.ct-light) ──────────────────────────────────
+   The rules above hardcode dark-theme colors (light text on dark surfaces).
+   Without these overrides the biome selector paints near-white text on the
+   light content surface in Light Mode, dropping contrast to ~1.4:1. Following
+   the MobViewer/BlockViewer convention, remap text, surface, and border colors
+   so labels stay legible (WCAG AA) in Light Mode. Biome names live on the
+   plain .ssre-biomeHeader div, so its color must be set explicitly here. */
+body.ct-light .ssre-defaultEntry {
+  background: #f4f3f2;
+  border-color: #c9c6c4;
+}
+
+body.ct-light .ssre-defaultHeader {
+  color: #1a1918;
+  background: #e6e4e2;
+  border-bottom-color: #cfccca;
+}
+
+body.ct-light .ssre-defaultHeader:hover {
+  background: #dcd9d7;
+}
+
+body.ct-light .ssre-expandIcon,
+body.ct-light .ssre-biomeExpand {
+  color: #5f5b57 !important;
+}
+
+body.ct-light .ssre-biomeExpand:hover {
+  color: #1a1918 !important;
+}
+
+body.ct-light .ssre-categoryName {
+  color: #1a1918;
+  border-bottom-color: #b8b4b1;
+}
+
+body.ct-light .ssre-categoryNameToggle:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+body.ct-light .ssre-biomeRowSelected {
+  border-color: #5a9a5a;
+  background: #e3efe1;
+}
+
+body.ct-light .ssre-biomeHeader {
+  color: #2a2825;
+}
+
+body.ct-light .ssre-biomeHeader:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+body.ct-light .ssre-checkbox {
+  color: #5f5b57;
+}
+
+body.ct-light .ssre-checkboxChecked {
+  color: #2e7d32;
+}
+
+body.ct-light .ssre-configPanel {
+  background: rgba(0, 0, 0, 0.04);
+  border-top-color: #d0cdcb;
+}
+
+body.ct-light .ssre-configRow {
+  color: #46433f;
+}
+
+body.ct-light .ssre-configLabel {
+  color: #1a1918;
+}
+
+body.ct-light .ssre-useDefault {
+  color: #5e5a55;
+}
+
+body.ct-light .ssre-useDefault:hover {
+  color: #1a1918;
+}
+
+body.ct-light .ssre-summary {
+  color: #1a1918;
+  background: #e6e4e2;
+  border-color: #c9c6c4;
+}

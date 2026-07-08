@@ -17,8 +17,9 @@ import "./LootEntryEditor.css";
 import { ILootTableBehaviorEntry, ILootTableBehaviorFunction } from "../../../minecraft/ILootTableBehavior";
 import LootEntryTile from "./LootEntryTile";
 import { Button, MenuItem, Select, TextField, type SelectChangeEvent } from "@mui/material";
+import { withLocalization, WithLocalizationProps } from "../../withLocalization";
 
-export interface ILootEntryEditorProps {
+export interface ILootEntryEditorProps extends WithLocalizationProps {
   entry: ILootTableBehaviorEntry;
   index: number;
   totalWeight: number;
@@ -35,7 +36,7 @@ interface ILootEntryEditorState {
   quantityMax: number;
 }
 
-export default class LootEntryEditor extends Component<ILootEntryEditorProps, ILootEntryEditorState> {
+class LootEntryEditor extends Component<ILootEntryEditorProps, ILootEntryEditorState> {
   constructor(props: ILootEntryEditorProps) {
     super(props);
 
@@ -151,6 +152,10 @@ export default class LootEntryEditor extends Component<ILootEntryEditorProps, IL
           <div className="lee-field">
             <span className="lee-label">Type</span>
             <Select
+              // MUI drops a top-level aria-label on the role="combobox" element; name it via
+              // SelectDisplayProps. aria-labelledby is unsafe here because multiple entry editors
+              // can render at once (duplicate ids), so mirror the visible "Type" label. (WCAG 4.1.2)
+              SelectDisplayProps={{ "aria-label": this.props.intl.formatMessage({ id: "project_editor.loot_entry.type_aria" }) }}
               className="lee-select"
               size="small"
               value={type}
@@ -234,3 +239,5 @@ export default class LootEntryEditor extends Component<ILootEntryEditorProps, IL
     );
   }
 }
+
+export default withLocalization(LootEntryEditor);

@@ -171,14 +171,14 @@ export const EditorHeaderBar: React.FC<IEditorHeaderBarProps> = (props) => {
         </span>
       )}
       {props.displayName ? (
-        <span className="editor-header-title-group">
-          <span className="editor-header-title">{props.displayName}</span>
+        <div className="editor-header-title-group">
+          <h1 className="editor-header-title">{props.displayName}</h1>
           <span className="editor-header-subtitle" style={{ fontSize: "0.85em", marginLeft: "8px" }}>
             ({props.itemId})
           </span>
-        </span>
+        </div>
       ) : (
-        <span className="editor-header-title">{props.itemId}</span>
+        <h1 className="editor-header-title">{props.itemId}</h1>
       )}
       {props.typeName && <span className="editor-header-badge">{props.typeName}</span>}
       {props.formatVersion && (

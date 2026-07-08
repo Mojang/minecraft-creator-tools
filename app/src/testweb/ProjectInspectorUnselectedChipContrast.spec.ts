@@ -17,7 +17,7 @@
  */
 
 import { test, expect, ConsoleMessage, Page } from "@playwright/test";
-import { enterEditor, processMessage } from "./WebTestUtilities";
+import { enterEditor, processMessage, waitForInspectorValidationComplete } from "./WebTestUtilities";
 
 const MIN_CONTRAST = 4.5;
 const CHIP = ".mcc-chipContent";
@@ -91,6 +91,9 @@ for (const theme of ["light", "dark"] as const) {
 
     await page.getByText("Check for Problems").first().click();
     await expect(page.locator("h2.pid-title")).toBeVisible({ timeout: 20000 });
+    // Validation runs in a worker and is slow on the Vite dev server; wait for it to
+    // finish so the Items filter chips are actually rendered before asserting on them.
+    await waitForInspectorValidationComplete(page);
     await page.locator("#pid-tab-items").click();
     await page.locator(CHIP).first().waitFor({ timeout: 20000 });
     await page.mouse.move(0, 0);

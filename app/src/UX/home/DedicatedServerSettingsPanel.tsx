@@ -199,7 +199,7 @@ export default class DedicatedServerSettingsPanel extends Component<
     const serverProps = [];
 
     serverProps.push(
-      <div key="modelabel" className="dssp-label dssp-modelabel">
+      <div key="modelabel" className="dssp-label dssp-modelabel" id="dssp-modelabel">
         Use:
       </div>
     );
@@ -214,6 +214,7 @@ export default class DedicatedServerSettingsPanel extends Component<
           }
           onChange={this._handleModeChanged}
           size="small"
+          SelectDisplayProps={{ "aria-labelledby": "dssp-modelabel" }}
         >
           {this.modeOptions.map((opt) => (
             <MenuItem key={opt} value={opt}>

@@ -14,7 +14,7 @@
  */
 
 import { test, expect, ConsoleMessage, Page } from "@playwright/test";
-import { enterEditor, processMessage } from "./WebTestUtilities";
+import { enterEditor, processMessage, waitForInspectorValidationComplete } from "./WebTestUtilities";
 
 const MIN_CONTRAST = 4.5;
 
@@ -80,6 +80,9 @@ for (const theme of ["light", "dark"] as const) {
     // Open the Project Inspector and switch to the Summary tab (the search field lives there).
     await page.getByText("Check for Problems").first().click();
     await expect(page.locator("h2.pid-title")).toBeVisible({ timeout: 20000 });
+    // Validation runs in a worker and is slow on the Vite dev server; wait for it to
+    // finish so the Summary search field is actually rendered before asserting on it.
+    await waitForInspectorValidationComplete(page);
     await page.locator("#pid-tab-summary").click();
 
     const search = page.locator(".pis-searchArea input").first();

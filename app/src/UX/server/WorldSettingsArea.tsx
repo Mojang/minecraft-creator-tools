@@ -395,7 +395,7 @@ class WorldSettingsArea extends Component<IWorldSettingsAreaProps, IWorldSetting
                 : gameTypes[GameType.creative]
             }
             key="gtInput"
-            aria-labelledby="wsa-label-gametype"
+            SelectDisplayProps={{ "aria-labelledby": "wsa-label-gametype" }}
             disabled={!enableCustomWorldOptions}
             onChange={this._handleGameTypeChanged}
             size="small"
@@ -428,7 +428,7 @@ class WorldSettingsArea extends Component<IWorldSettingsAreaProps, IWorldSetting
                 : difficulty[Difficulty.normal]
             }
             key="gdInput"
-            aria-labelledby="wsa-label-gamediff"
+            SelectDisplayProps={{ "aria-labelledby": "wsa-label-gamediff" }}
             disabled={!enableCustomWorldOptions}
             onChange={this._handleDifficultyChanged}
             size="small"
@@ -542,7 +542,7 @@ class WorldSettingsArea extends Component<IWorldSettingsAreaProps, IWorldSetting
                 : generator[Generator.flat]
             }
             key="genInput"
-            aria-label={intl.formatMessage({ id: "world_settings.map_style_aria" })}
+            SelectDisplayProps={{ "aria-label": intl.formatMessage({ id: "world_settings.map_style_aria" }) }}
             disabled={!enableCustomWorldOptions}
             onChange={this._handleGeneratorChanged}
             size="small"
@@ -593,7 +593,7 @@ class WorldSettingsArea extends Component<IWorldSettingsAreaProps, IWorldSetting
                 : backupTypes[BackupType.every5Minutes]
             }
             key="backupInput"
-            aria-labelledby="wsa-label-backup"
+            SelectDisplayProps={{ "aria-labelledby": "wsa-label-backup" }}
             onChange={this._handleBackupTypeChanged}
             size="small"
           >

@@ -1034,8 +1034,14 @@ class ActionSetEditor extends Component<IActionSetEditorProps, IActionSetEditorS
       return (
         <div className={"ase-emptyState" + (isDarkLoading ? " ase-emptyState-dark" : "")}>
           <div className="ase-emptyState-icon">&#9881;</div>
-          <div className="ase-emptyState-title">{!actionSet ? this.props.intl.formatMessage({ id: "project_editor.action_set.preparing" }) : this.props.intl.formatMessage({ id: "project_editor.action_set.loading_toolbox" })}</div>
-          <div className="ase-emptyState-hint">{this.props.intl.formatMessage({ id: "project_editor.action_set.loading_hint" })}</div>
+          <div className="ase-emptyState-title">
+            {!actionSet
+              ? this.props.intl.formatMessage({ id: "project_editor.action_set.preparing" })
+              : this.props.intl.formatMessage({ id: "project_editor.action_set.loading_toolbox" })}
+          </div>
+          <div className="ase-emptyState-hint">
+            {this.props.intl.formatMessage({ id: "project_editor.action_set.loading_hint" })}
+          </div>
         </div>
       );
     }
@@ -1058,6 +1064,9 @@ class ActionSetEditor extends Component<IActionSetEditorProps, IActionSetEditorS
             <FormControl size="small">
               <Select
                 key="modeinput"
+                // MUI drops a top-level aria-label on the role="combobox" element; the accessible
+                // name must be supplied via SelectDisplayProps. No visible label exists here. (WCAG 4.1.2)
+                SelectDisplayProps={{ "aria-label": this.props.intl.formatMessage({ id: "project_editor.action_set.type_aria" }) }}
                 value={ActionSetTargetTypeStrings[actionSet.targetType]}
                 onChange={this._handleActionSetTypeChange}
               >
@@ -1070,15 +1079,25 @@ class ActionSetEditor extends Component<IActionSetEditorProps, IActionSetEditorS
             </FormControl>
           </div>
           <div className="ase-toolBar">
-            <Stack direction="row" spacing={1} aria-label={this.props.intl.formatMessage({ id: "project_editor.action_set.actions_aria" })}>
-              <Button key="addComponentGroupAdd" title={this.props.intl.formatMessage({ id: "project_editor.action_set.add_component_group" })}>
+            <Stack
+              direction="row"
+              spacing={1}
+              aria-label={this.props.intl.formatMessage({ id: "project_editor.action_set.actions_aria" })}
+            >
+              <Button
+                key="addComponentGroupAdd"
+                title={this.props.intl.formatMessage({ id: "project_editor.action_set.add_component_group" })}
+              >
                 <CustomLabel
                   isCompact={false}
                   text={this.props.intl.formatMessage({ id: "project_editor.action_set.add_component_group" })}
                   icon={<FontAwesomeIcon icon={faPlus} className="fa-lg" />}
                 />
               </Button>
-              <Button key="addEventAdd" title={this.props.intl.formatMessage({ id: "project_editor.action_set.add_action" })}>
+              <Button
+                key="addEventAdd"
+                title={this.props.intl.formatMessage({ id: "project_editor.action_set.add_action" })}
+              >
                 <CustomLabel
                   isCompact={false}
                   text={this.props.intl.formatMessage({ id: "project_editor.action_set.add_action" })}
@@ -1097,12 +1116,17 @@ class ActionSetEditor extends Component<IActionSetEditorProps, IActionSetEditorS
     const editorToolbar = (
       <div className={"ase-editorToolbar" + (isDark ? " ase-editorToolbar-dark" : "")}>
         <span className="ase-editorToolbar-title">
-          {this.props.intl.formatMessage({ id: "project_editor.action_set.title" })}{isMaximized && this.props.title ? " — " + this.props.title : ""}
+          {this.props.intl.formatMessage({ id: "project_editor.action_set.title" })}
+          {isMaximized && this.props.title ? " — " + this.props.title : ""}
         </span>
         <button
           className={"ase-editorToolbar-btn" + (isDark ? " ase-editorToolbar-btn-dark" : "")}
           onClick={this._toggleMaximize}
-          title={isMaximized ? this.props.intl.formatMessage({ id: "project_editor.action_set.restore" }) : this.props.intl.formatMessage({ id: "project_editor.action_set.maximize" })}
+          title={
+            isMaximized
+              ? this.props.intl.formatMessage({ id: "project_editor.action_set.restore" })
+              : this.props.intl.formatMessage({ id: "project_editor.action_set.maximize" })
+          }
         >
           <FontAwesomeIcon icon={isMaximized ? faCompress : faExpand} />
         </button>

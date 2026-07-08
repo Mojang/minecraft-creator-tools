@@ -1,6 +1,7 @@
 import { Component, UIEvent } from "react";
 import * as React from "react";
 import "./ProjectInfoDisplay.css";
+import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import IAppProps from "../../appShell/IAppProps";
 import Project from "../../../app/Project";
 import ProjectInfoSet from "../../../info/ProjectInfoSet";
@@ -966,28 +967,41 @@ class ProjectInfoDisplay extends Component<IProjectInfoDisplayProps, IProjectInf
   }
 
   /**
-   * Renders the stats bar showing content counts (similar to ProjectActions).
+   * Renders the stats bar showing summary-level metrics and content counts (similar to ProjectActions).
    */
-  renderStatsBar(): JSX.Element | null {
+  renderStatsBar(infoSet?: ProjectInfoSet): JSX.Element | null {
     const project = this.props.project;
-    if (!project) return null;
+    const stats: { icon: IconDefinition; label: string; count: number }[] = [];
 
-    const stats = [
-      { icon: faCube, label: "Mob Types", count: project.getItemsByType(ProjectItemType.entityTypeBehavior).length },
-      { icon: faCubes, label: "Block Types", count: project.getItemsByType(ProjectItemType.blockTypeBehavior).length },
-      {
-        icon: faLayerGroup,
-        label: "Item Types",
-        count: project.getItemsByType(ProjectItemType.itemTypeBehavior).length,
-      },
-      {
-        icon: faCode,
-        label: this.props.intl.formatMessage({ id: "project_editor.info.stats_scripts" }),
-        count: project.getItemsByType(ProjectItemType.ts).length + project.getItemsByType(ProjectItemType.js).length,
-      },
-      { icon: faImage, label: "Textures", count: project.getItemsByType(ProjectItemType.texture).length },
-      { icon: faFileCode, label: "Functions", count: project.getItemsByType(ProjectItemType.MCFunction).length },
-    ].filter((s) => s.count > 0);
+    const minimumSupportablePerformanceTier = this.getMinimumSupportablePerformanceTier(infoSet);
+    if (minimumSupportablePerformanceTier !== undefined) {
+      stats.push({
+        icon: faCircleArrowUp,
+        label: this.props.intl.formatMessage({ id: "project_editor.info.stats_min_perf_tier" }),
+        count: minimumSupportablePerformanceTier,
+      });
+    }
+
+    if (project) {
+      const projectStats = [
+        { icon: faCube, label: "Mob Types", count: project.getItemsByType(ProjectItemType.entityTypeBehavior).length },
+        { icon: faCubes, label: "Block Types", count: project.getItemsByType(ProjectItemType.blockTypeBehavior).length },
+        {
+          icon: faLayerGroup,
+          label: "Item Types",
+          count: project.getItemsByType(ProjectItemType.itemTypeBehavior).length,
+        },
+        {
+          icon: faCode,
+          label: this.props.intl.formatMessage({ id: "project_editor.info.stats_scripts" }),
+          count: project.getItemsByType(ProjectItemType.ts).length + project.getItemsByType(ProjectItemType.js).length,
+        },
+        { icon: faImage, label: "Textures", count: project.getItemsByType(ProjectItemType.texture).length },
+        { icon: faFileCode, label: "Functions", count: project.getItemsByType(ProjectItemType.MCFunction).length },
+      ].filter((s) => s.count > 0);
+
+      stats.push(...projectStats);
+    }
 
     if (stats.length === 0) return null;
 
@@ -1002,6 +1016,16 @@ class ProjectInfoDisplay extends Component<IProjectInfoDisplayProps, IProjectInf
         ))}
       </div>
     );
+  }
+
+  getMinimumSupportablePerformanceTier(infoSet?: ProjectInfoSet): number | undefined {
+    const minimumSupportablePerformanceTier = infoSet?.info.minimumSupportablePerformanceTier;
+
+    if (typeof minimumSupportablePerformanceTier === "number" && Number.isFinite(minimumSupportablePerformanceTier)) {
+      return minimumSupportablePerformanceTier;
+    }
+
+    return undefined;
   }
 
   /**
@@ -1869,7 +1893,6 @@ class ProjectInfoDisplay extends Component<IProjectInfoDisplayProps, IProjectInf
 
     const height = WebUtilities.getHeight();
 
-    const lines = [];
     const contentSummaryLines = [];
     const actionToolbarItems: any[] = [];
 
@@ -2153,120 +2176,34 @@ class ProjectInfoDisplay extends Component<IProjectInfoDisplayProps, IProjectInf
         </div>
       );
     } else if (this.state.viewMode === ProjectInfoDisplayMode.summary) {
-      let summaryKeyVals = undefined;
-
       // Get the info set for use throughout the summary view
       let infoSet: ProjectInfoSet | undefined = this.props.indevInfoSet;
       if (infoSet === undefined) {
         infoSet = this.state.selectedInfoSet;
       }
 
-      if ((this.props.file || this.props.data) && this.state.selectedInfoSet) {
-        summaryKeyVals = this.state.selectedInfoSet.info as { [index: string]: any };
-      } else if (this.props.indevInfoSet && this.props.indevInfoSet.info.featureSets) {
-        summaryKeyVals = this.props.indevInfoSet.info as { [index: string]: any };
-      }
-
       // Detail rows for the collapsible detailed metrics section
       const detailRows: JSX.Element[] = [];
 
-      if (summaryKeyVals) {
-        const keys = Object.keys(summaryKeyVals);
-        keys.sort();
+      if (infoSet) {
+        let rowCount = 2;
 
-        const rows = [];
+        if (infoSet.info.featureSets) {
+          const featNames = Object.keys(infoSet.info.featureSets);
+          featNames.sort();
 
-        for (const key of keys) {
-          if (key !== "featureSets" && key !== "summary" && key !== "features") {
-            const val = summaryKeyVals[key];
+          for (const featName of featNames) {
+            const featureSet = infoSet.info.featureSets[featName];
 
-            const cells = [];
-
-            if (this.matchesSearch(key) || this.matchesSearch(this.getDataSummary(val + ""))) {
-              if (key === "defaultIcon" && val && val.length > 100) {
-                cells.push(
-                  <td className="pis-itemHeader" key={key + "headerA"}>
-                    {Utilities.humanifyJsName(key)}
-                  </td>
-                );
-                cells.push(
-                  <td className="pis-itemData pis-image" key={key + "dataC"}>
-                    <div
-                      style={{
-                        width: 256,
-                        height: 256,
-                        backgroundImage: "url('data:image/png;base64, " + val + "')",
-                      }}
-                    >
-                      &#160;
-                    </div>
-                  </td>
-                );
-              } else if (val !== undefined) {
-                cells.push(
-                  <td className="pis-itemHeader" key={key + "headerA"}>
-                    <div>{Utilities.humanifyJsName(key)}</div>
-                  </td>
-                );
-
-                cells.push(
-                  <td className="pis-itemDataCell" key={key + "dataA"}>
-                    <div className="pis-itemData">{this.getDataSummary(val)}</div>
-                  </td>
-                );
-              }
-
-              if (cells.length > 0) {
-                rows.push(<tr key={"mainRow" + rowCount}>{cells}</tr>);
-                rowCount++;
-              }
-            }
-          }
-        }
-
-        // Only add the Key Items section if there are actual rows to display
-        if (rows.length > 0) {
-          lines.push(
-            <div className="pis-areaHeader" key="summary-key-items-header">
-              {this.props.intl.formatMessage({ id: "project_editor.info.key_items_header" })}
-            </div>
-          );
-          lines.push(
-            <table className="pis-detailTable" key="summary-key-items-table">
-              <thead>
-                <tr>
-                  <td className="pis-itemDataHeader">
-                    {this.props.intl.formatMessage({ id: "project_editor.info.item_col" })}
-                  </td>
-                  <td className="pis-itemValueHeader">
-                    {this.props.intl.formatMessage({ id: "project_editor.info.value_col" })}
-                  </td>
-                </tr>
-              </thead>
-              <tbody>{rows}</tbody>
-            </table>
-          );
-        }
-
-        if (infoSet) {
-          let rowCount = 2;
-
-          if (infoSet.info.featureSets) {
-            const featNames = Object.keys(infoSet.info.featureSets);
-            featNames.sort();
-
-            for (const featName of featNames) {
-              const featureSet = infoSet.info.featureSets[featName];
-
-              if (this.matchesSearch(featName) && featureSet) {
-                if (
-                  featureSet["total"] !== undefined &&
-                  featureSet["average"] !== undefined &&
-                  featureSet["instanceCount"] !== undefined &&
-                  featureSet["max"] !== undefined &&
-                  featureSet["min"] !== undefined
-                ) {
-                  let featNameAdj = featName;
+            if (this.matchesSearch(featName) && featureSet) {
+              if (
+                featureSet["total"] !== undefined &&
+                featureSet["average"] !== undefined &&
+                featureSet["instanceCount"] !== undefined &&
+                featureSet["max"] !== undefined &&
+                featureSet["min"] !== undefined
+              ) {
+                let featNameAdj = featName;
 
                   contentSummaryLines.push(
                     <div
@@ -2364,7 +2301,6 @@ class ProjectInfoDisplay extends Component<IProjectInfoDisplayProps, IProjectInf
             // Details are now rendered in the collapsible section below
           }
         }
-      }
 
       outer = (
         <div
@@ -2387,7 +2323,7 @@ class ProjectInfoDisplay extends Component<IProjectInfoDisplayProps, IProjectInf
           )}
 
           {/* Stats Bar - Quick content counts */}
-          {this.renderStatsBar()}
+          {this.renderStatsBar(infoSet)}
 
           <div className="pid-summaryArea">
             <div className="pis-searchArea">
@@ -2402,24 +2338,6 @@ class ProjectInfoDisplay extends Component<IProjectInfoDisplayProps, IProjectInf
               />
             </div>
 
-            {/* Key Items Section - only show if there's content */}
-            {lines.length > 0 && (
-              <div
-                className="pis-sectionCard"
-                style={{
-                  backgroundColor:
-                    CreatorToolsHost.theme === CreatorToolsThemeStyle.dark
-                      ? "rgba(255, 255, 255, 0.02)"
-                      : "rgba(0, 0, 0, 0.02)",
-                }}
-              >
-                <div className="pis-areaHeader">
-                  {this.props.intl.formatMessage({ id: "project_editor.info.project_information" })}
-                </div>
-                <div className="pis-summaryArea">{lines}</div>
-              </div>
-            )}
-
             {/* Content Summary - Grouped by Category */}
             {infoSet && infoSet.info.featureSets && (
               <div
@@ -2431,9 +2349,9 @@ class ProjectInfoDisplay extends Component<IProjectInfoDisplayProps, IProjectInf
                       : "rgba(0, 0, 0, 0.02)",
                 }}
               >
-                <div className="pis-contentSummaryHeader">
+                <h2 className="pis-contentSummaryHeader">
                   {this.props.intl.formatMessage({ id: "project_editor.info.content_statistics" })}
-                </div>
+                </h2>
                 {this.renderCategorizedStats(infoSet.info.featureSets)}
               </div>
             )}
@@ -2463,7 +2381,7 @@ class ProjectInfoDisplay extends Component<IProjectInfoDisplayProps, IProjectInf
             {/* Empty state — ensures the Summary panel always shows something so
                 it is clearly distinct from the Items panel even when no summary
                 data is available yet. */}
-            {lines.length === 0 && detailRows.length === 0 && !(infoSet && infoSet.info.featureSets) && (
+            {detailRows.length === 0 && !(infoSet && infoSet.info.featureSets) && (
               <div
                 className="pis-sectionCard"
                 style={{
@@ -2850,9 +2768,15 @@ class ProjectInfoDisplay extends Component<IProjectInfoDisplayProps, IProjectInf
             <div className="pid-suiteDropdown">
               <FormControl size="small" sx={{ minWidth: isMobile ? 0 : 180, maxWidth: isMobile ? 140 : undefined }}>
                 <Select
-                  aria-labelledby="pid-suiteTitle"
-                  aria-label={
-                    isMobile ? this.props.intl.formatMessage({ id: "project_editor.info.suite_label" }) : undefined
+                  // MUI does not forward a top-level aria-labelledby/aria-label onto the
+                  // role="combobox" display element, so the name must be set via
+                  // SelectDisplayProps (which is spread onto that element). Associate it
+                  // with the visible "Suite:" label when shown; fall back to an aria-label
+                  // on mobile where that label is hidden. (WCAG 4.1.2)
+                  SelectDisplayProps={
+                    isMobile
+                      ? { "aria-label": this.props.intl.formatMessage({ id: "project_editor.info.suite_label" }) }
+                      : { "aria-labelledby": "pid-suiteTitle" }
                   }
                   value={getSuiteTitles(this.props.intl)[this.state.activeSuite] || ""}
                   onChange={this._handleSuiteChange}

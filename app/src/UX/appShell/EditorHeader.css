@@ -178,6 +178,8 @@
   letter-spacing: 0.02em;
   text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3);
   min-width: 0;
+  /* Rendered as an <h1>; strip the UA heading margin so layout is unchanged. */
+  margin: 0;
 }
 
 .editor-header-badge {
@@ -438,6 +440,37 @@
 .editor-tab:not(.editor-tab-selected)::after {
   content: none !important;
   display: none !important;
+}
+
+/* High-contrast / forced-colors mode: the selected tab is otherwise marked only
+   with author colors (a tinted background, an inset shadow, and a green
+   underline) — all of which forced-colors strips, leaving the active tab
+   indistinguishable from the rest. Re-assert the selected state with the system
+   Highlight pairing so it stays clearly differentiable (MAS 4.3.1). Placed after
+   the base tab rules so it wins on source order at equal specificity. */
+@media (forced-colors: active) {
+  .editor-header-tabs-container .label-tab,
+  .editor-tab-selected {
+    background-color: Highlight !important;
+    color: HighlightText !important;
+  }
+
+  /* The tab's label sits in a transparent .label-text span. In forced colors the
+     UA paints a Canvas (typically white) backplate behind that text for legibility;
+     combined with the HighlightText (often white) text it renders white-on-white,
+     hiding the label. Give the span the Highlight surface and opt it out of the
+     backplate so HighlightText stays readable on Highlight. */
+  .editor-header-tabs-container .label-tab .label-text,
+  .editor-tab-selected .label-text {
+    background-color: Highlight !important;
+    color: HighlightText !important;
+    forced-color-adjust: none;
+  }
+
+  .editor-header-tabs-container .label-tab::after,
+  .editor-tab-selected::after {
+    background-color: HighlightText !important;
+  }
 }
 
 .editor-tab-icon {

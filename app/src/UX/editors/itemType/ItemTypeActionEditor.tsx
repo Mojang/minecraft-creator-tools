@@ -357,7 +357,14 @@ class ItemTypeActionEditor extends Component<IItemTypeActionEditorProps, IItemTy
       if (compIdArr && Array.isArray(compIdArr) && compIdArr.length > 0) {
         dropdownArea = (
           <FormControl size="small" fullWidth>
-            <Select value={this.state.selectedActionComponentId || ""} onChange={this._handleActionChange} displayEmpty>
+            <Select
+              // MUI drops a top-level aria-label on the role="combobox" element; name it via
+              // SelectDisplayProps, mirroring the disabled placeholder option. (WCAG 4.1.2)
+              SelectDisplayProps={{ "aria-label": this.props.intl.formatMessage({ id: "project_editor.item_action.select_component_aria" }) }}
+              value={this.state.selectedActionComponentId || ""}
+              onChange={this._handleActionChange}
+              displayEmpty
+            >
               <MenuItem value="" disabled>
                 Select an action component
               </MenuItem>
@@ -383,7 +390,11 @@ class ItemTypeActionEditor extends Component<IItemTypeActionEditorProps, IItemTy
         >
           <div className="itae-toolBarArea">
             <div className="itae-tools">
-              <Stack direction="row" spacing={1} aria-label={this.props.intl.formatMessage({ id: "project_editor.item_action.aria_actions" })}>
+              <Stack
+                direction="row"
+                spacing={1}
+                aria-label={this.props.intl.formatMessage({ id: "project_editor.item_action.aria_actions" })}
+              >
                 <Button onClick={this._addNewAction} title="Add action">
                   <CustomLabel
                     isCompact={isButtonCompact}

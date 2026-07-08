@@ -12,6 +12,7 @@ import IGalleryItem, { GalleryItemType } from "../../../app/IGalleryItem";
 import ItemGallery, { GalleryItemCommand } from "../../project/itemGallery/ItemGallery";
 import { ItemTileButtonDisplayMode } from "../../project/itemGallery/ItemTileButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import SectionHeading from "../../shared/components/feedback/sectionHeading/SectionHeading";
 import { faPaw, faPencil } from "@fortawesome/free-solid-svg-icons";
 import { getThemeColors } from "../../hooks/theme/useThemeColors";
 import IProjectTheme from "../../types/IProjectTheme";
@@ -201,10 +202,10 @@ export default class NewEntityType extends Component<INewEntityTypeProps, INewEn
       <div className="net-outer">
         {/* Name Input Section */}
         <div className="net-section">
-          <div className="net-sectionHeader" style={sectionHeaderStyle}>
+          <SectionHeading level={2} className="net-sectionHeader" style={sectionHeaderStyle}>
             <FontAwesomeIcon icon={faPencil} className="net-sectionIcon" />
             <span>Mob Name</span>
-          </div>
+          </SectionHeading>
           <div className="net-inputWrapper" style={inputStyle}>
             <TextField
               aria-label="Mob type name"
@@ -223,10 +224,10 @@ export default class NewEntityType extends Component<INewEntityTypeProps, INewEn
 
         {/* Base Mob Selection Section */}
         <div className="net-section">
-          <div className="net-sectionHeader" style={sectionHeaderStyle}>
+          <SectionHeading level={2} className="net-sectionHeader" style={sectionHeaderStyle}>
             <FontAwesomeIcon icon={faPaw} className="net-sectionIcon" />
             <span>Base Template</span>
-          </div>
+          </SectionHeading>
           <div className="net-sectionSubtitle">Select an existing mob to use as a starting point</div>
           <div className="net-projectGallery" style={galleryStyle}>
             <ItemGallery

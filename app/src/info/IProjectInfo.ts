@@ -22,6 +22,7 @@ export default interface IProjectInfo {
   infoGenerationTime?: number;
   endToEndGenerationTime?: number;
   testFailCount?: number;
+  minimumSupportablePerformanceTier?: number;
   testNotApplicableCount?: number;
   errorSummary?: string;
   internalProcessingErrorSummary?: string;

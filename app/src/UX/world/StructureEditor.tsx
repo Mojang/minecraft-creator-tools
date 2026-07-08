@@ -488,7 +488,14 @@ class StructureEditor extends Component<IStructureEditorProps, IStructureEditorS
   }
 
   render() {
-    let interior = <div className="ste-loading-area">{this.props.intl.formatMessage({ id: "project_editor.struct_ed.loading" }, { path: this.props.file.storageRelativePath })}</div>;
+    let interior = (
+      <div className="ste-loading-area">
+        {this.props.intl.formatMessage(
+          { id: "project_editor.struct_ed.loading" },
+          { path: this.props.file.storageRelativePath }
+        )}
+      </div>
+    );
     let canvasHeight = this.props.heightOffset + 50; // Toolbar height only
     let isButtonCompact = false;
     const width = WebUtilities.getWidth();
@@ -537,6 +544,7 @@ class StructureEditor extends Component<IStructureEditorProps, IStructureEditorS
               displayEmpty
               onChange={this._handleEntitySelect}
               renderValue={(value) => (value ? value : entitySummary)}
+              SelectDisplayProps={{ "aria-label": this.props.intl.formatMessage({ id: "project_editor.struct_ed.select_entity_aria" }) }}
             >
               {entityTitles.map((item: string) => (
                 <MenuItem key={item} value={item}>
@@ -601,8 +609,16 @@ class StructureEditor extends Component<IStructureEditorProps, IStructureEditorS
         <div className="ste-toolbar">
           <div className="ste-toolbar-area">
             <div className="ste-toolbar-inner">
-                <Stack direction="row" spacing={1} aria-label={this.props.intl.formatMessage({ id: "project_editor.struct_ed.toolbar_aria" })}>
-                <IconButton onClick={this._resetViewClick} title={this.props.intl.formatMessage({ id: "project_editor.struct_ed.reset_camera" })} size="small">
+              <Stack
+                direction="row"
+                spacing={1}
+                aria-label={this.props.intl.formatMessage({ id: "project_editor.struct_ed.toolbar_aria" })}
+              >
+                <IconButton
+                  onClick={this._resetViewClick}
+                  title={this.props.intl.formatMessage({ id: "project_editor.struct_ed.reset_camera" })}
+                  size="small"
+                >
                   <VideoLabel />
                 </IconButton>
                 {!this.props.readOnly && (
@@ -617,7 +633,11 @@ class StructureEditor extends Component<IStructureEditorProps, IStructureEditorS
                   </ToggleButton>
                 )}
                 {AppServiceProxy.hasAppServiceOrDebug && (
-                  <IconButton onClick={this._pushToMinecraft} title={this.props.intl.formatMessage({ id: "project_editor.struct_ed.push_to_mc" })} size="small">
+                  <IconButton
+                    onClick={this._pushToMinecraft}
+                    title={this.props.intl.formatMessage({ id: "project_editor.struct_ed.push_to_mc" })}
+                    size="small"
+                  >
                     <PushToMinecraftLabel isCompact={isButtonCompact} />
                   </IconButton>
                 )}

@@ -135,3 +135,51 @@
 .let-container:hover .let-remove-btn {
   opacity: 1;
 }
+
+/* ── Light theme overrides (body.ct-light) ──────────────────────────────────
+   Remap the dark-theme defaults above so an entry tile's name, badges, and
+   surface remain legible in Light Mode. */
+body.ct-light .let-container {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+body.ct-light .let-container:hover {
+  background: rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+body.ct-light .let-container-selected {
+  border-color: #2e7d32;
+  background: rgba(76, 175, 80, 0.1);
+}
+
+body.ct-light .let-name {
+  color: #1a1918;
+}
+
+body.ct-light .let-type-badge {
+  color: #5e5a55;
+}
+
+body.ct-light .let-probability {
+  color: #2e7d32;
+}
+
+body.ct-light .let-quantity {
+  color: #46433f;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+body.ct-light .let-modifiers-badge {
+  color: #5e5a55;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+body.ct-light .let-empty-icon {
+  color: rgba(0, 0, 0, 0.3);
+}
+
+body.ct-light .let-loot-table-icon {
+  color: #1565c0;
+}

@@ -9,6 +9,7 @@ import ItemGallery, { GalleryItemCommand } from "../../project/itemGallery/ItemG
 import { ItemTileButtonDisplayMode } from "../../project/itemGallery/ItemTileButton";
 import IGalleryItem, { GalleryItemType } from "../../../app/IGalleryItem";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import SectionHeading from "../../shared/components/feedback/sectionHeading/SectionHeading";
 import { faCube, faPencil } from "@fortawesome/free-solid-svg-icons";
 import { getThemeColors } from "../../hooks/theme/useThemeColors";
 import IProjectTheme from "../../types/IProjectTheme";
@@ -163,10 +164,10 @@ export default class NewBlockType extends Component<INewBlockTypeProps, INewBloc
     return (
       <div className="nbt-outer">
         <div className="nbt-section">
-          <div className="nbt-sectionHeader" style={sectionHeaderStyle}>
+          <SectionHeading level={2} className="nbt-sectionHeader" style={sectionHeaderStyle}>
             <FontAwesomeIcon icon={faPencil} className="nbt-sectionIcon" />
             Block Name
-          </div>
+          </SectionHeading>
           <div className="nbt-inputWrapper" style={inputStyle}>
             <TextField
               aria-label="Block type name"
@@ -182,10 +183,10 @@ export default class NewBlockType extends Component<INewBlockTypeProps, INewBloc
           </div>
         </div>
         <div className="nbt-section">
-          <div className="nbt-sectionHeader" style={sectionHeaderStyle}>
+          <SectionHeading level={2} className="nbt-sectionHeader" style={sectionHeaderStyle}>
             <FontAwesomeIcon icon={faCube} className="nbt-sectionIcon" />
             Base Template
-          </div>
+          </SectionHeading>
           <div className="nbt-sectionSubtitle">Select an existing block to use as a starting point</div>
           <div className="nbt-projectGallery" style={galleryStyle}>
             <ItemGallery

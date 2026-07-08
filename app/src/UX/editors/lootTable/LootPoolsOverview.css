@@ -108,3 +108,57 @@
   color: #81c784;
   background: rgba(76, 175, 80, 0.05);
 }
+
+/* ── Light theme overrides (body.ct-light) ──────────────────────────────────
+   Remap the dark-theme defaults above for Light Mode so pool cards, labels,
+   and the add-pool button stay legible on a light surface. */
+body.ct-light .lpo-pool-card {
+  border-color: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.02);
+}
+
+body.ct-light .lpo-pool-card-header {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+body.ct-light .lpo-pool-card-header:hover {
+  background: rgba(0, 0, 0, 0.07);
+}
+
+body.ct-light .lpo-pool-expand {
+  color: #5e5a55;
+}
+
+body.ct-light .lpo-pool-number {
+  color: #1a1918;
+}
+
+body.ct-light .lpo-pool-summary {
+  color: #5e5a55;
+}
+
+body.ct-light .lpo-pool-remove-btn {
+  border-color: rgba(0, 0, 0, 0.15);
+  color: #6b6660;
+}
+
+body.ct-light .lpo-pool-remove-btn:hover {
+  background: rgba(229, 57, 53, 0.1);
+  color: #c62828;
+  border-color: rgba(229, 57, 53, 0.4);
+}
+
+body.ct-light .lpo-pool-body {
+  border-top-color: rgba(0, 0, 0, 0.08);
+}
+
+body.ct-light .lpo-add-pool-btn {
+  border-color: rgba(0, 0, 0, 0.2);
+  color: #46433f;
+}
+
+body.ct-light .lpo-add-pool-btn:hover {
+  border-color: rgba(46, 125, 50, 0.5);
+  color: #2e7d32;
+  background: rgba(76, 175, 80, 0.08);
+}

@@ -39,7 +39,7 @@ async function viewportShot(page: Page, name: string) {
   await page.screenshot({ path: `${DIR}/${name}.png`, fullPage: false });
 }
 
-test.describe("Inbound Creator Review @focused", () => {
+test.describe("Inbound Creator Review", () => {
   const consoleErrors: { url: string; error: string }[] = [];
   const consoleWarnings: { url: string; error: string }[] = [];
 
