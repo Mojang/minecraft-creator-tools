@@ -58,6 +58,92 @@ export default class TextureSetDefinition implements IDefinition {
     return textureList;
   }
 
+  /**
+   * The raw (un-adapted) texture references this texture set declares as its
+   * metalness/emissive/roughness (MER) and MER+subsurface (MERS) material layers.
+   *
+   * These are the authoritative definition of which textures actually behave as
+   * MER/MERS maps — unlike the historical "_mer"/"_mers" filename convention, a texture
+   * is a MER map because a texture_set.json points at it here, regardless of its name.
+   */
+  public get merTextureReferences() {
+    if (!this._data || !this._data["minecraft:texture_set"]) {
+      return undefined;
+    }
+
+    const textureSet = this._data["minecraft:texture_set"];
+    const references: string[] = [];
+
+    if (typeof textureSet.metalness_emissive_roughness === "string") {
+      references.push(textureSet.metalness_emissive_roughness);
+    }
+
+    if (typeof textureSet.metalness_emissive_roughness_subsurface === "string") {
+      references.push(textureSet.metalness_emissive_roughness_subsurface);
+    }
+
+    return references;
+  }
+
+  /**
+   * Builds the union of every MER/MERS texture path declared by the texture_set.json
+   * files in a project, as the canonical way to identify MER textures (rather than
+   * relying on the "_mer"/"_mers" filename convention).
+   *
+   * Returned paths are normalized to match {@link ProjectItem.getPackRelativePath}
+   * output for texture images: pack-relative, no leading delimiter, extension stripped,
+   * and lower-cased — so callers can test a texture's pack-relative path for membership.
+   *
+   * A reference containing a slash is resolved relative to the pack root; a bare name is
+   * resolved relative to the folder the texture_set.json sits in.
+   */
+  static async getProjectMerTexturePaths(project: Project): Promise<Set<string>> {
+    const merPaths = new Set<string>();
+
+    for (const item of project.getItemsByType(ProjectItemType.textureSetJson)) {
+      if (!item.isContentLoaded) {
+        await item.loadContent();
+      }
+
+      const file = item.primaryFile;
+
+      if (!file) {
+        continue;
+      }
+
+      const tsd = await TextureSetDefinition.ensureOnFile(file);
+      const references = tsd?.merTextureReferences;
+
+      if (!references || references.length === 0) {
+        continue;
+      }
+
+      const packRelativePath = await item.getPackRelativePath();
+
+      if (!packRelativePath) {
+        continue;
+      }
+
+      // Pack-relative folder the texture_set.json lives in, e.g. "textures/aop/moremobs/".
+      const packRelativePathNoLeading = StorageUtilities.ensureNotStartsWithDelimiter(packRelativePath);
+      const folder = StorageUtilities.hasPathSeparator(packRelativePathNoLeading)
+        ? StorageUtilities.getFolderPath(packRelativePathNoLeading)
+        : "";
+
+      for (let reference of references) {
+        reference = reference.trim().replace(/\\/g, "/");
+
+        const resolved = reference.indexOf("/") >= 0 ? reference : folder + reference;
+
+        merPaths.add(
+          StorageUtilities.getBaseFromName(StorageUtilities.ensureNotStartsWithDelimiter(resolved)).toLowerCase()
+        );
+      }
+    }
+
+    return merPaths;
+  }
+
   public get isLoaded() {
     return this._isLoaded;
   }

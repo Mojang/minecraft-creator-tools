@@ -12,6 +12,7 @@ import StorageUtilities from "../../../storage/StorageUtilities";
 import ContentIndex from "../../../core/ContentIndex";
 import ProjectItemUtilities from "../../../app/ProjectItemUtilities";
 import TextureDefinition from "../../../minecraft/TextureDefinition";
+import TextureSetDefinition from "../../../minecraft/TextureSetDefinition";
 import ProjectUtilities, { ProjectMetaCategory } from "../../../app/ProjectUtilities";
 import ProjectItemVariant from "../../../app/ProjectItemVariant";
 import Utilities from "../../../core/Utilities";
@@ -27,6 +28,8 @@ const TextureOverrideThresholdPercent = 0.7; // if you override at least 70% of 
 const TextureOverrideThresholdErrorPercent = 0.95; // if you override at least 95% of vanilla game textures, we assume you're trying to create a "texture pack" and should error if you don't have 95% coverage.
 const HighestResolutionMipMemoryBudget = 4 * 1024 * 1024;
 const HighestResolutionMipMemoryBudgetLabel = `${HighestResolutionMipMemoryBudget / (1024 * 1024)} MiB`;
+
+const BasePackOverlapWarningPercent = 0.8; // if >= 80% of the lowest-tier subpack's content is duplicated in the Base RP, the Base RP content is effectively unused and we warn.
 
 const ExemptVanillaOverridePaths = [
   "/entity/npc/",
@@ -295,6 +298,105 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
     return true;
   }
 
+  /**
+   * Returns true when a texture path is a MER/MERS material map. These are PBR /
+   * vibrant-visuals texture maps; loading them on a low-end device tier produces
+   * corrupted-looking textures, so a tier-1 subpack must never end up loading any of them.
+   *
+   * The authoritative signal is `declaredMerTexturePaths` — the union of MER/MERS layers
+   * declared by the project's texture_set.json files (see
+   * {@link TextureSetDefinition.getProjectMerTexturePaths}). A texture is a MER map
+   * because a texture_set.json points at it, not because of how it is named. The
+   * historical "_mer"/"_mers" filename convention is kept only as a fallback heuristic for
+   * content that ships MER maps without a texture_set.json.
+   *
+   * `path` is expected to be a pack-relative texture path; it is normalized (leading
+   * delimiter and extension stripped, lower-cased) before comparison.
+   */
+  static isMerTexturePath(path: string, declaredMerTexturePaths?: ReadonlySet<string>) {
+    const lower = StorageUtilities.getBaseFromName(StorageUtilities.ensureNotStartsWithDelimiter(path)).toLowerCase();
+
+    if (declaredMerTexturePaths && declaredMerTexturePaths.has(lower)) {
+      return true;
+    }
+
+    return lower.endsWith("_mer") || lower.endsWith("_mers");
+  }
+
+  /**
+   * Evaluates the consequences of loading a subpack alongside the Base RP.
+   *
+   * In content with subpacks the client always loads exactly one subpack unioned
+   * with the Base RP, so tiers must be evaluated against that union — never against
+   * the Base RP on its own. This helper encodes two such union rules:
+   *
+   *  - Tier 1 may not load any MER/MERS files (Req 3): if the union of a tier-1
+   *    subpack and the Base RP contains MER textures, that is an ERROR.
+   *  - When the lowest subpack tier is >= 2 and >= 80% of that subpack's content
+   *    also lives in the Base RP (Req 2), most of the Base RP is dead weight that no
+   *    client ever loads on its own, so we WARN and suggest an empty low-tier subpack.
+   *
+   * Kept as a pure static helper (like {@link isGameTexturePath}) so the decision
+   * logic is unit-testable without standing up a full project.
+   */
+  static getSubpackUnionInfoItems(
+    id: string,
+    hasSubpacks: boolean,
+    minSubpackTier: number,
+    baseRpContentPaths: Set<string>,
+    minTierSubpackContentPaths: Set<string>,
+    hasTierOneSubpack: boolean,
+    tierOneUnionHasMers: boolean
+  ): ProjectInfoItem[] {
+    const items: ProjectInfoItem[] = [];
+
+    if (!hasSubpacks) {
+      return items;
+    }
+
+    // Req 3: a subpack targeting tier 1 must never cause MER/MERS files to load.
+    // The union of (tier-1 subpack + Base RP) loads MERs if either side contains them.
+    if (hasTierOneSubpack && tierOneUnionHasMers) {
+      items.push(
+        new ProjectInfoItem(
+          InfoItemType.error,
+          id,
+          TextureImageInfoGeneratorTest.subpackTierOneLoadsMers,
+          `A subpack targets performance tier 1, but the union of that subpack and the base pack loads MER/MERS material files, which corrupt textures on the lowest performance tier.`
+        )
+      );
+    }
+
+    // Req 2: when the lowest subpack tier is >= 2 and most of that subpack's content is
+    // duplicated in the Base RP, the Base RP content is effectively unused.
+    if (minSubpackTier >= 2 && minTierSubpackContentPaths.size > 0) {
+      let overlapCount = 0;
+
+      for (const path of minTierSubpackContentPaths) {
+        if (baseRpContentPaths.has(path)) {
+          overlapCount++;
+        }
+      }
+
+      const overlapPercent = overlapCount / minTierSubpackContentPaths.size;
+
+      if (overlapPercent >= BasePackOverlapWarningPercent) {
+        items.push(
+          new ProjectInfoItem(
+            InfoItemType.warning,
+            id,
+            TextureImageInfoGeneratorTest.baseContentUnusedInLowerTierSubpacks,
+            `The base pack of this content contains subpacks at different performance tiers that override content in the base pack, meaning that much of the content in the base pack is not being used. If the intention of this base pack content is intended to target the lowest performance tier, consider specifying an empty subpack at a lower performance tier to reflect that.`,
+            undefined,
+            overlapPercent
+          )
+        );
+      }
+    }
+
+    return items;
+  }
+
   async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
 
@@ -309,6 +411,11 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
 
     const vanillaPathList = await Database.getVanillaPathList();
 
+    // The authoritative set of MER/MERS textures is the union of the material layers
+    // declared across the project's texture_set.json files — not the "_mer"/"_mers"
+    // filename convention. Built once and passed to isMerTexturePath below.
+    const declaredMerTexturePaths = await TextureSetDefinition.getProjectMerTexturePaths(project);
+
     const nonVanillaTextureMemoryByTier: { [path: string]: number }[] = [];
     const totalTextureMemoryByTier: { [path: string]: number }[] = [];
     const itemAtlasTextureMemoryByTier: { [path: string]: number }[] = [];
@@ -317,6 +424,18 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
     const hasSupportForTier: boolean[] = [];
     const tierTotalMemorySizes: number[] = [];
     let isExplicitlyTargetingTiers = false;
+
+    // Tracks, per pack, which texture content paths are present, so that the
+    // Base RP vs. lowest-tier-subpack overlap can be evaluated after the loop.
+    // Subpack content is keyed by effective tier (multiple subpacks may share a
+    // tier). Note: paths come from the item's default pack-relative path, so an
+    // item is counted for whichever variants (base / subpack) actually carry a
+    // file at that path — subpack-only items that lack a default file are not keyed.
+    const baseRpContentPaths = new Set<string>();
+    const subpackContentPathsByTier: { [tier: number]: Set<string> } = {};
+    let baseRpHasMer = false;
+    const subpackHasMerByTier: { [tier: number]: boolean } = {};
+    let minSubpackTier = TexturePerformanceTierCount; // start above max, reduced as subpack tiers are seen
 
     const vanillaTexturePathNonMers: { [path: string]: boolean } = {};
     let vanillaTexturePathNonMersCount = 0;
@@ -365,8 +484,6 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
     // budgets.  Record it so that summarize() can incorporate it into
     // minimumSupportablePerformanceTier.
     if (isExplicitlyTargetingTiers) {
-      let minSubpackTier = TexturePerformanceTierCount; // start above max, will be reduced
-
       for (const projectVariant in project.variants) {
         const variant = project.variants[projectVariant];
 
@@ -441,6 +558,31 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
 
             if (pathInRp) {
               pathInRp = StorageUtilities.getBaseFromName(StorageUtilities.ensureNotStartsWithDelimiter(pathInRp));
+
+              // Record which pack (Base RP vs. a tiered subpack) carries this texture
+              // path, plus whether it is a MER/MERS material map, so the subpack/Base RP
+              // union rules can be evaluated after all texture items are processed.
+              if (variant.projectVariant) {
+                const isMer = TextureImageInfoGenerator.isMerTexturePath(pathInRp, declaredMerTexturePaths);
+
+                if (variant.projectVariant.isDefault) {
+                  baseRpContentPaths.add(pathInRp);
+                  if (isMer) {
+                    baseRpHasMer = true;
+                  }
+                } else if (variant.projectVariant.effectiveUnifiedTier !== undefined) {
+                  const tier = variant.projectVariant.effectiveUnifiedTier;
+
+                  if (!subpackContentPathsByTier[tier]) {
+                    subpackContentPathsByTier[tier] = new Set<string>();
+                  }
+                  subpackContentPathsByTier[tier].add(pathInRp);
+
+                  if (isMer) {
+                    subpackHasMerByTier[tier] = true;
+                  }
+                }
+              }
 
               const vanillaRpPath = "/resource_pack/" + pathInRp;
 
@@ -723,6 +865,23 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
         }
       }
     }
+
+    // Evaluate the Base RP / subpack union rules now that every texture variant has
+    // been classified. Performance tiers are always evaluated against the union of a
+    // subpack and the Base RP (never the Base RP alone), so these checks consider the
+    // lowest-tier subpack's content together with the Base RP it loads on top of.
+
+    items.push(
+      ...TextureImageInfoGenerator.getSubpackUnionInfoItems(
+        this.id,
+        isExplicitlyTargetingTiers,
+        minSubpackTier,
+        baseRpContentPaths,
+        subpackContentPathsByTier[minSubpackTier] ?? new Set<string>(),
+        hasSupportForTier[1] === true,
+        baseRpHasMer || subpackHasMerByTier[1] === true
+      )
+    );
 
     let maxTotalTextureMemory = 0;
     let maxNonVanillaTextureMemory = 0;

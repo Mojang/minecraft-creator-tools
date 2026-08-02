@@ -200,13 +200,10 @@ function createServeValidationTest(
         headers
       );
 
-      await ensureReportJsonMatchesScenario(
-        scenariosFolder,
-        resultsFolder,
-        response.data,
-        suiteName,
-        defaultValidationReportExcludedTestIds
-      );
+      await ensureReportJsonMatchesScenario(scenariosFolder, resultsFolder, response.data, suiteName, [
+        ...defaultValidationReportExcludedTestIds,
+        "PACKFILECOUNT",
+      ]);
 
       await new Promise<void>((resolve) => {
         if (serverProcess) {

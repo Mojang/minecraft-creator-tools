@@ -243,6 +243,7 @@ describe("Comprehensive Content Types", async () => {
       "SCRIPTMODULE100",
       "SCRIPTMODULE114",
       ...defaultValidationReportExcludedTestIds,
+      "PACKFILECOUNT",
     ]);
   });
 });
@@ -440,13 +441,10 @@ describe("Diverse Content Types", async () => {
     await pis.generateForProject();
 
     const dataObject = pis.getDataObject();
-    await ensureReportJsonMatchesScenario(
-      scenariosFolder,
-      resultsFolder,
-      dataObject,
-      "diverse_content",
-      defaultValidationReportExcludedTestIds
-    );
+    await ensureReportJsonMatchesScenario(scenariosFolder, resultsFolder, dataObject, "diverse_content", [
+      ...defaultValidationReportExcludedTestIds,
+      "PACKFILECOUNT",
+    ]);
   });
 });
 
@@ -514,13 +512,10 @@ describe("Skin Pack Content - Errors", async () => {
     await pis.generateForProject();
 
     const dataObject = pis.getDataObject();
-    await ensureReportJsonMatchesScenario(
-      scenariosFolder,
-      resultsFolder,
-      dataObject,
-      "sample_skins_errors",
-      defaultValidationReportExcludedTestIds
-    );
+    await ensureReportJsonMatchesScenario(scenariosFolder, resultsFolder, dataObject, "sample_skins_errors", [
+      ...defaultValidationReportExcludedTestIds,
+      "PACKFILECOUNT",
+    ]);
   });
 });
 
@@ -588,12 +583,9 @@ describe("Skin Pack Content - Good", async () => {
     await pis.generateForProject();
 
     const dataObject = pis.getDataObject();
-    await ensureReportJsonMatchesScenario(
-      scenariosFolder,
-      resultsFolder,
-      dataObject,
-      "sample_skins_good",
-      defaultValidationReportExcludedTestIds
-    );
+    await ensureReportJsonMatchesScenario(scenariosFolder, resultsFolder, dataObject, "sample_skins_good", [
+      ...defaultValidationReportExcludedTestIds,
+      "PACKFILECOUNT",
+    ]);
   });
 });

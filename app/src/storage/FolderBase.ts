@@ -510,9 +510,7 @@ export default abstract class FolderBase implements IFolder {
     }
 
     if (failedPaths.length > 0) {
-      throw new Error(
-        "Failed to save " + failedPaths.length + " item(s): " + failedPaths.join(", ")
-      );
+      throw new Error("Failed to save " + failedPaths.length + " item(s): " + failedPaths.join(", "));
     }
 
     return true;
@@ -538,7 +536,11 @@ export default abstract class FolderBase implements IFolder {
     }
 
     if (path[0] !== "/") {
-      throw Error("Storage relative path '" + path + "' is not in the right format.");
+      // July-2026 -- originally this threw an error if there was no leading /,
+      // However, built-in default paths (such as those in ProjectItemValues.ts) are not using the the leading /
+      // We'll avoid throwing errors on built-in paths and instead match the previous pattern of adding / as needed
+      Log.verbose(`path: ${path} does NOT have a leading / previously this was treated as an error.`);
+      path = "/" + path;
     }
 
     if (!ignoreLoad) {

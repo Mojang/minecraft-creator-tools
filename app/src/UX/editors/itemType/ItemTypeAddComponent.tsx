@@ -23,6 +23,10 @@ interface IItemTypeAddComponentState {
   itemComponentList: any[] | undefined;
   selectedComponentId: string | undefined;
   selectedForm: IFormDefinition | undefined;
+  // Tracks which component selectedForm was loaded for. Forms are not guaranteed to declare a
+  // top-level id, so comparing selectedForm.id against selectedComponentId can never converge
+  // for some forms, causing an infinite componentDidUpdate/setState loop.
+  selectedFormComponentId: string | undefined;
 }
 
 export default class ItemTypeAddComponent extends Component<IItemTypeAddComponentProps, IItemTypeAddComponentState> {
@@ -36,6 +40,7 @@ export default class ItemTypeAddComponent extends Component<IItemTypeAddComponen
       itemComponentList: undefined,
       selectedComponentId: undefined,
       selectedForm: undefined,
+      selectedFormComponentId: undefined,
     };
 
     this._updateManager();
@@ -50,16 +55,15 @@ export default class ItemTypeAddComponent extends Component<IItemTypeAddComponen
   }
 
   async _updateManager() {
-    if (
-      this.state.selectedComponentId &&
-      (!this.state.selectedForm || this.state.selectedForm.id !== this.state.selectedComponentId)
-    ) {
-      const formId = EntityTypeDefinition.getFormIdFromComponentId(this.state.selectedComponentId);
+    if (this.state.selectedComponentId && this.state.selectedFormComponentId !== this.state.selectedComponentId) {
+      const componentId = this.state.selectedComponentId;
+      const formId = EntityTypeDefinition.getFormIdFromComponentId(componentId);
       const form = await Database.ensureFormLoaded("item_components", formId);
       this.setState({
         itemComponentList: this.state.itemComponentList,
         selectedComponentId: this.state.selectedComponentId,
         selectedForm: form,
+        selectedFormComponentId: componentId,
       });
     }
 
@@ -77,6 +81,12 @@ export default class ItemTypeAddComponent extends Component<IItemTypeAddComponen
 
         const form = await Database.ensureFormLoaded("item_components", baseName);
         let canonName = "minecraft:" + EntityTypeDefinition.getComponentFromBaseFileName(baseName);
+
+        // minecraft_item.form.json describes the entire item document (description + components),
+        // not an addable component, so it must not be offered in this list.
+        if (canonName === "minecraft:item") {
+          continue;
+        }
 
         if (
           form &&
