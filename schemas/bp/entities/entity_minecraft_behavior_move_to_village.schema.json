@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Move To Village Behavior",
+  "description": "Allows the mob to move into a random location within a village.",
+  "properties": {
+    "control_flags": {
+      "title": "Control Flags",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "jump",
+          "look",
+          "move"
+        ]
+      }
+    },
+    "cooldown_time": {
+      "title": "Cooldown Time",
+      "description": "Time in seconds the mob has to wait before using the goal again",
+      "type": "number",
+      "default": 8
+    },
+    "goal_radius": {
+      "title": "Goal Radius",
+      "description": "Distance in blocks within the mob considers it has reached the goal. This is the \"wiggle room\" to stop the AI from bouncing back and forth trying to reach a specific spot.",
+      "type": "number",
+      "default": 1.5
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "type": "integer",
+      "default": 0
+    },
+    "search_range": {
+      "title": "Search Range",
+      "description": "The distance in blocks to search for villages. If <= 0, find the closest village regardless of distance.",
+      "type": "integer",
+      "default": 0
+    },
+    "speed_multiplier": {
+      "title": "Speed Multiplier",
+      "description": "Movement speed multiplier of the mob when using this goal.",
+      "type": "number",
+      "default": 1
+    }
+  }
+}

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- TSConfig: TypeScript config file -->
+  <path d="M3 1H10L13 4V15H3V1Z" fill-opacity="0.15"/>
+  <path d="M10 1V4H13" fill="none" stroke="currentColor" stroke-width="0.8"/>
+  <rect x="5" y="6" width="3" height="4" fill-opacity="0.5"/>
+  <rect x="8" y="6" width="3" height="4" fill-opacity="0.7"/>
+  <text x="5.3" y="9.5" font-family="monospace" font-size="3.5" font-weight="bold">TS</text>
+  <circle cx="11" cy="12" r="2" fill-opacity="0.4"/>
+  <path d="M10 12H12M11 11V13" stroke="currentColor" stroke-width="0.6" fill="none"/>
+</svg>

@@ -1,0 +1,61 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "resource/item_texture",
+  "title": "Item Texture Atlas",
+  "description": "The item_texture.json file defines the texture atlas for item textures. It maps texture names to texture file paths, allowing items to reference textures by name. Located at textures/item_texture.json in resource packs.",
+  "type": "object",
+  "properties": {
+    "resource_pack_name": {
+      "title": "Resource Pack Name",
+      "description": "The name of the resource pack this atlas belongs to.",
+      "type": "string"
+    },
+    "texture_name": {
+      "title": "Texture Name",
+      "description": "The name of the texture atlas. Typically 'atlas.items' for item textures.",
+      "type": "string",
+      "default": "atlas.items"
+    },
+    "padding": {
+      "title": "Padding",
+      "description": "The padding in pixels between textures in the atlas to prevent bleeding.",
+      "type": "integer"
+    },
+    "num_mip_levels": {
+      "title": "Number of Mip Levels",
+      "description": "The number of mipmap levels to generate for the atlas.",
+      "type": "integer"
+    },
+    "texture_data": {
+      "title": "Texture Data",
+      "description": "A collection of texture definitions keyed by texture name. Each entry maps a texture name to its source file(s).",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "textures": {
+            "title": "Textures",
+            "description": "Array of texture file paths. Multiple paths can be provided for variants (used with aux values in older versions).",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "textures": {
+      "title": "Textures",
+      "description": "\n\nSample values:\n• item_texture: [\"textures/items/apple\"]",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "resource_pack_name",
+    "texture_name",
+    "texture_data"
+  ]
+}

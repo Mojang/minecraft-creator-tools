@@ -1,0 +1,51 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines axisalignedlinear configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "AxisAlignedLinear",
+  "description": "Predicate that evaluates to true if the block is within the distance range along the provided axis and a random number is generated between the chance range.",
+  "fields": [
+    {
+      "id": "axis",
+      "title": "PositionalBlockRuleAxis",
+      "dataType": "string"
+    },
+    {
+      "id": "max_chance",
+      "title": "Max Chance",
+      "dataType": "float"
+    },
+    {
+      "id": "max_dist",
+      "title": "Max Dist",
+      "dataType": "int"
+    },
+    {
+      "id": "min_chance",
+      "title": "Min Chance",
+      "dataType": "float"
+    },
+    {
+      "id": "min_dist",
+      "title": "Min Dist",
+      "dataType": "int"
+    },
+    {
+      "id": "predicate_type",
+      "title": "PosType",
+      "dataType": "string",
+      "isRequired": true
+    }
+  ],
+  "title": "AxisAlignedLinear Misc"
+}

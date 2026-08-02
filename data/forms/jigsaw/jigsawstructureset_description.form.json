@@ -1,0 +1,25 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "title": "Structure Set Description",
+  "description": "Identifies the Structure Set. The identifier set here groups one or more Jigsaw Structures under a shared placement strategy and is referenced when configuring world generation.",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "identifies a jigsaw structure set"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "identifier",
+      "title": "identifier",
+      "description": "Identifier of the Jigsaw Structure Set.",
+      "dataType": "string"
+    }
+  ]
+}

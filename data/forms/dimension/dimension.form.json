@@ -1,0 +1,34 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "Dimension",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines a custom dimension with its description and components"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "components",
+      "title": "Components",
+      "dataType": "object",
+      "subFormId": "dimension/components",
+      "isRequired": true
+    },
+    {
+      "id": "description",
+      "title": "Description",
+      "dataType": "object",
+      "subFormId": "dimension/description",
+      "isRequired": true
+    }
+  ],
+  "description": "Defines a custom dimension with its description and components.",
+  "title": "Dimension"
+}

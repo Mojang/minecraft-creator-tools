@@ -1,0 +1,66 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "stays in place while sitting"
+          }
+        ]
+      }
+    ]
+  },
+  "note": "This behavior works with the minecraft:sittable component. When the entity is commanded to sit, this goal prevents other behaviors from moving the entity.",
+  "fields": [
+    {
+      "id": "control_flags",
+      "title": "Control Flags",
+      "dataType": "stringArray",
+      "defaultValue": [],
+      "choices": [
+        {
+          "id": "jump",
+          "title": "Jump"
+        },
+        {
+          "id": "look",
+          "title": "Look"
+        },
+        {
+          "id": "move",
+          "title": "Move"
+        }
+      ]
+    },
+    {
+      "id": "priority",
+      "title": "Priority",
+      "dataType": "int",
+      "defaultValue": 0,
+      "samples": {
+        "/vanilla/behavior_pack/entities/parrot.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:parrot_tame/minecraft:behavior.stay_while_sitting/",
+            "content": 2
+          }
+        ]
+      },
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal."
+    }
+  ],
+  "description": "Allows the mob to stay put while it is in a sitting state instead of doing something else.",
+  "title": "Entity Stay While Sitting Behavior",
+  "samples": {
+    "/vanilla/behavior_pack/entities/parrot.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:parrot_tame/minecraft:behavior.stay_while_sitting/",
+        "content": {
+          "priority": 2
+        }
+      }
+    ]
+  },
+  "id": "minecraft:behavior.stay_while_sitting"
+}

@@ -1,0 +1,7 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Dolphin Movement",
+  "description": "This component can control how dolphins move, in a dolphin-esque style.",
+  "properties": {}
+}

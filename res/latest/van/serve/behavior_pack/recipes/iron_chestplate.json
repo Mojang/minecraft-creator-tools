@@ -1,0 +1,29 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:iron_chestplate"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "pattern": [
+      "X X",
+      "XXX",
+      "XXX"
+    ],
+    "key": {
+      "X": {
+        "item": "minecraft:iron_ingot"
+      }
+    },
+	"unlock": [
+        {
+          "item": "minecraft:iron_ingot"
+        }
+    ],
+    "result": {
+      "item": "minecraft:iron_chestplate"
+    }
+  }
+}

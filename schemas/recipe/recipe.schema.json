@@ -1,0 +1,88 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "/recipe/recipe.schema.json",
+  "title": "Minecraft Recipe",
+  "description": "A crafting, smelting, brewing, or smithing recipe for Minecraft Bedrock Edition. Recipes define how items can be created from other items using various crafting stations.",
+  "type": "object",
+  "properties": {
+    "format_version": {
+      "title": "Format Version",
+      "description": "The format version of this recipe file. Common versions include '1.12' and '1.20.10'.",
+      "type": "string"
+    }
+  },
+  "oneOf": [
+    {
+      "title": "Shaped Recipe",
+      "description": "A shaped crafting recipe requiring ingredients in a specific pattern.",
+      "type": "object",
+      "required": ["minecraft:recipe_shaped"],
+      "properties": {
+        "format_version": { "type": "string" },
+        "minecraft:recipe_shaped": {
+          "$ref": "recipe_shaped.schema.json#/properties/minecraft:recipe_shaped"
+        }
+      }
+    },
+    {
+      "title": "Shapeless Recipe",
+      "description": "A shapeless crafting recipe allowing ingredients in any position.",
+      "type": "object",
+      "required": ["minecraft:recipe_shapeless"],
+      "properties": {
+        "format_version": { "type": "string" },
+        "minecraft:recipe_shapeless": {
+          "$ref": "recipe_shapeless.schema.json#/properties/minecraft:recipe_shapeless"
+        }
+      }
+    },
+    {
+      "title": "Furnace Recipe",
+      "description": "A smelting recipe for furnaces, blast furnaces, and smokers.",
+      "type": "object",
+      "required": ["minecraft:recipe_furnace"],
+      "properties": {
+        "format_version": { "type": "string" },
+        "minecraft:recipe_furnace": {
+          "$ref": "recipe_furnace.schema.json#/properties/minecraft:recipe_furnace"
+        }
+      }
+    },
+    {
+      "title": "Brewing Mix Recipe",
+      "description": "A brewing recipe for creating potions.",
+      "type": "object",
+      "required": ["minecraft:recipe_brewing_mix"],
+      "properties": {
+        "format_version": { "type": "string" },
+        "minecraft:recipe_brewing_mix": {
+          "$ref": "recipe_brewing_mix.schema.json#/properties/minecraft:recipe_brewing_mix"
+        }
+      }
+    },
+    {
+      "title": "Smithing Transform Recipe",
+      "description": "A smithing table recipe that transforms an item.",
+      "type": "object",
+      "required": ["minecraft:recipe_smithing_transform"],
+      "properties": {
+        "format_version": { "type": "string" },
+        "minecraft:recipe_smithing_transform": {
+          "$ref": "recipe_smithing_transform.schema.json#/properties/minecraft:recipe_smithing_transform"
+        }
+      }
+    },
+    {
+      "title": "Smithing Trim Recipe",
+      "description": "A smithing table recipe for applying armor trims.",
+      "type": "object",
+      "required": ["minecraft:recipe_smithing_trim"],
+      "properties": {
+        "format_version": { "type": "string" },
+        "minecraft:recipe_smithing_trim": {
+          "$ref": "recipe_smithing_trim.schema.json#/properties/minecraft:recipe_smithing_trim"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "item/item_behavior_document",
+  "title": "Item Behavior Document",
+  "description": "A behavior pack item definition document for Minecraft Bedrock Edition. This describes the complete JSON file structure including format_version and the minecraft:item wrapper. Items define the properties, components, and behaviors of custom items that can be obtained and used by players.",
+  "type": "object",
+  "properties": {
+    "format_version": {
+      "title": "Format Version",
+      "description": "The format version of this item behavior file. Determines which features and component schemas are available. Use '1.20.20' or later for the latest item component system.",
+      "type": "string"
+    },
+    "minecraft:item": {
+      "title": "Item Definition",
+      "description": "The item definition container with description and components sections.",
+      "type": "object",
+      "properties": {
+        "description": {
+          "title": "Description",
+          "description": "Contains the item's unique identifier and optional menu category placement.",
+          "$ref": "./item_description.schema.json",
+          "defaultSnippets": [
+            {
+              "label": "Item Description",
+              "description": "Contains the required identifier for the item. May contain optional fields like menu_category.",
+              "body": {
+                "identifier": "",
+                "menu_category": {
+                  "category": "none",
+                  "group": null,
+                  "is_hidden_in_commands": null
+                }
+              }
+            }
+          ]
+        },
+        "components": {
+          "title": "Components",
+          "description": "The components that define this item's behavior, appearance, and interactions.",
+          "type": "object"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Item Definition",
+          "description": "The item definition container with description and components sections.",
+          "body": {
+            "description": ""
+          }
+        }
+      ]
+    }
+  },
+  "required": [
+    "format_version",
+    "minecraft:item"
+  ]
+}

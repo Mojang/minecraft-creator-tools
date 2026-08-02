@@ -1,0 +1,159 @@
+{
+  "formatVersion": "1.0.0",
+  "identifier": "potion_bottle",
+  "description": "A glass potion bottle with colored liquid",
+  "pixelsPerUnit": 2,
+  "textures": {
+    "glass": {
+      "background": {
+        "type": "solid",
+        "colors": [
+          "#B0E0E6"
+        ]
+      },
+      "effects": {
+        "lighting": {
+          "preset": "pillow",
+          "intensity": 0.3
+        }
+      }
+    },
+    "liquid": {
+      "background": {
+        "type": "gradient",
+        "colors": [
+          "#FF1493",
+          "#FF69B4",
+          "#FFB6C1"
+        ],
+        "seed": 3001
+      },
+      "effects": {
+        "lighting": {
+          "preset": "pillow",
+          "intensity": 0.25
+        }
+      }
+    },
+    "cork": {
+      "background": {
+        "type": "stipple_noise",
+        "colors": [
+          "#D2691E",
+          "#CD853F"
+        ],
+        "seed": 3002,
+        "factor": 0.2
+      }
+    }
+  },
+  "bones": [
+    {
+      "name": "bottle",
+      "pivot": [
+        0,
+        6,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -3,
+            0,
+            -3
+          ],
+          "size": [
+            6,
+            8,
+            6
+          ],
+          "faces": {
+            "north": {
+              "textureId": "liquid"
+            },
+            "south": {
+              "textureId": "liquid"
+            },
+            "east": {
+              "textureId": "liquid"
+            },
+            "west": {
+              "textureId": "liquid"
+            },
+            "up": {
+              "textureId": "glass"
+            },
+            "down": {
+              "textureId": "glass"
+            }
+          }
+        },
+        {
+          "origin": [
+            -1.5,
+            8,
+            -1.5
+          ],
+          "size": [
+            3,
+            4,
+            3
+          ],
+          "faces": {
+            "north": {
+              "textureId": "glass"
+            },
+            "south": {
+              "textureId": "glass"
+            },
+            "east": {
+              "textureId": "glass"
+            },
+            "west": {
+              "textureId": "glass"
+            },
+            "up": {
+              "textureId": "glass"
+            },
+            "down": {
+              "textureId": "glass"
+            }
+          }
+        },
+        {
+          "origin": [
+            -1,
+            12,
+            -1
+          ],
+          "size": [
+            2,
+            2,
+            2
+          ],
+          "faces": {
+            "north": {
+              "textureId": "cork"
+            },
+            "south": {
+              "textureId": "cork"
+            },
+            "east": {
+              "textureId": "cork"
+            },
+            "west": {
+              "textureId": "cork"
+            },
+            "up": {
+              "textureId": "cork"
+            },
+            "down": {
+              "textureId": "cork"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "category": "item"
+}

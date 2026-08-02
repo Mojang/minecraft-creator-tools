@@ -1,0 +1,312 @@
+{
+  "formatVersion": "1.0.0",
+  "identifier": "custom_humanoid",
+  "description": "A humanoid mob template with head, body, arms, and legs. 32 units tall (~2 blocks, player-scale). All coordinates in Minecraft units (16 = 1 block).",
+  "textureSize": [
+    64,
+    64
+  ],
+  "textures": {
+    "skin": {
+      "background": {
+        "type": "stipple_noise",
+        "colors": [
+          "#C69C6D",
+          "#B88B5C",
+          "#D4A87A"
+        ],
+        "seed": 1001
+      }
+    },
+    "clothes": {
+      "background": {
+        "type": "dither_noise",
+        "colors": [
+          "#4A6FA5",
+          "#3D5E8C",
+          "#5580B8"
+        ],
+        "seed": 1002
+      }
+    },
+    "hair": {
+      "background": {
+        "type": "stipple_noise",
+        "colors": [
+          "#3B2F2F",
+          "#2A2020",
+          "#4C3E3E"
+        ],
+        "seed": 1003
+      }
+    },
+    "shoes": {
+      "background": {
+        "type": "dither_noise",
+        "colors": [
+          "#2F2F2F",
+          "#1F1F1F",
+          "#3F3F3F"
+        ],
+        "seed": 1004
+      }
+    }
+  },
+  "bones": [
+    {
+      "name": "head",
+      "pivot": [
+        0,
+        24,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -4,
+            24,
+            -4
+          ],
+          "size": [
+            8,
+            8,
+            8
+          ],
+          "faces": {
+            "north": {
+              "textureId": "skin"
+            },
+            "south": {
+              "textureId": "hair"
+            },
+            "east": {
+              "textureId": "skin"
+            },
+            "west": {
+              "textureId": "skin"
+            },
+            "up": {
+              "textureId": "hair"
+            },
+            "down": {
+              "textureId": "skin"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "body",
+      "pivot": [
+        0,
+        24,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -4,
+            12,
+            -2
+          ],
+          "size": [
+            8,
+            12,
+            4
+          ],
+          "faces": {
+            "north": {
+              "textureId": "clothes"
+            },
+            "south": {
+              "textureId": "clothes"
+            },
+            "east": {
+              "textureId": "clothes"
+            },
+            "west": {
+              "textureId": "clothes"
+            },
+            "up": {
+              "textureId": "clothes"
+            },
+            "down": {
+              "textureId": "clothes"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "right_arm",
+      "parent": "body",
+      "pivot": [
+        5,
+        22,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            4,
+            12,
+            -2
+          ],
+          "size": [
+            4,
+            12,
+            4
+          ],
+          "faces": {
+            "north": {
+              "textureId": "clothes"
+            },
+            "south": {
+              "textureId": "clothes"
+            },
+            "east": {
+              "textureId": "clothes"
+            },
+            "west": {
+              "textureId": "clothes"
+            },
+            "up": {
+              "textureId": "clothes"
+            },
+            "down": {
+              "textureId": "skin"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "left_arm",
+      "parent": "body",
+      "pivot": [
+        -5,
+        22,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -8,
+            12,
+            -2
+          ],
+          "size": [
+            4,
+            12,
+            4
+          ],
+          "faces": {
+            "north": {
+              "textureId": "clothes"
+            },
+            "south": {
+              "textureId": "clothes"
+            },
+            "east": {
+              "textureId": "clothes"
+            },
+            "west": {
+              "textureId": "clothes"
+            },
+            "up": {
+              "textureId": "clothes"
+            },
+            "down": {
+              "textureId": "skin"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "right_leg",
+      "pivot": [
+        2,
+        12,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            0,
+            0,
+            -2
+          ],
+          "size": [
+            4,
+            12,
+            4
+          ],
+          "faces": {
+            "north": {
+              "textureId": "clothes"
+            },
+            "south": {
+              "textureId": "clothes"
+            },
+            "east": {
+              "textureId": "clothes"
+            },
+            "west": {
+              "textureId": "clothes"
+            },
+            "up": {
+              "textureId": "clothes"
+            },
+            "down": {
+              "textureId": "shoes"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "left_leg",
+      "pivot": [
+        -2,
+        12,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -4,
+            0,
+            -2
+          ],
+          "size": [
+            4,
+            12,
+            4
+          ],
+          "faces": {
+            "north": {
+              "textureId": "clothes"
+            },
+            "south": {
+              "textureId": "clothes"
+            },
+            "east": {
+              "textureId": "clothes"
+            },
+            "west": {
+              "textureId": "clothes"
+            },
+            "up": {
+              "textureId": "clothes"
+            },
+            "down": {
+              "textureId": "shoes"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "category": "entity"
+}

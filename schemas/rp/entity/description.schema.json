@@ -1,0 +1,193 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Description",
+  "description": "Contains all the visual definition properties for this entity, including identifier, textures, geometry, materials, animations, and spawn egg settings.",
+  "type": "object",
+  "properties": {
+    "identifier": {
+      "title": "Identifier",
+      "description": "The namespaced identifier for this entity (e.g., 'minecraft:pig' or 'mypack:custom_mob'). Must match the behavior pack entity identifier.",
+      "type": "string"
+    },
+    "min_engine_version": {
+      "title": "Min Engine Version",
+      "description": "The minimum Minecraft engine version required to render this entity. Used for forward compatibility.",
+      "type": "string"
+    },
+    "materials": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {}
+        },
+        {
+          "title": "<identifier>",
+          "type": "string"
+        }
+      ],
+      "title": "Materials",
+      "description": "Maps short names to material definitions that control how the entity is rendered. Common materials include 'entity', 'entity_alphatest', and 'entity_emissive'."
+    },
+    "textures": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {}
+        },
+        {
+          "title": "<identifier>",
+          "type": "string"
+        }
+      ],
+      "title": "Textures",
+      "description": "Maps short names to texture file paths. Paths are relative to the resource pack root (e.g., 'textures/entity/pig/pig'). The short name is used in render controllers."
+    },
+    "geometry": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {}
+        },
+        {
+          "title": "<identifier>",
+          "type": "string"
+        }
+      ],
+      "title": "Geometry",
+      "description": "Maps short names to geometry model identifiers. Geometry defines the 3D shape and bone structure of the entity. Models are defined in .geo.json files."
+    },
+    "queryable_geometry": {
+      "title": "Queryable Geometry",
+      "description": "Specifies which geometry is queryable via Molang expressions. Used for ray casting and spatial queries in scripts.",
+      "type": "string"
+    },
+    "spawn_egg": {
+      "$ref": "./spawn_egg.schema.json",
+      "title": "Spawn Egg",
+      "description": "Defines the appearance of the spawn egg for this entity in the creative inventory.",
+      "defaultSnippets": [
+        {
+          "label": "Spawn Egg",
+          "description": "Defines the appearance of the spawn egg for this entity in the creative inventory.",
+          "body": {
+            "texture": "",
+            "base_color": "",
+            "overlay_color": "",
+            "texture_index": 0
+          }
+        }
+      ]
+    },
+    "scripts": {
+      "$ref": "./scripts.schema.json",
+      "title": "Scripts",
+      "description": "\n\nProperties:\n• variables ({ variable.[a-zA-Z_][a-zA-Z0-9_]* })\n• initialize\n• pre_animation\n• scale\n• scale[xX]\n• scale[yY]\n• scale[zZ]\n• parent_setup\n• ... and 3 more properties"
+    },
+    "particle_effects": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {}
+        },
+        {
+          "title": "<identifier>",
+          "type": "string"
+        }
+      ],
+      "title": "Particle Effects"
+    },
+    "particle_emitters": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {}
+        },
+        {
+          "title": "<identifier>",
+          "type": "string"
+        }
+      ],
+      "title": "Particle Emitters"
+    },
+    "animations": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {}
+        },
+        {
+          "title": "<identifier>",
+          "type": "string"
+        }
+      ],
+      "title": "Animations"
+    },
+    "render_controllers": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {}
+          }
+        },
+        {
+          "title": "Render Controllers",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        {
+          "title": "<scope Identifier>",
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        }
+      ]
+    },
+    "sound_effects": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {}
+        },
+        {
+          "title": "<identifier>",
+          "type": "string"
+        }
+      ],
+      "title": "Sound Effects"
+    },
+    "enable_attachables": {
+      "title": "Enable Attachables",
+      "type": "boolean"
+    },
+    "held_item_ignores_lighting": {
+      "title": "Held Item Ignores Lighting",
+      "type": "boolean"
+    },
+    "hide_armor": {
+      "title": "Hide Armor",
+      "type": "boolean"
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "Description",
+      "description": "Contains all the visual definition properties for this entity, including identifier, textures, geometry, materials, animations, and spawn egg settings.",
+      "body": {
+        "identifier": "",
+        "queryable_geometry": "",
+        "enable_attachables": true,
+        "held_item_ignores_lighting": true,
+        "hide_armor": true
+      }
+    }
+  ]
+}

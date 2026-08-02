@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Resource Pack: Paint palette in folder -->
+  <path d="M1 3H6L7 4H15V13H1V3Z" fill-opacity="0.15"/>
+  <path d="M2 5H14V12H2V5Z" fill-opacity="0.3"/>
+  <ellipse cx="8" cy="8.5" rx="4" ry="3" fill-opacity="0.4"/>
+  <circle cx="5.5" cy="7.5" r="1"/>
+  <circle cx="7" cy="6.5" r="0.8" fill-opacity="0.7"/>
+  <circle cx="9" cy="7" r="0.7" fill-opacity="0.5"/>
+  <circle cx="10" cy="8.5" r="0.9" fill-opacity="0.6"/>
+  <circle cx="8.5" cy="10" r="0.6" fill-opacity="0.4"/>
+</svg>

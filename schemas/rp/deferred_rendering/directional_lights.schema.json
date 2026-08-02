@@ -1,0 +1,155 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "directional_lights",
+  "description": "directional_lights",
+  "type": "object",
+  "properties": {
+    "sun": {
+      "title": "sun",
+      "description": "sun",
+      "type": "object",
+      "properties": {
+        "illuminance": {
+          "anyOf": [
+            {
+              "type": "number",
+              "maximum": 110000
+            },
+            {
+              "type": "object",
+              "additionalProperties": {
+                "type": "number"
+              }
+            }
+          ],
+          "title": "illuminance",
+          "description": "illuminance"
+        },
+        "color": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                }
+              },
+              "minLength": 3,
+              "maxLength": 3
+            },
+            {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object"
+              }
+            }
+          ],
+          "title": "color",
+          "description": "color"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "LightingGroup LightingImpl<1,21,70> LightingSettings DirectionalLights DirectionalLight",
+          "description": "LightingGroup LightingImpl<1,21,70> LightingSettings DirectionalLights DirectionalLight",
+          "body": {
+            "illuminance": 0
+          }
+        }
+      ]
+    },
+    "moon": {
+      "title": "moon",
+      "description": "moon",
+      "type": "object",
+      "properties": {
+        "illuminance": {
+          "anyOf": [
+            {
+              "type": "number",
+              "maximum": 110000
+            },
+            {
+              "type": "object",
+              "additionalProperties": {
+                "type": "number"
+              }
+            }
+          ],
+          "title": "illuminance",
+          "description": "illuminance"
+        },
+        "color": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                }
+              },
+              "minLength": 3,
+              "maxLength": 3
+            },
+            {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object"
+              }
+            }
+          ],
+          "title": "color",
+          "description": "color"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "LightingGroup LightingImpl<1,21,70> LightingSettings DirectionalLights DirectionalLight",
+          "description": "LightingGroup LightingImpl<1,21,70> LightingSettings DirectionalLights DirectionalLight",
+          "body": {
+            "illuminance": 0
+          }
+        }
+      ]
+    },
+    "orbital_offset_degrees": {
+      "anyOf": [
+        {
+          "type": "number",
+          "maximum": 359.989990234375
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number"
+          }
+        }
+      ],
+      "title": "orbital_offset_degrees",
+      "description": "orbital_offset_degrees"
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "LightingGroup LightingImpl<1,21,70> LightingSettings DirectionalLights",
+      "description": "LightingGroup LightingImpl<1,21,70> LightingSettings DirectionalLights",
+      "body": {
+        "orbital_offset_degrees": 0
+      }
+    }
+  ]
+}

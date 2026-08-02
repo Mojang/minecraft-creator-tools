@@ -1,0 +1,367 @@
+{
+  "formatVersion": "1.0.0",
+  "identifier": "custom_ghost",
+  "description": "A floating spectral ghost with ethereal wisps. 24 units tall (~1.5 blocks). Perfect for undead or spirit mobs.",
+  "textureSize": [
+    32,
+    32
+  ],
+  "textures": {
+    "body": {
+      "background": {
+        "type": "perlin_noise",
+        "colors": [
+          "#E0E8F0",
+          "#C8D4E0",
+          "#F0F4F8"
+        ],
+        "seed": 8001,
+        "scale": 4
+      }
+    },
+    "glow": {
+      "background": {
+        "type": "gradient",
+        "colors": [
+          "#FFFFFF",
+          "#B0D0FF"
+        ]
+      }
+    },
+    "eyes": {
+      "background": {
+        "type": "solid",
+        "colors": [
+          "#4040FF"
+        ]
+      }
+    },
+    "mouth": {
+      "background": {
+        "type": "solid",
+        "colors": [
+          "#202060"
+        ]
+      }
+    }
+  },
+  "bones": [
+    {
+      "name": "body",
+      "pivot": [
+        0,
+        12,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -5,
+            8,
+            -4
+          ],
+          "size": [
+            10,
+            12,
+            8
+          ],
+          "faces": {
+            "north": {
+              "textureId": "body"
+            },
+            "south": {
+              "textureId": "body"
+            },
+            "east": {
+              "textureId": "body"
+            },
+            "west": {
+              "textureId": "body"
+            },
+            "up": {
+              "textureId": "glow"
+            },
+            "down": {
+              "textureId": "body"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "head",
+      "pivot": [
+        0,
+        20,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -4,
+            20,
+            -4
+          ],
+          "size": [
+            8,
+            8,
+            8
+          ],
+          "faces": {
+            "north": {
+              "textureId": "body"
+            },
+            "south": {
+              "textureId": "body"
+            },
+            "east": {
+              "textureId": "body"
+            },
+            "west": {
+              "textureId": "body"
+            },
+            "up": {
+              "textureId": "glow"
+            },
+            "down": {
+              "textureId": "body"
+            }
+          }
+        },
+        {
+          "origin": [
+            -3,
+            23,
+            -5
+          ],
+          "size": [
+            2,
+            2,
+            1
+          ],
+          "faces": {
+            "north": {
+              "textureId": "eyes"
+            },
+            "south": {
+              "textureId": "eyes"
+            },
+            "east": {
+              "textureId": "eyes"
+            },
+            "west": {
+              "textureId": "eyes"
+            },
+            "up": {
+              "textureId": "eyes"
+            },
+            "down": {
+              "textureId": "eyes"
+            }
+          }
+        },
+        {
+          "origin": [
+            1,
+            23,
+            -5
+          ],
+          "size": [
+            2,
+            2,
+            1
+          ],
+          "faces": {
+            "north": {
+              "textureId": "eyes"
+            },
+            "south": {
+              "textureId": "eyes"
+            },
+            "east": {
+              "textureId": "eyes"
+            },
+            "west": {
+              "textureId": "eyes"
+            },
+            "up": {
+              "textureId": "eyes"
+            },
+            "down": {
+              "textureId": "eyes"
+            }
+          }
+        },
+        {
+          "origin": [
+            -1,
+            20,
+            -5
+          ],
+          "size": [
+            2,
+            2,
+            1
+          ],
+          "faces": {
+            "north": {
+              "textureId": "mouth"
+            },
+            "south": {
+              "textureId": "mouth"
+            },
+            "east": {
+              "textureId": "mouth"
+            },
+            "west": {
+              "textureId": "mouth"
+            },
+            "up": {
+              "textureId": "mouth"
+            },
+            "down": {
+              "textureId": "mouth"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "tail",
+      "pivot": [
+        0,
+        8,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -4,
+            0,
+            -3
+          ],
+          "size": [
+            8,
+            8,
+            6
+          ],
+          "faces": {
+            "north": {
+              "textureId": "body"
+            },
+            "south": {
+              "textureId": "body"
+            },
+            "east": {
+              "textureId": "body"
+            },
+            "west": {
+              "textureId": "body"
+            },
+            "up": {
+              "textureId": "body"
+            },
+            "down": {
+              "textureId": "glow"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "left_arm",
+      "pivot": [
+        -5,
+        18,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        20
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -8,
+            12,
+            -2
+          ],
+          "size": [
+            3,
+            8,
+            4
+          ],
+          "faces": {
+            "north": {
+              "textureId": "body"
+            },
+            "south": {
+              "textureId": "body"
+            },
+            "east": {
+              "textureId": "body"
+            },
+            "west": {
+              "textureId": "body"
+            },
+            "up": {
+              "textureId": "body"
+            },
+            "down": {
+              "textureId": "glow"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "right_arm",
+      "pivot": [
+        5,
+        18,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        -20
+      ],
+      "cubes": [
+        {
+          "origin": [
+            5,
+            12,
+            -2
+          ],
+          "size": [
+            3,
+            8,
+            4
+          ],
+          "faces": {
+            "north": {
+              "textureId": "body"
+            },
+            "south": {
+              "textureId": "body"
+            },
+            "east": {
+              "textureId": "body"
+            },
+            "west": {
+              "textureId": "body"
+            },
+            "up": {
+              "textureId": "body"
+            },
+            "down": {
+              "textureId": "glow"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "category": "entity"
+}

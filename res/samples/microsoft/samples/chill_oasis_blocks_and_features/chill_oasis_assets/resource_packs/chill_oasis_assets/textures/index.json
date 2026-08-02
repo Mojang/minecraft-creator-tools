@@ -1,0 +1,9 @@
+{
+  "files": [
+    "terrain_texture.json"
+  ],
+  "folders": [
+    "blocks",
+    "entity"
+  ]
+}

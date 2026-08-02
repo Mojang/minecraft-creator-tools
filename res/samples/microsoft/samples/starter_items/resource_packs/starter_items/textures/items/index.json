@@ -1,0 +1,20 @@
+{
+  "files": [
+    "elixir.png",
+    "elixir.texture_set.json",
+    "elixir_mers.tga",
+    "hard_biscuit.png",
+    "hard_biscuit.texture_set.json",
+    "hard_biscuit_mers.tga",
+    "key.png",
+    "key.texture_set.json",
+    "key_mers.tga",
+    "pear.png",
+    "pear.texture_set.json",
+    "pear_mers.tga",
+    "rod.png",
+    "rod.texture_set.json",
+    "rod_mers.tga"
+  ],
+  "folders": []
+}

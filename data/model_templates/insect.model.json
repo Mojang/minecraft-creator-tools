@@ -1,0 +1,530 @@
+{
+  "formatVersion": "1.0.0",
+  "identifier": "custom_insect",
+  "description": "An 8-legged insect/arachnid template based on spider geometry. Body is ~14 units tall, ~38 units wide with legs. All coordinates in Minecraft units (16 = 1 block).",
+  "textureSize": [
+    64,
+    32
+  ],
+  "textures": {
+    "body": {
+      "background": {
+        "type": "stipple_noise",
+        "colors": [
+          "#2F2F2F",
+          "#1F1F1F",
+          "#3F3F3F"
+        ],
+        "seed": 8001
+      }
+    },
+    "head": {
+      "background": {
+        "type": "stipple_noise",
+        "colors": [
+          "#3F3F3F",
+          "#2F2F2F",
+          "#4F4F4F"
+        ],
+        "seed": 8002
+      }
+    },
+    "eyes": {
+      "background": {
+        "type": "dither_noise",
+        "colors": [
+          "#CC0000",
+          "#AA0000",
+          "#DD2222"
+        ],
+        "seed": 8003
+      }
+    },
+    "legs": {
+      "background": {
+        "type": "dither_noise",
+        "colors": [
+          "#252525",
+          "#151515",
+          "#353535"
+        ],
+        "seed": 8004
+      }
+    }
+  },
+  "bones": [
+    {
+      "name": "body0",
+      "pivot": [
+        0,
+        9,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -3,
+            6,
+            -3
+          ],
+          "size": [
+            6,
+            6,
+            6
+          ],
+          "faces": {
+            "north": {
+              "textureId": "body"
+            },
+            "south": {
+              "textureId": "body"
+            },
+            "east": {
+              "textureId": "body"
+            },
+            "west": {
+              "textureId": "body"
+            },
+            "up": {
+              "textureId": "body"
+            },
+            "down": {
+              "textureId": "body"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "head",
+      "parent": "body0",
+      "pivot": [
+        0,
+        9,
+        -3
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -4,
+            5,
+            -11
+          ],
+          "size": [
+            8,
+            8,
+            8
+          ],
+          "faces": {
+            "north": {
+              "textureId": "eyes"
+            },
+            "south": {
+              "textureId": "head"
+            },
+            "east": {
+              "textureId": "head"
+            },
+            "west": {
+              "textureId": "head"
+            },
+            "up": {
+              "textureId": "head"
+            },
+            "down": {
+              "textureId": "head"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "body1",
+      "parent": "body0",
+      "pivot": [
+        0,
+        9,
+        9
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -5,
+            5,
+            3
+          ],
+          "size": [
+            10,
+            8,
+            12
+          ],
+          "faces": {
+            "north": {
+              "textureId": "body"
+            },
+            "south": {
+              "textureId": "body"
+            },
+            "east": {
+              "textureId": "body"
+            },
+            "west": {
+              "textureId": "body"
+            },
+            "up": {
+              "textureId": "body"
+            },
+            "down": {
+              "textureId": "body"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "leg0",
+      "parent": "body0",
+      "pivot": [
+        -4,
+        9,
+        2
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -19,
+            8,
+            1
+          ],
+          "size": [
+            16,
+            2,
+            2
+          ],
+          "faces": {
+            "north": {
+              "textureId": "legs"
+            },
+            "south": {
+              "textureId": "legs"
+            },
+            "east": {
+              "textureId": "legs"
+            },
+            "west": {
+              "textureId": "legs"
+            },
+            "up": {
+              "textureId": "legs"
+            },
+            "down": {
+              "textureId": "legs"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "leg1",
+      "parent": "body0",
+      "pivot": [
+        4,
+        9,
+        2
+      ],
+      "cubes": [
+        {
+          "origin": [
+            3,
+            8,
+            1
+          ],
+          "size": [
+            16,
+            2,
+            2
+          ],
+          "faces": {
+            "north": {
+              "textureId": "legs"
+            },
+            "south": {
+              "textureId": "legs"
+            },
+            "east": {
+              "textureId": "legs"
+            },
+            "west": {
+              "textureId": "legs"
+            },
+            "up": {
+              "textureId": "legs"
+            },
+            "down": {
+              "textureId": "legs"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "leg2",
+      "parent": "body0",
+      "pivot": [
+        -4,
+        9,
+        1
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -19,
+            8,
+            0
+          ],
+          "size": [
+            16,
+            2,
+            2
+          ],
+          "faces": {
+            "north": {
+              "textureId": "legs"
+            },
+            "south": {
+              "textureId": "legs"
+            },
+            "east": {
+              "textureId": "legs"
+            },
+            "west": {
+              "textureId": "legs"
+            },
+            "up": {
+              "textureId": "legs"
+            },
+            "down": {
+              "textureId": "legs"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "leg3",
+      "parent": "body0",
+      "pivot": [
+        4,
+        9,
+        1
+      ],
+      "cubes": [
+        {
+          "origin": [
+            3,
+            8,
+            0
+          ],
+          "size": [
+            16,
+            2,
+            2
+          ],
+          "faces": {
+            "north": {
+              "textureId": "legs"
+            },
+            "south": {
+              "textureId": "legs"
+            },
+            "east": {
+              "textureId": "legs"
+            },
+            "west": {
+              "textureId": "legs"
+            },
+            "up": {
+              "textureId": "legs"
+            },
+            "down": {
+              "textureId": "legs"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "leg4",
+      "parent": "body0",
+      "pivot": [
+        -4,
+        9,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -19,
+            8,
+            -1
+          ],
+          "size": [
+            16,
+            2,
+            2
+          ],
+          "faces": {
+            "north": {
+              "textureId": "legs"
+            },
+            "south": {
+              "textureId": "legs"
+            },
+            "east": {
+              "textureId": "legs"
+            },
+            "west": {
+              "textureId": "legs"
+            },
+            "up": {
+              "textureId": "legs"
+            },
+            "down": {
+              "textureId": "legs"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "leg5",
+      "parent": "body0",
+      "pivot": [
+        4,
+        9,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            3,
+            8,
+            -1
+          ],
+          "size": [
+            16,
+            2,
+            2
+          ],
+          "faces": {
+            "north": {
+              "textureId": "legs"
+            },
+            "south": {
+              "textureId": "legs"
+            },
+            "east": {
+              "textureId": "legs"
+            },
+            "west": {
+              "textureId": "legs"
+            },
+            "up": {
+              "textureId": "legs"
+            },
+            "down": {
+              "textureId": "legs"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "leg6",
+      "parent": "body0",
+      "pivot": [
+        -4,
+        9,
+        -1
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -19,
+            8,
+            -2
+          ],
+          "size": [
+            16,
+            2,
+            2
+          ],
+          "faces": {
+            "north": {
+              "textureId": "legs"
+            },
+            "south": {
+              "textureId": "legs"
+            },
+            "east": {
+              "textureId": "legs"
+            },
+            "west": {
+              "textureId": "legs"
+            },
+            "up": {
+              "textureId": "legs"
+            },
+            "down": {
+              "textureId": "legs"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "leg7",
+      "parent": "body0",
+      "pivot": [
+        4,
+        9,
+        -1
+      ],
+      "cubes": [
+        {
+          "origin": [
+            3,
+            8,
+            -2
+          ],
+          "size": [
+            16,
+            2,
+            2
+          ],
+          "faces": {
+            "north": {
+              "textureId": "legs"
+            },
+            "south": {
+              "textureId": "legs"
+            },
+            "east": {
+              "textureId": "legs"
+            },
+            "west": {
+              "textureId": "legs"
+            },
+            "up": {
+              "textureId": "legs"
+            },
+            "down": {
+              "textureId": "legs"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "category": "entity"
+}

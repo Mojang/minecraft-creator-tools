@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Shooter",
+  "description": "Defines the entity's ranged attack behavior. The \"minecraft:behavior.ranged_attack\" goal uses this component to determine which projectiles to shoot.",
+  "properties": {
+    "sound": {
+      "title": "Sound",
+      "description": "Sound that is played when the shooter shoots a projectile.\n\nSample values:\n• bogged: bow\n• drowned: item.trident.throw",
+      "type": "string"
+    },
+    "projectiles": {
+      "title": "Projectiles",
+      "description": "List of projectiles that can be used by the shooter. Each entry can specify its own projectile definition and condition filters; entries are evaluated in order and the first match is used.\n\n*Introduced in version 1.19.60*",
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "power": {
+      "title": "Power",
+      "description": "Velocity at which projectiles will be shot. A power of 0 falls back to the default projectile throw power.\n\n*Introduced in version 1.19.60*",
+      "type": "number",
+      "default": 0
+    },
+    "magic": {
+      "title": "Magic",
+      "description": "If set, the projectiles are flagged as magic and the ranged attack goal will not run at the same time as other magic goals (for example, drink_potion).\n\n*Introduced in version 1.19.60*",
+      "type": "boolean",
+      "default": false
+    },
+    "aux_val": {
+      "title": "Aux Val",
+      "description": "ID of the Potion effect for the default projectile to be applied on hit.\n\nSample values:\n• bogged: 26",
+      "type": "integer",
+      "default": -1
+    },
+    "def": {
+      "title": "Def",
+      "description": "Actor definition to use as the default projectile for the ranged attack. The actor definition must have the projectile component to be able to be shot as a projectile.\n\nSample values:\n• blaze: minecraft:small_fireball\n• bogged: minecraft:arrow\n• drowned: minecraft:thrown_trident",
+      "type": "string"
+    }
+  }
+}

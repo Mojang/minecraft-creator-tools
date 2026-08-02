@@ -1,0 +1,57 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "description": "Marks a biome as using End dimension terrain generation. Biomes with this component will use the characteristic End terrain style with end stone and void generation.",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "is an End dimension biome"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "minecraft:the_end",
+  "fields": [
+    {
+      "id": "type",
+      "title": "SurfaceBuilderType",
+      "description": "Use default Minecraft End terrain generation.",
+      "dataType": "string",
+      "choices": [
+        {
+          "id": "minecraft:capped",
+          "title": "Minecraft:capped"
+        },
+        {
+          "id": "minecraft:frozen_ocean",
+          "title": "Minecraft:frozen ocean"
+        },
+        {
+          "id": "minecraft:mesa",
+          "title": "Minecraft:mesa"
+        },
+        {
+          "id": "minecraft:noise_gradient",
+          "title": "Minecraft:noise gradient"
+        },
+        {
+          "id": "minecraft:overworld",
+          "title": "Minecraft:overworld"
+        },
+        {
+          "id": "minecraft:swamp",
+          "title": "Minecraft:swamp"
+        },
+        {
+          "id": "minecraft:the_end",
+          "title": "Minecraft:the end"
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "title": "Biome The End"
+}

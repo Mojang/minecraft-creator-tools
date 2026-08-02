@@ -1,0 +1,54 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "title": "MCWorld Properties",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines world properties including spawn location, difficulty, and game type"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "spawnX",
+      "title": "Spawn X",
+      "dataType": "int"
+    },
+    {
+      "id": "spawnY",
+      "title": "Spawn Y",
+      "dataType": "int"
+    },
+    {
+      "id": "spawnZ",
+      "title": "Spawn Z",
+      "dataType": "int"
+    },
+    {
+      "id": "difficulty",
+      "title": "Difficulty",
+      "dataType": "int"
+    },
+    {
+      "id": "generator",
+      "title": "Generator",
+      "dataType": "int"
+    },
+    {
+      "id": "gameType",
+      "title": "Game Type",
+      "dataType": "int"
+    },
+    {
+      "id": "isEditor",
+      "title": "Editor World",
+      "dataType": "boolean"
+    }
+  ],
+  "description": "Defines world properties including spawn location, difficulty, and game type."
+}

@@ -1,0 +1,154 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can be named with a name tag"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "always_show",
+            "comparison": "=",
+            "value": true
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "always displays its name"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "allow_name_tag_renaming",
+            "comparison": "=",
+            "value": false
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "cannot be renamed once named"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "default_trigger",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "triggers an event when named"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "name_actions",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has special name triggers"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "allow_name_tag_renaming",
+      "title": "Allow Name Tag Renaming",
+      "description": "If true, this entity can be renamed with name tags",
+      "defaultValue": true,
+      "dataType": "boolean"
+    },
+    {
+      "id": "always_show",
+      "title": "Always Show",
+      "description": "If true, the name will always be shown",
+      "defaultValue": false,
+      "dataType": "boolean"
+    },
+    {
+      "id": "default_trigger",
+      "title": "Default Trigger",
+      "description": "Trigger to run when the entity gets named",
+      "dataType": "string"
+    },
+    {
+      "id": "name_actions",
+      "title": "Name Actions",
+      "description": "Describes the special names for this entity and the events to call when the entity acquires those names",
+      "dataType": "objectArray",
+      "subForm": {
+        "id": "",
+        "description": "Describes the special names for this entity and the events to call when the entity acquires those names",
+        "fields": [
+          {
+            "id": "name_filter",
+            "title": "Name Filter",
+            "description": "List of special names that will cause the events defined in 'on_named' to fire",
+            "dataType": "string"
+          },
+          {
+            "id": "on_named",
+            "title": "Named",
+            "description": "Event to be called when this entity acquires the name specified in 'name_filter'",
+            "dataType": "minecraftEventTrigger"
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Allows this entity to be named (e.g. using a name tag).",
+  "title": "Nameable",
+  "samples": {
+    "/vanilla/behavior_pack/entities/allay.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:nameable/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/armor_stand.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:nameable/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/bat.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:nameable/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/blaze.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:nameable/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/bogged.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:nameable/",
+        "content": {}
+      }
+    ]
+  },
+  "id": "minecraft:nameable"
+}

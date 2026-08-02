@@ -1,0 +1,21 @@
+{
+  "files": [
+    "LICENSE",
+    "README.md",
+    "package.json",
+    "package-lock.json"
+  ],
+  "folders": [
+    "build-challenge",
+    "custom-commands",
+    "custom-components",
+    "editor-basics",
+    "editor-multi",
+    "editor-script-box",
+    "howto-gallery-betas",
+    "howto-gallery",
+    "script-box",
+    "ts-starter-complete-cotta",
+    "ts-starter"
+  ]
+}

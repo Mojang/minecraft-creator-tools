@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Fancy Trunk",
+  "description": "\n\nProperties:\n• trunk_height ({ base, variance })\n• trunk_width (int)\n• branches (object)",
+  "type": "object",
+  "properties": {
+    "trunk_height": {
+      "title": "Trunk Height",
+      "description": "Configuration object for the trunk height.",
+      "type": "object",
+      "properties": {
+        "base": {
+          "title": "Base",
+          "description": "Min height for the trunk.",
+          "type": "integer"
+        },
+        "variance": {
+          "title": "Variance",
+          "description": "Modifier for the trunk height.",
+          "type": "integer"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Trunk Height",
+          "description": "Configuration object for the trunk height.",
+          "body": {
+            "base": 0,
+            "variance": 0
+          }
+        }
+      ]
+    },
+    "trunk_width": {
+      "title": "Trunk Width",
+      "description": "The width of the tree trunk.",
+      "type": "integer"
+    },
+    "branches": {
+      "title": "Branches",
+      "description": "Configuration object for branches.",
+      "type": "object",
+      "properties": {}
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "Fancy Trunk",
+      "description": "Create a Fancy Trunk",
+      "body": {
+        "trunk_height": "",
+        "trunk_width": 0,
+        "branches": ""
+      }
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Open doors annotation",
+  "description": "Allows the entity to open doors.",
+  "properties": {}
+}

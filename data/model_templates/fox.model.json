@@ -1,0 +1,523 @@
+{
+  "formatVersion": "1.0.0",
+  "identifier": "custom_fox",
+  "description": "A sleek fox with pointed ears, bushy tail, and distinctive markings. 12 units tall (~0.75 blocks). Perfect for forest creatures.",
+  "textureSize": [
+    64,
+    32
+  ],
+  "textures": {
+    "fur_orange": {
+      "background": {
+        "type": "stipple_noise",
+        "colors": [
+          "#E07020",
+          "#C06010",
+          "#F08030"
+        ],
+        "seed": 4001
+      }
+    },
+    "fur_white": {
+      "background": {
+        "type": "stipple_noise",
+        "colors": [
+          "#F8F8F8",
+          "#E8E8E8",
+          "#FFFFFF"
+        ],
+        "seed": 4002
+      }
+    },
+    "fur_dark": {
+      "background": {
+        "type": "stipple_noise",
+        "colors": [
+          "#2A1A0A",
+          "#1A0A00",
+          "#3A2A1A"
+        ],
+        "seed": 4003
+      }
+    },
+    "nose": {
+      "background": {
+        "type": "solid",
+        "colors": [
+          "#1A1A1A"
+        ]
+      }
+    },
+    "eyes": {
+      "background": {
+        "type": "solid",
+        "colors": [
+          "#FFD700"
+        ]
+      }
+    }
+  },
+  "bones": [
+    {
+      "name": "body",
+      "pivot": [
+        0,
+        6,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -3,
+            4,
+            -6
+          ],
+          "size": [
+            6,
+            6,
+            12
+          ],
+          "faces": {
+            "north": {
+              "textureId": "fur_orange"
+            },
+            "south": {
+              "textureId": "fur_orange"
+            },
+            "east": {
+              "textureId": "fur_orange"
+            },
+            "west": {
+              "textureId": "fur_orange"
+            },
+            "up": {
+              "textureId": "fur_orange"
+            },
+            "down": {
+              "textureId": "fur_white"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "head",
+      "pivot": [
+        0,
+        8,
+        -6
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -4,
+            6,
+            -14
+          ],
+          "size": [
+            8,
+            6,
+            8
+          ],
+          "faces": {
+            "north": {
+              "textureId": "fur_orange"
+            },
+            "south": {
+              "textureId": "fur_orange"
+            },
+            "east": {
+              "textureId": "fur_orange"
+            },
+            "west": {
+              "textureId": "fur_orange"
+            },
+            "up": {
+              "textureId": "fur_orange"
+            },
+            "down": {
+              "textureId": "fur_white"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "snout",
+      "parent": "head",
+      "pivot": [
+        0,
+        8,
+        -14
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -2,
+            6,
+            -18
+          ],
+          "size": [
+            4,
+            3,
+            4
+          ],
+          "faces": {
+            "north": {
+              "textureId": "fur_white"
+            },
+            "south": {
+              "textureId": "fur_white"
+            },
+            "east": {
+              "textureId": "fur_white"
+            },
+            "west": {
+              "textureId": "fur_white"
+            },
+            "up": {
+              "textureId": "fur_white"
+            },
+            "down": {
+              "textureId": "fur_white"
+            }
+          }
+        },
+        {
+          "origin": [
+            -1,
+            7,
+            -19
+          ],
+          "size": [
+            2,
+            2,
+            1
+          ],
+          "faces": {
+            "north": {
+              "textureId": "nose"
+            },
+            "south": {
+              "textureId": "nose"
+            },
+            "east": {
+              "textureId": "nose"
+            },
+            "west": {
+              "textureId": "nose"
+            },
+            "up": {
+              "textureId": "nose"
+            },
+            "down": {
+              "textureId": "nose"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "left_ear",
+      "parent": "head",
+      "pivot": [
+        -2,
+        12,
+        -10
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -4,
+            12,
+            -12
+          ],
+          "size": [
+            3,
+            4,
+            2
+          ],
+          "faces": {
+            "north": {
+              "textureId": "fur_orange"
+            },
+            "south": {
+              "textureId": "fur_dark"
+            },
+            "east": {
+              "textureId": "fur_orange"
+            },
+            "west": {
+              "textureId": "fur_orange"
+            },
+            "up": {
+              "textureId": "fur_orange"
+            },
+            "down": {
+              "textureId": "fur_dark"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "right_ear",
+      "parent": "head",
+      "pivot": [
+        2,
+        12,
+        -10
+      ],
+      "cubes": [
+        {
+          "origin": [
+            1,
+            12,
+            -12
+          ],
+          "size": [
+            3,
+            4,
+            2
+          ],
+          "faces": {
+            "north": {
+              "textureId": "fur_orange"
+            },
+            "south": {
+              "textureId": "fur_dark"
+            },
+            "east": {
+              "textureId": "fur_orange"
+            },
+            "west": {
+              "textureId": "fur_orange"
+            },
+            "up": {
+              "textureId": "fur_orange"
+            },
+            "down": {
+              "textureId": "fur_dark"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "tail",
+      "pivot": [
+        0,
+        6,
+        6
+      ],
+      "rotation": [
+        -20,
+        0,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -2,
+            4,
+            6
+          ],
+          "size": [
+            4,
+            4,
+            12
+          ],
+          "faces": {
+            "north": {
+              "textureId": "fur_orange"
+            },
+            "south": {
+              "textureId": "fur_white"
+            },
+            "east": {
+              "textureId": "fur_orange"
+            },
+            "west": {
+              "textureId": "fur_orange"
+            },
+            "up": {
+              "textureId": "fur_orange"
+            },
+            "down": {
+              "textureId": "fur_orange"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "front_left_leg",
+      "pivot": [
+        -2,
+        4,
+        -4
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -3,
+            0,
+            -5
+          ],
+          "size": [
+            2,
+            4,
+            2
+          ],
+          "faces": {
+            "north": {
+              "textureId": "fur_dark"
+            },
+            "south": {
+              "textureId": "fur_dark"
+            },
+            "east": {
+              "textureId": "fur_dark"
+            },
+            "west": {
+              "textureId": "fur_dark"
+            },
+            "up": {
+              "textureId": "fur_orange"
+            },
+            "down": {
+              "textureId": "fur_dark"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "front_right_leg",
+      "pivot": [
+        2,
+        4,
+        -4
+      ],
+      "cubes": [
+        {
+          "origin": [
+            1,
+            0,
+            -5
+          ],
+          "size": [
+            2,
+            4,
+            2
+          ],
+          "faces": {
+            "north": {
+              "textureId": "fur_dark"
+            },
+            "south": {
+              "textureId": "fur_dark"
+            },
+            "east": {
+              "textureId": "fur_dark"
+            },
+            "west": {
+              "textureId": "fur_dark"
+            },
+            "up": {
+              "textureId": "fur_orange"
+            },
+            "down": {
+              "textureId": "fur_dark"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "back_left_leg",
+      "pivot": [
+        -2,
+        4,
+        4
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -3,
+            0,
+            3
+          ],
+          "size": [
+            2,
+            4,
+            2
+          ],
+          "faces": {
+            "north": {
+              "textureId": "fur_dark"
+            },
+            "south": {
+              "textureId": "fur_dark"
+            },
+            "east": {
+              "textureId": "fur_dark"
+            },
+            "west": {
+              "textureId": "fur_dark"
+            },
+            "up": {
+              "textureId": "fur_orange"
+            },
+            "down": {
+              "textureId": "fur_dark"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "back_right_leg",
+      "pivot": [
+        2,
+        4,
+        4
+      ],
+      "cubes": [
+        {
+          "origin": [
+            1,
+            0,
+            3
+          ],
+          "size": [
+            2,
+            4,
+            2
+          ],
+          "faces": {
+            "north": {
+              "textureId": "fur_dark"
+            },
+            "south": {
+              "textureId": "fur_dark"
+            },
+            "east": {
+              "textureId": "fur_dark"
+            },
+            "west": {
+              "textureId": "fur_dark"
+            },
+            "up": {
+              "textureId": "fur_orange"
+            },
+            "down": {
+              "textureId": "fur_dark"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "category": "entity"
+}

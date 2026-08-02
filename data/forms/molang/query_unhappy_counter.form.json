@@ -1,0 +1,20 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "returns unhappy counter information"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "query.unhappy_counter",
+  "fields": [],
+  "isDeprecated": true,
+  "description": "Always returns zero. (Was originally meant to indicate Panda unhappiness but due to an early code change it has always only returned zero)",
+  "title": "Unhappy Counter"
+}

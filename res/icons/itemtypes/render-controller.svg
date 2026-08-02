@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Render Controller: Eye with sliders -->
+  <ellipse cx="8" cy="8" rx="6" ry="4" fill-opacity="0.15"/>
+  <ellipse cx="8" cy="8" rx="4" ry="3" fill-opacity="0.3"/>
+  <circle cx="8" cy="8" r="2"/>
+  <circle cx="8" cy="8" r="0.8" fill-opacity="0"/>
+  <rect x="1" y="13" width="5" height="1.5" rx="0.5" fill-opacity="0.5"/>
+  <rect x="10" y="13" width="5" height="1.5" rx="0.5" fill-opacity="0.5"/>
+  <circle cx="4" cy="13.75" r="1"/>
+  <circle cx="13" cy="13.75" r="1"/>
+</svg>

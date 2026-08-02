@@ -1,0 +1,101 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "uses basic ground movement"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "max_turn",
+            "comparison": ">=",
+            "value": 180
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can turn instantly in any direction"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "max_turn",
+            "comparison": "<",
+            "value": 30
+          },
+          {
+            "field": "max_turn",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "turns slowly (max "
+          },
+          {
+            "type": "value",
+            "field": "max_turn"
+          },
+          {
+            "type": "literal",
+            "text": " degrees per tick)"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "max_turn",
+      "title": "Max Turn",
+      "description": "The maximum number in degrees the mob can turn per tick.",
+      "defaultValue": 30,
+      "dataType": "float"
+    }
+  ],
+  "description": "This component accents the movement of an entity.",
+  "title": "Basic Movement",
+  "samples": {
+    "/vanilla/behavior_pack/entities/bat.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:movement.basic/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/blaze.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:movement.basic/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/bogged.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:movement.basic/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/breeze.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:movement.basic/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/cave_spider.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:movement.basic/",
+        "content": {}
+      }
+    ]
+  },
+  "id": "minecraft:movement.basic"
+}

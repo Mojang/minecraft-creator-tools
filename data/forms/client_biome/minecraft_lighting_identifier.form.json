@@ -1,0 +1,27 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "minecraft:lighting_identifier",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "specifies the lighting settings for Vibrant Visuals mode"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "lighting_identifier",
+      "title": "Lighting Identifier",
+      "description": "Identifier of lighting definition to use",
+      "dataType": "object",
+      "isRequired": true
+    }
+  ],
+  "description": "Set the identifier used for lighting in Vibrant Visuals mode. Identifiers must resolve to identifiers in valid Lighting JSON schemas under the \"lighting\" directory. Biomes without this component will have default lighting settings.",
+  "title": "Client Biome Lighting Identifier"
+}

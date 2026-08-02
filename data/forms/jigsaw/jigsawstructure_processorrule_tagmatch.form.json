@@ -1,0 +1,31 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "matches blocks by tag for processor rules"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "tag",
+      "title": "Tag",
+      "description": "The tag to be matched.",
+      "dataType": "string"
+    },
+    {
+      "id": "predicate_type",
+      "title": "PositionalBlockRuleAxis",
+      "description": "PositionalBlockRuleAxis",
+      "dataType": "string"
+    }
+  ],
+  "description": "Predicate that evaluates to true if the block at the specified location contains the tag.",
+  "title": "JigsawStructure ProcessorRule TagMatch"
+}

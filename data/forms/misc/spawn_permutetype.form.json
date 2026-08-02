@@ -1,0 +1,39 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines spawn permutetype settings"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Spawn PermuteType",
+  "fields": [
+    {
+      "id": "entity_type",
+      "title": "Entity Type",
+      "description": "Permutation to spawn when selected",
+      "dataType": "object"
+    },
+    {
+      "id": "min_guaranteed",
+      "title": "Min Guaranteed",
+      "description": "The minimum number of this permutation to spawn",
+      "dataType": "int"
+    },
+    {
+      "id": "weight",
+      "title": "Weight",
+      "description": "The ratio of all of the entities that are in the permutation",
+      "dataType": "int",
+      "isRequired": true
+    }
+  ],
+  "description": "Defines spawn permutetype settings.",
+  "title": "Spawn PermuteType Misc"
+}

@@ -1,0 +1,25 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "associates structure locations with metadata"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "metadata",
+      "title": "metadata",
+      "description": "The registry associating structure locations with generated Jigsaw structure metadata.",
+      "dataType": "object"
+    }
+  ],
+  "description": "JigsawStructureMetadataRegistry",
+  "title": "JigsawStructureMetadataRegistry"
+}

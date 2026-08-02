@@ -1,0 +1,43 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "ConstantIntProvider",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "provides a constant integer value"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "type",
+      "title": "IntProviderType",
+      "dataType": "string",
+      "choices": [
+        {
+          "id": "constant",
+          "title": "Constant"
+        },
+        {
+          "id": "uniform",
+          "title": "Uniform"
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "Constant value",
+      "dataType": "int",
+      "isRequired": true
+    }
+  ],
+  "description": "Specifies a constant integer",
+  "title": "World ConstantIntProvider"
+}

@@ -1,0 +1,173 @@
+{
+  "formatVersion": "1.0.0",
+  "identifier": "custom_item",
+  "description": "A handheld sword template (~30 units tall, ~2 blocks). All coordinates in Minecraft units (16 = 1 block).",
+  "textureSize": [
+    64,
+    64
+  ],
+  "textures": {
+    "handle": {
+      "background": {
+        "type": "dither_noise",
+        "colors": [
+          "#8B4513",
+          "#7A3A0E",
+          "#9C5018"
+        ],
+        "seed": 6001
+      }
+    },
+    "blade": {
+      "background": {
+        "type": "dither_noise",
+        "colors": [
+          "#C0C0C0",
+          "#B0B0B0",
+          "#D0D0D0"
+        ],
+        "seed": 6002
+      }
+    },
+    "edge": {
+      "background": {
+        "type": "dither_noise",
+        "colors": [
+          "#E8E8E8",
+          "#D8D8D8",
+          "#F8F8F8"
+        ],
+        "seed": 6003
+      }
+    }
+  },
+  "bones": [
+    {
+      "name": "handle",
+      "pivot": [
+        0,
+        5,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -2,
+            0,
+            -2
+          ],
+          "size": [
+            4,
+            10,
+            4
+          ],
+          "faces": {
+            "north": {
+              "textureId": "handle"
+            },
+            "south": {
+              "textureId": "handle"
+            },
+            "east": {
+              "textureId": "handle"
+            },
+            "west": {
+              "textureId": "handle"
+            },
+            "up": {
+              "textureId": "handle"
+            },
+            "down": {
+              "textureId": "handle"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "blade",
+      "pivot": [
+        0,
+        20,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -2,
+            10,
+            -1
+          ],
+          "size": [
+            4,
+            20,
+            2
+          ],
+          "faces": {
+            "north": {
+              "textureId": "blade"
+            },
+            "south": {
+              "textureId": "blade"
+            },
+            "east": {
+              "textureId": "edge"
+            },
+            "west": {
+              "textureId": "blade"
+            },
+            "up": {
+              "textureId": "edge"
+            },
+            "down": {
+              "textureId": "blade"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "guard",
+      "pivot": [
+        0,
+        10,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -4,
+            9,
+            -2
+          ],
+          "size": [
+            8,
+            2,
+            4
+          ],
+          "faces": {
+            "north": {
+              "textureId": "blade"
+            },
+            "south": {
+              "textureId": "blade"
+            },
+            "east": {
+              "textureId": "blade"
+            },
+            "west": {
+              "textureId": "blade"
+            },
+            "up": {
+              "textureId": "blade"
+            },
+            "down": {
+              "textureId": "blade"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "category": "item"
+}

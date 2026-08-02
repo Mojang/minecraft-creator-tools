@@ -1,0 +1,7 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Cannot Be Attacked",
+  "description": "When set, blocks entities from attacking the owner entity unless they have the \"minecraft:ignore_cannot_be_attacked\" component.",
+  "properties": {}
+}

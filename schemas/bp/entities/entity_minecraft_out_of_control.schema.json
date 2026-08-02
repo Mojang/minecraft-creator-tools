@@ -1,0 +1,7 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Out Of Control",
+  "description": "Defines the entity's 'out of control' state.",
+  "properties": {}
+}

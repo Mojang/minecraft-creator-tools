@@ -1,0 +1,133 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Tempt Behavior",
+  "description": "Allows a mob to be tempted by a player holding a specific item. Uses pathfinding for movement.",
+  "properties": {
+    "sound_interval": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "description": "\n\nProperties:\n• 0 (int)\n• 1 (int)",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "0": {
+                "type": "integer"
+              },
+              "1": {
+                "type": "integer"
+              }
+            }
+          }
+        },
+        {
+          "description": "\n\nProperties:\n• range_min (int)\n• range_max (int)\n• min (int)\n• max (int)",
+          "type": "object",
+          "properties": {
+            "range_min": {
+              "description": "Minimum interval",
+              "type": "integer"
+            },
+            "range_max": {
+              "description": "Maximum interval",
+              "type": "integer"
+            },
+            "min": {
+              "description": "Minimum interval",
+              "type": "integer"
+            },
+            "max": {
+              "description": "Maximum interval",
+              "type": "integer"
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Sound Interval (object)",
+              "description": "Use Sound Interval as an object",
+              "body": {
+                "range_min": 0,
+                "range_max": 0,
+                "min": 0,
+                "max": 0
+              }
+            }
+          ]
+        }
+      ],
+      "title": "Sound Interval",
+      "description": "Range of random ticks to wait between tempt sounds. Can be a number, an array [min, max], or an object with range_min/range_max or min/max.",
+      "defaultSnippets": [
+        {
+          "label": "Sound Interval (object)",
+          "description": "Use Sound Interval as an object",
+          "body": {
+            "range_min": 0,
+            "range_max": 0,
+            "min": 0,
+            "max": 0
+          }
+        }
+      ]
+    },
+    "can_get_scared": {
+      "title": "Can Get Scared",
+      "description": "If true, the mob can stop being tempted if the player moves too fast while close to this mob.",
+      "type": "boolean",
+      "default": false
+    },
+    "can_tempt_vertically": {
+      "title": "Can Tempt Vertically",
+      "description": "If true, vertical distance to the player will be considered when tempting.\n\nSample values:\n• frog: true",
+      "type": "boolean",
+      "default": false
+    },
+    "can_tempt_while_ridden": {
+      "title": "Can Tempt While Ridden",
+      "description": "If true, the mob can be tempted even if it has a passenger (i.e. if being ridden).",
+      "type": "boolean",
+      "default": false
+    },
+    "items": {
+      "title": "Items",
+      "description": "List of items that can tempt the mob.\n\nSample values:\n• chicken: [\"wheat_seeds\",\"beetroot_seeds\",\"melon_seeds\",\"...\n• cow: [\"wheat\"]\n• frog: [\"slime_ball\"]",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": "[]"
+    },
+    "speed_multiplier": {
+      "title": "Speed Multiplier",
+      "description": "Movement speed multiplier of the mob when using this AI Goal\n\nSample values:\n• chicken: 1\n• cow: 1.25\n• goat: 0.75",
+      "type": "number",
+      "default": 1
+    },
+    "stop_distance": {
+      "title": "Stop Distance",
+      "description": "The distance at which the mob will stop following the player.",
+      "type": "number",
+      "default": 1.5
+    },
+    "tempt_sound": {
+      "title": "Tempt Sound",
+      "description": "Sound to play while the mob is being tempted.",
+      "type": "string"
+    },
+    "within_radius": {
+      "title": "Within Radius",
+      "description": "Distance in blocks this mob can get tempted by a player holding an item they like.",
+      "type": "number",
+      "default": 0
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "type": "integer"
+    }
+  }
+}

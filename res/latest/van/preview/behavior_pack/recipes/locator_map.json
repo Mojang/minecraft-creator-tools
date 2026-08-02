@@ -1,0 +1,33 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:locator_map"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "pattern": [
+      "###",
+      "#X#",
+      "###"
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:paper"
+      },
+      "X": {
+        "item": "minecraft:compass"
+      }
+    },
+    "unlock": [
+      {
+        "item": "minecraft:compass"
+      }
+    ],
+    "result": {
+      "item": "minecraft:emptymap",
+      "data": 2
+    }
+  }
+}

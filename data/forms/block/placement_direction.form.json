@@ -1,0 +1,113 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has placement direction states"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Placement Direction",
+  "versionIntroduced": "1.20.30",
+  "note": "The `minecraft:sixteen_way_rotation` value for `enabled_states` was released out of beta in format version 1.26.30. Use it (together with the corresponding block state) to rotate blocks in 22.5° increments around the Y axis based on the player's yaw at placement time.",
+  "note2": "The `minecraft:corner_and_cardinal_direction` value for `enabled_states` is available without the Beta APIs toggle starting in 1.26.0. When enabled, set `blocks_to_corner_with` to the block descriptors that should trigger the corner shape (commonly paired with the `minecraft:placement_position` trait's `minecraft:vertical_half` state).",
+  "note3": "In format version 1.26.20, validation tightened: the rotation offset must be an exact multiple of 90.0 in the range 0.0–360.0 (the previous 0.5 tolerance was removed), and `blocks_to_corner_with` now requires `minecraft:corner_and_cardinal_direction` to be present in `enabled_states`.",
+  "note4": "Fixed in 1.26.10: blocks using `minecraft:corner_and_cardinal_direction` now correctly form inner corners when adjacent to other stairs.",
+  "fields": [
+    {
+      "id": "blocks_to_corner_with",
+      "description": "A list of block descriptors that define the blocks to connect with the corner shape.",
+      "dataType": "objectArray",
+      "defaultValue": [],
+      "subForm": {
+        "id": "blocks_to_corner_with",
+        "title": "Blocks To Corner With",
+        "fields": [
+          {
+            "id": "name",
+            "title": "Name",
+            "dataType": "string",
+            "defaultValue": ""
+          },
+          {
+            "id": "states",
+            "title": "States",
+            "dataType": "int",
+            "defaultValue": {},
+            "alternates": [
+              {
+                "id": "states",
+                "dataType": "string"
+              },
+              {
+                "id": "states",
+                "dataType": "boolean"
+              }
+            ]
+          },
+          {
+            "id": "tags",
+            "title": "Tags",
+            "dataType": "string",
+            "defaultValue": ""
+          }
+        ]
+      },
+      "alternates": [
+        {
+          "id": "blocks_to_corner_with",
+          "dataType": "string"
+        },
+        {
+          "id": "blocks_to_corner_with",
+          "dataType": "object"
+        }
+      ]
+    },
+    {
+      "id": "enabled_states",
+      "title": "Enabled States",
+      "description": "Which states to enable. Must specify at least one. Options: [\"minecraft:cardinal_direction\", \"minecraft:facing_direction\", \"minecraft:corner_and_cardinal_direction\", \"minecraft:sixteen_way_rotation\"].",
+      "dataType": "stringArray",
+      "minLength": 1,
+      "choices": [
+        {
+          "id": "minecraft:cardinal_direction",
+          "title": "Minecraft:cardinal direction"
+        },
+        {
+          "id": "minecraft:corner_and_cardinal_direction",
+          "title": "Minecraft:corner and cardinal direction"
+        },
+        {
+          "id": "minecraft:facing_direction",
+          "title": "Minecraft:facing direction"
+        },
+        {
+          "id": "minecraft:sixteen_way_rotation",
+          "title": "Minecraft:sixteen way rotation"
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "y_rotation_offset",
+      "title": "y Rotation Offset",
+      "description": "The y rotation offset to apply to the block. Must be [0.0, 90.0, 180.0, 270.0, 360.0]. Default is 0, meaning if the player is facing north, the \"minecraft:cardinal_direction\" and/or \"minecraft:facing_direction\" state will be north.",
+      "dataType": "float",
+      "validity": [
+        {
+          "comparison": "<=",
+          "value": 360
+        }
+      ]
+    }
+  ],
+  "description": "Adds the \"minecraft:cardinal_direction\", \"minecraft:facing_direction\", \"minecraft:corner_and_cardinal_direction\" and/or \"minecraft:sixteen_way_rotation\" states and setter function to the block.",
+  "title": "Block Placement Direction"
+}

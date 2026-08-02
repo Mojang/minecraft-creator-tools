@@ -1,0 +1,359 @@
+{
+  "formatVersion": "1.0.0",
+  "identifier": "custom_flying",
+  "description": "A flying creature template with articulated wings based on phantom geometry. Wingspan ~44 units (~2.75 blocks). All coordinates in Minecraft units (16 = 1 block).",
+  "textureSize": [
+    64,
+    64
+  ],
+  "textures": {
+    "body": {
+      "background": {
+        "type": "stipple_noise",
+        "colors": [
+          "#4A5568",
+          "#3A4558",
+          "#5A6578"
+        ],
+        "seed": 9001
+      }
+    },
+    "wings": {
+      "background": {
+        "type": "stipple_noise",
+        "colors": [
+          "#2D3748",
+          "#1D2738",
+          "#3D4758"
+        ],
+        "seed": 9002
+      }
+    },
+    "membrane": {
+      "background": {
+        "type": "perlin_noise",
+        "colors": [
+          "#1A202C",
+          "#0A101C",
+          "#2A303C"
+        ],
+        "seed": 9003,
+        "scale": 4
+      }
+    },
+    "eyes": {
+      "background": {
+        "type": "dither_noise",
+        "colors": [
+          "#48BB78",
+          "#38AB68",
+          "#58CB88"
+        ],
+        "seed": 9004
+      }
+    }
+  },
+  "bones": [
+    {
+      "name": "body",
+      "pivot": [
+        0,
+        24,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -2.5,
+            23,
+            -4
+          ],
+          "size": [
+            5,
+            3,
+            9
+          ],
+          "faces": {
+            "north": {
+              "textureId": "body"
+            },
+            "south": {
+              "textureId": "body"
+            },
+            "east": {
+              "textureId": "body"
+            },
+            "west": {
+              "textureId": "body"
+            },
+            "up": {
+              "textureId": "body"
+            },
+            "down": {
+              "textureId": "body"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "head",
+      "parent": "body",
+      "pivot": [
+        0,
+        24,
+        -4
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -2.5,
+            23,
+            -9
+          ],
+          "size": [
+            5,
+            3,
+            5
+          ],
+          "faces": {
+            "north": {
+              "textureId": "eyes"
+            },
+            "south": {
+              "textureId": "body"
+            },
+            "east": {
+              "textureId": "body"
+            },
+            "west": {
+              "textureId": "body"
+            },
+            "up": {
+              "textureId": "body"
+            },
+            "down": {
+              "textureId": "body"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "tail",
+      "parent": "body",
+      "pivot": [
+        0,
+        24,
+        5
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -1,
+            24,
+            5
+          ],
+          "size": [
+            2,
+            1,
+            6
+          ],
+          "faces": {
+            "north": {
+              "textureId": "body"
+            },
+            "south": {
+              "textureId": "body"
+            },
+            "east": {
+              "textureId": "body"
+            },
+            "west": {
+              "textureId": "body"
+            },
+            "up": {
+              "textureId": "body"
+            },
+            "down": {
+              "textureId": "body"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "right_wing",
+      "parent": "body",
+      "pivot": [
+        2.5,
+        25,
+        -2
+      ],
+      "cubes": [
+        {
+          "origin": [
+            2.5,
+            24,
+            -4
+          ],
+          "size": [
+            6,
+            2,
+            9
+          ],
+          "faces": {
+            "north": {
+              "textureId": "wings"
+            },
+            "south": {
+              "textureId": "wings"
+            },
+            "east": {
+              "textureId": "wings"
+            },
+            "west": {
+              "textureId": "wings"
+            },
+            "up": {
+              "textureId": "wings"
+            },
+            "down": {
+              "textureId": "membrane"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "right_wingtip",
+      "parent": "right_wing",
+      "pivot": [
+        8.5,
+        25,
+        -2
+      ],
+      "cubes": [
+        {
+          "origin": [
+            8.5,
+            24.5,
+            -4
+          ],
+          "size": [
+            13,
+            1,
+            9
+          ],
+          "faces": {
+            "north": {
+              "textureId": "wings"
+            },
+            "south": {
+              "textureId": "wings"
+            },
+            "east": {
+              "textureId": "wings"
+            },
+            "west": {
+              "textureId": "wings"
+            },
+            "up": {
+              "textureId": "wings"
+            },
+            "down": {
+              "textureId": "membrane"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "left_wing",
+      "parent": "body",
+      "pivot": [
+        -2.5,
+        25,
+        -2
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -8.5,
+            24,
+            -4
+          ],
+          "size": [
+            6,
+            2,
+            9
+          ],
+          "faces": {
+            "north": {
+              "textureId": "wings"
+            },
+            "south": {
+              "textureId": "wings"
+            },
+            "east": {
+              "textureId": "wings"
+            },
+            "west": {
+              "textureId": "wings"
+            },
+            "up": {
+              "textureId": "wings"
+            },
+            "down": {
+              "textureId": "membrane"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "left_wingtip",
+      "parent": "left_wing",
+      "pivot": [
+        -8.5,
+        25,
+        -2
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -21.5,
+            24.5,
+            -4
+          ],
+          "size": [
+            13,
+            1,
+            9
+          ],
+          "faces": {
+            "north": {
+              "textureId": "wings"
+            },
+            "south": {
+              "textureId": "wings"
+            },
+            "east": {
+              "textureId": "wings"
+            },
+            "west": {
+              "textureId": "wings"
+            },
+            "up": {
+              "textureId": "wings"
+            },
+            "down": {
+              "textureId": "membrane"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "category": "entity"
+}

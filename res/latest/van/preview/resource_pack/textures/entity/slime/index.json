@@ -1,0 +1,14 @@
+{
+  "files": [
+    "magmacube.texture_set.json",
+    "magmacube.tga",
+    "magmacube_mers.tga",
+    "magmacube_v2.texture_set.json",
+    "magmacube_v2.tga",
+    "magmacube_v2_mers.tga",
+    "slime.png",
+    "slime.texture_set.json",
+    "slime_mers.tga"
+  ],
+  "folders": []
+}

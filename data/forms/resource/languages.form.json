@@ -1,0 +1,441 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "languages",
+  "title": "Languages",
+  "description": "The languages.json file is a simple array of locale codes that specifies which language translations are available in this resource pack. Located at texts/languages.json in resource packs.",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines available language translations for this resource pack"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "0",
+      "title": "Language Code",
+      "description": "A locale code identifying a language translation (e.g., en_US, de_DE, ja_JP).",
+      "dataType": "string",
+      "samples": {
+        "vanilla_data/resource_packs/vanilla/texts/languages.json": [
+          {
+            "path": "example",
+            "content": "en_US"
+          },
+          {
+            "path": "example",
+            "content": "en_US"
+          }
+        ]
+      }
+    },
+    {
+      "id": "1",
+      "title": "1",
+      "dataType": "string",
+      "samples": {
+        "vanilla_data/resource_packs/vanilla/texts/languages.json": [
+          {
+            "path": "example",
+            "content": "en_GB"
+          }
+        ]
+      }
+    },
+    {
+      "id": "2",
+      "title": "2",
+      "dataType": "string",
+      "samples": {
+        "vanilla_data/resource_packs/vanilla/texts/languages.json": [
+          {
+            "path": "example",
+            "content": "de_DE"
+          }
+        ]
+      }
+    },
+    {
+      "id": "3",
+      "title": "3",
+      "dataType": "string",
+      "samples": {
+        "vanilla_data/resource_packs/vanilla/texts/languages.json": [
+          {
+            "path": "example",
+            "content": "es_ES"
+          }
+        ]
+      }
+    },
+    {
+      "id": "4",
+      "title": "4",
+      "dataType": "string",
+      "samples": {
+        "vanilla_data/resource_packs/vanilla/texts/languages.json": [
+          {
+            "path": "example",
+            "content": "es_MX"
+          }
+        ]
+      }
+    },
+    {
+      "id": "5",
+      "title": "5",
+      "dataType": "string",
+      "samples": {
+        "vanilla_data/resource_packs/vanilla/texts/languages.json": [
+          {
+            "path": "example",
+            "content": "fr_FR"
+          }
+        ]
+      }
+    },
+    {
+      "id": "6",
+      "title": "6",
+      "dataType": "string",
+      "samples": {
+        "vanilla_data/resource_packs/vanilla/texts/languages.json": [
+          {
+            "path": "example",
+            "content": "fr_CA"
+          }
+        ]
+      }
+    },
+    {
+      "id": "7",
+      "title": "7",
+      "dataType": "string",
+      "samples": {
+        "vanilla_data/resource_packs/vanilla/texts/languages.json": [
+          {
+            "path": "example",
+            "content": "it_IT"
+          }
+        ]
+      }
+    },
+    {
+      "id": "8",
+      "title": "8",
+      "dataType": "string",
+      "samples": {
+        "vanilla_data/resource_packs/vanilla/texts/languages.json": [
+          {
+            "path": "example",
+            "content": "ja_JP"
+          }
+        ]
+      }
+    },
+    {
+      "id": "9",
+      "title": "9",
+      "dataType": "string",
+      "samples": {
+        "vanilla_data/resource_packs/vanilla/texts/languages.json": [
+          {
+            "path": "example",
+            "content": "ko_KR"
+          }
+        ]
+      }
+    },
+    {
+      "id": "10",
+      "title": "10",
+      "dataType": "string",
+      "samples": {
+        "vanilla_data/resource_packs/vanilla/texts/languages.json": [
+          {
+            "path": "example",
+            "content": "pt_BR"
+          }
+        ]
+      }
+    },
+    {
+      "id": "11",
+      "title": "11",
+      "dataType": "string",
+      "samples": {
+        "vanilla_data/resource_packs/vanilla/texts/languages.json": [
+          {
+            "path": "example",
+            "content": "pt_PT"
+          }
+        ]
+      }
+    },
+    {
+      "id": "12",
+      "title": "12",
+      "dataType": "string",
+      "samples": {
+        "vanilla_data/resource_packs/vanilla/texts/languages.json": [
+          {
+            "path": "example",
+            "content": "ru_RU"
+          }
+        ]
+      }
+    },
+    {
+      "id": "13",
+      "title": "13",
+      "dataType": "string",
+      "samples": {
+        "vanilla_data/resource_packs/vanilla/texts/languages.json": [
+          {
+            "path": "example",
+            "content": "zh_CN"
+          }
+        ]
+      }
+    },
+    {
+      "id": "14",
+      "title": "14",
+      "dataType": "string",
+      "samples": {
+        "vanilla_data/resource_packs/vanilla/texts/languages.json": [
+          {
+            "path": "example",
+            "content": "zh_TW"
+          }
+        ]
+      }
+    },
+    {
+      "id": "15",
+      "title": "15",
+      "dataType": "string",
+      "samples": {
+        "vanilla_data/resource_packs/vanilla/texts/languages.json": [
+          {
+            "path": "example",
+            "content": "nl_NL"
+          }
+        ]
+      }
+    },
+    {
+      "id": "16",
+      "title": "16",
+      "dataType": "string",
+      "samples": {
+        "vanilla_data/resource_packs/vanilla/texts/languages.json": [
+          {
+            "path": "example",
+            "content": "bg_BG"
+          }
+        ]
+      }
+    },
+    {
+      "id": "17",
+      "title": "17",
+      "dataType": "string",
+      "samples": {
+        "vanilla_data/resource_packs/vanilla/texts/languages.json": [
+          {
+            "path": "example",
+            "content": "cs_CZ"
+          }
+        ]
+      }
+    },
+    {
+      "id": "18",
+      "title": "18",
+      "dataType": "string",
+      "samples": {
+        "vanilla_data/resource_packs/vanilla/texts/languages.json": [
+          {
+            "path": "example",
+            "content": "da_DK"
+          }
+        ]
+      }
+    },
+    {
+      "id": "19",
+      "title": "19",
+      "dataType": "string",
+      "samples": {
+        "vanilla_data/resource_packs/vanilla/texts/languages.json": [
+          {
+            "path": "example",
+            "content": "el_GR"
+          }
+        ]
+      }
+    },
+    {
+      "id": "20",
+      "title": "20",
+      "dataType": "string",
+      "samples": {
+        "vanilla_data/resource_packs/vanilla/texts/languages.json": [
+          {
+            "path": "example",
+            "content": "fi_FI"
+          }
+        ]
+      }
+    },
+    {
+      "id": "21",
+      "title": "21",
+      "dataType": "string",
+      "samples": {
+        "vanilla_data/resource_packs/vanilla/texts/languages.json": [
+          {
+            "path": "example",
+            "content": "hu_HU"
+          }
+        ]
+      }
+    },
+    {
+      "id": "22",
+      "title": "22",
+      "dataType": "string",
+      "samples": {
+        "vanilla_data/resource_packs/vanilla/texts/languages.json": [
+          {
+            "path": "example",
+            "content": "id_ID"
+          }
+        ]
+      }
+    },
+    {
+      "id": "23",
+      "title": "23",
+      "dataType": "string",
+      "samples": {
+        "vanilla_data/resource_packs/vanilla/texts/languages.json": [
+          {
+            "path": "example",
+            "content": "nb_NO"
+          }
+        ]
+      }
+    },
+    {
+      "id": "24",
+      "title": "24",
+      "dataType": "string",
+      "samples": {
+        "vanilla_data/resource_packs/vanilla/texts/languages.json": [
+          {
+            "path": "example",
+            "content": "pl_PL"
+          }
+        ]
+      }
+    },
+    {
+      "id": "25",
+      "title": "25",
+      "dataType": "string",
+      "samples": {
+        "vanilla_data/resource_packs/vanilla/texts/languages.json": [
+          {
+            "path": "example",
+            "content": "sk_SK"
+          }
+        ]
+      }
+    },
+    {
+      "id": "26",
+      "title": "26",
+      "dataType": "string",
+      "samples": {
+        "vanilla_data/resource_packs/vanilla/texts/languages.json": [
+          {
+            "path": "example",
+            "content": "sv_SE"
+          }
+        ]
+      }
+    },
+    {
+      "id": "27",
+      "title": "27",
+      "dataType": "string",
+      "samples": {
+        "vanilla_data/resource_packs/vanilla/texts/languages.json": [
+          {
+            "path": "example",
+            "content": "tr_TR"
+          }
+        ]
+      }
+    },
+    {
+      "id": "28",
+      "title": "28",
+      "dataType": "string",
+      "samples": {
+        "vanilla_data/resource_packs/vanilla/texts/languages.json": [
+          {
+            "path": "example",
+            "content": "uk_UA"
+          }
+        ]
+      }
+    }
+  ],
+  "note": "This file is a JSON array at the root level, containing string locale codes. Each locale code corresponds to a .lang file in the texts/ folder that provides translations.",
+  "samples": {
+    "vanilla_data/resource_packs/vanilla/texts/languages.json": [
+      {
+        "path": "example",
+        "content": [
+          "en_US",
+          "en_GB",
+          "de_DE",
+          "es_ES",
+          "es_MX",
+          "fr_FR",
+          "fr_CA",
+          "it_IT",
+          "ja_JP",
+          "ko_KR",
+          "pt_BR",
+          "pt_PT",
+          "ru_RU",
+          "zh_CN",
+          "zh_TW",
+          "nl_NL",
+          "bg_BG",
+          "cs_CZ",
+          "da_DK",
+          "el_GR",
+          "fi_FI",
+          "hu_HU",
+          "id_ID",
+          "nb_NO",
+          "pl_PL",
+          "sk_SK",
+          "sv_SE",
+          "tr_TR",
+          "uk_UA"
+        ]
+      }
+    ]
+  }
+}

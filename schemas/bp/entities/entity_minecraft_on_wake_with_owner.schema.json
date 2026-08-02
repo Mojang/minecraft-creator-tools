@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "On wake with owner trigger",
+  "description": "A trigger when a mob's tamed onwer wakes up.",
+  "properties": {
+    "event": {
+      "title": "Event",
+      "description": "The event to run when the conditions for this trigger are met.",
+      "type": "string"
+    },
+    "filters": {
+      "title": "Filters",
+      "description": "The list of conditions for this trigger to execute.",
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "all_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "any_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "none_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "target": {
+      "title": "Target",
+      "description": "The target of the event.",
+      "type": "string",
+      "default": "self"
+    }
+  }
+}

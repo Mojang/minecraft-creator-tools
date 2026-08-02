@@ -1,0 +1,79 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has dynamic jump height that changes over time"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "regular_skip_data",
+      "title": "Regular Skip Data",
+      "description": "Jump data used during normal skip movement. Object with optional `distance_scale` (horizontal velocity multiplier), `height` (vertical force), `jump_delay` (ticks between jumps), and `animation_duration` (jump animation length).",
+      "dataType": "object",
+      "versionIntroduced": "1.26.0",
+      "choices": [
+        {
+          "id": "animation_duration",
+          "title": "Animation Duration",
+          "description": "Duration of the jump animation."
+        },
+        {
+          "id": "distance_scale",
+          "title": "Distance Scale",
+          "description": "The multiplier applied to horizontal velocity when jumping."
+        },
+        {
+          "id": "height",
+          "title": "Height",
+          "description": "The force applied vertically when jumping."
+        },
+        {
+          "id": "jump_delay",
+          "title": "Jump Delay",
+          "description": "Amount of ticks between sequential jumps."
+        }
+      ]
+    },
+    {
+      "id": "fast_skip_data",
+      "title": "Fast Skip Data",
+      "description": "Jump data used while traveling quickly with skip movement. Object with the same shape as `regular_skip_data`.",
+      "dataType": "object",
+      "versionIntroduced": "1.26.0",
+      "choices": [
+        {
+          "id": "animation_duration",
+          "title": "Animation Duration",
+          "description": "Duration of the jump animation."
+        },
+        {
+          "id": "distance_scale",
+          "title": "Distance Scale",
+          "description": "The multiplier applied to horizontal velocity when jumping."
+        },
+        {
+          "id": "height",
+          "title": "Height",
+          "description": "The force applied vertically when jumping."
+        },
+        {
+          "id": "jump_delay",
+          "title": "Jump Delay",
+          "description": "Amount of ticks between sequential jumps."
+        }
+      ]
+    }
+  ],
+  "description": "Defines a dynamic type jump control that will change jump properties based on the speed modifier of the mob. Requires `minecraft:movement.skip` to be used.",
+  "title": "Dynamic Jump",
+  "samples": {},
+  "id": "minecraft:jump.dynamic"
+}

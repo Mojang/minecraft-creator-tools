@@ -1,0 +1,46 @@
+{
+  "format_version": "1.21.110",
+  "minecraft:biome": {
+    "description": {
+      "identifier": "minecraft:basalt_deltas"
+    },
+    "components": {
+      "minecraft:climate": {
+        "downfall": 0.0,
+        "snow_accumulation": [ 0.0, 0.125 ],
+        "temperature": 2.0
+      },
+      "minecraft:multinoise_generation_rules": {
+        "target_temperature": -0.5,
+        "target_humidity": 0.0,
+        "target_altitude": 0.0,
+        "target_weirdness": 0.0,
+        "weight": 0.175
+      },
+      "minecraft:surface_builder": {
+        "builder": {
+          "type": "minecraft:capped",
+          "floor_materials": [
+            "minecraft:basalt",
+            "minecraft:blackstone"
+          ],
+          "ceiling_materials": [
+            "minecraft:basalt"
+          ],
+          "sea_material": "minecraft:lava",
+          "foundation_material": "minecraft:netherrack"
+        }
+      },
+
+      "minecraft:tags": {
+        "tags": [
+          "nether",
+          "basalt_deltas",
+          "spawn_many_magma_cubes",
+          "spawn_ghast",
+          "spawns_warm_variant_farm_animals"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "files": [
+    "frond_top.geo.json",
+    "palm_leave.geo.json",
+    "palm_leave_corner.geo.json",
+    "palm_leave_tip.geo.json",
+    "palm_tree_top.geo.json",
+    "palm_trunk.geo.json"
+  ],
+  "folders": []
+}

@@ -1,0 +1,27 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "destroys blocks as it moves"
+          }
+        ]
+      }
+    ]
+  },
+  "description": "Specifies the blocks that the entity can break as it moves around.",
+  "fields": [
+    {
+      "id": "breakable_blocks",
+      "description": "A list of the blocks that can be broken as this entity moves around.",
+      "dataType": "stringArray",
+      "title": "Breakable Blocks"
+    }
+  ],
+  "title": "Break Blocks",
+  "samples": {},
+  "id": "minecraft:break_blocks"
+}

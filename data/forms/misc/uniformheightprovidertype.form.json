@@ -1,0 +1,40 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines uniformheightprovidertype configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "UniformHeightProviderType",
+  "fields": [
+    {
+      "id": "max",
+      "title": "Max",
+      "description": "Max value of the uniform distribution",
+      "dataType": "object",
+      "isRequired": true
+    },
+    {
+      "id": "min",
+      "title": "Min",
+      "description": "Min value of the uniform distribution",
+      "dataType": "object",
+      "isRequired": true
+    },
+    {
+      "id": "type",
+      "title": "HeightProviderType",
+      "dataType": "string",
+      "isRequired": true
+    }
+  ],
+  "description": "Uniform distribution of possible anchor points",
+  "title": "UniformHeightProviderType Misc"
+}

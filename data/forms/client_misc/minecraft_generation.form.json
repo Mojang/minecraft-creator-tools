@@ -1,0 +1,25 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "minecraft:generation",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "specifies the world generation type"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "generator_type",
+      "title": "Generator Type",
+      "dataType": "string"
+    }
+  ],
+  "description": "Specifies the world generation type.",
+  "title": "Generation"
+}

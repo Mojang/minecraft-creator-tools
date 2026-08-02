@@ -1,0 +1,89 @@
+{
+  "id": "cmd_allowlist",
+  "title": "allowlist",
+  "description": "Manages the server allowlist.",
+  "fields": [
+    {
+      "id": "action",
+      "title": "action",
+      "type": "string",
+      "isOptional": false,
+      "description": "The allowlist action to perform: add, remove, list, or reload.",
+      "commandType": "ALLOWLISTACTION"
+    },
+    {
+      "id": "name",
+      "title": "name",
+      "type": "string",
+      "isOptional": true,
+      "description": "The player name to add to or remove from the allowlist.",
+      "subFormId": "type_id",
+      "commandType": "ID"
+    }
+  ],
+  "aliases": [
+    "whitelist"
+  ],
+  "overloads": [
+    {
+      "id": "1",
+      "title": "Add player",
+      "description": "Adds a player to the server allowlist.",
+      "params": [
+        {
+          "name": "action",
+          "type": "ALLOWLISTACTIONADD",
+          "isOptional": false
+        },
+        {
+          "name": "name",
+          "type": "ID",
+          "isOptional": false
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "title": "Remove player",
+      "description": "Removes a player from the server allowlist.",
+      "params": [
+        {
+          "name": "action",
+          "type": "ALLOWLISTACTIONREMOVE",
+          "isOptional": false
+        },
+        {
+          "name": "name",
+          "type": "ID",
+          "isOptional": false
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "title": "List players",
+      "description": "Lists all players on the server allowlist.",
+      "params": [
+        {
+          "name": "action",
+          "type": "ALLOWLISTACTIONLIST",
+          "isOptional": false
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "title": "Reload allowlist",
+      "description": "Reloads the allowlist from the file on disk.",
+      "params": [
+        {
+          "name": "action",
+          "type": "ALLOWLISTACTIONRELOAD",
+          "isOptional": false
+        }
+      ]
+    }
+  ],
+  "permissionLevel": 4,
+  "requiresCheats": true
+}

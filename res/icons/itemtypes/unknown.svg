@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Unknown: Question mark in document -->
+  <rect x="2" y="1" width="12" height="14" fill-opacity="0.15"/>
+  <path d="M6 5 Q6 3, 8 3 Q10 3, 10 5 Q10 6.5, 8 7 L8 8.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+  <circle cx="8" cy="11" r="1"/>
+</svg>

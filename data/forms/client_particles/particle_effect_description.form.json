@@ -1,0 +1,34 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines the identifier and render parameters for a particle effect"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "basic_render_parameters",
+      "title": "Basic Render Parameters",
+      "description": "The parameters MUST contain a material and texture.",
+      "dataType": "object",
+      "subFormId": "client_particles/particle_effect_basic_render_parameters",
+      "isRequired": true
+    },
+    {
+      "id": "identifier",
+      "title": "Identifier",
+      "dataType": "string",
+      "isRequired": true
+    }
+  ],
+  "description": "The description MUST contain an identifier and basic_render_parameters.",
+  "title": "Client Particles Particle Effect Description",
+  "id": "particle_effect description"
+}

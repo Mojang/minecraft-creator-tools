@@ -1,0 +1,19 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "checks if item or block has any of the specified tags"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "query.any_tag",
+  "fields": [],
+  "description": "Returns if the item or block has any of the tags specified.",
+  "title": "Any Tag"
+}

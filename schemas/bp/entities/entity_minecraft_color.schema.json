@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Color",
+  "description": "Defines the entity's main color.",
+  "properties": {
+    "value": {
+      "title": "Value",
+      "description": "The Palette Color value of the entity.",
+      "type": "integer",
+      "default": 0
+    }
+  }
+}

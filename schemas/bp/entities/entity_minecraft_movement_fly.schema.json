@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Fly Movement",
+  "description": "This move control causes the mob to fly.",
+  "properties": {
+    "max_turn": {
+      "title": "Max Turn",
+      "description": "The maximum number in degrees the mob can turn per tick.",
+      "type": "number",
+      "default": 30
+    },
+    "start_speed": {
+      "title": "Start Speed",
+      "description": "Initial speed of the mob when it starts gliding.",
+      "type": "number",
+      "default": 0.1
+    },
+    "speed_when_turning": {
+      "title": "Speed when turning",
+      "description": "Speed that the mob adjusts to when it has to turn quickly.",
+      "type": "number",
+      "default": 0.2
+    }
+  }
+}

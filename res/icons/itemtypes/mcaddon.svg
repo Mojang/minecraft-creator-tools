@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- MCAddon: Package with plus -->
+  <path d="M2 4L8 1L14 4V12L8 15L2 12V4Z" fill-opacity="0.15"/>
+  <path d="M3 4.5L8 2L13 4.5V11.5L8 14L3 11.5V4.5Z" fill-opacity="0.3"/>
+  <path d="M8 2V14M3 4.5L8 7L13 4.5" fill="none" stroke="currentColor" stroke-width="0.5"/>
+  <rect x="6" y="6" width="4" height="4" rx="0.5"/>
+  <path d="M8 7V9M7 8H9" stroke="currentColor" stroke-width="0.8"/>
+</svg>

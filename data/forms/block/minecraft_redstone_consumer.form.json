@@ -1,0 +1,31 @@
+{
+  "id": "minecraft:redstone_consumer",
+  "versionIntroduced": "1.21.130",
+  "note": "Lets a custom block consume and optionally propagate a redstone signal. Pairs with the `BlockComponentRedstoneUpdateEvent` script API for custom redstone behavior. Not available on block permutations.",
+  "note2": "Available without the Upcoming Creator Features experimental toggle for block format versions 1.26.0 or higher. In 1.26.0 the field was renamed from the original `propogates_power` spelling to `propagates_power`.",
+  "fields": [
+    {
+      "id": "min_power",
+      "title": "Min Power",
+      "description": "Optional minimum value for incoming signal strength. If signal strength is greater than or equal to this value then the 'onRedstoneUpdate' event is sent to Scripts. Defaults to 0 meaning event is always emitted.",
+      "dataType": "int",
+      "defaultValue": 0,
+      "validity": [
+        {
+          "comparison": "<=",
+          "value": 15
+        }
+      ]
+    },
+    {
+      "id": "propagates_power",
+      "title": "Propagates Power",
+      "description": "Optional Boolean to control whether a signal can pass through this block or not, defaults to false.",
+      "dataType": "boolean",
+      "defaultValue": false
+    }
+  ],
+  "description": "A component describing how a block can consume and potentially propagate a redstone signal. This component is not available for block permutations.",
+  "title": "Block Redstone Consumer",
+  "samples": {}
+}

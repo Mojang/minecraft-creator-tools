@@ -1,0 +1,30 @@
+{
+  "id": "minecraft:chest_obstruction",
+  "versionIntroduced": "1.26.10",
+  "note": "Added in 1.26.10 behind the Upcoming Creator Features experiment and released without the experimental toggle for block format versions 1.26.20 and newer. Controls how a block placed above a chest affects the chest's ability to open: `always` always obstructs, `never` never obstructs, and `shape` (the default) uses the block's AABB.",
+  "fields": [
+    {
+      "id": "obstruction_rule",
+      "title": "Chest Obstruction Rule",
+      "dataType": "string",
+      "choices": [
+        {
+          "id": "always",
+          "title": "Always"
+        },
+        {
+          "id": "never",
+          "title": "Never"
+        },
+        {
+          "id": "shape",
+          "title": "Shape"
+        }
+      ],
+      "defaultValue": "shape",
+      "description": "[optional] How the block should be evaluated by a chest during chest opening. Must be one of the following options:\n\"always\" - Will always oba chest from opening when directly above it.\n\"never\" - Will never obstruct a chest from opening when directly above it.\n\"shape\" - Will use the Blocks AABB shape to determine if the chest is obstructed from opening when directly above it; this is the default value if no rule is provided."
+    }
+  ],
+  "description": "This defines how a block reacts to a chest being opened underneath it.",
+  "title": "Block Chest Obstruction"
+}

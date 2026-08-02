@@ -1,0 +1,23 @@
+{
+  "files": [
+    "zombie_butcher.png",
+    "zombie_butcher.texture_set.json",
+    "zombie_butcher_mers.tga",
+    "zombie_farmer.png",
+    "zombie_farmer.texture_set.json",
+    "zombie_farmer_mers.tga",
+    "zombie_librarian.png",
+    "zombie_librarian.texture_set.json",
+    "zombie_librarian_mers.tga",
+    "zombie_priest.png",
+    "zombie_priest.texture_set.json",
+    "zombie_priest_mers.tga",
+    "zombie_smith.png",
+    "zombie_smith.texture_set.json",
+    "zombie_smith_mers.tga",
+    "zombie_villager.png",
+    "zombie_villager.texture_set.json",
+    "zombie_villager_mers.tga"
+  ],
+  "folders": []
+}

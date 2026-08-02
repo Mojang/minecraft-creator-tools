@@ -1,0 +1,11 @@
+{
+  "files": [
+    "manifest.json"
+  ],
+  "folders": [
+    "blocks",
+    "feature_rules",
+    "features",
+    "loot_tables"
+  ]
+}

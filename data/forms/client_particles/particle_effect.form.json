@@ -1,0 +1,109 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines a particle effect with emitters, appearance, and motion components"
+          }
+        ]
+      }
+    ]
+  },
+  "title": "Particle Effect",
+  "description": "Defines a particle effect that can be spawned by entities, blocks, or scripts. Particle effects use a component-based system with emitters (controlling spawn rate and shape), appearance (billboard rendering and colors), and motion (physics and collision).",
+  "fields": [
+    {
+      "id": "components",
+      "title": "Components",
+      "dataType": "object",
+      "subFormId": "client_particles/particle_effect_component",
+      "isRequired": true
+    },
+    {
+      "id": "curves",
+      "dataType": "object",
+      "subForm": {
+        "id": "curves",
+        "title": "Curves",
+        "fields": [
+          {
+            "id": "horizontal_range",
+            "title": "Horizontal Range",
+            "dataType": "keyedStringCollection",
+            "defaultValue": 1,
+            "alternates": [
+              {
+                "id": "horizontal_range",
+                "dataType": "keyedObjectCollection",
+                "subFormId": "item/molang_expression"
+              },
+              {
+                "id": "horizontal_range",
+                "dataType": "float"
+              }
+            ]
+          },
+          {
+            "id": "input",
+            "title": "Input",
+            "dataType": "keyedStringCollection",
+            "alternates": [
+              {
+                "id": "input",
+                "dataType": "keyedObjectCollection",
+                "subFormId": "item/molang_expression"
+              },
+              {
+                "id": "input",
+                "dataType": "float"
+              }
+            ],
+            "isRequired": true
+          },
+          {
+            "id": "nodes",
+            "title": "Nodes",
+            "dataType": "keyedStringCollection",
+            "alternates": [
+              {
+                "id": "nodes",
+                "dataType": "keyedObjectCollection",
+                "subFormId": "item/molang_expression"
+              },
+              {
+                "id": "nodes",
+                "dataType": "float"
+              }
+            ],
+            "isRequired": true
+          },
+          {
+            "id": "type",
+            "title": "Type",
+            "dataType": "object",
+            "isRequired": true
+          }
+        ]
+      },
+      "alternates": []
+    },
+    {
+      "id": "description",
+      "title": "Description",
+      "description": "The description MUST contain an identifier and basic_render_parameters.",
+      "dataType": "object",
+      "subFormId": "client_particles/particle_effect_description",
+      "isRequired": true
+    },
+    {
+      "id": "events",
+      "title": "Events",
+      "dataType": "object",
+      "subFormId": "client_particles/particle_event_node"
+    }
+  ],
+  "id": "particle_effect"
+}

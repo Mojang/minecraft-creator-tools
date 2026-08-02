@@ -1,0 +1,16 @@
+{
+  "files": [
+    "enchanting_table.png",
+    "gui2.png",
+    "icons.png",
+    "spritesheet.png",
+    "spritesheet2.png",
+    "touchgui.png",
+    "touchgui2.png",
+    "gui.png"
+  ],
+  "folders": [
+    "controls",
+    "newgui"
+  ]
+}

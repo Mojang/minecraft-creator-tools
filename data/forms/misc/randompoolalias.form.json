@@ -1,0 +1,35 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines randompoolalias configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "RandomPoolAlias",
+  "fields": [
+    {
+      "id": "alias",
+      "title": "Alias",
+      "description": "Alias of Random Pool",
+      "dataType": "string",
+      "isRequired": true
+    },
+    {
+      "id": "targets",
+      "title": "Targets",
+      "description": "List of potential pools",
+      "dataType": "object",
+      "subFormId": "misc/weightedrandomitem",
+      "isRequired": true
+    }
+  ],
+  "description": "Pool alias for a Random list of targets",
+  "title": "RandomPoolAlias Misc"
+}

@@ -1,0 +1,12 @@
+{
+  "files": [
+    "manifest.json"
+  ],
+  "folders": [
+    "animations",
+    "attachables",
+    "models",
+    "texts",
+    "textures"
+  ]
+}

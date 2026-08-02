@@ -1,0 +1,224 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "will despawn when far from players"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "despawn_from_distance.min_distance",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "starting at "
+          },
+          {
+            "type": "value",
+            "field": "despawn_from_distance.min_distance"
+          },
+          {
+            "type": "literal",
+            "text": " blocks"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "despawn_from_distance.max_distance",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "and instantly at "
+          },
+          {
+            "type": "value",
+            "field": "despawn_from_distance.max_distance"
+          },
+          {
+            "type": "literal",
+            "text": " blocks"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "despawn_from_chance",
+            "comparison": "==",
+            "value": false
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "with no random chance"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "despawn_from_simulation_edge",
+            "comparison": "==",
+            "value": false
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "but persists at simulation edge"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "despawn_from_distance",
+      "title": "Despawn From Distance",
+      "description": "Specifies if the 'min_distance' and 'max_distance' are used in the standard despawn rules.",
+      "dataType": "object",
+      "subForm": {
+        "id": "despawn_from_distance",
+        "title": "Despawn From Distance",
+        "fields": [
+          {
+            "id": "max_distance",
+            "title": "Max Distance",
+            "description": "Maximum distance for standard despawn rules to instantly despawn the mob.",
+            "defaultValue": 128,
+            "dataType": "int"
+          },
+          {
+            "id": "min_distance",
+            "title": "Min Distance",
+            "description": "Minimum distance for standard despawn rules to try to despawn the mob.",
+            "defaultValue": 32,
+            "dataType": "int"
+          }
+        ]
+      },
+      "samples": {
+        "/vanilla/behavior_pack/entities/bat.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:despawn/",
+            "content": {}
+          }
+        ],
+        "/vanilla/behavior_pack/entities/blaze.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:despawn/",
+            "content": {}
+          }
+        ]
+      }
+    },
+    {
+      "id": "despawn_from_chance",
+      "title": "Despawn From Chance",
+      "description": "Determines if \"min_range_random_chance\" is used in the standard despawn rules",
+      "defaultValue": true,
+      "dataType": "boolean"
+    },
+    {
+      "id": "despawn_from_inactivity",
+      "title": "Despawn From Inactivity",
+      "description": "Determines if the \"min_range_inactivity_timer\" is used in the standard despawn rules.",
+      "defaultValue": true,
+      "dataType": "boolean"
+    },
+    {
+      "id": "despawn_from_simulation_edge",
+      "title": "Despawn From Simulation Edge",
+      "description": "Determines if the mob is instantly despawned at the edge of simulation distance in the standard despawn rules.",
+      "defaultValue": true,
+      "dataType": "boolean"
+    },
+    {
+      "id": "filters",
+      "title": "Filters",
+      "description": "The list of conditions that must be satisfied before the Actor is despawned. If a filter is defined then standard despawn rules are ignored.",
+      "dataType": "minecraftFilter"
+    },
+    {
+      "id": "min_range_inactivity_timer",
+      "title": "Min Range Inactivity Timer",
+      "description": "The amount of time in seconds that the mob must be inactive.",
+      "defaultValue": 30,
+      "dataType": "int"
+    },
+    {
+      "id": "min_range_random_chance",
+      "title": "Min Range Random Chance",
+      "description": "A random chance between 1 and the given value.",
+      "defaultValue": 800,
+      "dataType": "int"
+    },
+    {
+      "id": "remove_child_entities",
+      "title": "Remove Child Entities",
+      "description": "If true, all entities linked to this entity in a child relationship (eg. leashed) will also be despawned.",
+      "defaultValue": false,
+      "dataType": "boolean"
+    }
+  ],
+  "description": "Despawns the Actor when the despawn rules or optional filters evaluate to true.",
+  "title": "Despawn",
+  "samples": {
+    "/vanilla/behavior_pack/entities/bat.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:despawn/",
+        "content": {
+          "despawn_from_distance": {}
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/blaze.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:despawn/",
+        "content": {
+          "despawn_from_distance": {}
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/bogged.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:despawn/",
+        "content": {
+          "despawn_from_distance": {}
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/cave_spider.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:despawn/",
+        "content": {
+          "despawn_from_distance": {}
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/chicken.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:despawn/",
+        "content": {
+          "despawn_from_distance": {}
+        }
+      }
+    ]
+  },
+  "id": "minecraft:despawn"
+}

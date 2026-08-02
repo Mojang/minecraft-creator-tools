@@ -1,0 +1,11 @@
+{
+  "files": [
+    "package.json",
+    "tsconfig.json"
+  ],
+  "folders": [
+    "behavior_packs",
+    "resource_packs",
+    "scripts"
+  ]
+}

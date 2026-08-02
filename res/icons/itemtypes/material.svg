@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Material: Shaded sphere -->
+  <circle cx="8" cy="8" r="7" fill-opacity="0.15"/>
+  <circle cx="8" cy="8" r="6" fill-opacity="0.3"/>
+  <circle cx="8" cy="8" r="4" fill-opacity="0.5"/>
+  <circle cx="6" cy="6" r="2" fill-opacity="0.8"/>
+  <circle cx="5" cy="5" r="1"/>
+</svg>

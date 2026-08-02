@@ -1,0 +1,26 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines placement position configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Placement Position",
+  "fields": [
+    {
+      "id": "enabled_states",
+      "title": "Enabled States",
+      "dataType": "stringArray",
+      "isRequired": true
+    }
+  ],
+  "description": "Defines placement position configuration.",
+  "title": "Placement Position Misc"
+}

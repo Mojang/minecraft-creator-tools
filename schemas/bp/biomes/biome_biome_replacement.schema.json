@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Biome Replacement",
+  "description": "Represents the replacement information used to determine the placement of the overriding biome.",
+  "properties": {
+    "amount": {
+      "title": "Amount",
+      "description": "Noise value used to determine whether or not the replacement is attempted, similar to a percentage. Must be in the range (0.0, 1.0].",
+      "type": "number",
+      "maximum": 1,
+      "exclusiveMinimum": 0
+    },
+    "dimension": {
+      "title": "Dimension",
+      "description": "Dimension in which this replacement can happen. Can be either 'minecraft:overworld' or 'minecraft:nether'.",
+      "type": "string"
+    },
+    "noise_frequency_scale": {
+      "title": "Noise Frequency Scale",
+      "description": "Scaling value used to alter the frequency of replacement attempts. A lower frequency will mean a bigger contiguous biome area that occurs less often. A higher frequency will mean smaller contiguous biome areas that occur more often. Must be in the range (0.0, 100.0].",
+      "type": "number",
+      "maximum": 100,
+      "exclusiveMinimum": 0
+    },
+    "targets": {
+      "title": "Targets",
+      "description": "Biomes that are going to be replaced by the overriding biome. Target biomes must not contain namespaces.",
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "minLength": 1
+    }
+  },
+  "required": [
+    "amount",
+    "dimension",
+    "noise_frequency_scale",
+    "targets"
+  ]
+}

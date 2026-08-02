@@ -1,0 +1,26 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "specifies storage weight modifier properties"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "minecraft:storage_weight_modifier",
+  "description": "Specifies the weight of this item when stored inside another Storage Item.",
+  "fields": [
+    {
+      "id": "weight_in_storage_item",
+      "title": "Weight In Storage Item",
+      "description": "The weight of this item when inside another Storage Item. Default is 4. 0 means item is not allowed in another Storage Item.",
+      "dataType": "int"
+    }
+  ],
+  "title": "Minecraft Storage Weight Modifier Misc"
+}

@@ -1,0 +1,11 @@
+{
+  "files": [],
+  "folders": [
+    "command_modules",
+    "doc_modules",
+    "engine_modules",
+    "molang_modules",
+    "script_modules",
+    "vanilladata_modules"
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:blue_stained_hardened_clay_from_lapis_lazuli"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "group": "stained_hardened_clay",
+    "priority": 1,
+    "pattern": [
+      "###",
+      "#X#",
+      "###"
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:hardened_clay"
+      },
+      "X": {
+        "item": "minecraft:lapis_lazuli"
+      }
+    },
+    "unlock": [
+      {
+        "item": "minecraft:hardened_clay"
+      }
+    ],
+    "result": {
+      "item": "minecraft:blue_terracotta",
+      "count": 8
+    }
+  }
+}

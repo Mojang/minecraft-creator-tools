@@ -1,0 +1,62 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "Color Proxy",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines a color gradient with interpolation"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "gradient",
+      "title": "Gradient",
+      "dataType": "keyedStringCollection",
+      "alternates": [],
+      "isRequired": true
+    },
+    {
+      "id": "interpolant",
+      "title": "Interpolant",
+      "dataType": "keyedStringCollection",
+      "alternates": [
+        {
+          "id": "interpolant",
+          "dataType": "keyedObjectCollection",
+          "readOnly": true,
+          "subForm": {
+            "id": "interpolant",
+            "title": "Interpolant",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "Expression",
+                "dataType": "string",
+                "isRequired": true
+              },
+              {
+                "id": "version",
+                "title": "Version",
+                "dataType": "int",
+                "isRequired": true
+              }
+            ]
+          }
+        },
+        {
+          "id": "interpolant",
+          "dataType": "float"
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "description": "Defines a color gradient with interpolation.",
+  "title": "Color Proxy Client Misc"
+}

@@ -1,0 +1,159 @@
+{
+  "format_version": "1.26.0",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "minecraft:wither",
+      "is_experimental": false,
+      "is_summonable": true,
+      "is_spawnable": true,
+      "spawn_category": "monster"
+    },
+    "components": {
+      "minecraft:behavior.float": {
+        "priority": 1
+      },
+      "minecraft:behavior.hurt_by_target": {
+        "priority": 2
+      },
+      "minecraft:behavior.look_at_player": {
+        "look_time": {
+          "min": 1,
+          "max": 2
+        },
+        "priority": 6
+      },
+      "minecraft:behavior.look_at_target": {
+        "look_time": {
+          "min": 1,
+          "max": 2
+        },
+        "priority": 5
+      },
+      "minecraft:behavior.nearest_attackable_target": {
+        "must_see": true,
+        "entity_types": [
+          {
+            "filters": {
+              "AND": [
+                {
+                  "test": "is_family",
+                  "subject": 1,
+                  "operator": 0,
+                  "value": "player"
+                }
+              ]
+            },
+            "max_dist": 70
+          },
+          {
+            "filters": {
+              "AND": [
+                {
+                  "test": "is_family",
+                  "subject": 1,
+                  "operator": 1,
+                  "value": "undead"
+                },
+                {
+                  "test": "is_family",
+                  "subject": 1,
+                  "operator": 1,
+                  "value": "inanimate"
+                }
+              ]
+            },
+            "max_dist": 70
+          }
+        ],
+        "priority": 3
+      },
+      "minecraft:behavior.random_look_around": {
+        "priority": 7
+      },
+      "minecraft:behavior.random_stroll": {
+        "priority": 5,
+        "speed_multiplier": 1
+      },
+      "minecraft:behavior.wither_random_attack_pos_goal": {
+        "priority": 3
+      },
+      "minecraft:behavior.wither_target_highest_damage": {
+        "priority": 1
+      },
+      "minecraft:boss": {
+        "hud_range": 55,
+        "should_darken_sky": true
+      },
+      "minecraft:breathable": {
+        "breathes_water": true,
+        "suffocate_time": 0,
+        "total_supply": 15
+      },
+      "minecraft:can_climb": {},
+      "minecraft:can_fly": {},
+      "minecraft:collision_box": {
+        "height": 3,
+        "width": 1
+      },
+      "minecraft:conditional_bandwidth_optimization": {},
+      "minecraft:damage_sensor": {
+        "triggers": {
+          "deals_damage": "no",
+          "on_damage": {
+            "filters": {
+              "subject": "other",
+              "test": "is_family",
+              "value": "undead"
+            }
+          }
+        }
+      },
+      "minecraft:experience_reward": {
+        "on_death": {
+          "expression": "50",
+          "version": 13
+        }
+      },
+      "minecraft:fire_immune": {},
+      "minecraft:health": {
+        "max": 600,
+        "value": 600
+      },
+      "minecraft:is_hidden_when_invisible": {},
+      "minecraft:jump.static": {},
+      "minecraft:loot": {
+        "table": "loot_tables/entities/wither_boss.json"
+      },
+      "minecraft:movement": {
+        "value": 0.25
+      },
+      "minecraft:movement.basic": {
+        "max_turn": 180.0
+      },
+      "minecraft:nameable": {},
+      "minecraft:navigation.walk": {
+        "avoid_water": true,
+        "can_path_over_water": true,
+        "using_door_annotation": true
+      },
+      "minecraft:persistent": {},
+      "minecraft:physics": {},
+      "minecraft:pushable": {
+        "is_pushable": true,
+        "is_pushable_by_piston": true
+      },
+      "minecraft:type_family": {
+        "family": [
+          "wither",
+          "skeleton",
+          "monster",
+          "undead",
+          "mob"
+        ]
+      }
+    },
+    "events": {
+      "minecraft:entity_spawned": {}
+    }
+  }
+}

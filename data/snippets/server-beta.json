@@ -1,0 +1,42 @@
+{
+"customCommand": {
+  "description": "Implements a very basic command system using the experiment chatbefore event. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/chatsendbeforeeventsignal",
+  "prefix": ["mc"],
+  "body": ["  const chatCallback = world.beforeEvents.chatSend.subscribe((eventData) => {",
+"    if (eventData.message.includes('cancel')) {",
+"      // Cancel event if the message contains 'cancel'",
+"      eventData.cancel = true;",
+"    } else {",
+"      const args = eventData.message.split(' ');",
+"      if (args.length > 0) {",
+"        switch (args[0].toLowerCase()) {",
+"          case 'echo':",
+"            // Send a modified version of chat message",
+"            world.sendMessage(`Echo '${eventData.message.substring(4).trim()}'`);",
+"            break;",
+"          case 'help':",
+"            world.sendMessage(`Available commands: echo <message>`);",
+"            break;",
+"        }",
+"      }",
+"    }",
+"  });"
+]},
+"minibiomes": {
+  "description": "Tests a roller coaster obstacle course. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/entityrideablecomponent",
+  "prefix": ["mc"],
+  "body": ["import { EntityComponentTypes } from '@minecraft/server';",
+"import { Test, register } from '@minecraft/server-gametest';",
+"import { MinecraftBlockTypes, MinecraftEntityTypes } from '@minecraft/vanilla-data';",
+"function minibiomes(test: Test) {",
+"  const minecart = test.spawn(MinecraftEntityTypes.Minecart, { x: 9, y: 7, z: 7 });",
+"  const pig = test.spawn(MinecraftEntityTypes.Pig, { x: 9, y: 7, z: 7 });",
+"  test.setBlockType(MinecraftBlockTypes.Cobblestone, { x: 10, y: 7, z: 7 });",
+"  const minecartRideableComp = minecart.getComponent(EntityComponentTypes.Rideable);",
+"  minecartRideableComp?.addRider(pig);",
+"  test.succeedWhenEntityPresent(MinecraftEntityTypes.Pig, { x: 8, y: 3, z: 1 }, true);",
+"}",
+"register('ChallengeTests', 'minibiomes', minibiomes).structureName('gametests:minibiomes').maxTicks(160);",
+""
+]}
+}

@@ -1,0 +1,104 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "StructureSet",
+  "title": "Structure Set",
+  "description": "Defines a structure set that controls the placement and distribution of structures in the world. A Structure Set contains a set of Jigsaw Structures and rules for how those structures should be placed in the world relative to other instances of structures from the same set. Each structure within a set is paired with a weight that influences how frequently it is chosen.",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "controls structure placement and distribution in the world"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "format_version",
+      "title": "Format Version",
+      "description": "The format version of this structure set definition.",
+      "dataType": "string",
+      "isRequired": true
+    },
+    {
+      "id": "minecraft:structure_set",
+      "title": "Structure Set Definition",
+      "description": "The structure set definition.",
+      "dataType": "object",
+      "isRequired": true,
+      "subForm": {
+        "id": "structure_set_definition",
+        "fields": [
+          {
+            "id": "description",
+            "title": "Description",
+            "description": "The description block containing the structure set identifier.",
+            "dataType": "object",
+            "isRequired": true,
+            "subFormId": "jigsaw/jigsawstructureset_description"
+          },
+          {
+            "id": "placement",
+            "title": "Placement",
+            "description": "Defines how structures in this set are placed in the world.",
+            "dataType": "object",
+            "isRequired": true,
+            "subForm": {
+              "id": "placement",
+              "fields": [
+                {
+                  "id": "type",
+                  "title": "Type",
+                  "description": "The placement algorithm type. Valid values: 'minecraft:random_spread', 'minecraft:concentric_rings'.",
+                  "dataType": "string",
+                  "isRequired": true
+                },
+                {
+                  "id": "salt",
+                  "title": "Salt",
+                  "description": "Seed used for the random generator to provide a unique scatter pattern. This is used to prevent overlap when multiple structure sets share the same placement values.",
+                  "dataType": "int",
+                  "isRequired": true
+                },
+                {
+                  "id": "separation",
+                  "title": "Separation",
+                  "description": "Padding (in chunks) within each grid cell. Structures will not generate within the padded area.",
+                  "dataType": "int",
+                  "defaultValue": 8,
+                  "minValue": 1
+                },
+                {
+                  "id": "spacing",
+                  "title": "Spacing",
+                  "description": "Grid cell size (in chunks) used when generating the structure. Structures will attempt to generate at a random position within each cell. Must be greater than separation.",
+                  "dataType": "int",
+                  "defaultValue": 34,
+                  "minValue": 2
+                },
+                {
+                  "id": "spread_type",
+                  "title": "Spread Type",
+                  "description": "How structures spread within the grid. Valid values: 'linear', 'triangular'.",
+                  "dataType": "string",
+                  "defaultValue": "linear"
+                }
+              ]
+            }
+          },
+          {
+            "id": "structures",
+            "title": "Structures",
+            "description": "Array of structures in this set with their relative weights.",
+            "dataType": "objectArray",
+            "isRequired": true,
+            "subFormId": "jigsaw/jigsawstructureset_structure"
+          }
+        ]
+      }
+    }
+  ]
+}

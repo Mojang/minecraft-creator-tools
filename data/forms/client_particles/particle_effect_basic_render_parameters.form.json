@@ -1,0 +1,34 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines basic render parameters for a particle effect"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "material",
+      "title": "Material",
+      "description": "The material used for rendering the particle effect.",
+      "dataType": "string",
+      "isRequired": true
+    },
+    {
+      "id": "texture",
+      "title": "Texture",
+      "description": "The texture path used for the particle effect.",
+      "dataType": "string",
+      "isRequired": true
+    }
+  ],
+  "description": "The parameters MUST contain a material and texture.",
+  "title": "Client Particles Particle Effect Basic Render Parameters",
+  "id": "particle_effect basic_render_parameters"
+}

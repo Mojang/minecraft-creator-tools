@@ -1,0 +1,48 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "is_humid",
+            "comparison": "==",
+            "value": true
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "is a humid biome"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "is_humid",
+            "comparison": "==",
+            "value": false
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "is a dry biome"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "minecraft:humidity",
+  "fields": [
+    {
+      "id": "is_humid",
+      "title": "Is Humid",
+      "dataType": "boolean",
+      "isRequired": true
+    }
+  ],
+  "description": "Forces a biome to ether always be humid or never humid. Humidity effects the spread chance, and spread rate of fire in the biome",
+  "title": "Biome Humidity"
+}

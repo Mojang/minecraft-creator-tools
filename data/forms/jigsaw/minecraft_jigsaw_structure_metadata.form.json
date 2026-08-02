@@ -1,0 +1,31 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines format version and jigsaw metadata registry"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "format_version",
+      "title": "format_version",
+      "description": "Format version of the contained metadata registry.",
+      "dataType": "string"
+    },
+    {
+      "id": "minecraft:jigsaw_structure_metadata",
+      "title": "minecraft:jigsaw_structure_metadata",
+      "description": "The Jigsaw metadata registry.",
+      "dataType": "object"
+    }
+  ],
+  "description": "Jigsaw Structure Metadata",
+  "title": "Jigsaw Structure Metadata"
+}

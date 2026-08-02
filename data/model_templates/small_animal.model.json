@@ -1,0 +1,310 @@
+{
+  "formatVersion": "1.0.0",
+  "identifier": "custom_small_animal",
+  "description": "A small quadruped animal template (pig/sheep size). ~14 units tall (~0.9 blocks). All coordinates in Minecraft units (16 = 1 block).",
+  "textureSize": [
+    64,
+    64
+  ],
+  "textures": {
+    "body": {
+      "background": {
+        "type": "stipple_noise",
+        "colors": [
+          "#F4A4B8",
+          "#E896AA",
+          "#FABBC9"
+        ],
+        "seed": 2001
+      }
+    },
+    "snout": {
+      "background": {
+        "type": "stipple_noise",
+        "colors": [
+          "#E88B9C",
+          "#D87A8B",
+          "#F09CAD"
+        ],
+        "seed": 2002
+      }
+    },
+    "eye": {
+      "background": {
+        "type": "dither_noise",
+        "colors": [
+          "#2F2F2F",
+          "#1F1F1F",
+          "#3F3F3F"
+        ],
+        "seed": 2003
+      }
+    },
+    "hoof": {
+      "background": {
+        "type": "dither_noise",
+        "colors": [
+          "#4A3728",
+          "#3A2718",
+          "#5A4738"
+        ],
+        "seed": 2004
+      }
+    }
+  },
+  "bones": [
+    {
+      "name": "body",
+      "pivot": [
+        0,
+        8,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -5,
+            6,
+            -8
+          ],
+          "size": [
+            10,
+            8,
+            16
+          ],
+          "faces": {
+            "north": {
+              "textureId": "body"
+            },
+            "south": {
+              "textureId": "body"
+            },
+            "east": {
+              "textureId": "body"
+            },
+            "west": {
+              "textureId": "body"
+            },
+            "up": {
+              "textureId": "body"
+            },
+            "down": {
+              "textureId": "body"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "head",
+      "pivot": [
+        0,
+        10,
+        -8
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -4,
+            6,
+            -16
+          ],
+          "size": [
+            8,
+            8,
+            8
+          ],
+          "faces": {
+            "north": {
+              "textureId": "snout"
+            },
+            "south": {
+              "textureId": "body"
+            },
+            "east": {
+              "textureId": "body"
+            },
+            "west": {
+              "textureId": "body"
+            },
+            "up": {
+              "textureId": "body"
+            },
+            "down": {
+              "textureId": "body"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "front_right_leg",
+      "pivot": [
+        3,
+        6,
+        -6
+      ],
+      "cubes": [
+        {
+          "origin": [
+            1,
+            0,
+            -8
+          ],
+          "size": [
+            4,
+            6,
+            4
+          ],
+          "faces": {
+            "north": {
+              "textureId": "body"
+            },
+            "south": {
+              "textureId": "body"
+            },
+            "east": {
+              "textureId": "body"
+            },
+            "west": {
+              "textureId": "body"
+            },
+            "up": {
+              "textureId": "body"
+            },
+            "down": {
+              "textureId": "hoof"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "front_left_leg",
+      "pivot": [
+        -3,
+        6,
+        -6
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -5,
+            0,
+            -8
+          ],
+          "size": [
+            4,
+            6,
+            4
+          ],
+          "faces": {
+            "north": {
+              "textureId": "body"
+            },
+            "south": {
+              "textureId": "body"
+            },
+            "east": {
+              "textureId": "body"
+            },
+            "west": {
+              "textureId": "body"
+            },
+            "up": {
+              "textureId": "body"
+            },
+            "down": {
+              "textureId": "hoof"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "back_right_leg",
+      "pivot": [
+        3,
+        6,
+        6
+      ],
+      "cubes": [
+        {
+          "origin": [
+            1,
+            0,
+            4
+          ],
+          "size": [
+            4,
+            6,
+            4
+          ],
+          "faces": {
+            "north": {
+              "textureId": "body"
+            },
+            "south": {
+              "textureId": "body"
+            },
+            "east": {
+              "textureId": "body"
+            },
+            "west": {
+              "textureId": "body"
+            },
+            "up": {
+              "textureId": "body"
+            },
+            "down": {
+              "textureId": "hoof"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "back_left_leg",
+      "pivot": [
+        -3,
+        6,
+        6
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -5,
+            0,
+            4
+          ],
+          "size": [
+            4,
+            6,
+            4
+          ],
+          "faces": {
+            "north": {
+              "textureId": "body"
+            },
+            "south": {
+              "textureId": "body"
+            },
+            "east": {
+              "textureId": "body"
+            },
+            "west": {
+              "textureId": "body"
+            },
+            "up": {
+              "textureId": "body"
+            },
+            "down": {
+              "textureId": "hoof"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "category": "entity"
+}

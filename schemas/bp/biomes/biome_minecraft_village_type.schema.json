@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Biome Village Type",
+  "description": "Determines the type of village for the Biome",
+  "properties": {
+    "type": {
+      "title": "VillageType",
+      "type": "string",
+      "enum": [
+        "default",
+        "desert",
+        "ice",
+        "savanna",
+        "taiga"
+      ]
+    }
+  },
+  "required": [
+    "type"
+  ]
+}

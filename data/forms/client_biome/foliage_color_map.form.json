@@ -1,0 +1,53 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "Foliage Color Map",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "specifies a color map for foliage rendering"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "color_map",
+      "title": "Foliage Colormap",
+      "description": "Color map from textures/colormap to determine color of foliage.",
+      "dataType": "string",
+      "choices": [
+        {
+          "id": "birch",
+          "title": "Birch"
+        },
+        {
+          "id": "dry_foliage",
+          "title": "Dry foliage"
+        },
+        {
+          "id": "evergreen",
+          "title": "Evergreen"
+        },
+        {
+          "id": "foliage",
+          "title": "Foliage"
+        },
+        {
+          "id": "mangrove_swamp_foliage",
+          "title": "Mangrove swamp foliage"
+        },
+        {
+          "id": "swamp_foliage",
+          "title": "Swamp foliage"
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "description": "Object specifying a color map for foliage instead of a specific color.",
+  "title": "Client Biome Foliage Color Map"
+}

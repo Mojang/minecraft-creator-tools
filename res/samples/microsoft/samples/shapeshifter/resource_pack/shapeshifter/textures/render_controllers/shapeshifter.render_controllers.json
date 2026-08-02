@@ -1,0 +1,21 @@
+{
+  "format_version": "1.8.0",
+  "render_controllers": {
+    "controller.render.shapeshifter": {
+      "arrays": {
+        "materials": {
+          "array.materials": ["material.default", "material.invisible"]
+        },
+        "geometries": {
+          "array.geos": ["geometry.shapeshifter", "geometry.chicken", "geometry.cat", "geometry.sheep", "geometry.polar_bear"]
+        },
+        "textures": {
+          "array.textures": ["texture.shapeshifter", "texture.chicken", "texture.cat", "texture.sheep", "texture.polar_bear"]
+        }
+      },
+      "geometry": "array.geos{v.index}",
+      "materials": [{ "*": "array.materials[query.is_invisible]" }],
+      "textures": "array.textures{v.index}"
+    }
+  }
+}

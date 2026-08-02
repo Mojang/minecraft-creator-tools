@@ -1,0 +1,197 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "paths toward entities to mount"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "control_flags",
+      "title": "Control Flags",
+      "dataType": "stringArray",
+      "defaultValue": [],
+      "choices": [
+        {
+          "id": "jump",
+          "title": "Jump"
+        },
+        {
+          "id": "look",
+          "title": "Look"
+        },
+        {
+          "id": "move",
+          "title": "Move"
+        }
+      ]
+    },
+    {
+      "id": "priority",
+      "title": "Priority",
+      "dataType": "int",
+      "defaultValue": 0,
+      "samples": {
+        "/vanilla/behavior_pack/entities/cave_spider.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.mount_pathing/",
+            "content": 5
+          }
+        ],
+        "/vanilla/behavior_pack/entities/chicken.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.mount_pathing/",
+            "content": 2
+          }
+        ],
+        "/vanilla/behavior_pack/entities/cow.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.mount_pathing/",
+            "content": 2
+          }
+        ],
+        "/vanilla/behavior_pack/entities/llama.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.mount_pathing/",
+            "content": 1
+          }
+        ],
+        "/vanilla/behavior_pack/entities/pig.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.mount_pathing/",
+            "content": 1
+          }
+        ]
+      },
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal."
+    },
+    {
+      "id": "speed_multiplier",
+      "title": "Speed Multiplier",
+      "description": "Movement speed multiplier of the mob when using this AI Goal",
+      "dataType": "float",
+      "defaultValue": 1,
+      "samples": {
+        "/vanilla/behavior_pack/entities/cave_spider.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.mount_pathing/",
+            "content": 1.25
+          }
+        ],
+        "/vanilla/behavior_pack/entities/chicken.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.mount_pathing/",
+            "content": 1.5
+          }
+        ],
+        "/vanilla/behavior_pack/entities/cow.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.mount_pathing/",
+            "content": 1.5
+          }
+        ],
+        "/vanilla/behavior_pack/entities/llama.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.mount_pathing/",
+            "content": 1.25
+          }
+        ]
+      }
+    },
+    {
+      "id": "target_dist",
+      "title": "Target Dist",
+      "description": "The distance at which this mob wants to be away from its target",
+      "dataType": "float",
+      "defaultValue": 0
+    },
+    {
+      "id": "track_target",
+      "title": "Track Target",
+      "description": "If true, this mob will chase after the target as long as it's a valid target",
+      "dataType": "boolean",
+      "defaultValue": false,
+      "samples": {
+        "/vanilla/behavior_pack/entities/cave_spider.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.mount_pathing/",
+            "content": true
+          }
+        ],
+        "/vanilla/behavior_pack/entities/chicken.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.mount_pathing/",
+            "content": true
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Allows the mob to move around on its own while mounted seeking a target to attack. Also will allow an entity to target another entity for an attack.",
+  "title": "Entity Mount Pathing Behavior",
+  "samples": {
+    "/vanilla/behavior_pack/entities/cave_spider.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.mount_pathing/",
+        "content": {
+          "priority": 5,
+          "target_dist": 0,
+          "speed_multiplier": 1.25,
+          "track_target": true
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/chicken.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.mount_pathing/",
+        "content": {
+          "priority": 2,
+          "speed_multiplier": 1.5,
+          "target_dist": 0,
+          "track_target": true
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/cow.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.mount_pathing/",
+        "content": {
+          "priority": 2,
+          "speed_multiplier": 1.5,
+          "target_dist": 0,
+          "track_target": true
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/llama.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.mount_pathing/",
+        "content": {
+          "priority": 1,
+          "speed_multiplier": 1.25,
+          "target_dist": 0,
+          "track_target": true
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/pig.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.mount_pathing/",
+        "content": {
+          "priority": 1,
+          "speed_multiplier": 1.25,
+          "target_dist": 0,
+          "track_target": true
+        }
+      }
+    ]
+  },
+  "id": "minecraft:behavior.mount_pathing"
+}

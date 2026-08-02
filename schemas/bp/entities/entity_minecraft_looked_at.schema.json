@@ -1,0 +1,185 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Looked At",
+  "description": "Defines the behavior when another entity looks at the owner entity.",
+  "properties": {
+    "set_target": {
+      "anyOf": [
+        {
+          "type": "string",
+          "enum": [
+            "never",
+            "once_and_stop_scanning",
+            "once_and_keep_scanning"
+          ]
+        },
+        {
+          "description": "Set to true/false for legacy boolean targeting behavior.",
+          "type": "integer"
+        }
+      ],
+      "title": "Set Target",
+      "description": "Defines if and how the owner entity will set entities that are looking at it as its combat targets. Valid values: 'never', 'once_and_stop_scanning', 'once_and_keep_scanning'.",
+      "defaultSnippets": [
+        {
+          "label": "Set Target (default)",
+          "description": "Use default value: false",
+          "body": false
+        }
+      ]
+    },
+    "field_of_view": {
+      "title": "Field Of View",
+      "description": "Defines, in degrees, the width of the field of view for entities looking at the owner entity. If \"scale_fov_by_distance\" is set to true, this value corresponds to the field of view at a distance of one block between the entities.",
+      "type": "number",
+      "default": 26
+    },
+    "filters": {
+      "title": "Filters",
+      "description": "Defines which entities are considered when searching for entities looking at the owner entity.",
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "all_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "any_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "none_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "find_players_only": {
+      "title": "Find Players Only",
+      "description": "Limits the search to only the nearest Player that meets the specified \"filters\" rather than all nearby entities.",
+      "type": "boolean",
+      "default": false
+    },
+    "line_of_sight_obstruction_type": {
+      "title": "Line Of Sight Obstruction Type",
+      "description": "Defines the type of block shape used to check for line of sight obstructions. Valid values: \"outline\", \"collision\", \"collision_for_camera\".",
+      "type": "string",
+      "default": "collision"
+    },
+    "look_at_locations": {
+      "title": "Look At Locations",
+      "description": "A list of locations on the owner entity towards which line of sight checks are performed. At least one location must be unobstructed for the entity to be considered as looked at.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "looked_at_cooldown": {
+      "title": "Looked At Cooldown",
+      "description": "Specifies the range for the random number of seconds that must pass before the owner entity can check again for entities looking at it, after detecting an entity looking at it.",
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        {
+          "type": "object",
+          "properties": {
+            "min": {
+              "type": "integer",
+              "description": "Minimum value of the range"
+            },
+            "max": {
+              "type": "integer",
+              "description": "Maximum value of the range"
+            }
+          }
+        }
+      ]
+    },
+    "looked_at_event": {
+      "title": "Looked At Event",
+      "description": "Defines the event to trigger when an entity is detected looking at the owner entity.",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event": {
+              "type": "string"
+            },
+            "target": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "min_looked_at_duration": {
+      "title": "Min Looked At Duration",
+      "description": "Defines the minimum, continuous time the owner entity has to be looked at before being considered as such. Defaults to 0 if not explicitly specified.",
+      "type": "number",
+      "default": 0
+    },
+    "not_looked_at_event": {
+      "title": "Not Looked At Event",
+      "description": "Defines the event to trigger when no entity is found looking at the owner entity.",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event": {
+              "type": "string"
+            },
+            "target": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "scale_fov_by_distance": {
+      "title": "Scale Fov By Distance",
+      "description": "When true, the field of view narrows as the distance between the owner entity and the entity looking at it increases. This ensures that the width of the view cone remains somewhat constant towards the owner entity position, regardless of distance.",
+      "type": "boolean",
+      "default": true
+    },
+    "search_radius": {
+      "title": "Search Radius",
+      "description": "Maximum distance the owner entity will search for entities looking at it.",
+      "type": "number",
+      "default": 10
+    }
+  }
+}

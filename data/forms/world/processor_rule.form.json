@@ -1,0 +1,93 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "Processor Rule",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines a block rule that replaces blocks when all predicates match"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "block_entity_modifier",
+      "title": "Block Entity Modifier",
+      "description": "A block state modifier for block entities when all predicate match.",
+      "dataType": "object"
+    },
+    {
+      "id": "input_predicate",
+      "title": "Input Predicate",
+      "description": "A predicate evaluated on the Structure Template block.",
+      "dataType": "object",
+      "defaultValue": {
+        "predicate_type": "minecraft:always_true"
+      }
+    },
+    {
+      "id": "location_predicate",
+      "title": "Location Predicate",
+      "description": "A predicate evaluated on the world block.",
+      "dataType": "object",
+      "defaultValue": {
+        "predicate_type": "minecraft:always_true"
+      }
+    },
+    {
+      "id": "output_state",
+      "description": "Block to replace the world block with if all predicates evaluate to true.",
+      "dataType": "string",
+      "alternates": [
+        {
+          "id": "output_state",
+          "dataType": "object",
+          "readOnly": true,
+          "subForm": {
+            "id": "output_state",
+            "title": "Output State",
+            "fields": [
+              {
+                "id": "name",
+                "title": "Name",
+                "description": "Name of the block",
+                "dataType": "object",
+                "isRequired": true
+              },
+              {
+                "id": "states",
+                "title": "States",
+                "description": "Contains members named after each state, with boolean, integer, or string values.",
+                "dataType": "keyedNumberCollection",
+                "defaultValue": {},
+                "alternates": [
+                  {
+                    "id": "states",
+                    "dataType": "keyedBooleanCollection"
+                  },
+                  {
+                    "id": "states",
+                    "dataType": "keyedStringCollection"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "position_predicate",
+      "title": "Position Predicate",
+      "description": "A predicate evaluated on the distance between the structure's world origin and the world block.",
+      "dataType": "object"
+    }
+  ],
+  "description": "A block rule that is evaluated on all blocks of a Structure Template. All predicates must evaluate to true in order for a block to be replaced by the output_state.",
+  "title": "World Processor Rule"
+}

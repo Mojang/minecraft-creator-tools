@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Heartbeat",
+  "description": "Defines the entity's heartbeat.",
+  "properties": {
+    "interval": {
+      "title": "Interval",
+      "description": "A Molang expression defining the inter-beat interval in seconds. A value of zero or less means no heartbeat.\n\nSample values:\n• warden: 2.0 - math.clamp(query.anger_level / 80 * 1.5, 0, 1.5)",
+      "type": "string",
+      "default": "1.00"
+    },
+    "sound_event": {
+      "title": "Sound Event",
+      "description": "Level sound event to be played as the heartbeat sound.",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event": {
+              "type": "string"
+            },
+            "target": {
+              "type": "string"
+            }
+          }
+        }
+      ],
+      "default": "heartbeat"
+    }
+  }
+}

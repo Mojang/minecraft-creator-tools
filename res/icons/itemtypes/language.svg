@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Language: Globe with text/A -->
+  <circle cx="8" cy="8" r="7" fill-opacity="0.15"/>
+  <circle cx="8" cy="8" r="5" fill="none" stroke="currentColor" stroke-width="0.6"/>
+  <ellipse cx="8" cy="8" rx="2.5" ry="5" fill="none" stroke="currentColor" stroke-width="0.5"/>
+  <path d="M3 6H13M3 10H13" fill="none" stroke="currentColor" stroke-width="0.5"/>
+  <path d="M6 4L8 10L10 4" fill="none" stroke="currentColor" stroke-width="1"/>
+  <path d="M6.5 8H9.5" fill="none" stroke="currentColor" stroke-width="0.8"/>
+</svg>

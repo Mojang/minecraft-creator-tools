@@ -1,0 +1,27 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "AnchorBelowTop",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "specifies a vertical anchor position below the world top"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "below_top",
+      "title": "Below Top",
+      "description": "Offset from anchored vertical position",
+      "dataType": "int",
+      "isRequired": true
+    }
+  ],
+  "description": "Specifies the vertical anchor",
+  "title": "Structure AnchorBelowTop"
+}

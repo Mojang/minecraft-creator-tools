@@ -1,0 +1,66 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines flipbook animation for particle billboards (1.21.0+)"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "base_UV",
+      "title": "base_UV",
+      "description": "base_UV",
+      "dataType": "objectArray"
+    },
+    {
+      "id": "size_UV",
+      "title": "size_UV",
+      "description": "size_UV",
+      "dataType": "objectArray"
+    },
+    {
+      "id": "step_UV",
+      "title": "step_UV",
+      "description": "step_UV",
+      "dataType": "objectArray"
+    },
+    {
+      "id": "max_frame",
+      "title": "max_frame",
+      "description": "max_frame",
+      "dataType": "object",
+      "subForm": {
+        "title": "Max Frame",
+        "description": "Max Frame",
+        "fields": []
+      }
+    },
+    {
+      "id": "loop",
+      "title": "loop",
+      "description": "loop",
+      "dataType": "boolean"
+    },
+    {
+      "id": "frames_per_second",
+      "title": "frames_per_second",
+      "description": "frames_per_second",
+      "dataType": "float"
+    },
+    {
+      "id": "stretch_to_lifetime",
+      "title": "stretch_to_lifetime",
+      "description": "stretch_to_lifetime",
+      "dataType": "boolean"
+    }
+  ],
+  "description": "Particle Appearance Billboard Flipbook Data 1.21.0 Misc",
+  "title": "Particle Appearance Billboard Flipbook Data 1.21.0 Misc"
+}

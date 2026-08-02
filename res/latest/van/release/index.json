@@ -1,0 +1,12 @@
+{
+  "files": [
+    "LICENSE.md",
+    "README.md",
+    "version.json"
+  ],
+  "folders": [
+    "behavior_pack",
+    "metadata",
+    "resource_pack"
+  ]
+}

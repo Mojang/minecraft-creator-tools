@@ -1,0 +1,24 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "title": "Simple Info JSON",
+  "description": "Defines a simple documentation JSON shape that contains only a long-form description field.",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines simple documentation info"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "description",
+      "title": "Description",
+      "dataType": "longFormString"
+    }
+  ]
+}

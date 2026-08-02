@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Block Components Placement Filter",
+  "properties": {
+    "conditions": {
+      "title": "Conditions",
+      "description": "List of conditions where the block can be placed/survive",
+      "type": "array",
+      "items": {
+        "$ref": "./block_components_placement_condition.schema.json"
+      },
+      "maxLength": 64
+    }
+  }
+}

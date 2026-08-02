@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "client_deferred_rendering/waterconfig_waterconfigsettingsv1",
+  "title": "Water Settings",
+  "description": "Struct WaterConfig WaterConfigSettingsV1 Client Deferred Rendering",
+  "type": "object",
+  "properties": {
+    "format_version": {
+      "title": "format_version",
+      "description": "[editor(readonly:true)]",
+      "type": "string"
+    },
+    "minecraft:water_settings": {
+      "$ref": "./minecraft_water_settings.schema.json",
+      "title": "minecraft:water_settings",
+      "description": "minecraft:water_settings"
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has different skin variations"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "The ID of the skin. By convention, 0 is the ID of the base skin.",
+      "defaultValue": 0,
+      "dataType": "int"
+    }
+  ],
+  "note": "Requires multiple texture sets to be set up for the entity.",
+  "description": "Skin ID value. Can be used to differentiate skins, such as base skins for villagers.",
+  "title": "Skin Id",
+  "samples": {},
+  "id": "minecraft:skin_id"
+}

@@ -1,0 +1,180 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Description",
+  "description": "The attachable description containing all configuration.",
+  "type": "object",
+  "properties": {
+    "identifier": {
+      "title": "Identifier",
+      "description": "The unique identifier for this attachable. Should match the item identifier it attaches to (e.g., 'minecraft:iron_chestplate').",
+      "type": "string"
+    },
+    "min_engine_version": {
+      "title": "Minimum Engine Version",
+      "description": "The minimum engine version required for this attachable.",
+      "type": "integer"
+    },
+    "item": {
+      "title": "Item",
+      "description": "The item identifier this attachable is associated with. If not specified, uses the attachable identifier.",
+      "type": "string"
+    },
+    "materials": {
+      "title": "Materials",
+      "description": "Material definitions for rendering the attachable. Keys are material names (e.g., 'default', 'enchanted'), values are material identifiers.",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "[a-zA-Z0-9_]+": {
+            "title": "Material",
+            "description": "A material identifier (e.g., 'armor', 'armor_enchanted', 'elytra').",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "textures": {
+      "title": "Textures",
+      "description": "Texture definitions for the attachable. Keys are texture names (e.g., 'default', 'enchanted'), values are texture paths.",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "[a-zA-Z0-9_]+": {
+            "title": "Texture Path",
+            "description": "A texture path relative to the resource pack (e.g., 'textures/models/armor/iron_1').",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "geometry": {
+      "title": "Geometry",
+      "description": "Geometry definitions for the attachable. Keys are geometry names (e.g., 'default'), values are geometry identifiers.",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "[a-zA-Z0-9_]+": {
+            "title": "Geometry Identifier",
+            "description": "A geometry identifier (e.g., 'geometry.humanoid.armor.chestplate').",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "animations": {
+      "title": "Animations",
+      "description": "Animation and animation controller definitions. Keys are short names used in scripts, values are full animation/controller identifiers.",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "[a-zA-Z0-9_]+": {
+            "title": "Animation Identifier",
+            "description": "An animation or animation controller identifier (e.g., 'animation.elytra.gliding', 'controller.animation.elytra.default').",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "scripts": {
+      "$ref": "./scripts.schema.json",
+      "title": "Scripts",
+      "description": "Script definitions for the attachable, including initialization and animation triggers.",
+      "defaultSnippets": [
+        {
+          "label": "Scripts",
+          "description": "Script definitions for the attachable, including initialization and animation triggers.",
+          "body": {
+            "should_update_bones_and_effects_offscreen": true,
+            "should_update_effects_offscreen": true
+          }
+        }
+      ]
+    },
+    "render_controllers": {
+      "title": "Render Controllers",
+      "description": "List of render controller identifiers or conditional render controllers.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "enable_attachables": {
+      "title": "Enable Attachables",
+      "description": "Whether to allow child attachables on this attachable.",
+      "type": "boolean"
+    },
+    "particle_effects": {
+      "title": "Particle Effects",
+      "description": "Particle effect definitions for the attachable.",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "[a-zA-Z0-9_]+": {
+            "title": "Particle Effect",
+            "description": "A particle effect identifier.",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "sound_effects": {
+      "title": "Sound Effects",
+      "description": "Sound effect definitions for the attachable.",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "[a-zA-Z0-9_]+": {
+            "title": "Sound Effect",
+            "description": "A sound effect identifier.",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "spawn_egg": {
+      "title": "Spawn Egg",
+      "description": "Spawn egg configuration for this attachable, if applicable.",
+      "type": "object",
+      "properties": {
+        "texture": {
+          "title": "Texture",
+          "description": "Texture path for the spawn egg.",
+          "type": "string"
+        },
+        "texture_index": {
+          "title": "Texture Index",
+          "description": "Index into the spawn egg texture atlas.",
+          "type": "integer"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Spawn Egg",
+          "description": "Spawn egg configuration for this attachable, if applicable.",
+          "body": {
+            "texture": "",
+            "texture_index": 0
+          }
+        }
+      ]
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "Description",
+      "description": "The attachable description containing all configuration.",
+      "body": {
+        "identifier": "",
+        "min_engine_version": 0,
+        "item": "",
+        "enable_attachables": true
+      }
+    }
+  ]
+}

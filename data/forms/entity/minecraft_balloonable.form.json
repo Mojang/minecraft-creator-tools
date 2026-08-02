@@ -1,0 +1,58 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can have a balloon attached"
+          }
+        ]
+      }
+    ]
+  },
+  "title": "Balloonable",
+  "description": "Allows this entity to have a balloon attached and defines the conditions and events for this entity when is ballooned.",
+  "fields": [
+    {
+      "id": "soft_distance",
+      "description": "Distance in blocks at which the 'spring' effect that lifts it.",
+      "dataType": "float",
+      "experienceType": "slider",
+      "defaultValue": 2,
+      "minValue": 0,
+      "maxValue": 30
+    },
+    {
+      "id": "max_distance",
+      "description": "Distance in blocks at which the balloon breaks.",
+      "dataType": "float",
+      "defaultValue": 10,
+      "experienceType": "slider",
+      "minValue": 0,
+      "maxValue": 30
+    },
+    {
+      "id": "on_balloon",
+      "description": "Event to call when this entity is ballooned.",
+      "dataType": "minecraftEventTrigger",
+      "lookupId": "entityTypeEvents"
+    },
+    {
+      "id": "on_unballoon",
+      "description": "Event to call when this entity is unballooned.",
+      "dataType": "minecraftEventTrigger",
+      "lookupId": "entityTypeEvents"
+    },
+    {
+      "id": "mass",
+      "description": "Mass that this entity will have when computing balloon pull forces.",
+      "dataType": "float",
+      "defaultValue": 1,
+      "experienceType": "slider",
+      "minValue": 0,
+      "maxValue": 30
+    }
+  ]
+}

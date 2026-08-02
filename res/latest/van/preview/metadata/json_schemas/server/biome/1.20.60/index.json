@@ -1,0 +1,13 @@
+{
+  "files": [
+    "Climate Biome Component.json",
+    "Creature Spawn Probability Biome Component.json",
+    "Mountain Parameters Biome Component.json",
+    "Multinoise Generation Rules Biome Component.json",
+    "Overworld Generation Rules Biome Component.json",
+    "Overworld Height Biome Component.json",
+    "Surface Material Adjustments Biome Component.json",
+    "Tags Biome Component.json"
+  ],
+  "folders": []
+}

@@ -1,0 +1,36 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "AlwaysTruePos",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines a position predicate that always evaluates to true"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "predicate_type",
+      "title": "PosType",
+      "dataType": "string",
+      "choices": [
+        {
+          "id": "minecraft:always_true",
+          "title": "Minecraft:always true"
+        },
+        {
+          "id": "minecraft:axis_aligned_linear_pos",
+          "title": "Minecraft:axis aligned linear pos"
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "description": "Predicate that always evaluates to true. This is the default predicate if no other predicate is specified.",
+  "title": "World AlwaysTruePos"
+}

@@ -1,0 +1,63 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "emits particles from a single point"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "direction",
+      "title": "Direction",
+      "description": "The direction of particle emission, as [x, y, z] Molang expressions.",
+      "dataType": "molangArray",
+      "minLength": 3,
+      "maxLength": 3,
+      "alternates": [
+        {
+          "id": "direction",
+          "dataType": "keyedObjectCollection",
+          "subFormId": "item/molang_expression"
+        },
+        {
+          "id": "direction",
+          "dataType": "float"
+        }
+      ]
+    },
+    {
+      "id": "offset",
+      "title": "Offset",
+      "description": "The offset from the emitter position, as [x, y, z] Molang expressions.",
+      "dataType": "molangArray",
+      "defaultValue": [
+        0,
+        0,
+        0
+      ],
+      "minLength": 3,
+      "maxLength": 3,
+      "alternates": [
+        {
+          "id": "offset",
+          "dataType": "keyedObjectCollection",
+          "subFormId": "item/molang_expression"
+        },
+        {
+          "id": "offset",
+          "dataType": "float"
+        }
+      ]
+    }
+  ],
+  "description": "Emits all particles from a single point in space, offset from the emitter origin. This is the simplest and most common emission shape—all particles spawn at the same location and spread outward based on their initial velocity. Used for torches, candles, sparks, magic projectile cores, and any effect with a focused emission source.",
+  "title": "Client Particles Emitter Shape Point",
+  "id": "emitter_shape_point"
+}

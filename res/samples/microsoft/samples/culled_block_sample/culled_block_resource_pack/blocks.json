@@ -1,0 +1,9 @@
+{
+  "format_version": "1.19.80",
+  "demo:tuna_roll": {
+    "sound": "mud"
+  },
+  "demo:california_roll": {
+    "sound": "mud"
+  }
+}

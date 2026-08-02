@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Skip Movement",
+  "description": "This move control causes the mob to hop as it moves.",
+  "properties": {
+    "max_turn": {
+      "title": "Max Turn",
+      "description": "The maximum number in degrees the mob can turn per tick.",
+      "type": "number",
+      "default": 30
+    }
+  }
+}

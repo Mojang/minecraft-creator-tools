@@ -1,0 +1,19 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "checks if entity is eating a mob"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "query.is_eating_mob",
+  "fields": [],
+  "description": "Returns 1.0 if the entity is eating a mob, else it returns 0.0.",
+  "title": "Is Eating Mob"
+}

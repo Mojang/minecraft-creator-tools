@@ -1,0 +1,109 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Loot Pool",
+  "description": "Defines a pool of loot entries that can be rolled one or more times.",
+  "properties": {
+    "rolls": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 1
+        },
+        {
+          "description": "\n\nProperties:\n• min (int) = 1\n• max (int) = 1",
+          "type": "object",
+          "properties": {
+            "min": {
+              "title": "Minimum",
+              "type": "integer",
+              "default": 1
+            },
+            "max": {
+              "title": "Maximum",
+              "type": "integer",
+              "default": 1
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Rolls (object)",
+              "description": "Use Rolls as an object",
+              "body": {
+                "min": 1,
+                "max": 1
+              }
+            }
+          ]
+        }
+      ],
+      "title": "Rolls",
+      "description": "Number of times to roll this pool. Can be a fixed number or a range object with min/max.",
+      "defaultSnippets": [
+        {
+          "label": "Rolls (object)",
+          "description": "Use Rolls as an object",
+          "body": {
+            "min": 1,
+            "max": 1
+          }
+        }
+      ]
+    },
+    "bonus_rolls": {
+      "title": "Bonus Rolls",
+      "description": "Additional rolls added based on luck attribute. Can be fixed or range.",
+      "type": "integer",
+      "default": 0
+    },
+    "entries": {
+      "title": "Entries",
+      "description": "Array of possible entries to select from when rolling this pool.",
+      "type": "array",
+      "items": {
+        "$ref": "./loot_loot_entry.schema.json"
+      }
+    },
+    "conditions": {
+      "title": "Conditions",
+      "description": "Array of conditions that must be met for this pool to be rolled.",
+      "type": "array",
+      "items": {
+        "$ref": "./loot_loot_condition.schema.json"
+      }
+    },
+    "tiers": {
+      "title": "Tiers",
+      "description": "Tiered entry selection configuration.",
+      "type": "object",
+      "properties": {
+        "initial_range": {
+          "title": "Initial Range",
+          "type": "integer"
+        },
+        "bonus_rolls": {
+          "title": "Bonus Rolls",
+          "type": "integer"
+        },
+        "bonus_chance": {
+          "title": "Bonus Chance",
+          "type": "number"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Tiers",
+          "description": "Tiered entry selection configuration.",
+          "body": {
+            "initial_range": 0,
+            "bonus_rolls": 0,
+            "bonus_chance": 0
+          }
+        }
+      ]
+    }
+  },
+  "required": [
+    "entries"
+  ]
+}

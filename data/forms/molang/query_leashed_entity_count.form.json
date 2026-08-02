@@ -1,0 +1,20 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "returns number of entities for which this entity is the..."
+          }
+        ]
+      }
+    ]
+  },
+  "id": "query.leashed_entity_count",
+  "versionIntroduced": "1.21.80",
+  "fields": [],
+  "description": "Returns the number of entities for which this entity is the leash holder.",
+  "title": "Leashed Entity Count"
+}

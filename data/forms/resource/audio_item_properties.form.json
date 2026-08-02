@@ -1,0 +1,54 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "title": "Audio Properties",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines audio volume and weight settings for sound playback"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "definitions",
+      "displayTitle": false,
+      "allowCreateDelete": false,
+      "dataType": "keyedObjectCollection",
+      "subForm": {
+        "fields": [
+          {
+            "id": "sounds",
+            "displayTitle": false,
+            "allowCreateDelete": false,
+            "objectArrayTitleFieldKey": "name",
+            "dataType": "objectArray",
+            "subForm": {
+              "fields": [
+                {
+                  "id": "volume",
+                  "title": "Volume",
+                  "experienceType": "slider",
+                  "dataType": "float",
+                  "minValue": 0,
+                  "maxValue": 1,
+                  "step": 0.05
+                },
+                {
+                  "id": "weight",
+                  "title": "Weight",
+                  "dataType": "int"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Defines audio volume and weight settings for sound playback."
+}

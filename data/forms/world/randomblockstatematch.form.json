@@ -1,0 +1,108 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "RandomBlockStateMatch",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines a predicate that matches a block state with a given probability"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "block_state",
+      "description": "The block state to match against.",
+      "dataType": "string",
+      "alternates": [
+        {
+          "id": "block_state",
+          "dataType": "object",
+          "readOnly": true,
+          "subForm": {
+            "id": "block_state",
+            "title": "Block State",
+            "fields": [
+              {
+                "id": "name",
+                "title": "Name",
+                "description": "Name of the block",
+                "dataType": "object",
+                "isRequired": true
+              },
+              {
+                "id": "states",
+                "title": "States",
+                "description": "Contains members named after each state, with boolean, integer, or string values.",
+                "dataType": "keyedNumberCollection",
+                "defaultValue": {},
+                "alternates": [
+                  {
+                    "id": "states",
+                    "dataType": "keyedBooleanCollection"
+                  },
+                  {
+                    "id": "states",
+                    "dataType": "keyedStringCollection"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "predicate_type",
+      "title": "BlockType",
+      "dataType": "string",
+      "choices": [
+        {
+          "id": "minecraft:always_true",
+          "title": "Minecraft:always true"
+        },
+        {
+          "id": "minecraft:block_match",
+          "title": "Minecraft:block match"
+        },
+        {
+          "id": "minecraft:blockstate_match",
+          "title": "Minecraft:blockstate match"
+        },
+        {
+          "id": "minecraft:random_block_match",
+          "title": "Minecraft:random block match"
+        },
+        {
+          "id": "minecraft:random_blockstate_match",
+          "title": "Minecraft:random blockstate match"
+        },
+        {
+          "id": "minecraft:tag_match",
+          "title": "Minecraft:tag match"
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "probability",
+      "title": "Probability",
+      "description": "Probability of the evaluating to true when the block matches.",
+      "dataType": "float",
+      "validity": [
+        {
+          "comparison": "<=",
+          "value": 1
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "description": "Predicate that evaluates to true with a given probability if the block at the specified location matches the specified block.",
+  "title": "World RandomBlockStateMatch"
+}

@@ -1,0 +1,19 @@
+{
+  "format_version": "1.12",
+  "minecraft:recipe_furnace": {
+    "description": {
+      "identifier": "minecraft:furnace_horse_armor_copper"
+    },
+    "unlock": [
+      {
+        "item": "minecraft:copper_horse_armor"
+      }
+    ],
+    "tags": [
+      "furnace",
+      "blast_furnace"
+    ],
+    "input": "minecraft:copper_horse_armor",
+    "output": "minecraft:copper_nugget"
+  }
+}

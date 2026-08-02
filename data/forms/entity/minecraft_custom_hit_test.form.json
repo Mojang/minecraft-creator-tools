@@ -1,0 +1,50 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has custom hitboxes for combat"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "hitboxes",
+      "title": "Hitboxes",
+      "description": "List of hitboxes for melee and ranged hits against the entity.",
+      "dataType": "objectArray",
+      "subForm": {
+        "id": "hitbox_entry",
+        "fields": [
+          {
+            "id": "width",
+            "title": "Width",
+            "description": "Width of the hitbox.",
+            "dataType": "float"
+          },
+          {
+            "id": "height",
+            "title": "Height",
+            "description": "Height of the hitbox.",
+            "dataType": "float"
+          },
+          {
+            "id": "pivot",
+            "title": "Pivot",
+            "description": "Pivot point of the hitbox.",
+            "dataType": "point3"
+          }
+        ]
+      }
+    }
+  ],
+  "description": "List of hitboxes for melee and ranged hits against the entity.",
+  "title": "Custom Hit Test",
+  "samples": {},
+  "id": "minecraft:custom_hit_test"
+}

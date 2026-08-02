@@ -1,0 +1,31 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has first and third person transform settings"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "first_person",
+      "title": "first_person",
+      "description": "First person transforms data",
+      "dataType": "object"
+    },
+    {
+      "id": "third_person",
+      "title": "third_person",
+      "description": "Third person transforms data",
+      "dataType": "object"
+    }
+  ],
+  "description": "Item Transforms",
+  "title": "Item Transforms"
+}

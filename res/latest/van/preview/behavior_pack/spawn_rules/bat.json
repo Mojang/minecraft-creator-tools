@@ -1,0 +1,51 @@
+{
+  "format_version": "1.17.0",
+  "minecraft:spawn_rules": {
+    "description": {
+      "identifier": "minecraft:bat",
+      "population_control": "ambient"
+    },
+    "conditions": [
+      {
+        "minecraft:spawns_underground": {},
+        "minecraft:spawns_on_block_filter": [
+          "minecraft:stone",
+          "minecraft:granite",
+          "minecraft:diorite",
+          "minecraft:andesite",
+          "minecraft:tuff",
+          "minecraft:deepslate"
+        ],
+        "minecraft:brightness_filter": {
+          "min": 0,
+          "max": 4,
+          "adjust_for_weather": true
+        },
+        "minecraft:weight": {
+          "default": 10
+        },
+        "minecraft:herd": {
+          "min_size": 8,
+          "max_size": 8
+        },
+        "minecraft:density_limit": {
+          "surface": 5
+        },
+        "minecraft:biome_filter": {
+          "any_of": [
+            {
+              "test": "has_biome_tag",
+              "operator": "==",
+              "value": "caves"
+            },
+            {
+              "test": "has_biome_tag",
+              "operator": "==",
+              "value": "animal"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines a documented script enumeration"
+          }
+        ]
+      }
+    ]
+  },
+  "title": "Documented Enum",
+  "fields": [
+    {
+      "id": "name",
+      "title": "Name",
+      "dataType": "string"
+    }
+  ],
+  "description": "Defines a documented script enumeration."
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "returns the sine of a value in degrees"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "`math.sin(value)`",
+  "fields": [],
+  "description": "Sine (in degrees) of value",
+  "title": "Sin(value)"
+}

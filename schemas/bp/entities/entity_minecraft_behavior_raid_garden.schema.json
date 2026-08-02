@@ -1,0 +1,85 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Raid Garden Behavior",
+  "description": "Allows the mob to eat/raid crops out of farms until they are full.",
+  "properties": {
+    "blocks": {
+      "title": "Blocks",
+      "description": "Blocks that the mob is looking for to eat/raid",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "control_flags": {
+      "title": "Control Flags",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "jump",
+          "look",
+          "move"
+        ]
+      }
+    },
+    "eat_delay": {
+      "title": "Eat Delay",
+      "description": "Time in seconds between each time it eats/raids",
+      "type": "integer",
+      "default": 2
+    },
+    "full_delay": {
+      "title": "Full Delay",
+      "description": "Amount of time in seconds before this mob wants to eat/raid again after eating its maximum",
+      "type": "integer",
+      "default": 100
+    },
+    "goal_radius": {
+      "title": "Goal Radius",
+      "description": "Distance in blocks within the mob considers it has reached the goal. This is the \"wiggle room\" to stop the AI from bouncing back and forth trying to reach a specific spot.",
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "default": 0.5
+    },
+    "initial_eat_delay": {
+      "title": "Initial Eat Delay",
+      "description": "Time in seconds before starting to eat/raid once it arrives at it",
+      "type": "integer",
+      "default": 0
+    },
+    "max_to_eat": {
+      "title": "Max To Eat",
+      "description": "Maximum number of crops this entity wants to eat/raid. If set to zero or less then it doesn't have a maximum",
+      "type": "integer",
+      "default": 6
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "type": "integer",
+      "default": 0
+    },
+    "search_height": {
+      "title": "Search Height",
+      "description": "Height in blocks the mob will look for crops to eat",
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "default": 1
+    },
+    "search_range": {
+      "title": "Search Range",
+      "description": "Distance in blocks the mob will look for crops to eat",
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "default": 0
+    },
+    "speed_multiplier": {
+      "title": "Speed Multiplier",
+      "description": "Movement speed multiplier of the mob when using this goal.",
+      "type": "number",
+      "default": 1
+    }
+  }
+}

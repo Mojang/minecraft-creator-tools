@@ -1,0 +1,38 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "3.0.0.PackDependency",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines a pack dependency with UUID and version requirements"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "uuid",
+      "title": "Uuid",
+      "dataType": "object",
+      "validity": [
+        {
+          "comparison": "pattern",
+          "value": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "version",
+      "title": "Version",
+      "dataType": "object",
+      "isRequired": true
+    }
+  ],
+  "description": "References another add-on pack that must be present for this pack to work. Commonly used to link a behavior pack to its companion resource pack, or to depend on shared library packs. Uses UUID and version matching.",
+  "title": "Packmanifest PackDependency"
+}

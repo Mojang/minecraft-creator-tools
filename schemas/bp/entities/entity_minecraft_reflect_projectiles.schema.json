@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Reflect Projectiles",
+  "description": "[EXPERIMENTAL] Allows an entity to reflect projectiles.",
+  "properties": {
+    "azimuth_angle": {
+      "title": "Azimuth Angle",
+      "description": "[EXPERIMENTAL] A Molang expression defining the angle in degrees to add to the projectile's y axis rotation.\n\nSample values:\n• breeze: 180.0 + Math.random(-20.0, 20.0)",
+      "type": "string",
+      "default": "0"
+    },
+    "elevation_angle": {
+      "title": "Elevation Angle",
+      "description": "[EXPERIMENTAL] A Molang expression defining the angle in degrees to add to the projectile's x axis rotation.",
+      "type": "string",
+      "default": "0"
+    },
+    "reflected_projectiles": {
+      "title": "Reflected Projectiles",
+      "description": "[EXPERIMENTAL] An array of strings defining the types of projectiles that are reflected when they hit the entity.\n\nSample values:\n• breeze: [\"xp_bottle\",\"thrown_trident\",\"shulker_bullet\",...",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "reflection_scale": {
+      "title": "Reflection Scale",
+      "description": "[EXPERIMENTAL] A Molang expression defining the velocity scaling of the reflected projectile. Values below 1 decrease the projectile's velocity, and values above 1 increase it.\n\nSample values:\n• breeze: 0.5",
+      "type": "string",
+      "default": "1"
+    },
+    "reflection_sound": {
+      "title": "Reflection Sound",
+      "description": "[EXPERIMENTAL] A string defining the name of the sound event to be played when a projectile is reflected. \"reflect\" unless specified.",
+      "type": "string",
+      "default": "reflect"
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has position, rotation, and scale offsets"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "position",
+      "title": "position",
+      "description": "Position (x, y, z) data",
+      "dataType": "object"
+    },
+    {
+      "id": "rotation",
+      "title": "rotation",
+      "description": "Rotation (x, y, z) data",
+      "dataType": "object"
+    },
+    {
+      "id": "scale",
+      "title": "scale",
+      "description": "Scale (x, y, z) data",
+      "dataType": "object"
+    }
+  ],
+  "description": "RenderOffsetsItemComponent TRS",
+  "title": "RenderOffsetsItemComponent TRS"
+}

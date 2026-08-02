@@ -1,0 +1,82 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Mega Trunk",
+  "description": "\n\nProperties:\n• branches ({ branch_canopy, branch_length, branch_altitude_factor })\n• trunk_decoration ({ decoration_block, decoration_blocks_sequence, decoration_chance, ... })\n• trunk_width (int)\n• trunk_height ({ base, intervals })",
+  "type": "object",
+  "properties": {
+    "branches": {
+      "$ref": "./branches.schema.json",
+      "title": "Branches",
+      "description": "Configuration object for branches.",
+      "defaultSnippets": [
+        {
+          "label": "Branches",
+          "description": "Configuration object for branches.",
+          "body": {
+            "branch_length": 0,
+            "branch_altitude_factor": ""
+          }
+        }
+      ]
+    },
+    "trunk_decoration": {
+      "$ref": "./trunk_decoration_4.schema.json",
+      "title": "Trunk Decoration",
+      "description": "Configuration object for the trunk decoration.",
+      "defaultSnippets": [
+        {
+          "label": "Trunk Decoration",
+          "description": "Configuration object for the trunk decoration.",
+          "body": {
+            "decoration_block": "",
+            "num_steps": 0,
+            "step_direction": ""
+          }
+        }
+      ]
+    },
+    "trunk_width": {
+      "title": "Trunk Width",
+      "description": "The width of the tree trunk.",
+      "type": "integer"
+    },
+    "trunk_height": {
+      "title": "Trunk Height",
+      "description": "Configuration object for the trunk height.",
+      "type": "object",
+      "properties": {
+        "base": {
+          "title": "Base",
+          "description": "Min height for the trunk.",
+          "type": "integer"
+        },
+        "intervals": {
+          "title": "Intervals",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Trunk Height",
+          "description": "Configuration object for the trunk height.",
+          "body": {
+            "base": 0
+          }
+        }
+      ]
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "Mega Trunk",
+      "description": "Create a Mega Trunk",
+      "body": {
+        "trunk_width": 0,
+        "trunk_height": ""
+      }
+    }
+  ]
+}

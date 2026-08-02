@@ -1,0 +1,14 @@
+{
+  "id": "block_entity",
+  "fields": [
+    {
+      "id": "dynamic_properties",
+      "title": "Dynamic Properties",
+      "description": "Requires Upcoming-Creator-Features enabled. Sets dynamic-properties capabilities on the block-entity. Dynamic-properties can store and retrieve variables on a block via scripting, more at https://learn.microsoft.com/en-us/minecraft/creator/scriptapi/minecraft/server/blockdynamicpropertiescomponent.",
+      "dataType": "boolean",
+      "defaultValue": false
+    }
+  ],
+  "description": "Requires Upcoming-Creator-Features enabled. Adds per-instance metadata for this block.",
+  "title": "Block Entity"
+}

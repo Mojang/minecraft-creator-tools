@@ -1,0 +1,414 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "render_controller",
+  "title": "Render Controller (v1.8.0)",
+  "description": "Render controllers define how entities are visually rendered, including which geometry, textures, and materials to use. They support arrays for dynamic selection based on Molang expressions, part visibility toggling, UV animations, and color tinting.",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines how an entity is rendered with geometry, textures, and materials"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "render_controllers",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "with "
+          },
+          {
+            "type": "value",
+            "field": "render_controllers.length"
+          },
+          {
+            "type": "plural",
+            "countField": "render_controllers.length",
+            "singular": [
+              {
+                "type": "literal",
+                "text": " controller"
+              }
+            ],
+            "plural": [
+              {
+                "type": "literal",
+                "text": " controllers"
+              }
+            ],
+            "includeCount": false
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "render_controllers[0].arrays",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "using arrays for dynamic selection"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "render_controllers[0].part_visibility",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "with part visibility control"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "render_controllers[0].uv_anim",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "and UV animation"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "dataType": "version",
+      "id": "format_version",
+      "title": "Format Version",
+      "isRequired": true
+    },
+    {
+      "dataType": "keyedObjectCollection",
+      "id": "render_controllers",
+      "title": "Render Controllers",
+      "isRequired": true,
+      "subForm": {
+        "fields": [
+          {
+            "dataType": "boolean",
+            "id": "rebuild_animation_matrices",
+            "title": "Rebuild Animation Matrices",
+            "isRequired": false
+          },
+          {
+            "dataType": "object",
+            "id": "arrays",
+            "title": "Arrays",
+            "isRequired": false,
+            "subForm": {
+              "fields": [
+                {
+                  "dataType": "keyedObjectCollection",
+                  "id": "geometries",
+                  "title": "Geometries",
+                  "isRequired": false,
+                  "subForm": {
+                    "fields": [
+                      {
+                        "dataType": "stringArray",
+                        "id": "array.<scope_identifier>",
+                        "title": "<scope Identifier> Array",
+                        "isRequired": true
+                      }
+                    ]
+                  },
+                  "keyDescription": "array.<scope_identifier>"
+                },
+                {
+                  "dataType": "keyedObjectCollection",
+                  "id": "materials",
+                  "title": "Materials",
+                  "isRequired": false,
+                  "subForm": {
+                    "fields": [
+                      {
+                        "dataType": "stringArray",
+                        "id": "array.<scope_identifier>",
+                        "title": "<scope Identifier> Array",
+                        "isRequired": true
+                      }
+                    ]
+                  },
+                  "keyDescription": "array.<scope_identifier>"
+                },
+                {
+                  "dataType": "keyedObjectCollection",
+                  "id": "textures",
+                  "title": "Textures",
+                  "isRequired": false,
+                  "subForm": {
+                    "fields": [
+                      {
+                        "dataType": "stringArray",
+                        "id": "array.<scope_identifier>",
+                        "title": "<scope Identifier> Array",
+                        "isRequired": true
+                      }
+                    ]
+                  },
+                  "keyDescription": "array.<scope_identifier>"
+                }
+              ]
+            }
+          },
+          {
+            "dataType": "string",
+            "id": "geometry",
+            "title": "Geometry",
+            "isRequired": true
+          },
+          {
+            "id": "part_visibility",
+            "dataType": "objectArray",
+            "subForm": {
+              "fields": [
+                {
+                  "dataType": "molang",
+                  "id": "[a-zA-Z0-9_.:*]+",
+                  "title": "+",
+                  "isRequired": true
+                }
+              ]
+            },
+            "alternates": [
+              {
+                "dataType": "stringArray",
+                "id": "part_visibility",
+                "title": "Part Visibility",
+                "isRequired": false
+              }
+            ]
+          },
+          {
+            "id": "materials",
+            "dataType": "objectArray",
+            "subForm": {
+              "fields": [
+                {
+                  "dataType": "molang",
+                  "id": "[a-zA-Z0-9_.:*]+",
+                  "title": "+",
+                  "isRequired": true
+                }
+              ]
+            },
+            "alternates": [
+              {
+                "dataType": "stringArray",
+                "id": "materials",
+                "title": "Materials",
+                "isRequired": false
+              }
+            ]
+          },
+          {
+            "dataType": "stringArray",
+            "id": "textures",
+            "title": "Textures",
+            "isRequired": false
+          },
+          {
+            "dataType": "object",
+            "id": "color",
+            "title": "Color",
+            "isRequired": false,
+            "subForm": {
+              "fields": [
+                {
+                  "dataType": "molang",
+                  "id": "r",
+                  "title": "R",
+                  "isRequired": false
+                },
+                {
+                  "dataType": "molang",
+                  "id": "g",
+                  "title": "G",
+                  "isRequired": false
+                },
+                {
+                  "dataType": "molang",
+                  "id": "b",
+                  "title": "B",
+                  "isRequired": false
+                },
+                {
+                  "dataType": "molang",
+                  "id": "a",
+                  "title": "A",
+                  "isRequired": false
+                }
+              ]
+            }
+          },
+          {
+            "dataType": "object",
+            "id": "overlay_color",
+            "title": "Overlay Color",
+            "isRequired": false,
+            "subForm": {
+              "fields": [
+                {
+                  "dataType": "molang",
+                  "id": "r",
+                  "title": "R",
+                  "isRequired": false
+                },
+                {
+                  "dataType": "molang",
+                  "id": "g",
+                  "title": "G",
+                  "isRequired": false
+                },
+                {
+                  "dataType": "molang",
+                  "id": "b",
+                  "title": "B",
+                  "isRequired": false
+                },
+                {
+                  "dataType": "molang",
+                  "id": "a",
+                  "title": "A",
+                  "isRequired": false
+                }
+              ]
+            }
+          },
+          {
+            "dataType": "object",
+            "id": "on_fire_color",
+            "title": "Fire Color",
+            "isRequired": false,
+            "subForm": {
+              "fields": [
+                {
+                  "dataType": "molang",
+                  "id": "r",
+                  "title": "R",
+                  "isRequired": false
+                },
+                {
+                  "dataType": "molang",
+                  "id": "g",
+                  "title": "G",
+                  "isRequired": false
+                },
+                {
+                  "dataType": "molang",
+                  "id": "b",
+                  "title": "B",
+                  "isRequired": false
+                },
+                {
+                  "dataType": "molang",
+                  "id": "a",
+                  "title": "A",
+                  "isRequired": false
+                }
+              ]
+            }
+          },
+          {
+            "dataType": "object",
+            "id": "is_hurt_color",
+            "title": "Is Hurt Color",
+            "isRequired": false,
+            "subForm": {
+              "fields": [
+                {
+                  "dataType": "molang",
+                  "id": "r",
+                  "title": "R",
+                  "isRequired": false
+                },
+                {
+                  "dataType": "molang",
+                  "id": "g",
+                  "title": "G",
+                  "isRequired": false
+                },
+                {
+                  "dataType": "molang",
+                  "id": "b",
+                  "title": "B",
+                  "isRequired": false
+                },
+                {
+                  "dataType": "molang",
+                  "id": "a",
+                  "title": "A",
+                  "isRequired": false
+                }
+              ]
+            }
+          },
+          {
+            "dataType": "object",
+            "id": "uv_anim",
+            "title": "Uv Anim",
+            "isRequired": false,
+            "subForm": {
+              "fields": [
+                {
+                  "dataType": "molangArray",
+                  "id": "offset",
+                  "title": "Offset",
+                  "isRequired": true
+                },
+                {
+                  "dataType": "molangArray",
+                  "id": "scale",
+                  "title": "Scale",
+                  "isRequired": true
+                }
+              ]
+            }
+          },
+          {
+            "dataType": "molang",
+            "id": "light_color_multiplier",
+            "title": "Light Color Multiplier",
+            "isRequired": false
+          },
+          {
+            "dataType": "boolean",
+            "id": "ignore_lighting",
+            "title": "Ignore Lighting",
+            "isRequired": false
+          },
+          {
+            "dataType": "boolean",
+            "id": "filter_lighting",
+            "title": "Filter Lighting",
+            "isRequired": false
+          }
+        ]
+      },
+      "keyDescription": "controller.render.<scope_identifier>"
+    }
+  ],
+  "dataVersion": "1.8.0"
+}

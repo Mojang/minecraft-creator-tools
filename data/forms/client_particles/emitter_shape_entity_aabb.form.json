@@ -1,0 +1,40 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "emits particles from an entity's bounding box"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "direction",
+      "title": "Direction",
+      "description": "The direction of particle emission. Can be a string ('inwards' or 'outwards'), or an array of [x, y, z] Molang expressions.",
+      "dataType": "string",
+      "alternates": [
+        {
+          "id": "direction",
+          "dataType": "molangArray",
+          "minLength": 3,
+          "maxLength": 3
+        }
+      ]
+    },
+    {
+      "id": "surface_only",
+      "title": "Surface Only",
+      "dataType": "boolean",
+      "defaultValue": false
+    }
+  ],
+  "description": "Emits particles from random positions within the attached entity's axis-aligned bounding box. The emission volume automatically scales with entity size, making it perfect for body-covering effects like burning, freezing, poison clouds, healing auras, or damage feedback that should wrap around creatures of any size.",
+  "title": "Client Particles Emitter Shape Entity Aabb",
+  "id": "emitter_shape_entity_aabb"
+}

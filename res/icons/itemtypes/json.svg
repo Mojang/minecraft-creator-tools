@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- JSON File: Curly braces -->
+  <rect x="2" y="1" width="12" height="14" rx="1" fill-opacity="0.15"/>
+  <path d="M5 4C4 4 4 5 4 6V7C4 8 3 8 3 8C3 8 4 8 4 9V10C4 11 4 12 5 12" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+  <path d="M11 4C12 4 12 5 12 6V7C12 8 13 8 13 8C13 8 12 8 12 9V10C12 11 12 12 11 12" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+  <circle cx="6.5" cy="8" r="0.6"/>
+  <circle cx="8" cy="8" r="0.6"/>
+  <circle cx="9.5" cy="8" r="0.6"/>
+</svg>

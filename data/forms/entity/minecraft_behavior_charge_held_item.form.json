@@ -1,0 +1,63 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "charges up held items before using"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "control_flags",
+      "title": "Control Flags",
+      "dataType": "stringArray",
+      "defaultValue": [],
+      "choices": [
+        {
+          "id": "jump",
+          "title": "Jump"
+        },
+        {
+          "id": "look",
+          "title": "Look"
+        },
+        {
+          "id": "move",
+          "title": "Move"
+        }
+      ]
+    },
+    {
+      "id": "items",
+      "title": "Items",
+      "description": "The list of items that can be used to charge the held item. This list is required and must have at least one item in it.",
+      "dataType": "string",
+      "minLength": 1,
+      "alternates": [
+        {
+          "id": "items",
+          "dataType": "keyedStringCollection"
+        }
+      ],
+      "isRequired": true,
+      "defaultValue": "NA"
+    },
+    {
+      "id": "priority",
+      "title": "Priority",
+      "dataType": "int",
+      "defaultValue": 0,
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal."
+    }
+  ],
+  "description": "Allows an entity to charge and use their held item.",
+  "title": "Entity Charge Held Item Behavior",
+  "samples": {},
+  "id": "minecraft:behavior.charge_held_item"
+}

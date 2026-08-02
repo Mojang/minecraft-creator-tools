@@ -1,0 +1,27 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "minecraft:fog_appearance",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "controls fog rendering settings for a biome"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "fog_identifier",
+      "title": "Fog Identifier",
+      "description": "Identifier of fog definition to use",
+      "dataType": "object",
+      "isRequired": true
+    }
+  ],
+  "title": "Minecraft Fog Appearance",
+  "description": "Sets the fog settings used during rendering. Biomes without this component will have default fog settings."
+}

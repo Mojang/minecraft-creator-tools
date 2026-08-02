@@ -1,0 +1,28 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "RandomGroupPoolAlias",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "creates a pool alias for a random group of aliases"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "groups",
+      "title": "Groups",
+      "description": "Aliases for a RandomGroup",
+      "dataType": "objectArray",
+      "subFormId": "world/randomgroupbindings",
+      "isRequired": true
+    }
+  ],
+  "description": "Pool alias for a RandomGroup of aliases",
+  "title": "Structure RandomGroupPoolAlias"
+}

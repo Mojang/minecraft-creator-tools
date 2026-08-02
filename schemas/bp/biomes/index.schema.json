@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "biome/biome_json_file",
+  "title": "Biome JSON File",
+  "description": "Contains a format version and a biome definition",
+  "type": "object",
+  "properties": {
+    "format_version": {
+      "title": "Format Version",
+      "description": "Version of the JSON schema used by this file",
+      "type": "string"
+    },
+    "minecraft:biome": {
+      "title": "Minecraft Biome",
+      "description": "A single biome definition",
+      "$ref": "./biome_biome_definition.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Biome Definition",
+          "description": "Contains a description and components to define a Biome.",
+          "body": {
+            "components": "",
+            "description": ""
+          }
+        }
+      ]
+    }
+  },
+  "required": [
+    "format_version",
+    "minecraft:biome"
+  ]
+}

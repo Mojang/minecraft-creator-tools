@@ -1,0 +1,100 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Canopy",
+  "description": "\n\nProperties:\n• canopy_decoration ({ decoration_block, decoration_blocks_sequence, decoration_chance, ... })\n• canopy_offset ({ min, max })\n• min_width (int)\n• canopy_slope ({ rise, run })\n• variation_chance (string[])",
+  "type": "object",
+  "properties": {
+    "canopy_decoration": {
+      "$ref": "./canopy_decoration.schema.json",
+      "title": "Canopy Decoration",
+      "description": "Configuration object for the canopy decoration.",
+      "defaultSnippets": [
+        {
+          "label": "Canopy Decoration",
+          "description": "Configuration object for the canopy decoration.",
+          "body": {
+            "decoration_block": "",
+            "num_steps": 0,
+            "step_direction": ""
+          }
+        }
+      ]
+    },
+    "canopy_offset": {
+      "title": "Canopy Offset",
+      "description": "Canopy position offset relative to the block above the trunk.",
+      "type": "object",
+      "properties": {
+        "min": {
+          "title": "Min",
+          "description": "Min canopy position offset.",
+          "type": "integer"
+        },
+        "max": {
+          "title": "Max",
+          "description": "Max canopy position offset.",
+          "type": "integer"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Canopy Offset",
+          "description": "Canopy position offset relative to the block above the trunk.",
+          "body": {
+            "min": 0,
+            "max": 0
+          }
+        }
+      ]
+    },
+    "min_width": {
+      "title": "Min Width",
+      "description": "Min width for the canopy.",
+      "type": "integer"
+    },
+    "canopy_slope": {
+      "title": "Canopy Slope",
+      "description": "Configuration object for the canopy slope.",
+      "type": "object",
+      "properties": {
+        "rise": {
+          "title": "Rise",
+          "description": "The numerator for the slope fraction.",
+          "type": "integer"
+        },
+        "run": {
+          "title": "Run",
+          "description": "The denominator for the slope fraction.",
+          "type": "integer"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Canopy Slope",
+          "description": "Configuration object for the canopy slope.",
+          "body": {
+            "rise": 0,
+            "run": 0
+          }
+        }
+      ]
+    },
+    "variation_chance": {
+      "title": "Variation Chance",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "Canopy",
+      "description": "Create a Canopy",
+      "body": {
+        "canopy_offset": "",
+        "min_width": 0
+      }
+    }
+  ]
+}

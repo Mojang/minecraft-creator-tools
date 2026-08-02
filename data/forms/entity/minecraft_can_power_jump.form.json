@@ -1,0 +1,20 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can perform power jumps when ridden"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [],
+  "description": "Allows the entity to power jump like the Horse does in Vanilla.",
+  "title": "Can Power Jump",
+  "samples": {},
+  "id": "minecraft:can_power_jump"
+}

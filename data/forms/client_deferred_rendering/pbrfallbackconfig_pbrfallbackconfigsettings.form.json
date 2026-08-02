@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "fields": [
+    {
+      "id": "format_version",
+      "title": "format_version",
+      "description": "format_version",
+      "dataType": "string"
+    },
+    {
+      "id": "minecraft:pbr_fallback_settings",
+      "title": "minecraft:pbr_fallback_settings",
+      "description": "minecraft:pbr_fallback_settings",
+      "dataType": "object",
+      "subForm": {
+        "title": "PBRFallbackConfig PBRFallbackConfigSettings PBRFallbackSettings",
+        "description": "PBRFallbackConfig PBRFallbackConfigSettings PBRFallbackSettings",
+        "fields": [
+          {
+            "id": "blocks",
+            "title": "blocks",
+            "description": "blocks",
+            "dataType": "object",
+            "subForm": {
+              "title": "Blocks",
+              "description": "Blocks",
+              "fields": [
+                {
+                  "id": "global_metalness_emissive_roughness",
+                  "title": "global_metalness_emissive_roughness",
+                  "description": "global_metalness_emissive_roughness",
+                  "dataType": "string",
+                  "alternates": [
+                    {
+                      "id": "global_metalness_emissive_roughness",
+                      "dataType": "numberArray",
+                      "minLength": 3,
+                      "maxLength": 3
+                    }
+                  ]
+                }
+              ]
+            },
+            "alternates": [
+              {
+                "id": "blocks",
+                "dataType": "object",
+                "subForm": {
+                  "title": "Blocks",
+                  "description": "Blocks",
+                  "fields": [
+                    {
+                      "id": "global_metalness_emissive_roughness_subsurface",
+                      "title": "global_metalness_emissive_roughness_subsurface",
+                      "description": "global_metalness_emissive_roughness_subsurface",
+                      "dataType": "string",
+                      "alternates": [
+                        {
+                          "id": "global_metalness_emissive_roughness_subsurface",
+                          "dataType": "numberArray",
+                          "minLength": 4,
+                          "maxLength": 4
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "actors",
+            "title": "actors",
+            "description": "actors",
+            "dataType": "object",
+            "subForm": {
+              "title": "Actors",
+              "description": "Actors",
+              "fields": [
+                {
+                  "id": "global_metalness_emissive_roughness",
+                  "title": "global_metalness_emissive_roughness",
+                  "description": "global_metalness_emissive_roughness",
+                  "dataType": "string",
+                  "alternates": [
+                    {
+                      "id": "global_metalness_emissive_roughness",
+                      "dataType": "numberArray",
+                      "minLength": 3,
+                      "maxLength": 3
+                    }
+                  ]
+                }
+              ]
+            },
+            "alternates": [
+              {
+                "id": "actors",
+                "dataType": "object",
+                "subForm": {
+                  "title": "Actors",
+                  "description": "Actors",
+                  "fields": [
+                    {
+                      "id": "global_metalness_emissive_roughness_subsurface",
+                      "title": "global_metalness_emissive_roughness_subsurface",
+                      "description": "global_metalness_emissive_roughness_subsurface",
+                      "dataType": "string",
+                      "alternates": [
+                        {
+                          "id": "global_metalness_emissive_roughness_subsurface",
+                          "dataType": "numberArray",
+                          "minLength": 4,
+                          "maxLength": 4
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "particles",
+            "title": "particles",
+            "description": "particles",
+            "dataType": "object",
+            "subForm": {
+              "title": "Particles",
+              "description": "Particles",
+              "fields": [
+                {
+                  "id": "global_metalness_emissive_roughness",
+                  "title": "global_metalness_emissive_roughness",
+                  "description": "global_metalness_emissive_roughness",
+                  "dataType": "string",
+                  "alternates": [
+                    {
+                      "id": "global_metalness_emissive_roughness",
+                      "dataType": "numberArray",
+                      "minLength": 3,
+                      "maxLength": 3
+                    }
+                  ]
+                }
+              ]
+            },
+            "alternates": [
+              {
+                "id": "particles",
+                "dataType": "object",
+                "subForm": {
+                  "title": "Particles",
+                  "description": "Particles",
+                  "fields": [
+                    {
+                      "id": "global_metalness_emissive_roughness_subsurface",
+                      "title": "global_metalness_emissive_roughness_subsurface",
+                      "description": "global_metalness_emissive_roughness_subsurface",
+                      "dataType": "string",
+                      "alternates": [
+                        {
+                          "id": "global_metalness_emissive_roughness_subsurface",
+                          "dataType": "numberArray",
+                          "minLength": 4,
+                          "maxLength": 4
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "items",
+            "title": "items",
+            "description": "items",
+            "dataType": "object",
+            "subForm": {
+              "title": "Items",
+              "description": "Items",
+              "fields": [
+                {
+                  "id": "global_metalness_emissive_roughness",
+                  "title": "global_metalness_emissive_roughness",
+                  "description": "global_metalness_emissive_roughness",
+                  "dataType": "string",
+                  "alternates": [
+                    {
+                      "id": "global_metalness_emissive_roughness",
+                      "dataType": "numberArray",
+                      "minLength": 3,
+                      "maxLength": 3
+                    }
+                  ]
+                }
+              ]
+            },
+            "alternates": [
+              {
+                "id": "items",
+                "dataType": "object",
+                "subForm": {
+                  "title": "Items",
+                  "description": "Items",
+                  "fields": [
+                    {
+                      "id": "global_metalness_emissive_roughness_subsurface",
+                      "title": "global_metalness_emissive_roughness_subsurface",
+                      "description": "global_metalness_emissive_roughness_subsurface",
+                      "dataType": "string",
+                      "alternates": [
+                        {
+                          "id": "global_metalness_emissive_roughness_subsurface",
+                          "dataType": "numberArray",
+                          "minLength": 4,
+                          "maxLength": 4
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "id": "minecraft:pbr_fallback_settings",
+  "title": "PBR Fallback Settings",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines fallback PBR material properties for blocks and actors"
+          }
+        ]
+      }
+    ]
+  },
+  "description": "Struct PBRFallbackConfig PBRFallbackConfigSettings Client Deferred Rendering"
+}

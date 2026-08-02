@@ -1,0 +1,130 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "minecraft:display_name",
+  "versionIntroduced": "1.20.0",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "value",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "displays as '"
+          },
+          {
+            "type": "value",
+            "field": "value"
+          },
+          {
+            "type": "literal",
+            "text": "'"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "Name shown for an item.",
+      "dataType": "string",
+      "defaultValue": "",
+      "samples": {
+        "/vanilla/behavior_pack/items/apple.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:display_name/",
+            "content": "item.apple.name"
+          }
+        ],
+        "/vanilla/behavior_pack/items/breeze_rod.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:display_name/",
+            "content": "item.breeze_rod.name"
+          }
+        ],
+        "/vanilla/behavior_pack/items/ominous_trial_key.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:display_name/",
+            "content": "item.ominous_trial_key.name"
+          }
+        ],
+        "/vanilla/behavior_pack/items/trial_key.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:display_name/",
+            "content": "item.trial_key.name"
+          }
+        ],
+        "/vanilla/behavior_pack/items/wind_charge.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:display_name/",
+            "content": "item.wind_charge.name"
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Sets the item display name within Minecraft: Bedrock Edition. This component may also be used to pull from the localization file by referencing a key from it.",
+  "samples": {
+    "sample": [
+      {
+        "path": "sample",
+        "content": {
+          "value": "secret_weapon"
+        }
+      },
+      {
+        "path": "sample with localication key",
+        "content": {
+          "value": "item.snowball.name"
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/apple.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:display_name/",
+        "content": {
+          "value": "item.apple.name"
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/breeze_rod.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:display_name/",
+        "content": {
+          "value": "item.breeze_rod.name"
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/ominous_trial_key.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:display_name/",
+        "content": {
+          "value": "item.ominous_trial_key.name"
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/trial_key.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:display_name/",
+        "content": {
+          "value": "item.trial_key.name"
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/wind_charge.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:display_name/",
+        "content": {
+          "value": "item.wind_charge.name"
+        }
+      }
+    ]
+  },
+  "title": "Item Display Name"
+}

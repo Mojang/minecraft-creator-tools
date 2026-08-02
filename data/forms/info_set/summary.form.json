@@ -1,0 +1,70 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "aggregates validation results by validator"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "info_set.summary",
+  "title": "Validation Summary",
+  "description": "Aggregated results grouped by validator.",
+  "fields": [
+    {
+      "id": "CADDONIREQ",
+      "title": "Cooperative Add-On Item Requirements",
+      "dataType": "keyedObjectCollection",
+      "subFormId": "info_set/summary_entry",
+      "allowCreateDelete": true,
+      "description": "Entries keyed by numeric requirement code."
+    },
+    {
+      "id": "CADDONREQ",
+      "title": "Cooperative Add-On Requirements",
+      "dataType": "keyedObjectCollection",
+      "subFormId": "info_set/summary_entry",
+      "allowCreateDelete": true
+    },
+    {
+      "id": "MINENGINEVER",
+      "title": "Minimum Engine Version",
+      "dataType": "keyedObjectCollection",
+      "subFormId": "info_set/summary_entry",
+      "allowCreateDelete": true
+    },
+    {
+      "id": "PACKSIZE",
+      "title": "Pack Size",
+      "dataType": "keyedObjectCollection",
+      "subFormId": "info_set/summary_entry",
+      "allowCreateDelete": true
+    },
+    {
+      "id": "STRICT",
+      "title": "Strict Platform Info",
+      "dataType": "keyedObjectCollection",
+      "subFormId": "info_set/summary_entry",
+      "allowCreateDelete": true
+    },
+    {
+      "id": "TEXTURE",
+      "title": "Texture Validation",
+      "dataType": "keyedObjectCollection",
+      "subFormId": "info_set/summary_entry",
+      "allowCreateDelete": true
+    },
+    {
+      "id": "WORLDDATA",
+      "title": "World Data Validation",
+      "dataType": "keyedObjectCollection",
+      "subFormId": "info_set/summary_entry",
+      "allowCreateDelete": true
+    }
+  ]
+}

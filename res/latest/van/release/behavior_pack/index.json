@@ -1,0 +1,15 @@
+{
+  "files": [
+    "manifest.json"
+  ],
+  "folders": [
+    "biomes",
+    "entities",
+    "items",
+    "loot_tables",
+    "recipes",
+    "shapes",
+    "spawn_rules",
+    "trading"
+  ]
+}

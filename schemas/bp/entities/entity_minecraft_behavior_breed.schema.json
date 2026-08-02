@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Breed Behavior",
+  "description": "Allows this mob to breed with other mobs.",
+  "properties": {
+    "control_flags": {
+      "title": "Control Flags",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "jump",
+          "look",
+          "move"
+        ]
+      }
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.\n\nSample values:\n• chicken: 3\n• frog: 4",
+      "type": "integer",
+      "default": 0
+    },
+    "speed_multiplier": {
+      "title": "Speed Multiplier",
+      "description": "Movement speed multiplier applied to the mob when using this AI Goal.\n\nSample values:\n• chicken: 1\n• goat: 0.6",
+      "type": "number",
+      "default": 1
+    }
+  }
+}

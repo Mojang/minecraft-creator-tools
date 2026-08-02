@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Player Saturation",
+  "description": "Defines the player's need for food.",
+  "properties": {
+    "value": {
+      "title": "Value",
+      "description": "The initial value of player saturation.\n\nSample values:\n• player: 5",
+      "type": "integer"
+    },
+    "max": {
+      "title": "Maximum Value",
+      "description": "The maximum player saturation value.\n\nSample values:\n• player: 20",
+      "type": "integer"
+    }
+  }
+}

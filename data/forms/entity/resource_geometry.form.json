@@ -1,0 +1,25 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "title": "Entity Geometry",
+  "description": "Defines geometry model references for an entity's client resources.",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has geometry model resources"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "geometry",
+      "dataType": "keyedStringCollection",
+      "title": "Geometry model",
+      "description": "A list of identified models that this entity uses."
+    }
+  ]
+}

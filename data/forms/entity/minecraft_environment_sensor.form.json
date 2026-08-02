@@ -1,0 +1,454 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "reacts to environmental conditions"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "triggers",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has "
+          },
+          {
+            "type": "value",
+            "field": "triggers.length"
+          },
+          {
+            "type": "plural",
+            "countField": "triggers.length",
+            "singular": [
+              {
+                "type": "literal",
+                "text": " environmental trigger"
+              }
+            ],
+            "plural": [
+              {
+                "type": "literal",
+                "text": " environmental triggers"
+              }
+            ],
+            "includeCount": false
+          },
+          {
+            "type": "literal",
+            "text": " that fire events based on filter conditions"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "triggers[0].event",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "triggers events like "
+          },
+          {
+            "type": "value",
+            "field": "triggers[0].event",
+            "humanify": "minecraft"
+          },
+          {
+            "type": "literal",
+            "text": " when conditions are met"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "triggers",
+      "title": "Triggers",
+      "description": "The list of triggers that fire when the environment conditions match the given filter criteria. Can be an array of trigger objects or a single trigger object.",
+      "dataType": "objectArray",
+      "alternates": [
+        {
+          "id": "triggers",
+          "dataType": "object"
+        }
+      ],
+      "samples": {
+        "/vanilla/behavior_pack/entities/breeze.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:environment_sensor/",
+            "content": [
+              {
+                "event": "minecraft:stop_playing_idle_ground_sound",
+                "filters": {
+                  "all_of": [
+                    {
+                      "subject": "self",
+                      "test": "on_ground",
+                      "value": true
+                    },
+                    {
+                      "subject": "self",
+                      "test": "has_target",
+                      "value": true
+                    },
+                    {
+                      "domain": "minecraft:is_playing_idle_ground_sound",
+                      "operator": "==",
+                      "test": "bool_property"
+                    }
+                  ]
+                }
+              },
+              {
+                "event": "minecraft:start_playing_idle_ground_sound",
+                "filters": {
+                  "all_of": [
+                    {
+                      "domain": "minecraft:is_playing_idle_ground_sound",
+                      "operator": "!=",
+                      "test": "bool_property"
+                    },
+                    {
+                      "any_of": [
+                        {
+                          "subject": "self",
+                          "test": "on_ground",
+                          "value": false
+                        },
+                        {
+                          "subject": "self",
+                          "test": "has_target",
+                          "value": false
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/cave_spider.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:spider_hostile/minecraft:environment_sensor/",
+            "content": {
+              "event": "minecraft:become_neutral",
+              "filters": {
+                "operator": ">",
+                "test": "is_brightness",
+                "value": 0.49
+              }
+            }
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:spider_neutral/minecraft:environment_sensor/",
+            "content": {
+              "event": "minecraft:become_hostile",
+              "filters": {
+                "operator": "<",
+                "test": "is_brightness",
+                "value": 0.49
+              }
+            }
+          }
+        ],
+        "/vanilla/behavior_pack/entities/dolphin.json": [
+          {
+            "path": "/minecraft:entity/component_groups/dolphin_swimming_navigation/minecraft:environment_sensor/",
+            "content": [
+              {
+                "filters": {
+                  "all_of": [
+                    {
+                      "test": "on_ground",
+                      "operator": "==",
+                      "value": true
+                    },
+                    {
+                      "test": "in_water",
+                      "operator": "!=",
+                      "value": true
+                    }
+                  ]
+                },
+                "event": "navigation_on_land"
+              }
+            ]
+          },
+          {
+            "path": "/minecraft:entity/component_groups/dolphin_on_land_in_rain/minecraft:environment_sensor/",
+            "content": [
+              {
+                "filters": {
+                  "test": "in_water",
+                  "operator": "==",
+                  "value": true
+                },
+                "event": "navigation_off_land"
+              },
+              {
+                "filters": {
+                  "test": "in_water_or_rain",
+                  "operator": "!=",
+                  "value": true
+                },
+                "event": "start_dryingout"
+              }
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/player.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:environment_sensor/",
+            "content": {
+              "event": "minecraft:gain_raid_omen",
+              "filters": {
+                "all_of": [
+                  {
+                    "subject": "self",
+                    "test": "has_mob_effect",
+                    "value": "bad_omen"
+                  },
+                  {
+                    "subject": "self",
+                    "test": "is_in_village",
+                    "value": true
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "/vanilla/behavior_pack/entities/spider.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:spider_hostile/minecraft:environment_sensor/",
+            "content": {
+              "event": "minecraft:become_neutral",
+              "filters": {
+                "operator": ">",
+                "test": "is_brightness",
+                "value": 0.49
+              }
+            }
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:spider_neutral/minecraft:environment_sensor/",
+            "content": {
+              "event": "minecraft:become_hostile",
+              "filters": {
+                "operator": "<",
+                "test": "is_brightness",
+                "value": 0.49
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Creates a trigger based on environment conditions.",
+  "title": "Environment Sensor",
+  "samples": {
+    "/vanilla/behavior_pack/entities/breeze.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:environment_sensor/",
+        "content": {
+          "triggers": [
+            {
+              "event": "minecraft:stop_playing_idle_ground_sound",
+              "filters": {
+                "all_of": [
+                  {
+                    "subject": "self",
+                    "test": "on_ground",
+                    "value": true
+                  },
+                  {
+                    "subject": "self",
+                    "test": "has_target",
+                    "value": true
+                  },
+                  {
+                    "domain": "minecraft:is_playing_idle_ground_sound",
+                    "operator": "==",
+                    "test": "bool_property"
+                  }
+                ]
+              }
+            },
+            {
+              "event": "minecraft:start_playing_idle_ground_sound",
+              "filters": {
+                "all_of": [
+                  {
+                    "domain": "minecraft:is_playing_idle_ground_sound",
+                    "operator": "!=",
+                    "test": "bool_property"
+                  },
+                  {
+                    "any_of": [
+                      {
+                        "subject": "self",
+                        "test": "on_ground",
+                        "value": false
+                      },
+                      {
+                        "subject": "self",
+                        "test": "has_target",
+                        "value": false
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/cave_spider.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:spider_hostile/minecraft:environment_sensor/",
+        "content": {
+          "triggers": {
+            "event": "minecraft:become_neutral",
+            "filters": {
+              "operator": ">",
+              "test": "is_brightness",
+              "value": 0.49
+            }
+          }
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:spider_neutral/minecraft:environment_sensor/",
+        "content": {
+          "triggers": {
+            "event": "minecraft:become_hostile",
+            "filters": {
+              "operator": "<",
+              "test": "is_brightness",
+              "value": 0.49
+            }
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/dolphin.json": [
+      {
+        "path": "/minecraft:entity/component_groups/dolphin_swimming_navigation/minecraft:environment_sensor/",
+        "content": {
+          "triggers": [
+            {
+              "filters": {
+                "all_of": [
+                  {
+                    "test": "on_ground",
+                    "operator": "==",
+                    "value": true
+                  },
+                  {
+                    "test": "in_water",
+                    "operator": "!=",
+                    "value": true
+                  }
+                ]
+              },
+              "event": "navigation_on_land"
+            }
+          ]
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/dolphin_on_land_in_rain/minecraft:environment_sensor/",
+        "content": {
+          "triggers": [
+            {
+              "filters": {
+                "test": "in_water",
+                "operator": "==",
+                "value": true
+              },
+              "event": "navigation_off_land"
+            },
+            {
+              "filters": {
+                "test": "in_water_or_rain",
+                "operator": "!=",
+                "value": true
+              },
+              "event": "start_dryingout"
+            }
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/player.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:environment_sensor/",
+        "content": {
+          "triggers": {
+            "event": "minecraft:gain_raid_omen",
+            "filters": {
+              "all_of": [
+                {
+                  "subject": "self",
+                  "test": "has_mob_effect",
+                  "value": "bad_omen"
+                },
+                {
+                  "subject": "self",
+                  "test": "is_in_village",
+                  "value": true
+                }
+              ]
+            }
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/spider.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:spider_hostile/minecraft:environment_sensor/",
+        "content": {
+          "triggers": {
+            "event": "minecraft:become_neutral",
+            "filters": {
+              "operator": ">",
+              "test": "is_brightness",
+              "value": 0.49
+            }
+          }
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:spider_neutral/minecraft:environment_sensor/",
+        "content": {
+          "triggers": {
+            "event": "minecraft:become_hostile",
+            "filters": {
+              "operator": "<",
+              "test": "is_brightness",
+              "value": 0.49
+            }
+          }
+        }
+      }
+    ]
+  },
+  "id": "minecraft:environment_sensor"
+}

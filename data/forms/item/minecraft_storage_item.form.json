@@ -1,0 +1,259 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "minecraft:storage_item",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "max_slots",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "provides "
+          },
+          {
+            "type": "switch",
+            "cases": [
+              {
+                "conditions": [
+                  {
+                    "field": "max_slots",
+                    "comparison": ">=",
+                    "value": 54
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "large"
+                  }
+                ]
+              },
+              {
+                "conditions": [
+                  {
+                    "field": "max_slots",
+                    "comparison": ">=",
+                    "value": 27
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "medium"
+                  }
+                ]
+              },
+              {
+                "conditions": [
+                  {
+                    "field": "max_slots",
+                    "comparison": ">=",
+                    "value": 9
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "small"
+                  }
+                ]
+              }
+            ],
+            "default": [
+              {
+                "type": "literal",
+                "text": "minimal"
+              }
+            ]
+          },
+          {
+            "type": "literal",
+            "text": " storage ("
+          },
+          {
+            "type": "value",
+            "field": "max_slots"
+          },
+          {
+            "type": "literal",
+            "text": " slots)"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "allow_nested_storage_items",
+      "title": "Allow Nested Storage Items",
+      "description": "Determines whether another Storage Item is allowed inside of this item. Default is true.",
+      "dataType": "boolean",
+      "defaultValue": true,
+      "samples": {
+        "/vanilla/behavior_pack/items/black_bundle.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:storage_item/",
+            "content": true
+          }
+        ],
+        "/vanilla/behavior_pack/items/blue_bundle.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:storage_item/",
+            "content": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "allowed_items",
+      "title": "Allowed Items",
+      "description": "List of items that are exclusively allowed in this Storage Item. If empty all items are allowed.",
+      "dataType": "string",
+      "defaultValue": [],
+      "alternates": [
+        {
+          "id": "allowed_items",
+          "dataType": "keyedStringCollection"
+        }
+      ]
+    },
+    {
+      "id": "banned_items",
+      "title": "Banned Items",
+      "description": "List of items that are not allowed in this Storage Item.",
+      "dataType": "string",
+      "defaultValue": [],
+      "alternates": [
+        {
+          "id": "banned_items",
+          "dataType": "keyedStringCollection"
+        }
+      ],
+      "samples": {
+        "/vanilla/behavior_pack/items/black_bundle.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:storage_item/",
+            "content": [
+              "minecraft:shulker_box",
+              "minecraft:undyed_shulker_box"
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/items/blue_bundle.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:storage_item/",
+            "content": [
+              "minecraft:shulker_box",
+              "minecraft:undyed_shulker_box"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "max_slots",
+      "title": "Max Slots",
+      "description": "The maximum allowed weight of the sum of all contained items. Maximum is 64. Default is 64.",
+      "dataType": "int",
+      "defaultValue": 64,
+      "validity": [
+        {
+          "comparison": "<=",
+          "value": 64
+        }
+      ],
+      "samples": {
+        "/vanilla/behavior_pack/items/black_bundle.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:storage_item/",
+            "content": 64
+          }
+        ],
+        "/vanilla/behavior_pack/items/blue_bundle.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:storage_item/",
+            "content": 64
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Enables an item to store data of the dynamic container associated with it. A dynamic container is a container for storing items that is linked to an item instead of a block or an entity.",
+  "note": "While this component can be defined on its own, to be able to interact with the item's storage container the item must have a `minecraft:bundle_interaction` item component defined.",
+  "note2": "Available without experimental toggle in 1.21.110.",
+  "note3": "In 1.26.0, equipping an item with this component into an armor or hand slot no longer deletes the storage contents.",
+  "versionIntroduced": "1.21.40",
+  "title": "Item Storage Item",
+  "samples": {
+    "/vanilla/behavior_pack/items/black_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:storage_item/",
+        "content": {
+          "max_slots": 64,
+          "allow_nested_storage_items": true,
+          "banned_items": [
+            "minecraft:shulker_box",
+            "minecraft:undyed_shulker_box"
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/blue_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:storage_item/",
+        "content": {
+          "max_slots": 64,
+          "allow_nested_storage_items": true,
+          "banned_items": [
+            "minecraft:shulker_box",
+            "minecraft:undyed_shulker_box"
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/brown_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:storage_item/",
+        "content": {
+          "max_slots": 64,
+          "allow_nested_storage_items": true,
+          "banned_items": [
+            "minecraft:shulker_box",
+            "minecraft:undyed_shulker_box"
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:storage_item/",
+        "content": {
+          "max_slots": 64,
+          "allow_nested_storage_items": true,
+          "banned_items": [
+            "minecraft:shulker_box",
+            "minecraft:undyed_shulker_box"
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/cyan_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:storage_item/",
+        "content": {
+          "max_slots": 64,
+          "allow_nested_storage_items": true,
+          "banned_items": [
+            "minecraft:shulker_box",
+            "minecraft:undyed_shulker_box"
+          ]
+        }
+      }
+    ]
+  }
+}

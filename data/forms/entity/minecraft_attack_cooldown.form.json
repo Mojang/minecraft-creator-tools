@@ -1,0 +1,47 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has an attack cooldown period"
+          }
+        ]
+      }
+    ]
+  },
+  "description": "Adds a cooldown to an entity. The intention of this cooldown is to be used to prevent the entity from attempting to acquire new attack targets.",
+  "fields": [
+    {
+      "id": "attack_cooldown_complete_event",
+      "description": "Event to be run when the cooldown is complete. Can be an object with event and target properties, or a simple event string.",
+      "dataType": "object",
+      "subFormId": "ActorDefinitionTrigger",
+      "alternates": [
+        {
+          "id": "attack_cooldown_complete_event",
+          "dataType": "string"
+        }
+      ],
+      "title": "Attack Cooldown Complete Event"
+    },
+    {
+      "id": "attack_cooldown_time",
+      "description": "Amount of time in seconds for the cooldown. Can be specified as a number or a pair of numbers (min and max).",
+      "dataType": "floatRange",
+      "maxValue": 1,
+      "alternates": [
+        {
+          "id": "attack_cooldown_time",
+          "dataType": "float"
+        }
+      ],
+      "title": "Attack Cooldown Time"
+    }
+  ],
+  "title": "Attack Cooldown",
+  "samples": {},
+  "id": "minecraft:attack_cooldown"
+}

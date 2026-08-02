@@ -1,0 +1,33 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines blockmatch configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "BlockMatch",
+  "fields": [
+    {
+      "id": "block",
+      "title": "Block",
+      "description": "The block to match against.",
+      "dataType": "object",
+      "isRequired": true
+    },
+    {
+      "id": "predicate_type",
+      "title": "BlockType",
+      "dataType": "string",
+      "isRequired": true
+    }
+  ],
+  "description": "Predicate that evaluates to true if the block at the specified location matches the specified block.",
+  "title": "BlockMatch Misc"
+}

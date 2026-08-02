@@ -1,0 +1,737 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "world_common/filter_group_map",
+  "title": "World Common Filter Group Map",
+  "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects.",
+  "type": "object",
+  "properties": {
+    "AND": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "title": "Domain",
+              "description": "The domain the test should be performed in.",
+              "type": "object"
+            },
+            "operator": {
+              "title": "Operator",
+              "description": "The comparison to apply with 'value'.",
+              "type": "object"
+            },
+            "subject": {
+              "title": "Subject",
+              "description": "The subject of this filter test.",
+              "type": "object"
+            },
+            "test": {
+              "title": "Test",
+              "description": "The name of the test to apply.",
+              "type": "string"
+            },
+            "value": {
+              "title": "Value",
+              "description": "The value being compared with the test.",
+              "type": "object"
+            }
+          }
+        },
+        {
+          "anyOf": [
+            {
+              "type": "object"
+            },
+            {
+              "description": "\n\nProperties:\n• AND (object)\n• NOT (object)\n• OR (object)\n• all (object)\n• all_of (object)\n• any (object)\n• any_of (object)\n• none_of (object)",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "AND": {
+                    "title": "AND",
+                    "description": "Evaluates all tests in the group, all must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "NOT": {
+                    "title": "NOT",
+                    "description": "Evaluates all tests in the group, all must fail in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "OR": {
+                    "title": "OR",
+                    "description": "Evaluates tests in the group, one or more must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "all": {
+                    "title": "All",
+                    "description": "Evaluates all tests in the group, all must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "all_of": {
+                    "title": "All Of",
+                    "description": "Evaluates all tests in the group, all must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "any": {
+                    "title": "Any",
+                    "description": "Evaluates tests in the group, one or more must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "any_of": {
+                    "title": "Any Of",
+                    "description": "Evaluates tests in the group, one or more must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "none_of": {
+                    "title": "None Of",
+                    "description": "Evaluates all tests in the group, all must fail in order for the group to pass.",
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "description": "Evaluates all tests in the group, all must pass in order for the group to pass."
+    },
+    "NOT": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "title": "Domain",
+              "description": "The domain the test should be performed in.",
+              "type": "object"
+            },
+            "operator": {
+              "title": "Operator",
+              "description": "The comparison to apply with 'value'.",
+              "type": "object"
+            },
+            "subject": {
+              "title": "Subject",
+              "description": "The subject of this filter test.",
+              "type": "object"
+            },
+            "test": {
+              "title": "Test",
+              "description": "The name of the test to apply.",
+              "type": "string"
+            },
+            "value": {
+              "title": "Value",
+              "description": "The value being compared with the test.",
+              "type": "object"
+            }
+          }
+        },
+        {
+          "anyOf": [
+            {
+              "type": "object"
+            },
+            {
+              "description": "\n\nProperties:\n• AND (object)\n• NOT (object)\n• OR (object)\n• all (object)\n• all_of (object)\n• any (object)\n• any_of (object)\n• none_of (object)",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "AND": {
+                    "title": "AND",
+                    "description": "Evaluates all tests in the group, all must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "NOT": {
+                    "title": "NOT",
+                    "description": "Evaluates all tests in the group, all must fail in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "OR": {
+                    "title": "OR",
+                    "description": "Evaluates tests in the group, one or more must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "all": {
+                    "title": "All",
+                    "description": "Evaluates all tests in the group, all must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "all_of": {
+                    "title": "All Of",
+                    "description": "Evaluates all tests in the group, all must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "any": {
+                    "title": "Any",
+                    "description": "Evaluates tests in the group, one or more must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "any_of": {
+                    "title": "Any Of",
+                    "description": "Evaluates tests in the group, one or more must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "none_of": {
+                    "title": "None Of",
+                    "description": "Evaluates all tests in the group, all must fail in order for the group to pass.",
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "description": "Evaluates all tests in the group, all must fail in order for the group to pass."
+    },
+    "OR": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "title": "Domain",
+              "description": "The domain the test should be performed in.",
+              "type": "object"
+            },
+            "operator": {
+              "title": "Operator",
+              "description": "The comparison to apply with 'value'.",
+              "type": "object"
+            },
+            "subject": {
+              "title": "Subject",
+              "description": "The subject of this filter test.",
+              "type": "object"
+            },
+            "test": {
+              "title": "Test",
+              "description": "The name of the test to apply.",
+              "type": "string"
+            },
+            "value": {
+              "title": "Value",
+              "description": "The value being compared with the test.",
+              "type": "object"
+            }
+          }
+        },
+        {
+          "anyOf": [
+            {
+              "type": "object"
+            },
+            {
+              "description": "\n\nProperties:\n• AND (object)\n• NOT (object)\n• OR (object)\n• all (object)\n• all_of (object)\n• any (object)\n• any_of (object)\n• none_of (object)",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "AND": {
+                    "title": "AND",
+                    "description": "Evaluates all tests in the group, all must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "NOT": {
+                    "title": "NOT",
+                    "description": "Evaluates all tests in the group, all must fail in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "OR": {
+                    "title": "OR",
+                    "description": "Evaluates tests in the group, one or more must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "all": {
+                    "title": "All",
+                    "description": "Evaluates all tests in the group, all must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "all_of": {
+                    "title": "All Of",
+                    "description": "Evaluates all tests in the group, all must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "any": {
+                    "title": "Any",
+                    "description": "Evaluates tests in the group, one or more must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "any_of": {
+                    "title": "Any Of",
+                    "description": "Evaluates tests in the group, one or more must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "none_of": {
+                    "title": "None Of",
+                    "description": "Evaluates all tests in the group, all must fail in order for the group to pass.",
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "description": "Evaluates tests in the group, one or more must pass in order for the group to pass."
+    },
+    "all": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "title": "Domain",
+              "description": "The domain the test should be performed in.",
+              "type": "object"
+            },
+            "operator": {
+              "title": "Operator",
+              "description": "The comparison to apply with 'value'.",
+              "type": "object"
+            },
+            "subject": {
+              "title": "Subject",
+              "description": "The subject of this filter test.",
+              "type": "object"
+            },
+            "test": {
+              "title": "Test",
+              "description": "The name of the test to apply.",
+              "type": "string"
+            },
+            "value": {
+              "title": "Value",
+              "description": "The value being compared with the test.",
+              "type": "object"
+            }
+          }
+        },
+        {
+          "anyOf": [
+            {
+              "type": "object"
+            },
+            {
+              "description": "\n\nProperties:\n• AND (object)\n• NOT (object)\n• OR (object)\n• all (object)\n• all_of (object)\n• any (object)\n• any_of (object)\n• none_of (object)",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "AND": {
+                    "title": "AND",
+                    "description": "Evaluates all tests in the group, all must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "NOT": {
+                    "title": "NOT",
+                    "description": "Evaluates all tests in the group, all must fail in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "OR": {
+                    "title": "OR",
+                    "description": "Evaluates tests in the group, one or more must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "all": {
+                    "title": "All",
+                    "description": "Evaluates all tests in the group, all must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "all_of": {
+                    "title": "All Of",
+                    "description": "Evaluates all tests in the group, all must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "any": {
+                    "title": "Any",
+                    "description": "Evaluates tests in the group, one or more must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "any_of": {
+                    "title": "Any Of",
+                    "description": "Evaluates tests in the group, one or more must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "none_of": {
+                    "title": "None Of",
+                    "description": "Evaluates all tests in the group, all must fail in order for the group to pass.",
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "description": "Evaluates all tests in the group, all must pass in order for the group to pass."
+    },
+    "all_of": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "title": "Domain",
+              "description": "The domain the test should be performed in.",
+              "type": "object"
+            },
+            "operator": {
+              "title": "Operator",
+              "description": "The comparison to apply with 'value'.",
+              "type": "object"
+            },
+            "subject": {
+              "title": "Subject",
+              "description": "The subject of this filter test.",
+              "type": "object"
+            },
+            "test": {
+              "title": "Test",
+              "description": "The name of the test to apply.",
+              "type": "string"
+            },
+            "value": {
+              "title": "Value",
+              "description": "The value being compared with the test.",
+              "type": "object"
+            }
+          }
+        },
+        {
+          "anyOf": [
+            {
+              "type": "object"
+            },
+            {
+              "description": "\n\nProperties:\n• AND (object)\n• NOT (object)\n• OR (object)\n• all (object)\n• all_of (object)\n• any (object)\n• any_of (object)\n• none_of (object)",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "AND": {
+                    "title": "AND",
+                    "description": "Evaluates all tests in the group, all must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "NOT": {
+                    "title": "NOT",
+                    "description": "Evaluates all tests in the group, all must fail in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "OR": {
+                    "title": "OR",
+                    "description": "Evaluates tests in the group, one or more must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "all": {
+                    "title": "All",
+                    "description": "Evaluates all tests in the group, all must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "all_of": {
+                    "title": "All Of",
+                    "description": "Evaluates all tests in the group, all must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "any": {
+                    "title": "Any",
+                    "description": "Evaluates tests in the group, one or more must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "any_of": {
+                    "title": "Any Of",
+                    "description": "Evaluates tests in the group, one or more must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "none_of": {
+                    "title": "None Of",
+                    "description": "Evaluates all tests in the group, all must fail in order for the group to pass.",
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "description": "Evaluates all tests in the group, all must pass in order for the group to pass."
+    },
+    "any": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "title": "Domain",
+              "description": "The domain the test should be performed in.",
+              "type": "object"
+            },
+            "operator": {
+              "title": "Operator",
+              "description": "The comparison to apply with 'value'.",
+              "type": "object"
+            },
+            "subject": {
+              "title": "Subject",
+              "description": "The subject of this filter test.",
+              "type": "object"
+            },
+            "test": {
+              "title": "Test",
+              "description": "The name of the test to apply.",
+              "type": "string"
+            },
+            "value": {
+              "title": "Value",
+              "description": "The value being compared with the test.",
+              "type": "object"
+            }
+          }
+        },
+        {
+          "anyOf": [
+            {
+              "type": "object"
+            },
+            {
+              "description": "\n\nProperties:\n• AND (object)\n• NOT (object)\n• OR (object)\n• all (object)\n• all_of (object)\n• any (object)\n• any_of (object)\n• none_of (object)",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "AND": {
+                    "title": "AND",
+                    "description": "Evaluates all tests in the group, all must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "NOT": {
+                    "title": "NOT",
+                    "description": "Evaluates all tests in the group, all must fail in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "OR": {
+                    "title": "OR",
+                    "description": "Evaluates tests in the group, one or more must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "all": {
+                    "title": "All",
+                    "description": "Evaluates all tests in the group, all must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "all_of": {
+                    "title": "All Of",
+                    "description": "Evaluates all tests in the group, all must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "any": {
+                    "title": "Any",
+                    "description": "Evaluates tests in the group, one or more must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "any_of": {
+                    "title": "Any Of",
+                    "description": "Evaluates tests in the group, one or more must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "none_of": {
+                    "title": "None Of",
+                    "description": "Evaluates all tests in the group, all must fail in order for the group to pass.",
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "description": "Evaluates tests in the group, one or more must pass in order for the group to pass."
+    },
+    "any_of": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "title": "Domain",
+              "description": "The domain the test should be performed in.",
+              "type": "object"
+            },
+            "operator": {
+              "title": "Operator",
+              "description": "The comparison to apply with 'value'.",
+              "type": "object"
+            },
+            "subject": {
+              "title": "Subject",
+              "description": "The subject of this filter test.",
+              "type": "object"
+            },
+            "test": {
+              "title": "Test",
+              "description": "The name of the test to apply.",
+              "type": "string"
+            },
+            "value": {
+              "title": "Value",
+              "description": "The value being compared with the test.",
+              "type": "object"
+            }
+          }
+        },
+        {
+          "anyOf": [
+            {
+              "type": "object"
+            },
+            {
+              "description": "\n\nProperties:\n• AND (object)\n• NOT (object)\n• OR (object)\n• all (object)\n• all_of (object)\n• any (object)\n• any_of (object)\n• none_of (object)",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "AND": {
+                    "title": "AND",
+                    "description": "Evaluates all tests in the group, all must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "NOT": {
+                    "title": "NOT",
+                    "description": "Evaluates all tests in the group, all must fail in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "OR": {
+                    "title": "OR",
+                    "description": "Evaluates tests in the group, one or more must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "all": {
+                    "title": "All",
+                    "description": "Evaluates all tests in the group, all must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "all_of": {
+                    "title": "All Of",
+                    "description": "Evaluates all tests in the group, all must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "any": {
+                    "title": "Any",
+                    "description": "Evaluates tests in the group, one or more must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "any_of": {
+                    "title": "Any Of",
+                    "description": "Evaluates tests in the group, one or more must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "none_of": {
+                    "title": "None Of",
+                    "description": "Evaluates all tests in the group, all must fail in order for the group to pass.",
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "description": "Evaluates tests in the group, one or more must pass in order for the group to pass."
+    },
+    "none_of": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "title": "Domain",
+              "description": "The domain the test should be performed in.",
+              "type": "object"
+            },
+            "operator": {
+              "title": "Operator",
+              "description": "The comparison to apply with 'value'.",
+              "type": "object"
+            },
+            "subject": {
+              "title": "Subject",
+              "description": "The subject of this filter test.",
+              "type": "object"
+            },
+            "test": {
+              "title": "Test",
+              "description": "The name of the test to apply.",
+              "type": "string"
+            },
+            "value": {
+              "title": "Value",
+              "description": "The value being compared with the test.",
+              "type": "object"
+            }
+          }
+        },
+        {
+          "anyOf": [
+            {
+              "type": "object"
+            },
+            {
+              "description": "\n\nProperties:\n• AND (object)\n• NOT (object)\n• OR (object)\n• all (object)\n• all_of (object)\n• any (object)\n• any_of (object)\n• none_of (object)",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "AND": {
+                    "title": "AND",
+                    "description": "Evaluates all tests in the group, all must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "NOT": {
+                    "title": "NOT",
+                    "description": "Evaluates all tests in the group, all must fail in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "OR": {
+                    "title": "OR",
+                    "description": "Evaluates tests in the group, one or more must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "all": {
+                    "title": "All",
+                    "description": "Evaluates all tests in the group, all must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "all_of": {
+                    "title": "All Of",
+                    "description": "Evaluates all tests in the group, all must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "any": {
+                    "title": "Any",
+                    "description": "Evaluates tests in the group, one or more must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "any_of": {
+                    "title": "Any Of",
+                    "description": "Evaluates tests in the group, one or more must pass in order for the group to pass.",
+                    "type": "object"
+                  },
+                  "none_of": {
+                    "title": "None Of",
+                    "description": "Evaluates all tests in the group, all must fail in order for the group to pass.",
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "description": "Evaluates all tests in the group, all must fail in order for the group to pass."
+    }
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "Filter Test",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines a common filter test with domain, operator, subject, and value comparisons"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "domain",
+      "dataType": "string",
+      "description": "The domain the test should be performed in.",
+      "title": "Domain"
+    },
+    {
+      "id": "operator",
+      "dataType": "string",
+      "description": "The comparison to apply with 'value'.",
+      "title": "Operator"
+    },
+    {
+      "id": "subject",
+      "dataType": "string",
+      "description": "The subject of this filter test.",
+      "title": "Subject"
+    },
+    {
+      "id": "value",
+      "dataType": "int",
+      "description": "The value being compared with the test.",
+      "title": "Value"
+    },
+    {
+      "id": "test",
+      "title": "Test",
+      "description": "The name of the test to apply.",
+      "dataType": "string",
+      "isRequired": true
+    }
+  ],
+  "description": "Defines a common filter test with domain, operator, subject, and value comparisons.",
+  "title": "World Common Filter Test"
+}

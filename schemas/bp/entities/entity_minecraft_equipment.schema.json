@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Equipment",
+  "description": "Sets the Equipment table to use for this Entity.",
+  "properties": {
+    "slot_drop_chance": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        {
+          "description": "\n\nProperties:\n• slot (string)\n• drop_chance (float)",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "slot": {
+                "title": "Slot",
+                "description": "The equipment slot name.",
+                "type": "string"
+              },
+              "drop_chance": {
+                "title": "Drop Chance",
+                "description": "The chance to drop the equipped item (0.0 to 1.0).",
+                "type": "number"
+              }
+            }
+          }
+        }
+      ],
+      "title": "Slot Drop Chance",
+      "description": "A list of slots with the chance to drop an equipped item from that slot. Can be an array of slot name strings or an array of objects with slot and drop_chance properties."
+    },
+    "table": {
+      "title": "Table",
+      "description": "The file path to the equipment table, relative to the behavior pack's root.",
+      "type": "string"
+    }
+  }
+}

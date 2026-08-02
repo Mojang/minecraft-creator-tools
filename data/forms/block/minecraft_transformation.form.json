@@ -1,0 +1,233 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has custom rotation, scale, or translation"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "rotation_pivot",
+      "title": "Rotation Pivot",
+      "description": "The point to apply rotation around.",
+      "dataType": "point3",
+      "defaultValue": [
+        0,
+        0,
+        0
+      ],
+      "versionIntroduced": "1.21.0",
+      "alternates": [
+        {
+          "id": "rotation_pivot",
+          "dataType": "object",
+          "subForm": {
+            "id": "rotation_pivot",
+            "title": "Rotation Pivot",
+            "fields": [
+              {
+                "id": "x",
+                "title": "X",
+                "dataType": "float",
+                "defaultValue": 0
+              },
+              {
+                "id": "y",
+                "title": "Y",
+                "dataType": "float",
+                "defaultValue": 0
+              },
+              {
+                "id": "z",
+                "title": "Z",
+                "dataType": "float",
+                "defaultValue": 0
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "scale_pivot",
+      "title": "Scale Pivot",
+      "description": "The point to apply scale around.",
+      "dataType": "point3",
+      "defaultValue": [
+        0,
+        0,
+        0
+      ],
+      "versionIntroduced": "1.21.0",
+      "alternates": [
+        {
+          "id": "scale_pivot",
+          "dataType": "object",
+          "subForm": {
+            "id": "scale_pivot",
+            "title": "Scale Pivot",
+            "fields": [
+              {
+                "id": "x",
+                "title": "X",
+                "dataType": "float",
+                "defaultValue": 0
+              },
+              {
+                "id": "y",
+                "title": "Y",
+                "dataType": "float",
+                "defaultValue": 0
+              },
+              {
+                "id": "z",
+                "title": "Z",
+                "dataType": "float",
+                "defaultValue": 0
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "rotation",
+      "title": "Rotation",
+      "description": "The block's rotation in increments of 90 degrees",
+      "dataType": "numberArray",
+      "defaultValue": [
+        0,
+        0,
+        0
+      ],
+      "alternates": [
+        {
+          "id": "rotation",
+          "dataType": "object",
+          "subForm": {
+            "id": "rotation",
+            "title": "Rotation",
+            "fields": [
+              {
+                "id": "x",
+                "title": "X",
+                "dataType": "float",
+                "defaultValue": 0
+              },
+              {
+                "id": "y",
+                "title": "Y",
+                "dataType": "float",
+                "defaultValue": 0
+              },
+              {
+                "id": "z",
+                "title": "Z",
+                "dataType": "float",
+                "defaultValue": 0
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "scale",
+      "title": "Scale",
+      "description": "The block's scale",
+      "dataType": "numberArray",
+      "defaultValue": [
+        1,
+        1,
+        1
+      ],
+      "alternates": [
+        {
+          "id": "scale",
+          "dataType": "object",
+          "subForm": {
+            "id": "scale",
+            "title": "Scale",
+            "fields": [
+              {
+                "id": "x",
+                "title": "X",
+                "dataType": "float",
+                "defaultValue": 0
+              },
+              {
+                "id": "y",
+                "title": "Y",
+                "dataType": "float",
+                "defaultValue": 0
+              },
+              {
+                "id": "z",
+                "title": "Z",
+                "dataType": "float",
+                "defaultValue": 0
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "translation",
+      "title": "Translation",
+      "description": "The block's translation",
+      "dataType": "numberArray",
+      "defaultValue": [
+        0,
+        0,
+        0
+      ],
+      "alternates": [
+        {
+          "id": "translation",
+          "dataType": "object",
+          "subForm": {
+            "id": "translation",
+            "title": "Translation",
+            "fields": [
+              {
+                "id": "x",
+                "title": "X",
+                "dataType": "float",
+                "defaultValue": 0
+              },
+              {
+                "id": "y",
+                "title": "Y",
+                "dataType": "float",
+                "defaultValue": 0
+              },
+              {
+                "id": "z",
+                "title": "Z",
+                "dataType": "float",
+                "defaultValue": 0
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "tags": [
+    "visual"
+  ],
+  "versionIntroduced": "1.19.80",
+  "note": "Added in 1.19.80 as a replacement for the previous block rotation component, adding support for scaling and translation in addition to rotation. May be added to the whole block and/or to individual block permutations.",
+  "note2": "Added rotation_pivot and scale_pivot attributes in 1.21.0 to support pivoted rotation and scale operations.",
+  "description": "The block's translation, rotation and scale with respect to the center of its world position",
+  "title": "Block Transformation",
+  "id": "Transformation"
+}

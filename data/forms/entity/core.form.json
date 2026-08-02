@@ -1,0 +1,71 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "title": "Entity Core Properties",
+  "description": "Defines common entity component properties that are frequently exposed as core flags or values.",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines core entity properties"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "burns_in_daylight",
+      "groupId": "minecraft:burns_in_daylight",
+      "dataType": "boolean",
+      "defaultValue": false,
+      "description": "Whether this entity burns in daylight"
+    },
+    {
+      "id": "can_climb",
+      "groupId": "minecraft:can_climb",
+      "dataType": "boolean",
+      "defaultValue": false,
+      "description": "Whether this entity can climb ladders"
+    },
+    {
+      "id": "can_fly",
+      "groupId": "minecraft:can_fly",
+      "dataType": "boolean",
+      "defaultValue": false,
+      "description": "Whether this entity can fly"
+    },
+    {
+      "id": "can_power_jump",
+      "groupId": "minecraft:can_power_jump",
+      "dataType": "boolean",
+      "defaultValue": false,
+      "description": "Whether this entity can power jump"
+    },
+    {
+      "id": "chested",
+      "altId": "Chested",
+      "groupId": "minecraft:is_chested",
+      "dataType": "int",
+      "defaultValue": false,
+      "description": "Whether this entity has a chest"
+    },
+    {
+      "id": "color",
+      "altId": "Color",
+      "groupId": "minecraft:color",
+      "dataType": "int",
+      "defaultValue": 0,
+      "description": "Palette color of the entity"
+    },
+    {
+      "id": "color2",
+      "altId": "Color2",
+      "groupId": "minecraft:color2",
+      "dataType": "int",
+      "defaultValue": 0,
+      "description": "Second palette color of the entity"
+    }
+  ]
+}

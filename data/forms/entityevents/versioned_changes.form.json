@@ -1,0 +1,19 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "fields": [],
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "documents version-specific behavior changes"
+          }
+        ]
+      }
+    ]
+  },
+  "description": "A 'format_version' of '1.19.20' or higher is required to properly evaluate filters specified on an entity event definition\r\n\t\tat the root level of the event, that is any filter that is not underneath a 'sequence' or 'randomize' node.\r\n\t\tContent with a lower version will use the old behavior, which was to ignore root level filters.",
+  "id": "versioned_changes",
+  "title": "Versioned Changes"
+}

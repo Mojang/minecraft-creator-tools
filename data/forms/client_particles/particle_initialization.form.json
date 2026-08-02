@@ -1,0 +1,54 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines initialization expressions for particles"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "per_render_expression",
+      "title": "Per Render Expression",
+      "dataType": "keyedStringCollection",
+      "defaultValue": 0,
+      "alternates": [
+        {
+          "id": "per_render_expression",
+          "dataType": "keyedObjectCollection",
+          "subFormId": "item/molang_expression"
+        },
+        {
+          "id": "per_render_expression",
+          "dataType": "float"
+        }
+      ]
+    },
+    {
+      "id": "per_update_expression",
+      "title": "Per Update Expression",
+      "dataType": "keyedStringCollection",
+      "defaultValue": 0,
+      "alternates": [
+        {
+          "id": "per_update_expression",
+          "dataType": "keyedObjectCollection",
+          "subFormId": "item/molang_expression"
+        },
+        {
+          "id": "per_update_expression",
+          "dataType": "float"
+        }
+      ]
+    }
+  ],
+  "description": "Runs Molang expressions when each individual particle spawns to initialize per-particle variables. Unlike emitter_initialization which runs once per emitter, this executes for every particle—enabling randomized properties, unique trajectories, or per-particle state that persists through the particle's lifetime.",
+  "title": "Client Particles Particle Initialization",
+  "id": "particle_initialization"
+}

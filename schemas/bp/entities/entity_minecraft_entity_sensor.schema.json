@@ -1,0 +1,129 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Sensor",
+  "description": "A component that owns multiple subsensors, each one firing an event when a set of conditions are met by other entities within the defined range.",
+  "properties": {
+    "find_players_only": {
+      "title": "Find Players Only",
+      "description": "Limits the search to Players only for all subsensors.",
+      "type": "boolean",
+      "default": false
+    },
+    "relative_range": {
+      "title": "Relative Range",
+      "description": "If true the subsensors' range is additive on top of the entity's size.",
+      "type": "boolean",
+      "default": true
+    },
+    "subsensors": {
+      "title": "Subsensors",
+      "description": "The list of subsensors which sense for entities and emit events when all their conditions are met.\n\nSample values:\n• parrot: [{\"event\":\"minecraft:on_riding_player\",\"event_f...\n• parrot: [{\"event\":\"minecraft:on_not_riding_player\",\"eve...",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "cooldown": {
+            "title": "Cooldown",
+            "description": "How many seconds should elapse before the subsensor can once again sense for entities. The cooldown is applied on top of the base 1 tick (0.05 seconds) delay. Negative values will result in no cooldown being used.",
+            "type": "number",
+            "default": -1
+          },
+          "event": {
+            "title": "Event",
+            "description": "Event to fire when the conditions are met.",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "event": {
+                    "type": "string"
+                  },
+                  "target": {
+                    "type": "string"
+                  }
+                }
+              }
+            ]
+          },
+          "event_filters": {
+            "title": "Event Filters",
+            "description": "The set of conditions that must be satisfied to fire the event.",
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "all_of": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  },
+                  "any_of": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  },
+                  "none_of": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "maximum_count": {
+            "title": "Maximum Count",
+            "description": "The maximum number of entities that must pass the filter conditions for the event to send.",
+            "type": "integer",
+            "default": -1
+          },
+          "minimum_count": {
+            "title": "Minimum Count",
+            "description": "The minimum number of entities that must pass the filter conditions for the event to send.",
+            "type": "integer",
+            "default": 1
+          },
+          "range": {
+            "title": "Range",
+            "description": "The maximum horizontal and vertical distance another entity can be from this and have the filters checked against it.",
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 2,
+            "maxItems": 2,
+            "default": "[10, 10]"
+          },
+          "require_all": {
+            "title": "Require All",
+            "description": "If true requires all nearby entities to pass the filter conditions for the events to send.",
+            "type": "boolean",
+            "default": false
+          },
+          "y_offset": {
+            "title": "y Offset",
+            "description": "Vertical offset applied to the entity's position when computing the distance from other entities.",
+            "type": "number",
+            "default": 0
+          }
+        }
+      }
+    }
+  }
+}

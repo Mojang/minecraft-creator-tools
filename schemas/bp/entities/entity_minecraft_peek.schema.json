@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Peek",
+  "description": "Defines the entity's 'peek' behavior, defining the events that should be called during it.",
+  "properties": {
+    "on_close": {
+      "title": "Close",
+      "description": "Event to call when the entity is done peeking.\n\nSample values:\n• shulker: {\"event\":\"minecraft:on_close\"}",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event": {
+              "type": "string"
+            },
+            "target": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "on_open": {
+      "title": "Open",
+      "description": "Event to call when the entity starts peeking.\n\nSample values:\n• shulker: {\"event\":\"minecraft:on_open\"}",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event": {
+              "type": "string"
+            },
+            "target": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "on_target_open": {
+      "title": "Target Open",
+      "description": "Event to call when the entity's target entity starts peeking.\n\nSample values:\n• shulker: {\"event\":\"minecraft:on_open\"}",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event": {
+              "type": "string"
+            },
+            "target": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

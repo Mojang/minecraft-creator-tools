@@ -1,0 +1,43 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "AppendLoot",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines a modifier that adds loot to a block entity"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "loot_table",
+      "title": "Loot Table",
+      "description": "The loot table to append",
+      "dataType": "object",
+      "isRequired": true
+    },
+    {
+      "id": "type",
+      "title": "BlockEntityModifierType",
+      "dataType": "string",
+      "choices": [
+        {
+          "id": "minecraft:append_loot",
+          "title": "Minecraft:append loot"
+        },
+        {
+          "id": "minecraft:passthrough",
+          "title": "Minecraft:passthrough"
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "description": "Modifier will attempt to add loot to a block entity.",
+  "title": "World AppendLoot"
+}

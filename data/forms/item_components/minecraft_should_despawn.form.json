@@ -1,0 +1,27 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "despawns when dropped"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "value",
+      "title": "value",
+      "description": "Determines whether the item should eventually despawn while floating in the world.",
+      "dataType": "boolean"
+    }
+  ],
+  "scalarFieldUpgradeName": "value",
+  "description": "Should_despawn component determines if the item should eventually despawn while floating in the world",
+  "title": "Should Despawn",
+  "id": "minecraft:should_despawn"
+}

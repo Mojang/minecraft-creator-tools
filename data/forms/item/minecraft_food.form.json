@@ -1,0 +1,172 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "minecraft:food",
+  "versionIntroduced": "1.20.30",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "nutrition",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "is a "
+          },
+          {
+            "type": "switch",
+            "cases": [
+              {
+                "conditions": [
+                  {
+                    "field": "nutrition",
+                    "comparison": ">=",
+                    "value": 8
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "hearty meal"
+                  }
+                ]
+              },
+              {
+                "conditions": [
+                  {
+                    "field": "nutrition",
+                    "comparison": ">=",
+                    "value": 5
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "filling food"
+                  }
+                ]
+              },
+              {
+                "conditions": [
+                  {
+                    "field": "nutrition",
+                    "comparison": ">=",
+                    "value": 3
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "light snack"
+                  }
+                ]
+              }
+            ],
+            "default": [
+              {
+                "type": "literal",
+                "text": "small nibble"
+              }
+            ]
+          },
+          {
+            "type": "literal",
+            "text": " ("
+          },
+          {
+            "type": "value",
+            "field": "nutrition"
+          },
+          {
+            "type": "literal",
+            "text": " hunger)"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "can_always_eat",
+            "comparison": "==",
+            "value": true
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can be eaten even when full"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "remove_effects",
+      "title": "Remove Effects",
+      "description": "Array of effect names to remove when eating this food. This property was deprecated and is no longer supported in newer versions.",
+      "dataType": "stringArray",
+      "isDeprecated": true,
+      "versionDeprecated": "1.20.0",
+      "note": "This property was available in versions 1.14 through 1.18 but has been removed in later versions."
+    },
+    {
+      "id": "can_always_eat",
+      "title": "Can Always Eat",
+      "description": "If true you can always eat this item (even when not hungry). Default is set to false.",
+      "dataType": "boolean",
+      "defaultValue": false
+    },
+    {
+      "id": "nutrition",
+      "title": "Nutrition",
+      "description": "Value that is added to the entity's nutrition when the item is used. Default is set to 0.",
+      "dataType": "int",
+      "defaultValue": 0
+    },
+    {
+      "id": "saturation_modifier",
+      "title": "Saturation Modifier",
+      "description": "saturation_modifier is used in this formula: (nutrition * saturation_modifier * 2) when applying the saturation buff. Default is set to 0.6.",
+      "dataType": "float",
+      "defaultValue": 0.6000000238418579
+    },
+    {
+      "id": "using_converts_to",
+      "title": "Using Converts To",
+      "description": "When used, converts to the item specified by the string in this field. Default does not convert item.",
+      "dataType": "string",
+      "defaultValue": {},
+      "alternates": [
+        {
+          "id": "using_converts_to",
+          "dataType": "keyedStringCollection"
+        }
+      ]
+    }
+  ],
+  "description": "Sets the item as a food component, allowing it to be edible to the player.",
+  "requires": [
+    {
+      "id": "minecraft:use_modifiers",
+      "type": "item_component"
+    }
+  ],
+  "samples": {
+    "sample": [
+      {
+        "path": "sample",
+        "content": {
+          "can_always_eat": false,
+          "nutrition": 3,
+          "saturation_modifier": 0.6,
+          "using_converts_to": "bowl"
+        }
+      }
+    ]
+  },
+  "title": "Item Food"
+}

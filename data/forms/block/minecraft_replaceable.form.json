@@ -1,0 +1,20 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can be replaced by other blocks"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [],
+  "versionIntroduced": "1.21.70",
+  "description": "A block with this component can be replaced when another block is placed in the same block position.\nExperimental toggles required: Upcoming Creator Features (in format versions before 1.21.60)",
+  "title": "Replaceable",
+  "id": "minecraft:replaceable"
+}

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Properties: Gear with sliders -->
+  <circle cx="5" cy="5" r="3" fill-opacity="0.3"/>
+  <path d="M5 2V1M5 9V8M8 5H9M1 5H2M7.1 2.9L7.8 2.2M2.2 7.8L2.9 7.1M7.1 7.1L7.8 7.8M2.2 2.2L2.9 2.9" stroke="currentColor" stroke-width="0.8"/>
+  <circle cx="5" cy="5" r="1"/>
+  <rect x="9" y="3" width="6" height="1.5" rx="0.5" fill-opacity="0.3"/>
+  <circle cx="12" cy="3.75" r="1" fill-opacity="0.7"/>
+  <rect x="9" y="7" width="6" height="1.5" rx="0.5" fill-opacity="0.3"/>
+  <circle cx="11" cy="7.75" r="1" fill-opacity="0.7"/>
+  <rect x="9" y="11" width="6" height="1.5" rx="0.5" fill-opacity="0.3"/>
+  <circle cx="14" cy="11.75" r="1" fill-opacity="0.7"/>
+</svg>

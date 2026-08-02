@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Raid Trigger",
+  "description": "Attempts to trigger a raid at the entity's location.",
+  "properties": {
+    "triggered_event": {
+      "title": "Triggered Event",
+      "description": "Event to run when a raid is triggered on the village.",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event": {
+              "type": "string"
+            },
+            "target": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "minecraft:raid_trigger": {
+      "title": "Raid Trigger",
+      "description": "\n\nProperties:\n• triggered_event (string)\n\nSample values:\n• player: {\"triggered_event\":{\"event\":\"minecraft:remove_r...",
+      "type": "object",
+      "properties": {
+        "triggered_event": {
+          "title": "Triggered event",
+          "description": "\n\nSample values:\n• player: {\"event\":\"minecraft:remove_raid_trigger\",\"targe...",
+          "type": "string"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Minecraft:raid trigger",
+          "description": "Create a Minecraft:raid trigger",
+          "body": {
+            "triggered_event": ""
+          }
+        }
+      ]
+    }
+  }
+}

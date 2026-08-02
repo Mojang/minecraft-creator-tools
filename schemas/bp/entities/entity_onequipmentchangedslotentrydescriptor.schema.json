@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity OnEquipmentChangedSlotEntryDescriptor",
+  "properties": {
+    "on_equip": {
+      "title": "Equip",
+      "description": "Event to execute when the slot is changed to a non-empty item.",
+      "type": "string",
+      "default": ""
+    },
+    "on_unequip": {
+      "title": "Unequip",
+      "description": "Event to execute when the slot is changed to an empty item.",
+      "type": "string",
+      "default": ""
+    },
+    "slot": {
+      "title": "EquipmentSlot",
+      "description": "The equipment slot to monitor for changes.",
+      "type": "string",
+      "enum": [
+        "slot.armor.body",
+        "slot.armor.chest",
+        "slot.armor.feet",
+        "slot.armor.head",
+        "slot.armor.legs",
+        "slot.weapon.mainhand",
+        "slot.weapon.offhand"
+      ],
+      "default": "slot.weapon.mainhand"
+    }
+  }
+}

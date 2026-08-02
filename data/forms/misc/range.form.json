@@ -1,0 +1,32 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines range configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Range",
+  "fields": [
+    {
+      "id": "max",
+      "title": "Max",
+      "dataType": "int",
+      "isRequired": true
+    },
+    {
+      "id": "min",
+      "title": "Min",
+      "dataType": "int",
+      "isRequired": true
+    }
+  ],
+  "description": "Defines range configuration.",
+  "title": "Range Misc"
+}

@@ -1,0 +1,25 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines spawn mobeventfilter settings"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Spawn MobEventFilter",
+  "fields": [
+    {
+      "id": "event",
+      "title": "Event",
+      "dataType": "string"
+    }
+  ],
+  "description": "Defines spawn mobeventfilter settings.",
+  "title": "Spawn MobEventFilter Misc"
+}

@@ -1,0 +1,21 @@
+{
+  "format_version": "1.21.80",
+  "minecraft:structure_set": {
+    "description": {
+      "identifier": "examplens:examplename"
+    },
+    "placement": {
+      "type": "minecraft:random_spread",
+      "salt": 40000000,
+      "separation": 12,
+      "spacing": 40,
+      "spread_type": "linear"
+    },
+    "structures": [
+      {
+        "structure": "examplens:examplename",
+        "weight": 1
+      }
+    ]
+  }
+}

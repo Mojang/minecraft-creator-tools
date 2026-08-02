@@ -1,0 +1,31 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:warped_fungus_on_a_stick"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "pattern": [
+      "# ",
+      " X"
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:fishing_rod"
+      },
+      "X": {
+        "item": "minecraft:warped_fungus"
+      }
+    },
+	"unlock": [
+        {
+          "item": "minecraft:warped_fungus"
+        }
+    ],
+    "result": {
+      "item": "minecraft:warped_fungus_on_a_stick"
+    }
+  }
+}

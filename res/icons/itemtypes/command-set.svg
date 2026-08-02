@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Command Set: Terminal prompt with multiple commands -->
+  <rect x="1" y="2" width="14" height="12" rx="1" fill-opacity="0.15"/>
+  <path d="M3 5L5 6.5L3 8" stroke="currentColor" stroke-width="1.2" fill="none"/>
+  <rect x="6" y="7" width="5" height="1.2"/>
+  <path d="M3 10L5 11.5L3 13" stroke="currentColor" stroke-width="1" fill="none" stroke-opacity="0.5"/>
+  <rect x="6" y="11" width="4" height="1" fill-opacity="0.5"/>
+</svg>

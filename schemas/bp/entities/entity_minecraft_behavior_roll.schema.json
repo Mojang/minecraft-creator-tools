@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Roll Behavior",
+  "description": "This allows the mob to roll forward.",
+  "properties": {
+    "control_flags": {
+      "title": "Control Flags",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "jump",
+          "look",
+          "move"
+        ]
+      }
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "type": "integer",
+      "default": 0
+    },
+    "probability": {
+      "title": "Probability",
+      "description": "The probability that the mob will use the goal.",
+      "type": "number",
+      "default": 0.019999999552965164
+    }
+  }
+}
