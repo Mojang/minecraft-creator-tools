@@ -53,7 +53,7 @@ import "./BlockTypeOverviewPanel.css";
 import IProjectTheme from "../../types/IProjectTheme";
 import CreatorToolsHost, { CreatorToolsThemeStyle } from "../../../app/CreatorToolsHost";
 import { WithLocalizationProps, withLocalization } from "../../withLocalization";
-import ModelService from "../../../lib/mc/models/ModelService";
+import ModelService from "../../../minecraft/ModelService";
 
 interface IBlockTypeOverviewPanelProps extends WithLocalizationProps {
   blockType: BlockTypeDefinition;
