@@ -26,6 +26,8 @@ export enum TextureImageInfoGeneratorTest {
   texturePackDoesntOverrideVanillaGameTexture = 460,
   texturePackDoesntOverrideMostTextures = 461,
   mashupPackDoesntOverrideMostTextures = 462,
+  baseContentUnusedInLowerTierSubpacks = 463,
+  subpackTierOneLoadsMers = 464,
 }
 
 export const TexturePerformanceTierCount = 6;

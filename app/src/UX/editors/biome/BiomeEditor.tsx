@@ -93,7 +93,12 @@ class BiomeEditor extends Component<IBiomeEditorProps, IBiomeEditorState> {
   }
 
   componentDidUpdate(prevProps: Readonly<IBiomeEditorProps>, prevState: Readonly<IBiomeEditorState>): void {
-    if (this.state && this.props.file !== this.state.fileToEdit) {
+    // Compare against prevProps.file (not this.state.fileToEdit): getDerivedStateFromProps has
+    // already synced state.fileToEdit to the new props.file, so comparing this.props.file to
+    // this.state.fileToEdit is always equal and would never re-run the loader. When this editor
+    // instance is reused for a different biome (biome -> biome navigation, no key), that left the
+    // component stuck on "Loading..." forever.
+    if (prevProps.file !== this.props.file) {
       this.setState(
         {
           fileToEdit: this.props.file,

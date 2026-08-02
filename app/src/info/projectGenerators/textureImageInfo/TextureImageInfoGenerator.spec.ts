@@ -184,4 +184,145 @@ describe("TextureImageInfoGenerator", () => {
       expect(warnings[0].data).to.equal(1025 * 1024 * 4);
     });
   });
+
+  describe("isMerTexturePath", () => {
+    it("should identify a _mer texture path", () => {
+      expect(TextureImageInfoGenerator.isMerTexturePath("textures/blocks/stone_mer")).to.be.true;
+    });
+
+    it("should identify a _mers texture path", () => {
+      expect(TextureImageInfoGenerator.isMerTexturePath("textures/blocks/stone_mers")).to.be.true;
+    });
+
+    it("should be case-insensitive", () => {
+      expect(TextureImageInfoGenerator.isMerTexturePath("textures/blocks/Stone_MER")).to.be.true;
+    });
+
+    it("should not identify a regular texture path as MER", () => {
+      expect(TextureImageInfoGenerator.isMerTexturePath("textures/blocks/stone")).to.be.false;
+    });
+
+    it("should not identify a _normal texture path as MER", () => {
+      expect(TextureImageInfoGenerator.isMerTexturePath("textures/blocks/stone_normal")).to.be.false;
+    });
+
+    it("should identify a texture declared by a texture_set.json even without the _mer suffix", () => {
+      const declared = new Set(["textures/blocks/fancy_metal"]);
+      expect(TextureImageInfoGenerator.isMerTexturePath("textures/blocks/fancy_metal", declared)).to.be.true;
+    });
+
+    it("should normalize the path (extension/leading delimiter) before matching declared MER paths", () => {
+      const declared = new Set(["textures/blocks/fancy_metal"]);
+      expect(TextureImageInfoGenerator.isMerTexturePath("/textures/blocks/Fancy_Metal.png", declared)).to.be.true;
+    });
+
+    it("should still fall back to the _mer convention when a texture is not declared", () => {
+      const declared = new Set(["textures/blocks/something_else"]);
+      expect(TextureImageInfoGenerator.isMerTexturePath("textures/blocks/stone_mer", declared)).to.be.true;
+    });
+
+    it("should not flag an undeclared, non-_mer texture when a declared set is supplied", () => {
+      const declared = new Set(["textures/blocks/something_else"]);
+      expect(TextureImageInfoGenerator.isMerTexturePath("textures/blocks/stone", declared)).to.be.false;
+    });
+  });
+
+  describe("getSubpackUnionInfoItems", () => {
+    const ID = "TEXTUREIMAGE";
+
+    function findItem(items: ReturnType<typeof TextureImageInfoGenerator.getSubpackUnionInfoItems>, index: number) {
+      return items.find((r) => r.generatorIndex === index);
+    }
+
+    it("warns when the lowest subpack tier is >= 2 and >= 80% of its content overlaps the Base RP", () => {
+      const base = new Set(["a", "b", "c", "d", "e"]);
+      const minTierSubpack = new Set(["a", "b", "c", "d", "e"]); // 5/5 = 100% overlap
+
+      const items = TextureImageInfoGenerator.getSubpackUnionInfoItems(ID, true, 2, base, minTierSubpack, false, false);
+
+      const warn = findItem(items, TextureImageInfoGeneratorTest.baseContentUnusedInLowerTierSubpacks);
+      expect(warn, "overlap warning should be present").to.not.be.undefined;
+      expect(warn!.itemType).to.equal(InfoItemType.warning);
+    });
+
+    it("warns at exactly 80% overlap", () => {
+      const base = new Set(["a", "b", "c", "d"]);
+      const minTierSubpack = new Set(["a", "b", "c", "d", "e"]); // 4/5 = 80% overlap
+
+      const items = TextureImageInfoGenerator.getSubpackUnionInfoItems(ID, true, 2, base, minTierSubpack, false, false);
+
+      expect(findItem(items, TextureImageInfoGeneratorTest.baseContentUnusedInLowerTierSubpacks)).to.not.be.undefined;
+    });
+
+    it("does not warn when overlap is below 80%", () => {
+      const base = new Set(["a", "b", "c"]);
+      const minTierSubpack = new Set(["a", "b", "c", "d", "e"]); // 3/5 = 60% overlap
+
+      const items = TextureImageInfoGenerator.getSubpackUnionInfoItems(ID, true, 2, base, minTierSubpack, false, false);
+
+      expect(findItem(items, TextureImageInfoGeneratorTest.baseContentUnusedInLowerTierSubpacks)).to.be.undefined;
+    });
+
+    it("does not warn when the lowest subpack tier is below 2", () => {
+      const base = new Set(["a", "b", "c", "d", "e"]);
+      const minTierSubpack = new Set(["a", "b", "c", "d", "e"]); // 100% overlap, but tier 1
+
+      const items = TextureImageInfoGenerator.getSubpackUnionInfoItems(ID, true, 1, base, minTierSubpack, false, false);
+
+      expect(findItem(items, TextureImageInfoGeneratorTest.baseContentUnusedInLowerTierSubpacks)).to.be.undefined;
+    });
+
+    it("does not warn when there are no subpacks", () => {
+      const base = new Set(["a", "b", "c", "d", "e"]);
+      const minTierSubpack = new Set(["a", "b", "c", "d", "e"]); // 100% overlap
+
+      const items = TextureImageInfoGenerator.getSubpackUnionInfoItems(ID, false, 2, base, minTierSubpack, false, false);
+
+      expect(items.length).to.equal(0);
+    });
+
+    it("errors when a tier-1 subpack unions with MER files", () => {
+      const items = TextureImageInfoGenerator.getSubpackUnionInfoItems(
+        ID,
+        true,
+        1,
+        new Set<string>(),
+        new Set<string>(),
+        true /* hasTierOneSubpack */,
+        true /* tierOneUnionHasMers */
+      );
+
+      const err = findItem(items, TextureImageInfoGeneratorTest.subpackTierOneLoadsMers);
+      expect(err, "tier-1 MER error should be present").to.not.be.undefined;
+      expect(err!.itemType).to.equal(InfoItemType.error);
+    });
+
+    it("does not error when a tier-1 subpack unions without MER files", () => {
+      const items = TextureImageInfoGenerator.getSubpackUnionInfoItems(
+        ID,
+        true,
+        1,
+        new Set<string>(),
+        new Set<string>(),
+        true /* hasTierOneSubpack */,
+        false /* tierOneUnionHasMers */
+      );
+
+      expect(findItem(items, TextureImageInfoGeneratorTest.subpackTierOneLoadsMers)).to.be.undefined;
+    });
+
+    it("does not error about tier-1 MERs when there is no tier-1 subpack", () => {
+      const items = TextureImageInfoGenerator.getSubpackUnionInfoItems(
+        ID,
+        true,
+        2,
+        new Set<string>(),
+        new Set<string>(),
+        false /* hasTierOneSubpack */,
+        true /* tierOneUnionHasMers */
+      );
+
+      expect(findItem(items, TextureImageInfoGeneratorTest.subpackTierOneLoadsMers)).to.be.undefined;
+    });
+  });
 });

@@ -267,7 +267,7 @@
     "@minecraft/vanilla-data": "1.26.21",
     "@npm/types": "2.1.0",
     "@octokit/types": "16.0.0",
-    "@playwright/test": "1.58.2",
+    "@playwright/test": "1.60.0",
     "@types/chai": "4.3.4",
     "@types/file-saver": "2.0.1",
     "@types/filesystem": "0.0.32",

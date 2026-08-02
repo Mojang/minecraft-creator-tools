@@ -131,13 +131,10 @@ describe("simple", async () => {
 
     const dataObject = pis.getDataObject();
 
-    await ensureReportJsonMatchesScenario(
-      scenariosFolder,
-      resultsFolder,
-      dataObject,
-      "simple",
-      defaultValidationReportExcludedTestIds
-    );
+    await ensureReportJsonMatchesScenario(scenariosFolder, resultsFolder, dataObject, "simple", [
+      ...defaultValidationReportExcludedTestIds,
+      "PACKFILECOUNT",
+    ]);
   });
 });
 

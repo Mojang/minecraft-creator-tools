@@ -53,6 +53,7 @@ import "./BlockTypeOverviewPanel.css";
 import IProjectTheme from "../../types/IProjectTheme";
 import CreatorToolsHost, { CreatorToolsThemeStyle } from "../../../app/CreatorToolsHost";
 import { WithLocalizationProps, withLocalization } from "../../withLocalization";
+import ModelService from "../../../lib/mc/models/ModelService";
 
 interface IBlockTypeOverviewPanelProps extends WithLocalizationProps {
   blockType: BlockTypeDefinition;
@@ -91,6 +92,8 @@ interface IBlockTypeOverviewPanelState {
 }
 
 class BlockTypeOverviewPanel extends Component<IBlockTypeOverviewPanelProps, IBlockTypeOverviewPanelState> {
+  private _modelService: ModelService = new ModelService();
+
   constructor(props: IBlockTypeOverviewPanelProps) {
     super(props);
 
@@ -484,39 +487,11 @@ class BlockTypeOverviewPanel extends Component<IBlockTypeOverviewPanelProps, IBl
         />
       );
     } else if (isSimpleBlock && textureData) {
-      // Unit cube block with texture - render using ModelViewer with generated geometry
-      // Create a standard 16x16x16 unit cube geometry (1 block)
-      // The geometry description is simplified since ModelViewer only needs identifier and texture size
-      const unitCubeGeometry = {
-        "minecraft:geometry": [
-          {
-            description: {
-              identifier: "geometry.unit_cube_preview",
-              texture_width: 16,
-              texture_height: 16,
-            },
-            bones: [
-              {
-                name: "body",
-                pivot: [0, 0, 0],
-                cubes: [
-                  {
-                    origin: [-8, 0, -8],
-                    size: [16, 16, 16],
-                    uv: [0, 0],
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      };
-
       blockPreviewContent = (
         <ModelViewer
           creatorTools={this.props.creatorTools}
           project={this.props.project}
-          geometryData={unitCubeGeometry}
+          geometryData={this._modelService.getUnitCubeGeometry("geometry.unit_cube_preview")}
           textureData={textureData}
           heightOffset={0}
           theme={this.props.theme}

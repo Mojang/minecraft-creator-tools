@@ -26,6 +26,7 @@ import IProjectItemInfoGenerator from "../IProjectItemInfoGenerator";
 import IProjectInfoGeneratorBase from "../IProjectInfoGeneratorBase";
 import TextureInfoGenerator from "../projectGenerators/textureInfo/TextureInfoGenerator";
 import PackSizeInfoGenerator from "../projectGenerators/packSizeInfo/PackSizeInfoGenerator";
+import PackFileCountInfoGenerator from "../projectGenerators/packFileCountInfo/PackFileCountInfoGenerator";
 import TextureImageInfoGenerator from "../projectGenerators/textureImageInfo/TextureImageInfoGenerator";
 import FormatVersionManager from "../../manager/FormatVersionManager";
 import AnimationResourceInfoGenerator from "../projectGenerators/animationResourceInfo/AnimationResourceInfoGenerator";
@@ -83,6 +84,7 @@ export default class GeneratorRegistrations {
     new ItemCountsInfoGenerator(),
     new LineSizeInfoGenerator(),
     new PackSizeInfoGenerator(),
+    new PackFileCountInfoGenerator(),
     new PackInfoGenerator(),
     new JsonFileTagsInfoGenerator(),
     new FormatVersionManager(),

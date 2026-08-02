@@ -80,6 +80,10 @@ const excludeDerivedAttributes = [
   "customDimensionErrors",
   "nameIdTableMissing",
   "unclaimedMappings",
+  // Summary fields contributed by generators that may be excluded via excludeTestIds.
+  // fileCount is derived from the PACKFILECOUNT generator's items, so it is stripped
+  // alongside those items to keep excluded reports comparable to older scenarios.
+  "fileCount",
 ];
 
 /**
@@ -352,14 +356,20 @@ export function normalizeVanillaCoverageValues(scenario: any, result: any): any 
  * Removes specific test items from a report data object by test ID.
  *
  * Test IDs are strings like "SCRIPTMODULE114" combining the generator ID (gId)
- * and the generator index (gIx). Items whose gId + gIx matches an excluded ID
- * are filtered out of the items array.
+ * and the generator index (gIx). An item is excluded when either its full test id
+ * (gId + gIx) or its generator id alone (gId) appears in excludeTestIds. Passing
+ * just a generator id (e.g. "PACKFILECOUNT") excludes every item that generator
+ * emits, regardless of index.
  *
  * When items are excluded, derived fields (error counts, summaries, per-generator
  * test results) are also removed since they'd differ between the two sides.
  *
+ * Reports can nest per-pack/subset reports under subsetReports[].infoSetData; those
+ * carry their own items + info that the excluded generator also contributes to, so
+ * filtering recurses into them.
+ *
  * @param obj The parsed report data object (IProjectInfoData shape)
- * @param excludeTestIds Array of test IDs to exclude, e.g. ["SCRIPTMODULE114"]
+ * @param excludeTestIds Array of test IDs (gId+gIx) or generator ids (gId) to exclude
  * @returns A new object with matching items and derived summary fields removed
  */
 export function removeExcludedTestItems(obj: any, excludeTestIds: string[]): any {
@@ -372,9 +382,15 @@ export function removeExcludedTestItems(obj: any, excludeTestIds: string[]): any
   // Filter the items array
   if (Array.isArray(result.items)) {
     result.items = result.items.filter((item: any) => {
-      if (item && typeof item.gId === "string" && typeof item.gIx === "number") {
-        const testId = item.gId + item.gIx;
-        return !excludeTestIds.includes(testId);
+      if (item && typeof item.gId === "string") {
+        // Exclude by generator id alone (e.g. "PACKFILECOUNT") or by the full
+        // test id of gId + gIx (e.g. "CDWORLDDATA2").
+        if (excludeTestIds.includes(item.gId)) {
+          return false;
+        }
+        if (typeof item.gIx === "number" && excludeTestIds.includes(item.gId + item.gIx)) {
+          return false;
+        }
       }
       return true;
     });
@@ -387,6 +403,17 @@ export function removeExcludedTestItems(obj: any, excludeTestIds: string[]): any
       delete cleanedInfo[attr];
     }
     result.info = cleanedInfo;
+  }
+
+  // Recurse into nested per-pack/subset reports, which carry their own
+  // items + info (under infoSetData) that the excluded generator also contributes to.
+  if (Array.isArray(result.subsetReports)) {
+    result.subsetReports = result.subsetReports.map((sr: any) => {
+      if (sr && typeof sr === "object" && sr.infoSetData && typeof sr.infoSetData === "object") {
+        return { ...sr, infoSetData: removeExcludedTestItems(sr.infoSetData, excludeTestIds) };
+      }
+      return removeExcludedTestItems(sr, excludeTestIds);
+    });
   }
 
   return result;
@@ -461,6 +488,18 @@ export async function ensureReportJsonMatchesScenario(
   scenarioObj = StorageUtilities.applyVolatilePatternsToObject(scenarioObj, volatilePatterns);
   resultObj = StorageUtilities.applyVolatilePatternsToObject(resultObj, volatilePatterns);
 
+  // Exclude items BEFORE size/coverage normalization. normalizeSizeValues and
+  // normalizeVanillaCoverageValues match result<->scenario items by array position,
+  // so an excluded generator that only exists on one side (e.g. PACKFILECOUNT, which
+  // is absent from older baselines) would shift every following item and break the
+  // positional match — silently disabling the tolerant snapping and surfacing
+  // spurious 1-2 byte size drifts. Removing excluded items first keeps the two arrays
+  // aligned so the snapping still applies.
+  if (excludeTestIds && excludeTestIds.length > 0) {
+    scenarioObj = removeExcludedTestItems(scenarioObj, excludeTestIds);
+    resultObj = removeExcludedTestItems(resultObj, excludeTestIds);
+  }
+
   // Snap result size values to scenario values when within tolerance, so trivial
   // 1-2 byte drifts (a character changed somewhere) don't fail the test while
   // larger drifts (meaningful content regressions) still surface.
@@ -470,11 +509,6 @@ export async function ensureReportJsonMatchesScenario(
   // denominator (the vanilla texture count, which grows version-over-version)
   // doesn't fail the test on small drift while order-of-magnitude changes do.
   resultObj = normalizeVanillaCoverageValues(scenarioObj, resultObj);
-
-  if (excludeTestIds && excludeTestIds.length > 0) {
-    scenarioObj = removeExcludedTestItems(scenarioObj, excludeTestIds);
-    resultObj = removeExcludedTestItems(resultObj, excludeTestIds);
-  }
 
   const scenarioStr = Utilities.consistentStringifyTrimmed(scenarioObj);
   const resultStr = Utilities.consistentStringifyTrimmed(resultObj);

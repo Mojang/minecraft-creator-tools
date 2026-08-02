@@ -77,7 +77,11 @@ export default class BiomeResourceEditor extends Component<IBiomeResourceEditorP
     prevProps: Readonly<IBiomeResourceEditorProps>,
     prevState: Readonly<IBiomeResourceEditorState>
   ): void {
-    if (this.state && this.props.file !== this.state.fileToEdit) {
+    // Compare against prevProps.file (not this.state.fileToEdit): getDerivedStateFromProps has
+    // already synced state.fileToEdit to the new props.file, so comparing this.props.file to
+    // this.state.fileToEdit is always equal and would never re-run the loader, leaving a reused
+    // editor instance stuck on "Loading..." forever.
+    if (prevProps.file !== this.props.file) {
       this.setState(
         {
           fileToEdit: this.props.file,

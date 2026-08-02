@@ -25,6 +25,10 @@ interface IEntityTypeAddComponentState {
   selectedCategory: EntityTypeComponentExtendedCategory;
   selectedComponentId: string | undefined;
   selectedForm: IFormDefinition | undefined;
+  // Tracks which component selectedForm was loaded for. Forms are not guaranteed to declare a
+  // top-level id, so comparing selectedForm.id against selectedComponentId can never converge
+  // for some forms, causing an infinite componentDidUpdate/setState loop.
+  selectedFormComponentId: string | undefined;
   searchFilter: string;
   loadingSlow: boolean;
   loadingError?: string;
@@ -63,6 +67,7 @@ export default class EntityTypeAddComponent extends Component<
       categoryLists: undefined,
       selectedComponentId: undefined,
       selectedForm: undefined,
+      selectedFormComponentId: undefined,
       searchFilter: "",
       loadingSlow: false,
       loadingError: undefined,
@@ -153,17 +158,16 @@ export default class EntityTypeAddComponent extends Component<
       return;
     }
 
-    if (
-      this.state.selectedComponentId &&
-      (!this.state.selectedForm || this.state.selectedForm.id !== this.state.selectedComponentId)
-    ) {
-      const formId = EntityTypeDefinition.getFormIdFromComponentId(this.state.selectedComponentId);
+    if (this.state.selectedComponentId && this.state.selectedFormComponentId !== this.state.selectedComponentId) {
+      const componentId = this.state.selectedComponentId;
+      const formId = EntityTypeDefinition.getFormIdFromComponentId(componentId);
       const form = await Database.ensureFormLoaded("entity", formId);
 
       this.setState({
         categoryLists: this.state.categoryLists,
         selectedComponentId: this.state.selectedComponentId,
         selectedForm: form,
+        selectedFormComponentId: componentId,
       });
     }
 
