@@ -1,0 +1,28 @@
+[
+  { "query": "why won't my bedrock add-on show up in the resource packs list?", "should_trigger": true },
+  { "query": "My custom zombie is invisible when I summon it, help", "should_trigger": true },
+  {
+    "query": "Minecraft Creator Tools says I have 6 validation errors in my behavior pack, can you fix them",
+    "should_trigger": true
+  },
+  { "query": "the sword I added shows up as item.demo:shell_sword instead of its name", "should_trigger": true },
+  { "query": "my block has the purple and black missing texture in game", "should_trigger": true },
+  { "query": "update this old 1.16 add-on so it works with current Minecraft", "should_trigger": true },
+  { "query": "turn my packs folder into an .mcaddon I can share", "should_trigger": true },
+  {
+    "query": "the content log says child 'minecraft:behavior.float_wander' not valid here, what does that mean?",
+    "should_trigger": true
+  },
+  { "query": "my mob works with /summon but never spawns naturally in the forest", "should_trigger": true },
+  { "query": "I just generated a behavior pack, is everything wired up correctly?", "should_trigger": true },
+  { "query": "my Fabric mod crashes on startup with a mixin error", "should_trigger": false },
+  { "query": "why isn't my Java Edition datapack function running on /reload?", "should_trigger": false },
+  { "query": "debug my Firefox add-on, the popup doesn't open", "should_trigger": false },
+  { "query": "my Home Assistant add-on keeps restarting", "should_trigger": false },
+  { "query": "my Bedrock Dedicated Server won't start on port 19132", "should_trigger": false },
+  { "query": "my redstone door circuit in survival isn't closing, what's wrong?", "should_trigger": false },
+  { "query": "debug my AWS Bedrock agent, it keeps timing out", "should_trigger": false },
+  { "query": "create a new hostile mob that spawns in deserts", "should_trigger": false },
+  { "query": "my Blockbench export plugin throws an error when I click export", "should_trigger": false },
+  { "query": "Minecraft keeps crashing on my Xbox when I open the marketplace", "should_trigger": false }
+]

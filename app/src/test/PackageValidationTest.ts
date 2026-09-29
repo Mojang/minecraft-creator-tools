@@ -7,6 +7,9 @@
  *   3. Installs dependencies in the unpacked package
  *   4. Validates that the CLI entry point loads without crashing (--help)
  *   5. Validates that the library entry point is requireable
+ *   6. Validates that the agent skills ship next to the CLI, that the installed MCP server
+ *      serves them through getSkill, and that `mct skills` prints them (see
+ *      src/local/McpSkillLibrary.ts)
  *
  * Run with: npm run test-package (from app/)
  * Requires: npm run jsnbuild to have completed first
@@ -17,6 +20,8 @@ import { execSync } from "child_process";
 import * as fs from "fs";
 import * as path from "path";
 import TestPaths from "./TestPaths";
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 
 const packagesDir = path.join(TestPaths.appRoot, "debugoutput", "packages");
 const unpackedDir = path.join(packagesDir, "unpacked");
@@ -25,6 +30,20 @@ function ensureDir(dir: string) {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
   }
+}
+
+/** Every file under `root`, relative to it with forward slashes. */
+function listFiles(root: string, relative = ""): string[] {
+  const files: string[] = [];
+  for (const entry of fs.readdirSync(path.join(root, relative), { withFileTypes: true })) {
+    const entryPath = relative ? `${relative}/${entry.name}` : entry.name;
+    if (entry.isDirectory()) {
+      files.push(...listFiles(root, entryPath));
+    } else {
+      files.push(entryPath);
+    }
+  }
+  return files.sort();
 }
 
 function cleanDir(dir: string) {
@@ -149,6 +168,19 @@ describe("PackageValidation", function () {
       const mainPath = path.join(unpackedDir, "package", pkg.main);
       assert(fs.existsSync(mainPath), `Library entry point missing: ${pkg.main} — run libbuild before packaging`);
     });
+
+    it("should contain the agent skills next to the CLI, and no evals", function () {
+      const sourceSkills = path.join(TestPaths.repoRoot, "plugins", "minecraft", "skills");
+      const packagedSkills = path.join(unpackedDir, "package", "skills");
+
+      assert(fs.existsSync(packagedSkills), "skills/ missing from the package; check copyJsNodeSkills in gulpfile.js");
+      assert.deepEqual(
+        listFiles(packagedSkills),
+        listFiles(sourceSkills),
+        "packaged skills differ from plugins/minecraft/skills"
+      );
+      assert(!fs.existsSync(path.join(unpackedDir, "package", "evals")), "evals should not be shipped");
+    });
   });
 
   describe("install and run", function () {
@@ -198,6 +230,73 @@ describe("PackageValidation", function () {
       });
 
       assert(result.length > 0, "CLI version should produce output");
+    });
+
+    it("MCP server should serve the bundled skills through getSkill", async function () {
+      this.timeout(60000);
+      const pkg = JSON.parse(fs.readFileSync(path.join(packageDir, "package.json"), "utf-8"));
+      const cliPath = path.join(packageDir, (Object.values(pkg.bin) as string[])[0]);
+      const client = new Client({ name: "package-validation", version: "1.0.0" });
+
+      await client.connect(
+        new StdioClientTransport({
+          command: process.execPath,
+          args: [cliPath, "mcp"],
+          cwd: packageDir,
+          stderr: "ignore",
+        })
+      );
+      try {
+        const tools = (await client.listTools()).tools;
+        assert(
+          tools.some((tool) => tool.name === "getSkill"),
+          "installed MCP server should register getSkill"
+        );
+
+        const result = await client.callTool({ name: "getSkill", arguments: { name: "debug-addon" } });
+        const text = ((result as { content: { text?: string }[] }).content[0].text ?? "").toString();
+        const skillFolder = path.join(packageDir, "skills", "debug-addon");
+        assert(text.includes(`Skill folder: ${skillFolder}`), "getSkill should point at the installed skills folder");
+
+        // The command the skill gives the agent must point at a script that exists in the install.
+        const scriptPath = /node "([^"]+validate-summary\.mjs)"/.exec(text)?.[1];
+        assert(scriptPath, "debug-addon should give a quoted validate-summary command");
+        assert(fs.existsSync(scriptPath!), `validate-summary.mjs not found at ${scriptPath}`);
+      } finally {
+        await client.close();
+      }
+    });
+
+    it("CLI should list and print the bundled skills with mct skills", function () {
+      const pkg = JSON.parse(fs.readFileSync(path.join(packageDir, "package.json"), "utf-8"));
+      const cliPath = path.join(packageDir, (Object.values(pkg.bin) as string[])[0]);
+      const run = (args: string) =>
+        execWithRetry(`node ${JSON.stringify(cliPath)} ${args}`, {
+          cwd: packageDir,
+          encoding: "utf-8",
+          timeout: 15000,
+          env: { ...process.env, NODE_NO_WARNINGS: "1" },
+        }).toString();
+
+      const list = JSON.parse(run("skills --json"));
+      const sourceSkills = fs
+        .readdirSync(path.join(TestPaths.repoRoot, "plugins", "minecraft", "skills"), { withFileTypes: true })
+        .filter((entry) => entry.isDirectory())
+        .map((entry) => entry.name)
+        .sort();
+      assert.deepEqual(
+        list.skills.map((skill: { name: string }) => skill.name),
+        sourceSkills,
+        "mct skills should list every packaged skill"
+      );
+      for (const skill of list.skills as { name: string; folder: string }[]) {
+        assert.equal(skill.folder, path.join(packageDir, "skills", skill.name), "skills should come from the install");
+      }
+
+      const text = run("skills debug-addon");
+      const scriptPath = /node "([^"]+validate-summary\.mjs)"/.exec(text)?.[1];
+      assert(scriptPath, "mct skills debug-addon should give a quoted validate-summary command");
+      assert(fs.existsSync(scriptPath!), `validate-summary.mjs not found at ${scriptPath}`);
     });
   });
 });

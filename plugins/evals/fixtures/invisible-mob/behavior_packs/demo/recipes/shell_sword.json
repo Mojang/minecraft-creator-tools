@@ -1,0 +1,22 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "demo:shell_sword"
+    },
+    "tags": ["crafting_table"],
+    "pattern": [" S ", " S ", " T "],
+    "key": {
+      "S": {
+        "item": "demo:beetle_shell"
+      },
+      "T": {
+        "item": "minecraft:stick"
+      }
+    },
+    "result": {
+      "item": "demo:shell_sword",
+      "count": 1
+    }
+  }
+}

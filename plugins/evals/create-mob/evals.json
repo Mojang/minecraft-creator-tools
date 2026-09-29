@@ -1,0 +1,66 @@
+{
+  "skill_name": "create-mob",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Create a hostile swamp goblin in an empty folder. About half the height of a player. It should hide during the day, attack villagers at night, occasionally drop mushrooms, and spawn in swamps.",
+      "expected_output": "A new add-on with a small hostile goblin whose active targeting includes villagers, a chance-based mushroom drop, a night-only swamp spawn rule, readable names, pack icons, and zero validation errors.",
+      "files": [],
+      "expectations": [
+        "A behavior pack entity file exists with an identifier ending in :swamp_goblin",
+        "The entity has minecraft:scale of 0.6 or less, or a collision box height of 1.0 or less",
+        "An active minecraft:behavior.nearest_attackable_target targets the villager family; if a component group such as hostile_angry defines the same component, the villager filter is in that group's entity_types",
+        "The entity avoids or burns in sunlight (minecraft:behavior.flee_sun, minecraft:burns_in_daylight, or equivalent)",
+        "The loot table has a mushroom entry with a random_chance condition below 1",
+        "The spawn rule tests for the swamp biome tag, has a minecraft:brightness_filter with max 7 or lower, and uses population_control monster",
+        "resource_packs/<pack>/texts/en_US.lang contains entity.<namespace>:swamp_goblin.name",
+        "The client entity's geometry.default matches an identifier in a .geo.json file in the resource pack",
+        "Validation reports 0 errors"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Make a red panda I can tame with bamboo and ride. Once tamed it should follow me around, and feeding two of them bamboo should make a baby.",
+      "expected_output": "A passive red panda that's tameable and breedable with bamboo, rideable, follows its owner, with readable names and zero validation errors.",
+      "files": [],
+      "expectations": [
+        "The entity has minecraft:tameable listing bamboo as a tame item (not the default bone)",
+        "The entity has minecraft:breedable listing bamboo as a breed item, with breeds_with mate_type and baby_type set to the mob's own identifier",
+        "The entity has minecraft:rideable, and the reply says whether a saddle is needed; if not, minecraft:rideable is in components rather than a saddled group",
+        "The entity has minecraft:behavior.follow_owner once tamed",
+        "The entity isn't hostile to players (no nearest_attackable_target for the player family)",
+        "en_US.lang names the entity and its spawn egg",
+        "Validation reports 0 errors"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Add a passive glowing jellyfish to my existing add-on in plugins/evals/fixtures/fungi-addon.",
+      "expected_output": "The jellyfish is added to the existing fungi packs using the fungi namespace, swims, glows, and the manifests and existing content are left intact.",
+      "files": ["plugins/evals/fixtures/fungi-addon"],
+      "expectations": [
+        "The new entity identifier uses the existing fungi namespace",
+        "The new files are inside the existing behavior_packs/fungi and resource_packs/fungi folders, not a new pack",
+        "The entity uses underwater movement or swim navigation (for example minecraft:navigation.swim or minecraft:underwater_movement)",
+        "The client entity uses an emissive material or glowing eyes",
+        "Both manifests keep their original header.name, and the behavior pack's dependency uuid still equals the resource pack's header.uuid (no PACKDEP warning)",
+        "Existing files for the glow mushroom block and items are unchanged",
+        "Validation reports 0 errors"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "In plugins/evals/fixtures/invisible-mob, give the glow beetle 20 health and make it run away from players instead of attacking them.",
+      "expected_output": "The agent edits the existing entity file directly: health 20, player-avoidance added with a priority that beats wandering, and the attack behavior removed or disabled.",
+      "files": ["plugins/evals/fixtures/invisible-mob"],
+      "expectations": [
+        "behavior_packs/demo/entities/glow_beetle.json has minecraft:health with value 20 and max 20",
+        "The entity has minecraft:behavior.avoid_mob_type targeting the player family, or an equivalent avoid-players behavior",
+        "The avoidance behavior's priority number is lower than minecraft:behavior.random_stroll's",
+        "The entity no longer has an active melee attack against players",
+        "createMinecraftContent was not used to regenerate the existing mob",
+        "Validation reports 0 errors"
+      ]
+    }
+  ]
+}

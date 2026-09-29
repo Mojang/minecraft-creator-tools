@@ -1,0 +1,38 @@
+{
+  "format_version": "1.21.70",
+  "minecraft:item": {
+    "description": {
+      "identifier": "fungi:magic_hammer",
+      "menu_category": {
+        "category": "items"
+      }
+    },
+    "components": {
+      "minecraft:durability": {
+        "max_durability": 500
+      },
+      "minecraft:hand_equipped": true,
+      "minecraft:digger": {
+        "use_efficiency": true,
+        "destroy_speeds": [
+          {
+            "block": {
+              "tags": "q.any_tag('stone', 'metal', 'diamond_pick_diggable')"
+            },
+            "speed": 1.2
+          }
+        ]
+      },
+      "minecraft:enchantable": {
+        "value": 10,
+        "slot": "pickaxe"
+      },
+      "minecraft:glint": true,
+      "minecraft:damage": 7,
+      "minecraft:icon": "fungi:magic_hammer",
+      "minecraft:display_name": {
+        "value": "Magic Hammer"
+      }
+    }
+  }
+}

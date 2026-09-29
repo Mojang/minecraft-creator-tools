@@ -1,0 +1,23 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Glow Beetles",
+    "description": "Adds a glowing beetle mob and a beetle shell sword.",
+    "uuid": "17ee9fb7-2a60-4d35-9d31-483afabe5a4b",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 21, 0]
+  },
+  "modules": [
+    {
+      "type": "data",
+      "uuid": "7f3b050a-7d39-4999-ad2c-19f5dbe57ec0",
+      "version": [1, 0, 0]
+    }
+  ],
+  "dependencies": [
+    {
+      "uuid": "5d2c8f4e-4645-402b-a179-66ddd38849af",
+      "version": [1, 0, 0]
+    }
+  ]
+}

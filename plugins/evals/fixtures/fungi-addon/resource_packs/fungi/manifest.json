@@ -1,0 +1,17 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Fungi",
+    "description": "Resources for fungi",
+    "uuid": "fa138f5e-709b-457e-be8c-dc47ed4ad1c0",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 21, 0]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "f1b7f031-2222-4ce1-8a19-201b2e5844fb",
+      "version": [1, 0, 0]
+    }
+  ]
+}

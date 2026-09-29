@@ -54,6 +54,7 @@ export enum TaskType {
   setup = 38,
   generateSchemaPackage = 39,
   renderBatch = 40,
+  skills = 41,
 }
 
 export enum OutputType {

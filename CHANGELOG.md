@@ -8,6 +8,17 @@ For the full commit history, see [Releases](https://github.com/Mojang/minecraft-
 
 ## [Unreleased]
 
+### Added
+
+- **Skills in the MCP server**: `mct mcp` now serves agent skills for creating
+  mobs, items, and blocks, designing models, debugging add-ons, and running
+  `mct` commands. They match the installed version. Agents get them through
+  the new `getSkill` tool, which lists the available skills.
+- **`mct skills` command**: lists the same skills and prints one
+  (`mct skills <name> [file]`, with `--json` for machine-readable output), and
+  `mct --help` now names them, so agents that only use the command line can
+  find them too.
+
 ### Changed
 
 - **Inspector view**: PASSED rule rows are now hidden by default. Errors,
@@ -17,6 +28,13 @@ For the full commit history, see [Releases](https://github.com/Mojang/minecraft-
   inline component groups, comments) is preserved on save. To re-enable
   auto-format on every save, open the Settings panel and turn on
   "Format JSON and script on save".
+
+### Fixed
+
+- **MCP EULA check**: `createProject`, `addItem`, and `createMinecraftSessionWithContent`
+  now return an error asking the user to run `mct eula` when the Minecraft EULA hasn't been
+  accepted. Previously `createProject` reported success without creating any files.
+  Accepting in another terminal takes effect without restarting the MCP server.
 
 ## [0.16.1] (2026-04-03)
 

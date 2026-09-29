@@ -409,6 +409,20 @@ function copyEsbuildWasmDist() {
     .pipe(gulp.dest("public/dist/esbuild-wasm/"));
 }
 
+// Agent skills from plugins/minecraft/skills, shipped in the npm package so `mct mcp` can serve skills
+// that match its own version (see src/local/McpSkillLibrary.ts). Evals aren't shipped.
+// The folder is cleared and copied in full on every build, rather than using gulp-newer, so a renamed
+// or deleted skill doesn't linger in the build output and get served or packaged. It's small (~150 KB).
+function cleanJsNodeSkills() {
+  return del(["toolbuild/jsn/skills"]);
+}
+
+function copyJsNodeSkillFiles() {
+  return gulp.src(["../plugins/minecraft/skills/**/*"], { encoding: false }).pipe(gulp.dest("toolbuild/jsn/skills/"));
+}
+
+const copyJsNodeSkills = gulp.series(cleanJsNodeSkills, copyJsNodeSkillFiles);
+
 function copyJsNodeDocs() {
   return gulp.src(["../CHANGELOG.md", "../NOTICE.md", "../LICENSE.md"]).pipe(gulp.dest("toolbuild/jsn/"));
 }
@@ -651,6 +665,7 @@ gulp.task(
       copyJsNodeAssets,
       copyJsNodeData,
       copyJsNodeDocs,
+      copyJsNodeSkills,
       copyJsNodeResSchemas,
       copyJsNodeResPreviewMetadataVanillaData,
       copyJsNodeResPreviewMetadataCommandModules,

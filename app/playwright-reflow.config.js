@@ -17,7 +17,10 @@ export default defineConfig({
 
   globalSetup: "./src/testweb/globalSetup.ts",
 
-  timeout: 60000,
+  // Matches playwright.config.js: on the Vite dev server a cold enterEditor()
+  // navigation alone can approach a minute, and the editor specs layer their
+  // own UI work on top (they raise this further via test.setTimeout).
+  timeout: 90000,
 
   outputDir: "./debugoutput/playwright-reflow-results",
 
@@ -30,6 +33,13 @@ export default defineConfig({
 
   use: {
     baseURL: "http://localhost:3000",
+
+    // Playwright defaults page.goto() to 30s. The home page pulls the full
+    // editor + Minecraft definition module graph (~1300 requests) through Vite,
+    // which exceeds 30s on a cold dev server and makes enterEditor() bail out
+    // before the test gets to assert anything. Mirrors playwright.config.js.
+    navigationTimeout: 90000,
+
     trace: "on-first-retry",
   },
 

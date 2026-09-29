@@ -566,6 +566,10 @@ class ProjectPropertyEditor extends Component<IProjectPropertyEditorProps, IProj
     }
 
     this.props.project.save();
+    // The track setter only raises onPropertyChanged when the value actually
+    // changes; re-render explicitly so the controlled <select> always reflects
+    // the option the user just picked (see _handleLanguageChange).
+    this.forceUpdate();
   }
 
   _handleEditPreferenceChange(
@@ -1064,7 +1068,9 @@ class ProjectPropertyEditor extends Component<IProjectPropertyEditorProps, IProj
                   className="ppe-fieldDropdown"
                   items={targetStrings}
                   placeholder={this.props.intl.formatMessage({ id: "project_editor.props.select_target_version" })}
-                  defaultValue={targetStrings[this.props.project.track ? (this.props.project.track as number) + 1 : 0]}
+                  defaultValue={
+                    targetStrings[this.props.project.track !== undefined ? (this.props.project.track as number) + 1 : 0]
+                  }
                   onChange={this._handleTrackChange}
                 />
               </div>

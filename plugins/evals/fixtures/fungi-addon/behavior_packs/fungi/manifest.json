@@ -1,0 +1,23 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Fungi",
+    "description": "Generated content for fungi",
+    "uuid": "c748e943-bd75-4afc-9011-c11e9e05c364",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 21, 0]
+  },
+  "modules": [
+    {
+      "type": "data",
+      "uuid": "0aa526ea-2ccd-4748-bc0f-2f66979f9bd4",
+      "version": [1, 0, 0]
+    }
+  ],
+  "dependencies": [
+    {
+      "uuid": "fa138f5e-709b-457e-be8c-dc47ed4ad1c0",
+      "version": [1, 0, 0]
+    }
+  ]
+}

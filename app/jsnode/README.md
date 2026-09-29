@@ -1,189 +1,89 @@
-# Minecraft Creator Tools
+<h1 align="center">Minecraft Creator Tools</h1>
 
-### Copyright (c) 2026 Mojang AB. Licensed under the MIT License.
+<p align="center">
+  <strong>From idea to playable.</strong>
+</p>
 
-- [License](https://aka.ms/mctlicense)
-- [GitHub](https://aka.ms/mcthomepage)
-- [Report an Issue](https://aka.ms/mctbugs)
-- [Changelog](CHANGELOG.md)
+<p align="center">
+  Create, preview, validate, and ship Minecraft add-ons from the CLI, browser, or your AI coding agent.
+</p>
 
-This code is currently in pre-release alpha state.
+<p align="center">
+  <a href="https://learn.microsoft.com/minecraft/creator/documents/mctoolsoverview"><strong>Documentation</strong></a> ·
+  <a href="https://mctools.dev"><strong>Web Editor</strong></a> ·
+  <a href="https://github.com/Mojang/minecraft-creator-tools/releases"><strong>Changelog</strong></a> ·
+  <a href="https://aka.ms/mcthomepage"><strong>GitHub</strong></a>
+</p>
 
-See the public docs at [https://learn.microsoft.com/minecraft/creator/documents/mctoolsoverview](https://learn.microsoft.com/minecraft/creator/documents/mctoolsoverview) for more.
+<p align="center">
+  <a href="https://www.npmjs.com/package/@minecraft/creator-tools"><img src="https://img.shields.io/npm/v/@minecraft/creator-tools" alt="npm version"></a>
+  <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/node-%3E%3D22-brightgreen" alt="Node.js 22+"></a>
+  <a href="https://aka.ms/mctlicense"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT license"></a>
+</p>
+<br/>
 
-## Getting Started
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Mojang/minecraft-creator-tools/main/misc/readme/mct-preview.png" width="640" alt="Minecraft Creator Tools editor showing a custom mob with a 3D model preview and its behaviors">
+</p>
+
+## Install
 
 Requires Node.js 22+ and npm 10+.
-
-```bash
-npx mct
-```
-
-Displays default information and available commands.
-
-Use `--help` with any command for detailed usage, or `--all-commands` to see internal/advanced commands.
-
----
-
-## Commands
-
-### Validation
-
-| Command            | Aliases | Description                                                                                                                   |
-| ------------------ | ------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `validate`         | `val`   | Validate a Minecraft project against a suite of rules. Supports suites: `all`, `default`, `addon`, `currentplatform`, `main`. |
-| `search`           | `s`     | Search a content index for matching items by term or annotation category.                                                     |
-| `aggregatereports` | `aggr`  | Aggregate exported metadata across multiple projects. Optionally builds a content index.                                      |
-
-```bash
-npx mct validate -i d:\mycontent\myprojectfolder
-npx mct validate addon -i d:\mycontent\myprojectfolder -v
-```
-
-### Project
-
-| Command       | Aliases | Description                                                                                                                                        |
-| ------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `create`      | `c`     | Create a new Minecraft project from a template. Prompts interactively for name, template, creator, and description.                                |
-| `add`         | `a`     | Add new content to an existing project (entity, block, item, spawnLootRecipes, worldGen, visuals, singleFiles).                                    |
-| `fix`         | —       | Apply automated fixes: `latestbetascriptversion`, `randomizealluids`, `setnewestformatversions`, `setnewestminengineversion`.                      |
-| `set`         | —       | Set a project property (`name`, `title`, `description`, `bpscriptentrypoint`, `bpuuid`, `rpuuid`).                                                 |
-| `info`        | `i`     | Display information about the current project.                                                                                                     |
-| `setup`       | —       | Ensure project configuration files are up to date and healthy.                                                                                     |
-| `deploy`      | `dp`    | Copy project files to a destination: `mcuwp` (Bedrock), `mcpreview` (Preview), `server`, or a custom path. Supports `--test-world` and `--launch`. |
-| `exportaddon` | —       | Package the project into an `.mcaddon` file.                                                                                                       |
-| `exportworld` | —       | Export a flat GameTest `.mcworld` file for the project's behavior packs.                                                                           |
-
-```bash
-npx mct create
-npx mct add entity -i d:\mycontent\myprojectfolder
-npx mct fix latestbetascriptversion -i d:\mycontent\myprojectfolder
-npx mct deploy mcuwp -i d:\mycontent\myprojectfolder --test-world --launch
-npx mct exportaddon -i d:\mycontent\myprojectfolder -o d:\output
-```
-
-### Content Viewing & Editing
-
-| Command | Aliases | Description                                                                                                                     |
-| ------- | ------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `view`  | —       | Open a read-only web browser UI to inspect Minecraft content with 3D previews, component inspector, and more.                   |
-| `edit`  | —       | Open a read-write web browser UI to edit Minecraft content with visual editors at three experience levels (Focused, Full, Raw). |
-
-```bash
-npx mct view -i d:\mycontent\myprojectfolder
-npx mct edit -i d:\mycontent\myprojectfolder
-```
-
-### Server
-
-| Command                            | Aliases            | Description                                                                                                                                   |
-| ---------------------------------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| `serve`                            | `server`           | Start a web server with optional Bedrock Dedicated Server integration. Features include a map renderer, command tools, and player management. |
-| `mcp`                              | —                  | Run as a local MCP (Model Context Protocol) server for AI tool integration.                                                                   |
-| `dedicatedserve`                   | `bds`, `dedicated` | Start only the Bedrock Dedicated Server without the web UI.                                                                                   |
-| `passcodes`                        | `pc`               | Display active passcodes for web server authentication.                                                                                       |
-| `setserverprops`                   | `serverprops`      | Display or set server properties (`--domain`, `--port`, `--title`, `--motd`).                                                                 |
-| `minecrafteulaandprivacystatement` | `eula`             | View and accept the Minecraft End User License Agreement.                                                                                     |
-
-```bash
-npx mct serve --adminpc mypassword --port 6126
-npx mct serve --source-server-path "C:\BDS" --adminpc mypassword
-npx mct mcp -i d:\mycontent\myprojectfolder
-npx mct setserverprops --domain 10.0.0.6 --port 80
-```
-
-### Render
-
-| Command           | Aliases                 | Description                                                                                                                   |
-| ----------------- | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `rendermodel`     | `rm`                    | Render a model geometry file (`.geo.json`) from the project to a PNG image.                                                   |
-| `rendervanilla`   | `rv`                    | Render vanilla Minecraft blocks, mobs, or items to PNG images. Supports batch via comma-separated identifiers or `@filename`. |
-| `renderstructure` | `renstruct`, `renderst` | Render an `.mcstructure` file to a PNG image.                                                                                 |
-| `buildstructure`  | `buildstruct`           | Build an `.mcstructure` file from IBlockVolume JSON. Supports stdin input with `-`.                                           |
-
-```bash
-npx mct rendervanilla mob minecraft:creeper -o creeper.png
-npx mct rendervanilla block minecraft:stone,minecraft:dirt -o blocks/
-npx mct rendermodel mymodel.geo.json -i d:\mycontent\myprojectfolder
-npx mct buildstructure input.json output.mcstructure --preview preview.png
-```
-
-### World
-
-| Command           | Aliases      | Description                                                                                     |
-| ----------------- | ------------ | ----------------------------------------------------------------------------------------------- |
-| `world`           | —            | Display or modify world settings (beta APIs, editor mode, data-driven items, associated packs). |
-| `ensureworld`     | —            | Create or ensure a flat GameTest world exists for a project.                                    |
-| `deploytestworld` | `deploytest` | Deploy a test world with project packs to Minecraft. Supports `--launch`.                       |
-
-```bash
-npx mct world -i d:\mycontent\myworld
-npx mct world set -i d:\mycontent\myworld --betaApis true
-npx mct deploytestworld -i d:\mycontent\myprojectfolder --launch
-```
-
-### Info
-
-| Command   | Aliases    | Description                           |
-| --------- | ---------- | ------------------------------------- |
-| `version` | `ver`, `v` | Display version and path information. |
-
----
-
-## Global Options
-
-These options are available with all commands:
-
-| Option                       | Description                                    |
-| ---------------------------- | ---------------------------------------------- |
-| `-i, --input-folder <path>`  | Input project folder                           |
-| `-o, --output-folder <path>` | Output folder for results                      |
-| `-v, --verbose`              | Verbose output                                 |
-| `-q, --quiet`                | Quiet mode (suppresses non-error output)       |
-| `--json`                     | JSON output format                             |
-| `--debug`                    | Enable debug mode                              |
-| `--force`                    | Force operation without confirmation           |
-| `--dry-run`                  | Show what would be done without making changes |
-| `--threads <n>`              | Number of parallel worker threads              |
-| `--all-commands`             | Show all commands including internal ones      |
-
----
-
-## Configuring the HTTP Server
-
-Use `mct setserverprops` to configure the serving domain and port:
-
-```bash
-npx mct setserverprops --domain 10.0.0.6 --port 80
-```
-
-The `--domain` should typically be the internal IP address of your machine. For example, in an Azure environment your external IP might be 10.20.30.2 but the internal IP might be 10.0.0.6.
-
----
-
-## Using the MCP Server with VS Code
-
-Minecraft Creator Tools includes a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server that lets AI tools create and validate Minecraft Bedrock content interactively.
-
-**1. Install the package globally:**
 
 ```bash
 npm install -g @minecraft/creator-tools
 ```
 
-**2. Accept the Minecraft EULA:**
+Or run without installing: `npx @minecraft/creator-tools <command>`.
 
-Before the MCP server will work, you must accept the Minecraft End User License Agreement:
+## Quick Start
 
 ```bash
-npx mct eula
+mct eula                                               # 1. Accept the Minecraft EULA (one time)
+mct create -o ./my-addon                               # 2. Scaffold a project from a template
+mct validate -i ./my-addon                             # 3. Check it against Minecraft rules
+mct view -i ./my-addon                                 # 4. Preview it in your browser
+mct deploy retail -i ./my-addon --test-world --launch  # 5. Open it in a Minecraft test world
 ```
 
-Follow the prompts to review and accept. The MCP server will not start until the EULA has been accepted.
+Deploying into Minecraft requires Windows with Minecraft installed. When `-i` is omitted, commands use the current folder or the nearest project folder above it.
 
-**3. Configure VS Code:**
+## Popular Commands
 
-Create a `.vscode/mcp.json` file in your project folder:
+| Command    | What it does                                                            |
+| :--------- | :---------------------------------------------------------------------- |
+| `create`   | Create a new project from a template.                                   |
+| `add`      | Add an entity, block, item, and more to a project.                      |
+| `validate` | Check a project against Minecraft rules.                                |
+| `edit`     | Open a browser UI to visually edit content.                             |
+| `deploy`   | Copy packs to Minecraft, Minecraft Preview, a server, or a custom path. |
+| `mcp`      | Run as an MCP server for AI assistants.                                 |
+
+<details>
+<summary><strong>More commands</strong></summary>
+
+- **Project:** `create` · `add` · `fix` · `set` · `setup` · `deploy` · `exportaddon` · `exportworld`
+- **Validation:** `validate` · `search` · `aggregatereports`
+- **Content:** `view` · `edit` · `autotest`
+- **Server:** `serve` · `mcp` · `dedicatedserve` · `passcodes` · `setserverprops` · `eula`
+- **Render:** `rendervanilla` · `rendermodel` · `renderstructure` · `renderbatch` · `buildstructure`
+- **World:** `world` · `ensureworld`
+- **Information:** `info` · `version` · `skills`
+
+</details>
+
+Run `mct --help` to list commands, `mct <command> --help` for details, or `mct --all-commands` to see everything.
+
+## Set up MCP for your AI assistant
+
+`mct mcp` is a [Model Context Protocol](https://modelcontextprotocol.io/) server that lets AI assistants create, validate, and design Bedrock content for you. If you haven't already, run `mct eula` to accept the Minecraft EULA.
+
+Then add the server to your assistant. For setups without `-i`, start your assistant from inside your project folder.
+
+<details>
+<summary><strong>VS Code (GitHub Copilot)</strong></summary>
+
+Add `.vscode/mcp.json` to your project:
 
 ```json
 {
@@ -197,22 +97,85 @@ Create a `.vscode/mcp.json` file in your project folder:
 }
 ```
 
-Or, to make the MCP server available in all your VS Code projects, open the Command Palette (`Ctrl+Shift+P`), search for **MCP: Open User Configuration**, and add:
+</details>
+
+<details>
+<summary><strong>GitHub Copilot CLI</strong></summary>
+
+Run `/mcp add` inside Copilot CLI, or add this to `~/.copilot/mcp-config.json`:
 
 ```json
 {
-  "servers": {
+  "mcpServers": {
     "minecraft-creator-tools": {
-      "type": "stdio",
+      "type": "local",
       "command": "mct",
-      "args": ["mcp"]
+      "args": ["mcp"],
+      "tools": ["*"]
     }
   }
 }
 ```
 
+</details>
+
+<details>
+<summary><strong>Claude Code</strong></summary>
+
+```bash
+claude mcp add minecraft-creator-tools -- mct mcp
+```
+
+</details>
+
+<details>
+<summary><strong>OpenAI Codex</strong></summary>
+
+```bash
+codex mcp add minecraft-creator-tools -- mct mcp
+```
+
+</details>
+
+<details>
+<summary><strong>Cursor, Claude Desktop, and other clients</strong></summary>
+
+Most clients accept an `mcpServers` entry like this. Point `-i` at your project folder:
+
+```json
+{
+  "mcpServers": {
+    "minecraft-creator-tools": {
+      "command": "mct",
+      "args": ["mcp", "-i", "/path/to/my-addon"]
+    }
+  }
+}
+```
+
+</details>
+
+Then ask your assistant something like: _"Add a custom block called rainbow_ore to my project."_
+
+## Skills for AI assistants
+
+Creator Tools includes skills: step-by-step guides that show your assistant how to create mobs, items, and blocks, design models, fix and package add-ons, and run `mct` commands. They match your installed version.
+
+- **With the MCP server**, your assistant reads them with the `getSkill` tool. You don't need to set anything up.
+- **With only the command line**, `mct --help` names them, `mct skills` lists them, and `mct skills <name>` prints one. Add `--json` for machine-readable output.
+
+Found a bug? [Report an issue](https://aka.ms/mctbugs).
+
+**Good luck, have fun!**
+
 ---
 
-## Trademarks
+## Legal
+
+Copyright (c) 2026 Mojang AB. Licensed under the [MIT License](https://aka.ms/mctlicense).
+
+This code is currently in pre-release alpha state.
+
+### Trademarks
 
 This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft trademarks or logos is subject to and must follow [Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/legal/intellectualproperty/trademarks/usage/general). Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship. Any use of third-party trademarks or logos are subject to those third-party’s policies.

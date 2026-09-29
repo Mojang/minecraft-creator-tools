@@ -8,7 +8,7 @@
  * - render/: Render commands (rendermodel, rendervanilla, renderstructure, buildstructure)
  * - docs/: Documentation commands (docs*)
  * - world/: World commands (world, ensureworld)
- * - content/: Content commands (view, edit, autotest, runtests, version)
+ * - content/: Content commands (view, edit, autotest, runtests, version, skills)
  */
 
 import { ICommand } from "../core/ICommand";
@@ -75,6 +75,7 @@ import { ensureWorldCommand } from "./world/EnsureWorldCommand";
 // Content commands
 // ============================================================================
 import { versionCommand } from "./content/VersionCommand";
+import { skillsCommand } from "./content/SkillsCommand";
 import { viewCommand } from "./content/ViewCommand";
 import { editCommand } from "./content/EditCommand";
 import { autotestCommand } from "./content/AutotestCommand";
@@ -130,6 +131,7 @@ const allCommands: ICommand[] = [
 
   // Content commands
   versionCommand,
+  skillsCommand,
   viewCommand,
   editCommand,
   autotestCommand,
