@@ -1,0 +1,55 @@
+{
+  "skill_name": "debug-addon",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "My add-on won't import into Minecraft. It's in samplecontent/platform_version_errors. Can you figure out why and fix it?",
+      "expected_output": "The agent validates the project, fixes the manifest format versions and missing pack icons, re-validates to zero errors, and explains what it changed.",
+      "files": ["samplecontent/platform_version_errors"],
+      "expectations": [
+        "Validation was run with --force (directly or through scripts/validate-summary.mjs) before and after fixing",
+        "Every manifest.json in the project has \"format_version\": 2",
+        "Every pack folder contains exactly one pack_icon.png that is square with a power-of-two size",
+        "Final validation reports 0 errors",
+        "No header or module UUIDs were changed (randomizealluids was not run)",
+        "The final reply lists the changes made in plain language"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "My glow beetle mob spawns (I can hear it and see its shadow) but it's completely invisible. The add-on is in plugins/evals/fixtures/invisible-mob.",
+      "expected_output": "The agent finds that the client entity's geometry.default doesn't match the geometry identifier in the .geo.json and makes them match.",
+      "files": ["plugins/evals/fixtures/invisible-mob"],
+      "expectations": [
+        "geometry.default in resource_packs/demo/entity/glow_beetle.entity.json equals the identifier inside resource_packs/demo/models/entity/glow_beetle.geo.json",
+        "Final validation shows no UNLINK warning about geometry",
+        "Final validation reports 0 errors",
+        "The reply explains that the geometry name mismatch made the mob invisible"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "In plugins/evals/fixtures/invisible-mob, my beetle's spawn egg is called item.spawn_egg.entity.demo:glow_beetle.name and the sword says item.demo:shell_sword. Make the names readable: Glow Beetle, Beetle Shell, and Shell Sword.",
+      "expected_output": "The agent adds lang entries for the mob and display names for the items, using the requested names.",
+      "files": ["plugins/evals/fixtures/invisible-mob"],
+      "expectations": [
+        "resource_packs/demo/texts/en_US.lang contains entity.demo:glow_beetle.name=Glow Beetle and a spawn egg name",
+        "behavior_packs/demo/items/shell_sword.json has minecraft:display_name with value Shell Sword",
+        "behavior_packs/demo/items/beetle_shell.json has minecraft:display_name with value Beetle Shell",
+        "No existing lang lines or item components other than the display names were changed"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Package the add-on in plugins/evals/fixtures/fungi-addon so I can send it to a friend.",
+      "expected_output": "The agent validates first, then exports a .mcaddon with exportaddon and tells the user where it is and how to open it.",
+      "files": ["plugins/evals/fixtures/fungi-addon"],
+      "expectations": [
+        "Validation was run before exporting",
+        "A .mcaddon file exists in the output folder the agent reported",
+        "The .mcaddon contains both a behavior pack and a resource pack, each with manifest.json and pack_icon.png",
+        "The reply tells the user that opening the .mcaddon file imports it into Minecraft"
+      ]
+    }
+  ]
+}

@@ -10,7 +10,7 @@
   padding: 16px;
   border: 2px dashed rgba(255, 255, 255, 0.15);
   border-radius: 4px;
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.7);
   font-size: 12px;
   cursor: pointer;
   transition:
@@ -22,7 +22,7 @@
 
 .lidz-drop-zone:hover {
   border-color: rgba(255, 255, 255, 0.25);
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .lidz-drop-zone-active {
@@ -40,7 +40,7 @@
    text stay legible in Light Mode. */
 body.ct-light .lidz-drop-zone {
   border-color: rgba(0, 0, 0, 0.2);
-  color: #5e5a55;
+  color: #46433f;
 }
 
 body.ct-light .lidz-drop-zone:hover {

@@ -1,0 +1,6 @@
+{
+  "fungi:glow_mushroom_block": {
+    "textures": "fungi_glow_mushroom_block",
+    "sound": "wood"
+  }
+}

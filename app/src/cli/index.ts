@@ -15,9 +15,13 @@ import MinecraftUtilities from "../minecraft/MinecraftUtilities.js";
 import * as path from "path";
 import { commandRegistry } from "./core/CommandRegistry.js";
 import { registerAllCommands } from "./commands/index.js";
+import { configureGlobalOptions } from "./core/GlobalOptions.js";
 import { CommandContextFactory } from "./core/CommandContextFactory.js";
 import { ErrorCodes } from "./core/ICommandContext.js";
 import ImageCodecNode from "../local/ImageCodecNode.js";
+import McpSkillLibrary from "../local/McpSkillLibrary.js";
+import { buildSkillsHelpText, printSkills } from "./commands/content/SkillsCommand.js";
+import { createLogger } from "./core/Logger.js";
 
 if (typeof btoa === "undefined") {
   // @ts-ignore
@@ -236,116 +240,9 @@ for (let i = 0; i < process.argv.length; i++) {
 program
   .name("mct")
   .description("Minecraft Creator Tools v" + constants.version)
-  .version(constants.version, "-v, --version", "Output the current version")
-  .option(
-    "-i, --input-folder [path to folder]",
-    "Path to the input folder. If not specified, the current working directory is used."
-  )
-  .option(
-    "--if, --input-file [path to file]",
-    "Path to the input MCWorld, MCTemplate, MCPack, MCAddon or other zip file."
-  )
-  .option(
-    "-o, --output-folder <path to folder>",
-    "Path to the output project folder. If not specified, the current working directory + 'out' is used.",
-    "out"
-  )
-  .option(
-    "--psw, --project-starts-with <starter term>",
-    "Only process a project if it starts with the starter term; this can be used to subdivide processing."
-  )
-  .option(
-    "--bp, --base-path <path to folder>",
-    "Path, relative to the current working folder, where common data files and folders are found."
-  )
-  .option("--afs, --additional-files [path to file]", "Comma-separated list of additional files to add to projects.")
-  .option("--of, --output-file [path to file]", "Path to the export file, if applicable for the command you are using.")
-  .option("--ot, --output-type [output type]", "Type of output, if applicable for the command you are using.")
-  .option("--updatepc, --update-passcode [update passcode]", "Sets update passcode.")
-  .option("--adminpc, --admin-passcode [admin passcode]", "Sets admin passcode.")
-  .option("--displaypc, --display-passcode [display passcode]", "Sets display passcode.")
-  .option("--fullropc, --full-readonly-passcode [full read only passcode]", "Sets full read only passcode.")
-  .option("-l, --launch", "Launches the final product in Minecraft when done.", false)
-  .option("--ew, --ensure-world", "Ensures that a flat GameTest world is synchronized with the project.")
-  .option("--isolated", "Do not load vanilla Minecraft resources (e.g., textures, ground blocks) from the web")
-  .option(
-    "--offline",
-    "Alias for --isolated. Skip loading vanilla Minecraft web resources (textures, ground blocks); useful for CI environments where network is unreliable. Note: some other code paths (e.g. latest-version checks) may still attempt network requests."
-  )
-  .option(
-    "--bpu, --behavior-pack <behavior pack uuid>",
-    "Adds a set of behavior pack UUIDs as references for any worlds that are updated."
-  )
-  .option(
-    "--rpu, --resource-pack <resource pack uuid>",
-    "Adds a set of resources pack UUIDs as references for any worlds that are updated."
-  )
-  .option("--betaapis, --beta-apis", "Ensures that the Beta APIs experiment is set for any worlds that are updated.")
-  .option("--no-betaapis, --no-beta-apis", "Removes the Beta APIs experiment if set.")
-  .option("-f, --force", "Force any updates.")
-  .option("--single", "When pointed at a folder via -i, force that folder to be processed as a single project.")
-  .option("--editor", "Ensures that the world is an Editor world.")
-  .option("--once", "When running as a server, only process one request and then shutdown.", false)
-  .option("--no-editor", "Removes the editor setting from the world.")
-  .option("--threads [thread count]", "Targeted number of threads to use.")
-  .option("-n, --dry-run", "Show what would be done without making changes or writing files.")
-  .option("-d, --debug", "Add debug logging, options, and even more experimental commands.")
-  .option(
-    "--mct, --mctemplate <path to a .mctemplate or a .zip world template>",
-    "When using a world, uses a .mctemplate file for that world"
-  )
-  .option("--preview-server", "Specifies whether to use a preview server.")
-  .option(
-    "--pack, --mcpack <path to .mcpack, .mcaddon, or .zip pack>",
-    "When using a world, uses and adds pack references for that world"
-  )
-  .option("--verbose", "Show verbose log messages.")
-  .option("-q, --quiet", "Suppress non-essential output. Only show errors and final results.")
-  .option("--warn-only", "Report validation errors as warnings without setting a failure exit code.")
-  .option("--json", "Output results in JSON format for machine parsing.")
-  .option("-y, --yes", "Auto-accept defaults for all interactive prompts (CI / non-interactive use).")
-  .option(
-    "--experimental-ssl-cert <path>",
-    "(Experimental) Path to SSL certificate file in PEM format. Use with --experimental-ssl-key. " +
-      "This enables HTTPS. Use EITHER cert+key OR --experimental-ssl-pfx, not both."
-  )
-  .option(
-    "--experimental-ssl-key <path>",
-    "(Experimental) Path to SSL private key file in PEM format. Required when using --experimental-ssl-cert. " +
-      "Keep this file secure and never share it."
-  )
-  .option(
-    "--experimental-ssl-pfx <path>",
-    "(Experimental) Path to PKCS12/PFX certificate bundle containing both cert and key. " +
-      "Common on Windows. Use EITHER pfx OR --experimental-ssl-cert + --experimental-ssl-key, not both."
-  )
-  .option(
-    "--experimental-ssl-pfx-passphrase <passphrase>",
-    "(Experimental) Passphrase to decrypt the PFX file. Required only if your PFX is password-protected."
-  )
-  .option(
-    "--experimental-ssl-ca <path>",
-    "(Experimental) Path to CA certificate chain file (PEM format). Needed when using certificates from " +
-      "a Certificate Authority (e.g., Let's Encrypt, DigiCert) to provide the full trust chain. " +
-      "Not needed for self-signed certificates."
-  )
-  .option(
-    "--experimental-ssl-port <port>",
-    "(Experimental) Port for HTTPS server. Defaults to 443. Use a port > 1024 to avoid requiring admin privileges."
-  )
-  .option(
-    "--experimental-ssl-only",
-    "(Experimental) Only start HTTPS server, do not start HTTP. Use this for production to ensure all traffic is encrypted."
-  )
-  .option(
-    "--unsafe-skip-signature-validation",
-    "UNSAFE: Skip digital signature verification of Bedrock Dedicated Server executable. " +
-      "Only use this if you trust the server binary and understand the security implications."
-  )
-  .option(
-    "--internalOnlyRunningInTheContextOfTestCommandLines",
-    "Do not use. For internal self-testing use only functionality."
-  );
+  .version(constants.version, "-v, --version", "Output the current version");
+
+configureGlobalOptions(program);
 
 if (Utilities.isDebug) {
   program
@@ -384,6 +281,10 @@ program.addHelpText("before", "\x1b[32m│ ▄ ▄ │\x1b[0m Minecraft Creator 
 program.addHelpText("before", "\x1b[32m│ ┏▀┓ │\x1b[0m See " + constants.homeUrl + " for more info.");
 program.addHelpText("before", "\x1b[32m└─────┘\x1b[0m");
 program.addHelpText("before", " ");
+
+// Name the bundled agent skills at the end of `mct --help`, so agents that only use the CLI (not
+// `mct mcp`) learn they exist. Computed when help is shown, so other commands don't read the files.
+program.addHelpText("after", () => buildSkillsHelpText(McpSkillLibrary.load(constants.version)) ?? "");
 
 // --all-commands: display full command list including content-production tools
 program.option("--all-commands", "Show all commands including content-production tools");
@@ -472,7 +373,8 @@ if (options.dryRun) {
     capturedTaskType !== TaskType.serve &&
     capturedTaskType !== TaskType.runDedicatedServer &&
     capturedTaskType !== TaskType.mcp &&
-    capturedTaskType !== TaskType.renderVanilla
+    capturedTaskType !== TaskType.renderVanilla &&
+    capturedTaskType !== TaskType.skills
   ) {
     const isEditInPlace = ClUtils.getIsEditInPlaceCommand(capturedTaskType);
     displayMctHeader(options.inputFolder || process.cwd(), options.outputFolder, isEditInPlace);
@@ -539,6 +441,18 @@ if (!isTestEnvironment && !errorLevel) {
     try {
       // Note: registerAllCommands() was already called before configureCommander()
       // to ensure all commands are available for registration with Commander.js
+
+      // `mct skills` only reads the skills bundled with this CLI, so it skips Creator Tools and
+      // project loading: it works from any folder, ignores -i and -o, and creates no files there.
+      if (capturedTaskType === TaskType.skills) {
+        const { args } = commandRegistry.getCapturedState();
+        process.exitCode = printSkills(
+          McpSkillLibrary.load(constants.version),
+          { name: args.subCommand, file: args.propertyValue, json: !!options.json },
+          createLogger(false, !!options.quiet, false, false, !!options.json)
+        );
+        return;
+      }
 
       creatorTools = ClUtils.getCreatorTools(localEnv, options.basePath);
 

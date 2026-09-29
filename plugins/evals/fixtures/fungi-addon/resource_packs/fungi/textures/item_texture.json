@@ -1,0 +1,12 @@
+{
+  "resource_pack_name": "fungi",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "fungi:magic_hammer": {
+      "textures": "textures/items/magic_hammer"
+    },
+    "fungi:mushroom_stew_deluxe": {
+      "textures": "textures/items/mushroom_stew_deluxe"
+    }
+  }
+}

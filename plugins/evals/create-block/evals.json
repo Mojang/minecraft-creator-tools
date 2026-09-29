@@ -1,0 +1,61 @@
+{
+  "skill_name": "create-block",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Make a glowing mushroom block you can harvest: it should glow brightly, break quickly, sound like wood, and drop 1 to 3 red mushrooms when mined.",
+      "expected_output": "A light-emitting block with a fast break time, wood sounds, a loot table dropping 1-3 red mushrooms that the block actually references, a readable name, and zero validation errors.",
+      "files": [],
+      "expectations": [
+        "The block has minecraft:light_emission of 10 or more",
+        "minecraft:destructible_by_mining seconds_to_destroy is 1 or less",
+        "The block has a minecraft:loot component pointing to a loot table file that exists",
+        "That loot table drops minecraft:red_mushroom with a count range of 1 to 3",
+        "resource_packs/<pack>/blocks.json sets the block's sound to wood",
+        "en_US.lang contains tile.<namespace>:<id>.name",
+        "Validation reports 0 errors"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Add a ruby ore block that takes a while to mine, drops a ruby item, and generates underground like other ores. Create the ruby item too.",
+      "expected_output": "A ruby item and an ore block whose loot table drops that ruby, with a longer mining time and ore world generation.",
+      "files": [],
+      "expectations": [
+        "A ruby item exists in the behavior pack",
+        "The ore block has a minecraft:loot component whose loot table drops the ruby item",
+        "minecraft:destructible_by_mining seconds_to_destroy is 2 or more",
+        "behavior_packs/<pack>/features/ contains a minecraft:ore_feature placing the ruby ore and replacing stone",
+        "behavior_packs/<pack>/feature_rules/ contains a rule that places the feature underground in the overworld",
+        "Both the block and the item have readable names",
+        "Validation reports 0 errors"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Add polished marble as a full block, plus matching slabs and stairs, to my add-on in plugins/evals/fixtures/fungi-addon.",
+      "expected_output": "Three blocks added to the existing fungi packs using the fungi namespace, with slab and stair shapes, textures, and names, leaving manifests and existing content intact.",
+      "files": ["plugins/evals/fixtures/fungi-addon"],
+      "expectations": [
+        "Three new block identifiers use the existing fungi namespace",
+        "One block is a slab and one is stairs (slab/stairs traits, geometry, or placement states)",
+        "Each new block has a texture registered in terrain_texture.json",
+        "Each new block has a tile.<namespace>:<id>.name entry in en_US.lang",
+        "Both manifests keep their original header.name, and the behavior pack's dependency uuid still equals the resource pack's header.uuid (no PACKDEP warning)",
+        "Existing glow mushroom block files are unchanged",
+        "Validation reports 0 errors"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Make the glowing mushroom block in plugins/evals/fixtures/fungi-addon face the player when placed.",
+      "expected_output": "The agent adds the placement_direction trait and rotation permutations to the existing block.",
+      "files": ["plugins/evals/fixtures/fungi-addon"],
+      "expectations": [
+        "The block's description has a minecraft:placement_direction trait enabling minecraft:cardinal_direction",
+        "The block has four permutations that set minecraft:transformation rotation per cardinal direction",
+        "Validation reports 0 errors"
+      ]
+    }
+  ]
+}

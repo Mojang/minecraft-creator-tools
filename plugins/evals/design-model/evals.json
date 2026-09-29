@@ -1,0 +1,45 @@
+{
+  "skill_name": "design-model",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Make the glow beetle in plugins/evals/fixtures/invisible-mob actually look like a beetle: a rounded green shell, six short legs, and bright yellow glowing eyes.",
+      "expected_output": "The agent starts from a model template, builds the beetle with designModel, reviews the preview, and makes sure the client entity uses the new geometry so the mob is visible.",
+      "files": ["plugins/evals/fixtures/invisible-mob"],
+      "expectations": [
+        "getModelTemplates was called before designModel",
+        "designModel was called with modelId glow_beetle, usage entity, and design.identifier set to glow_beetle (or the client entity was updated to the design's identifier)",
+        "The agent looked at the returned preview and either iterated or explained why it was good enough",
+        "geometry.default in the client entity equals the identifier in resource_packs/demo/models/entity/glow_beetle.geo.json",
+        "The geometry has at least six leg cubes",
+        "Final validation shows no UNLINK warning about geometry and 0 errors",
+        "A human reviewer agrees the preview reads as a green beetle with yellow eyes"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Draw a purple pixel-art icon for the magic hammer in plugins/evals/fixtures/fungi-addon.",
+      "expected_output": "The agent draws a 16x16 pixel-art icon over the existing texture path, asking before enabling image writes if they aren't allowed yet.",
+      "files": ["plugins/evals/fixtures/fungi-addon"],
+      "expectations": [
+        "resource_packs/fungi/textures/items/magic_hammer.png is a 16x16 PNG with purple pixels",
+        "textures/item_texture.json still maps fungi:magic_hammer to the same path",
+        "If .mct/mcp/prefs.json didn't exist, the agent asked the user before creating it",
+        "Validation reports 0 errors"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "My add-on in plugins/evals/fixtures/fungi-addon needs a stone guardian mob that's about as tall as an iron golem. Create it and give it a proper golem-like model.",
+      "expected_output": "The agent creates the mob (create-mob), then designs a golem-sized model from the golem template and wires it to the mob.",
+      "files": ["plugins/evals/fixtures/fungi-addon"],
+      "expectations": [
+        "A new entity using the fungi namespace exists",
+        "designModel was called using the golem template (or an equivalent large humanoid design)",
+        "The generated geometry is roughly 40 units (2.5 blocks) tall",
+        "The client entity's geometry.default matches the new .geo.json identifier",
+        "Validation reports 0 errors"
+      ]
+    }
+  ]
+}

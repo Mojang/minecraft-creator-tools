@@ -1,0 +1,12 @@
+{
+  "resource_pack_name": "demo",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "demo:beetle_shell": {
+      "textures": "textures/items/beetle_shell"
+    },
+    "demo:shell_sword": {
+      "textures": "textures/items/shell_sword"
+    }
+  }
+}

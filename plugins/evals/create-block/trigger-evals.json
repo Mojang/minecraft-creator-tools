@@ -1,0 +1,22 @@
+[
+  { "query": "make a glowing mushroom block you can harvest", "should_trigger": true },
+  { "query": "add a ruby ore that generates underground in my bedrock add-on", "should_trigger": true },
+  { "query": "create marble slabs and stairs", "should_trigger": true },
+  { "query": "I want a lamp block that gives off light level 15", "should_trigger": true },
+  { "query": "make my crate block face the player when I place it", "should_trigger": true },
+  { "query": "add a sand-like block that falls when there's nothing under it", "should_trigger": true },
+  { "query": "can you make a decorative stone brick variant with moss", "should_trigger": true },
+  { "query": "make my custom stone take longer to mine", "should_trigger": true },
+  { "query": "add a crop-looking plant block that uses a cross shape", "should_trigger": true },
+  { "query": "create a custom fence block made of bamboo", "should_trigger": true },
+  { "query": "build a small stone tower structure for my add-on", "should_trigger": false },
+  { "query": "add a pickaxe that mines my ruby ore faster", "should_trigger": false },
+  { "query": "my custom block has a missing purple texture in game", "should_trigger": false },
+  { "query": "give my crate block a new 3D shape with metal corners", "should_trigger": false },
+  { "query": "how do I place a command block in survival?", "should_trigger": false },
+  { "query": "register a new block in my Forge 1.20 mod", "should_trigger": false },
+  { "query": "block the user from submitting the form twice in my web app", "should_trigger": false },
+  { "query": "what does the observer block do in redstone?", "should_trigger": false },
+  { "query": "create a hostile mob made of stone", "should_trigger": false },
+  { "query": "fill a 10x10 area with glass using /fill", "should_trigger": false }
+]

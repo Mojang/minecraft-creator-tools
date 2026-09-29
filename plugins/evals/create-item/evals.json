@@ -1,0 +1,63 @@
+{
+  "skill_name": "create-item",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Add a magic hammer to a new add-on. It should do 7 damage, mine like an iron pickaxe, have 500 durability, and be crafted from 3 iron ingots on top and 2 sticks below.",
+      "expected_output": "A hammer item with the requested damage, durability, and a realistic mining speed, a shaped recipe, a display name, and zero validation errors.",
+      "files": [],
+      "expectations": [
+        "The item has minecraft:damage of 7",
+        "The item has minecraft:durability with max_durability 500",
+        "The item's minecraft:digger destroy_speeds use a speed of 5 or more",
+        "The item has minecraft:tags including minecraft:is_pickaxe and minecraft:iron_tier (tool tiers from tool.miningLevel aren't applied by the generator)",
+        "A minecraft:recipe_shaped exists with three minecraft:iron_ingot in the top row, minecraft:stick below, and the hammer as the result",
+        "The item has a minecraft:display_name component reading Magic Hammer",
+        "Validation reports 0 errors"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Make a Deluxe Mushroom Stew food item that restores 8 hunger, gives 30 seconds of night vision, and doesn't stack.",
+      "expected_output": "A food item with nutrition 8, max stack size 1, a numeric saturation_modifier, and a display name. Because current item formats don't support effects in minecraft:food, the agent removes the effect and tells the user night vision on eating needs the Script API.",
+      "files": [],
+      "expectations": [
+        "The item has minecraft:food with nutrition 8",
+        "minecraft:food has a numeric saturation_modifier (not \"custom\")",
+        "minecraft:food has no effects field",
+        "The reply tells the user that the night vision effect needs the Script API and wasn't added",
+        "The item has minecraft:max_stack_size of 1",
+        "The item has a display name reading Deluxe Mushroom Stew",
+        "Validation reports 0 errors"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Create a ruby gem and a full set of ruby armor (helmet, chestplate, leggings, boots), each craftable from rubies in the usual armor shapes. It needs to show up on the player when worn.",
+      "expected_output": "Five items with correct armor slots, four shaped recipes, and an attachable plus armor textures for each piece so the armor renders when worn.",
+      "files": [],
+      "expectations": [
+        "Five new items exist: a ruby and four armor pieces",
+        "Each armor piece has minecraft:wearable with the matching slot (slot.armor.head, slot.armor.chest, slot.armor.legs, slot.armor.feet)",
+        "Four shaped recipes produce the armor pieces using the ruby item",
+        "resource_packs/<pack>/attachables/ has one file per armor piece whose identifier matches the item",
+        "Each attachable uses the matching geometry.humanoid.armor.* geometry and parent_setup variable",
+        "Armor layer textures exist under textures/models/armor/ and the attachables point to them (layer 2 for leggings)",
+        "Every new item has a display name",
+        "Validation reports 0 errors"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "In plugins/evals/fixtures/fungi-addon, make the magic hammer do 10 damage and stack to 1.",
+      "expected_output": "The agent edits the existing item file directly and leaves everything else alone.",
+      "files": ["plugins/evals/fixtures/fungi-addon"],
+      "expectations": [
+        "behavior_packs/fungi/items/magic_hammer.json has minecraft:damage of 10",
+        "behavior_packs/fungi/items/magic_hammer.json has minecraft:max_stack_size of 1",
+        "No other files changed",
+        "Validation reports 0 errors"
+      ]
+    }
+  ]
+}

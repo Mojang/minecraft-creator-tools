@@ -1,0 +1,22 @@
+[
+  { "query": "make me a rideable red panda for my bedrock add-on", "should_trigger": true },
+  { "query": "add a goblin that only spawns in swamps at night", "should_trigger": true },
+  { "query": "I want a dragon I can tame and fly on", "should_trigger": true },
+  { "query": "create a boss mob with 300 health that shoots fireballs", "should_trigger": true },
+  { "query": "give my goblin mob more health and make it faster", "should_trigger": true },
+  { "query": "Could you add a penguin that waddles around on ice biomes?", "should_trigger": true },
+  { "query": "my kid wants a pet slime that follows them, can we build that in minecraft", "should_trigger": true },
+  { "query": "make my custom zombie scared of wolves", "should_trigger": true },
+  { "query": "put a shark in the ocean that attacks players", "should_trigger": true },
+  { "query": "create a hostile swamp goblin, half player height, drops mushrooms", "should_trigger": true },
+  { "query": "add a magic hammer item that mines like an iron pickaxe", "should_trigger": false },
+  { "query": "make a glowing mushroom block", "should_trigger": false },
+  { "query": "give my existing goblin bigger ears and a green texture", "should_trigger": false },
+  { "query": "why is my custom zombie invisible?", "should_trigger": false },
+  { "query": "write a Forge mod that adds a new mob to Minecraft Java", "should_trigger": false },
+  { "query": "how do I summon a vanilla wither in creative?", "should_trigger": false },
+  { "query": "make the vanilla wolf scared of zombies in my world using a command block", "should_trigger": false },
+  { "query": "create a Unity character controller for a creature", "should_trigger": false },
+  { "query": "package my add-on as an .mcaddon", "should_trigger": false },
+  { "query": "what mobs spawn in a mangrove swamp in Bedrock?", "should_trigger": false }
+]

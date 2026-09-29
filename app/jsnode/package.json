@@ -12,7 +12,9 @@
     "tools",
     "bedrock",
     "add-on",
-    "creator"
+    "creator",
+    "mcp",
+    "agent-skills"
   ],
   "repository": {
     "type": "git",

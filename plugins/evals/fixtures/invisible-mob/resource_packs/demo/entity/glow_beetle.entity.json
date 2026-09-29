@@ -1,0 +1,22 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "demo:glow_beetle",
+      "materials": {
+        "default": "entity_alphatest"
+      },
+      "textures": {
+        "default": "textures/entity/glow_beetle"
+      },
+      "geometry": {
+        "default": "geometry.demo.glow_beetle"
+      },
+      "render_controllers": ["controller.render.demo.glow_beetle"],
+      "spawn_egg": {
+        "base_color": "#5B8C3E",
+        "overlay_color": "#3D6B2E"
+      }
+    }
+  }
+}

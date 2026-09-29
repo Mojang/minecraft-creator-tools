@@ -56,6 +56,8 @@ module.exports = {
     junk: true,
     // Only unpack the CLI entry points and bundles that are spawned as child processes.
     // Node.js cannot spawn scripts from inside asar archives.
+    // skills/ sits next to cli/ because the MCP child process looks for <package>/skills and runs the
+    // skills' helper scripts with node, so it has to be unpacked too.
     // Data/web/res/samples stay inside asar (Electron can read them transparently).
     // The CLI subprocess accesses data/web/res via the unpacked cli+dist+lib bundles
     // which resolve paths relative to their own __dirname.
@@ -64,7 +66,7 @@ module.exports = {
       ? false
       : {
           unpack:
-            "{**/toolbuild/jsn/cli/**/*,**/toolbuild/jsn/dist/**/*,**/toolbuild/jsn/data/**/*,**/toolbuild/jsn/web/**/*,**/toolbuild/jsn/package.json,**/toolbuild/jsn/mc/**/*,**/toolbuild/jsn/docker/**/*}",
+            "{**/toolbuild/jsn/cli/**/*,**/toolbuild/jsn/dist/**/*,**/toolbuild/jsn/data/**/*,**/toolbuild/jsn/web/**/*,**/toolbuild/jsn/package.json,**/toolbuild/jsn/mc/**/*,**/toolbuild/jsn/docker/**/*,**/toolbuild/jsn/skills/**/*}",
         },
     win32metadata: {
       CompanyName: "Mojang",

@@ -371,6 +371,85 @@ export default class LocalEnvironment {
     this.#isLoaded = true;
   }
 
+  /**
+   * Re-reads only the EULA acceptance from disk, picking up `mct eula` run in another process
+   * while this one (for example, an MCP server) is running. Other in-memory preferences are left
+   * untouched so unsaved runtime settings aren't reverted. If the file is missing, or can't be
+   * parsed because another process is mid-write, the in-memory value is kept.
+   */
+  async reloadEulaAcceptance() {
+    const onDisk = await this.#readPrefsFromDisk();
+
+    if (
+      onDisk.state === "ok" &&
+      onDisk.data.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula === true
+    ) {
+      this.#data.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula = true;
+    }
+  }
+
+  /**
+   * Records EULA acceptance, writing only that field on top of the current file contents so that
+   * preferences saved by other processes aren't overwritten with this process's older snapshot.
+   * When no preferences file exists yet, the in-memory defaults are saved along with acceptance.
+   * When the file exists but can't be read (for example, another process is mid-write), nothing is
+   * written and acceptance stays in memory only, rather than risk replacing that process's settings.
+   */
+  async saveEulaAcceptance() {
+    this.#data.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula = true;
+
+    const onDisk = await this.#readPrefsFromDisk();
+
+    if (onDisk.state === "missing") {
+      await this.save();
+      return;
+    }
+
+    if (onDisk.state === "unreadable") {
+      Log.debug("envprefs.json couldn't be read; EULA acceptance was kept in memory only.");
+      return;
+    }
+
+    onDisk.data.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula = true;
+    this.#configFile.setContent(JSON.stringify(onDisk.data, null, 2));
+    await this.#configFile.saveContent();
+  }
+
+  /**
+   * Reads envprefs.json fresh from disk. "unreadable" means the file exists but isn't a valid JSON
+   * object; one retry covers the brief window where another process has truncated but not yet
+   * rewritten it. (Saves truncate in place rather than delete, so "missing" is never transient.)
+   */
+  async #readPrefsFromDisk(): Promise<
+    { state: "ok"; data: ILocalEnvironmentData } | { state: "missing" } | { state: "unreadable" }
+  > {
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        await this.#configFile.loadContent(true);
+
+        if (this.#configFile.content === null) {
+          return { state: "missing" };
+        }
+
+        if (typeof this.#configFile.content === "string") {
+          const parsed = JSON.parse(this.#configFile.content);
+
+          if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+            return { state: "ok", data: parsed };
+          }
+        }
+      } catch (e) {
+        Log.debug("Could not read envprefs.json: " + e);
+      }
+
+      if (attempt === 0) {
+        await new Promise((resolve) => setTimeout(resolve, 50));
+      }
+    }
+
+    return { state: "unreadable" };
+  }
+
   async setDefaults() {
     await this.load();
 

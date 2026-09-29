@@ -1,5 +1,8 @@
 import { assert } from "chai";
 import { spawn } from "child_process";
+import * as fs from "fs";
+import * as os from "os";
+import * as path from "path";
 import { removeResultFolder, ensureResultFolder, collectLines } from "./CommandLineTestHelpers";
 
 describe("versionCommandOutput", async () => {
@@ -399,4 +402,94 @@ describe("autotestCommandMissingProject", async () => {
   it("should exit with non-zero for bad project", async () => {
     assert.notEqual(exitCode, 0, "Bad project should fail");
   }).timeout(10000);
+});
+
+/** Runs the built CLI and collects its output. */
+function runCli(args: string[], cwd?: string): Promise<{ exitCode: number | null; stdout: string; stderr: string }> {
+  return new Promise((resolve) => {
+    const stdoutLines: string[] = [];
+    const stderrLines: string[] = [];
+    const child = spawn("node", [path.resolve("./toolbuild/jsn/cli/index.mjs"), ...args], { cwd });
+
+    collectLines(child.stdout, stdoutLines);
+    collectLines(child.stderr, stderrLines);
+
+    child.on("exit", (code) => {
+      resolve({ exitCode: code, stdout: stdoutLines.join("\n"), stderr: stderrLines.join("\n") });
+    });
+  });
+}
+
+describe("skillsCommand", () => {
+  const skillNames = ["create-block", "create-item", "create-mob", "creator-tools-cli", "debug-addon", "design-model"];
+  let workingFolder: string;
+
+  before(() => {
+    workingFolder = fs.mkdtempSync(path.join(os.tmpdir(), "mct-skills-cli-"));
+  });
+
+  after(() => {
+    fs.rmSync(workingFolder, { recursive: true, force: true });
+  });
+
+  it("lists every skill without writing anything to the current folder", async () => {
+    const result = await runCli(["skills"], workingFolder);
+
+    assert.equal(result.exitCode, 0, result.stderr);
+    assert.equal(result.stderr, "", "skills should not write to stderr");
+    for (const name of skillNames) {
+      assert(result.stdout.includes(`  ${name} `), `should list ${name}. Got: ${result.stdout}`);
+    }
+    assert.deepEqual(fs.readdirSync(workingFolder), [], "skills should not create files such as ./out");
+  }).timeout(15000);
+
+  it("prints a skill with runnable script paths", async () => {
+    const result = await runCli(["skills", "debug-addon"], workingFolder);
+
+    assert.equal(result.exitCode, 0, result.stderr);
+    assert(result.stdout.startsWith("Skill: debug-addon (SKILL.md)"), result.stdout.substring(0, 200));
+    const scriptPath = /node "([^"]+validate-summary\.mjs)"/.exec(result.stdout)?.[1];
+    assert(scriptPath, "debug-addon should give a quoted validate-summary command");
+    assert(fs.existsSync(scriptPath!), `validate-summary.mjs not found at ${scriptPath}`);
+  }).timeout(15000);
+
+  it("reports unknown skills with the available ones", async () => {
+    const result = await runCli(["skills", "nope"], workingFolder);
+
+    assert.equal(result.exitCode, 1);
+    assert(result.stderr.includes(`Available skills: ${skillNames.join(", ")}.`), result.stderr);
+  }).timeout(15000);
+
+  it("ignores -i and -o, and doesn't create the output folder", async () => {
+    const result = await runCli(["skills", "-i", "missing-folder", "-o", "custom-out"], workingFolder);
+
+    assert.equal(result.exitCode, 0, result.stderr);
+    assert(result.stdout.includes("  debug-addon "), result.stdout);
+    assert.deepEqual(fs.readdirSync(workingFolder), [], "skills should not create -o folders");
+  }).timeout(15000);
+
+  it("prints only the list when run inside a project", async () => {
+    const projectFolder = fs.mkdtempSync(path.join(os.tmpdir(), "mct-skills-project-"));
+    try {
+      fs.mkdirSync(path.join(projectFolder, "behavior_packs", "demo"), { recursive: true });
+      fs.writeFileSync(path.join(projectFolder, "behavior_packs", "demo", "manifest.json"), "{}");
+
+      const result = await runCli(["skills"], projectFolder);
+
+      assert.equal(result.exitCode, 0, result.stderr);
+      assert(result.stdout.startsWith("Minecraft Creator Tools "), result.stdout.substring(0, 200));
+      assert.deepEqual(fs.readdirSync(projectFolder), ["behavior_packs"], "skills should not write to the project");
+    } finally {
+      fs.rmSync(projectFolder, { recursive: true, force: true });
+    }
+  }).timeout(15000);
+
+  it("is named at the end of mct --help", async () => {
+    const result = await runCli(["--help"], workingFolder);
+
+    assert.equal(result.exitCode, 0, result.stderr);
+    assert(result.stdout.includes("Agent skills:"), "--help should have an Agent skills section");
+    assert(result.stdout.includes(skillNames.join(", ")), "--help should name the skills");
+    assert(result.stdout.includes("`mct skills <name>`"), "--help should say how to print a skill");
+  }).timeout(15000);
 });

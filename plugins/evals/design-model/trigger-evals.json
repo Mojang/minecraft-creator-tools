@@ -1,0 +1,86 @@
+[
+  {
+    "query": "make my goblin look like a mushroom creature",
+    "should_trigger": true
+  },
+  {
+    "query": "give the dragon in my add-on bigger wings",
+    "should_trigger": true
+  },
+  {
+    "query": "draw a purple hammer icon for my custom item",
+    "should_trigger": true
+  },
+  {
+    "query": "the texture on my bedrock mob looks wrong, can you redo it in green and brown?",
+    "should_trigger": true
+  },
+  {
+    "query": "design a 3D model for my robot entity",
+    "should_trigger": true
+  },
+  {
+    "query": "retexture my crate block with metal corners",
+    "should_trigger": true
+  },
+  {
+    "query": "make my custom sword's icon look like an enchanted blade",
+    "should_trigger": true
+  },
+  {
+    "query": "recolor my slime mob to be blue and translucent-looking",
+    "should_trigger": true
+  },
+  {
+    "query": "my beetle mob is just a box, make it look like a beetle",
+    "should_trigger": true
+  },
+  {
+    "query": "create a pixel-art texture for my ruby ore block",
+    "should_trigger": true
+  },
+  {
+    "query": "create a new hostile goblin mob that spawns in swamps",
+    "should_trigger": false
+  },
+  {
+    "query": "my mob is invisible after I edited its files",
+    "should_trigger": false
+  },
+  {
+    "query": "import my Blockbench .bbmodel and export it for Java Edition",
+    "should_trigger": false
+  },
+  {
+    "query": "make a 3D model of a chair in Blender",
+    "should_trigger": false
+  },
+  {
+    "query": "add walk and attack animations to my goblin",
+    "should_trigger": false
+  },
+  {
+    "query": "design the landing page for my Minecraft server",
+    "should_trigger": false
+  },
+  {
+    "query": "change my Minecraft player skin to a knight",
+    "should_trigger": false
+  },
+  {
+    "query": "train an ML model to classify Minecraft screenshots",
+    "should_trigger": false
+  },
+  {
+    "query": "build a castle structure out of stone bricks",
+    "should_trigger": false
+  },
+  {
+    "query": "what resolution should a Java Edition resource pack texture be?",
+    "should_trigger": false
+  },
+  {
+    "query": "give my crate block a custom 3D shape with a lid",
+    "should_trigger": false
+  }
+]

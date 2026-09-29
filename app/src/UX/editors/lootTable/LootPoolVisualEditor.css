@@ -25,7 +25,7 @@
 
 .lpve-entry-count {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .lpve-entries-list {
@@ -40,7 +40,7 @@
   align-items: center;
   gap: 8px;
   padding: 24px;
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.7);
   font-size: 13px;
   text-align: center;
 }
@@ -58,11 +58,11 @@ body.ct-light .lpve-entries-title {
 }
 
 body.ct-light .lpve-entry-count {
-  color: #5e5a55;
+  color: #46433f;
 }
 
 body.ct-light .lpve-empty-state {
-  color: #5e5a55;
+  color: #46433f;
 }
 
 body.ct-light .lpve-empty-icon {

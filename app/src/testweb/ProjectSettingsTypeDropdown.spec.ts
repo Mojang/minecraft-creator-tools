@@ -206,4 +206,99 @@ test.describe("Project Settings Type dropdown @focused", () => {
     // Flip back
     await versionSelect.selectOption({ label: initialVersionValue });
   });
+
+  test("Target Minecraft dropdown accepts every track and keeps it after re-render", async ({ page }) => {
+    // Regression for the Target Minecraft dropdown snapping back to the
+    // "Default (...)" option after picking "Latest Minecraft Bedrock". The
+    // selected option was derived with `track ? track + 1 : 0`, and
+    // MinecraftTrack.main is 0 — the one non-default track that is falsy — so
+    // it rendered as the default option, and from there the user could not
+    // visibly select it again in the same session.
+    const ok = await enterEditor(page, "dark");
+    test.skip(!ok, "Could not enter editor");
+
+    const projectSettings = page.locator("text=/^Project Settings$/").first();
+    await expect(projectSettings).toBeVisible({ timeout: 10000 });
+    await projectSettings.click();
+    await page.waitForTimeout(800);
+
+    const targetSelect = page.locator('select[aria-labelledby="ppe-tracklabel"]');
+    await expect(targetSelect).toBeVisible({ timeout: 5000 });
+
+    const targetOptions = await targetSelect.locator("option").allTextContents();
+    expect(targetOptions, "Target Minecraft should list the default plus the four tracks").toHaveLength(5);
+    const [defaultOption, ...trackOptions] = targetOptions;
+    expect(trackOptions).toEqual(
+      expect.arrayContaining(["Latest Minecraft Bedrock", "Latest Minecraft Bedrock preview"])
+    );
+
+    const editPrefSelect = page.locator('select[aria-labelledby="ppe-defaultEditlabel"]');
+    const editPrefOptions = await editPrefSelect.locator("option").allTextContents();
+    const currentEditPref = await editPrefSelect.inputValue();
+    const otherEditPref = editPrefOptions.find((o) => o && o !== currentEditPref) || editPrefOptions[0];
+
+    async function forceParentReRender() {
+      const before = await editPrefSelect.inputValue();
+      const toggleTo = before === otherEditPref ? currentEditPref : otherEditPref;
+      await editPrefSelect.selectOption({ label: toggleTo });
+      await page.waitForTimeout(200);
+    }
+
+    // Walk every track, then return to the default and back to the first
+    // track again: the last hop is the one that used to be impossible.
+    const sequence = [...trackOptions, defaultOption, trackOptions[0]];
+    for (const option of sequence) {
+      await targetSelect.selectOption({ label: option });
+      await page.waitForTimeout(150);
+      expect(
+        await targetSelect.inputValue(),
+        `Target Minecraft did not show '${option}' right after selecting it`
+      ).toBe(option);
+
+      await forceParentReRender();
+      expect(
+        await targetSelect.inputValue(),
+        `Target Minecraft reverted after parent re-render: expected '${option}', got '${await targetSelect.inputValue()}'`
+      ).toBe(option);
+    }
+
+    // Leave the project on the default target.
+    await targetSelect.selectOption({ label: defaultOption });
+  });
+
+  test("Edit Experience dropdown shows each chosen option immediately and stays editable", async ({ page }) => {
+    // The Edit Experience dropdown is used above only as a re-render lever;
+    // this pins its own behavior: every option must display as selected right
+    // after being picked (no page reload), and the dropdown must accept
+    // further changes within the same session.
+    const ok = await enterEditor(page, "dark");
+    test.skip(!ok, "Could not enter editor");
+
+    const projectSettings = page.locator("text=/^Project Settings$/").first();
+    await expect(projectSettings).toBeVisible({ timeout: 10000 });
+    await projectSettings.click();
+    await page.waitForTimeout(800);
+
+    const editPrefSelect = page.locator('select[aria-labelledby="ppe-defaultEditlabel"]');
+    await expect(editPrefSelect).toBeVisible({ timeout: 5000 });
+
+    const editPrefOptions = await editPrefSelect.locator("option").allTextContents();
+    expect(editPrefOptions.length).toBeGreaterThanOrEqual(4);
+    const initial = await editPrefSelect.inputValue();
+    expect(editPrefOptions).toContain(initial);
+
+    // Every option in turn, then back to the initial one — two full passes so
+    // that a dropdown which only honors its first change is caught.
+    const sequence = [...editPrefOptions.filter((o) => o !== initial), initial, ...editPrefOptions];
+    for (const option of sequence) {
+      await editPrefSelect.selectOption({ label: option });
+      await page.waitForTimeout(200);
+      expect(
+        await editPrefSelect.inputValue(),
+        `Edit Experience did not show '${option}' right after selecting it`
+      ).toBe(option);
+    }
+
+    await editPrefSelect.selectOption({ label: initial });
+  });
 });

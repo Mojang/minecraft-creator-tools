@@ -1,0 +1,22 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "fungi:magic_hammer"
+    },
+    "tags": ["crafting_table"],
+    "pattern": ["GGG", " S ", " S "],
+    "key": {
+      "G": {
+        "item": "fungi:glow_mushroom_block"
+      },
+      "S": {
+        "item": "minecraft:stick"
+      }
+    },
+    "result": {
+      "item": "fungi:magic_hammer",
+      "count": 1
+    }
+  }
+}

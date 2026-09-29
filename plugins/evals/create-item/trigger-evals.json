@@ -1,0 +1,22 @@
+[
+  { "query": "add a magic hammer to my bedrock add-on", "should_trigger": true },
+  { "query": "make a food that gives night vision when you eat it", "should_trigger": true },
+  { "query": "create ruby armor, all four pieces", "should_trigger": true },
+  { "query": "I need a crafting recipe for my custom sword", "should_trigger": true },
+  { "query": "new throwable item: a snowball that deals 4 damage", "should_trigger": true },
+  { "query": "make my custom sword do 12 damage instead of 7", "should_trigger": true },
+  { "query": "add a golden key collectible that stacks to 16", "should_trigger": true },
+  { "query": "make an emerald pickaxe with 2000 durability", "should_trigger": true },
+  { "query": "my ruby armor is invisible when I wear it", "should_trigger": true },
+  { "query": "create a healing potion-like item that gives regeneration", "should_trigger": true },
+  { "query": "make a ruby ore block that drops rubies", "should_trigger": false },
+  { "query": "create a hostile goblin mob", "should_trigger": false },
+  { "query": "draw a new purple pixel-art icon for my existing hammer", "should_trigger": false },
+  { "query": "my sword shows item.demo:sword instead of its name", "should_trigger": false },
+  { "query": "how do I give myself a netherite sword with commands?", "should_trigger": false },
+  { "query": "add a new item to my Fabric mod's registry", "should_trigger": false },
+  { "query": "what's the best enchantment for a trident?", "should_trigger": false },
+  { "query": "add an item to the shopping cart component in my React app", "should_trigger": false },
+  { "query": "list all the items in the vanilla creative inventory", "should_trigger": false },
+  { "query": "create a Java Edition datapack recipe for elytra", "should_trigger": false }
+]

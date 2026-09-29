@@ -1,0 +1,26 @@
+{
+  "format_version": "1.21.70",
+  "minecraft:item": {
+    "description": {
+      "identifier": "demo:shell_sword",
+      "menu_category": {
+        "category": "items"
+      }
+    },
+    "components": {
+      "minecraft:damage": {
+        "value": 5
+      },
+      "minecraft:durability": {
+        "max_durability": 250
+      },
+      "minecraft:hand_equipped": true,
+      "minecraft:enchantable": {
+        "value": 10,
+        "slot": "sword"
+      },
+      "minecraft:can_destroy_in_creative": false,
+      "minecraft:icon": "demo:shell_sword"
+    }
+  }
+}

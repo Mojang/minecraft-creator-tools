@@ -9,6 +9,12 @@
  * surface (~1.4:1), making them unreadable. The fix adds light-mode color
  * overrides; this test pins the readable contrast so it can't silently regress.
  *
+ * The loot editor's secondary text — count/bonus labels, the luck hint, the
+ * entry count, the entry tile's type badge, quantity and probability, and the
+ * drop-zone prompt — is covered too. Those sit on the mid-gray content surface
+ * (not the outermost page background), where the "muted" colors first chosen
+ * for them only reached ~3-4:1 in BOTH themes.
+ *
  * Run (from app/):
  *   npx playwright test SpawnLootEditorContrast.spec.ts --project=chromium
  */
@@ -145,7 +151,15 @@ for (const theme of ["light", "dark"] as const) {
     await page.locator(".ssre-categoryName").first().waitFor({ state: "visible", timeout: 10000 });
     await takeScreenshot(page, `debugoutput/screenshots/spawn-loot-contrast-spawn-${theme}`);
 
-    for (const sel of [".ssre-categoryName", ".ssre-biomeHeader"]) {
+    for (const sel of [
+      ".ssre-categoryName",
+      ".ssre-biomeHeader",
+      ".ssre-biomeLabel",
+      ".ssre-defaultHeader",
+      ".ssre-configLabel",
+      ".ssre-configRow",
+      ".ssre-useDefault",
+    ]) {
       failures.push(...(await collectLowContrast(page, sel)));
     }
 
@@ -155,7 +169,24 @@ for (const theme of ["light", "dark"] as const) {
     await page.locator(".ltve-tab").first().waitFor({ state: "visible", timeout: 10000 });
     await takeScreenshot(page, `debugoutput/screenshots/spawn-loot-contrast-loot-${theme}`);
 
-    for (const sel of [".ltve-tab", ".dre-header", ".dre-explanation", ".lpve-entries-title"]) {
+    for (const sel of [
+      ".ltve-tab",
+      ".dre-header",
+      ".dre-explanation",
+      ".dre-explanation-highlight",
+      ".dre-mode-btn",
+      ".dre-input-label",
+      ".dre-bonus-label",
+      ".dre-bonus-tooltip",
+      ".lpve-entries-title",
+      ".lpve-entry-count",
+      ".let-name",
+      ".let-type-badge",
+      ".let-quantity",
+      ".let-probability",
+      ".lidz-drop-zone",
+      ".lpo-add-pool-btn",
+    ]) {
       failures.push(...(await collectLowContrast(page, sel)));
     }
 

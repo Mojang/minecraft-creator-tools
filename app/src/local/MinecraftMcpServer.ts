@@ -50,12 +50,14 @@ import { ProjectItemType } from "../app/IProjectItemData";
 import IFolder from "../storage/IFolder";
 import { initializeToolCommands } from "../app/toolcommands";
 import { registerNodeOnlyCommands } from "../app/toolcommands/registerNodeCommands";
+import McpSkillLibrary from "./McpSkillLibrary";
+import { constants } from "../core/Constants";
 
 import * as fs from "fs";
 import * as path from "path";
 import * as net from "net";
 import { PNG } from "pngjs";
-import { UNSAFE_PORTS } from "./LocalUtilities";
+import LocalUtilities, { UNSAFE_PORTS } from "./LocalUtilities";
 
 /**
  * Interface for MCT MCP preferences that can be stored in .mct/mcp/prefs.json files.
@@ -96,6 +98,8 @@ export default class MinecraftMcpServer {
   private static readonly PORT_MAX_ATTEMPTS = 20;
 
   private _server: McpServer;
+  /** Agent skills served over MCP (see McpSkillLibrary). Also supplies the server instructions. */
+  private _skills: McpSkillLibrary;
   private _env: LocalEnvironment | undefined = undefined;
   /** Single HTTP transport instance. Created once in startHttp() and reused for all requests. */
   private _httpTransport: StreamableHTTPServerTransport | undefined = undefined;
@@ -145,10 +149,15 @@ export default class MinecraftMcpServer {
   }
 
   constructor() {
-    this._server = new McpServer({
-      name: "minecraft-creator-tools",
-      version: "1.0.0",
-    });
+    this._skills = McpSkillLibrary.load(constants.version);
+
+    this._server = new McpServer(
+      {
+        name: "minecraft-creator-tools",
+        version: "1.0.0",
+      },
+      { instructions: this._skills.buildInstructions() }
+    );
 
     this._processValidateContent = this._processValidateContent.bind(this);
     this._processValidateContentAtPath = this._processValidateContentAtPath.bind(this);
@@ -596,6 +605,11 @@ export default class MinecraftMcpServer {
       throw new Error("Creator Tools is not initialized");
     }
 
+    const eulaError = await this._eulaNotAcceptedResult();
+    if (eulaError) {
+      return eulaError;
+    }
+
     const serverManager = this.ensureServerManager();
 
     await this._env.load();
@@ -897,6 +911,50 @@ export default class MinecraftMcpServer {
     return false;
   }
 
+  /**
+   * Returns an error the agent can act on when the Minecraft EULA and Privacy Statement haven't been
+   * accepted, or undefined when they have. Tools that download Minecraft assets or the Bedrock
+   * Dedicated Server call this first, so they fail visibly instead of reporting success.
+   *
+   * Preferences are re-read from disk so that running `mct eula` in another terminal takes effect
+   * without restarting the MCP server. As in the CLI, MCTOOLS_I_ACCEPT_EULA_AT_MINECRAFTDOTNETSLASHEULA=true
+   * also counts as acceptance.
+   */
+  async _eulaNotAcceptedResult(): Promise<CallToolResult | undefined> {
+    if (!this._env) {
+      return undefined;
+    }
+
+    await this._env.load();
+
+    if (!this._env.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula) {
+      await this._env.reloadEulaAcceptance();
+    }
+
+    if (this._env.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula) {
+      return undefined;
+    }
+
+    if (LocalUtilities.eulaAcceptedViaEnvironment) {
+      await this._env.saveEulaAcceptance();
+      return undefined;
+    }
+
+    return {
+      isError: true,
+      content: [
+        {
+          type: "text",
+          text:
+            "Nothing was changed: this tool uses Minecraft assets or the Bedrock Dedicated Server, which require " +
+            "accepting the Minecraft End User License Agreement (https://minecraft.net/eula) and Privacy Statement " +
+            "(https://go.microsoft.com/fwlink/?LinkId=521839). Ask the user to run `mct eula` in a terminal to review " +
+            "and accept them; don't accept on their behalf. Then call this tool again.",
+        },
+      ],
+    };
+  }
+
   async _createOp(args: {
     folderPathToCreateProjectAt: string;
     title: string;
@@ -914,6 +972,11 @@ export default class MinecraftMcpServer {
   }): Promise<CallToolResult> {
     if (!this._creatorTools) {
       throw new Error("Creator Tools is not initialized");
+    }
+
+    const eulaError = await this._eulaNotAcceptedResult();
+    if (eulaError) {
+      return eulaError;
     }
 
     if (!fs.existsSync(args.folderPathToCreateProjectAt)) {
@@ -993,6 +1056,11 @@ export default class MinecraftMcpServer {
   }): Promise<CallToolResult> {
     if (!this._creatorTools) {
       throw new Error("Creator Tools is not initialized");
+    }
+
+    const eulaError = await this._eulaNotAcceptedResult();
+    if (eulaError) {
+      return eulaError;
     }
 
     if (!fs.existsSync(args.folderPathToCreateProjectAt)) {
@@ -5379,6 +5447,7 @@ export default class MinecraftMcpServer {
 
     await this._configureTools();
     this._configurePrompts();
+    this._skills.register(this._server);
 
     const transport = new StdioServerTransport();
 
@@ -5490,6 +5559,7 @@ export default class MinecraftMcpServer {
     // The MCP SDK forbids registerCapabilities() after connect(), so the order matters.
     await this._configureTools();
     this._configurePrompts();
+    this._skills.register(this._server);
 
     // Create a single transport and connect it to the server.
     // The transport handles session management (init, session IDs, SSE) internally.
