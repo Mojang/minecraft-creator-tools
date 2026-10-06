@@ -1,0 +1,16 @@
+{
+  "format_version": "1.21.50",
+  "minecraft:recipe_furnace": {
+    "description": {
+      "identifier": "minecraft:furnace_oak_leaves"
+    },
+    "unlock": [
+      {
+        "item": "minecraft:oak_leaves"
+      }
+    ],
+    "tags": [ "furnace" ],
+    "input": "minecraft:oak_leaves",
+    "output": "minecraft:leaf_litter"
+  }
+}

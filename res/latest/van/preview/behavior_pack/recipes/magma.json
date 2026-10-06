@@ -1,0 +1,28 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:magma"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "pattern": [
+      "##",
+      "##"
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:magma_cream"
+      }
+    },
+    "unlock": [
+      {
+        "item": "minecraft:magma_cream"
+      }
+    ],
+    "result": {
+      "item": "minecraft:magma"
+    }
+  }
+}

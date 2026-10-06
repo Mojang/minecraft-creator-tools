@@ -1,0 +1,38 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "triggers events based on travel distance"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "distance",
+      "title": "Distance",
+      "dataType": "float",
+      "isRequired": true
+    },
+    {
+      "id": "effects",
+      "title": "Effects",
+      "dataType": "objectArray",
+      "alternates": [
+        {
+          "id": "effects",
+          "dataType": "string"
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "description": "Triggers particle events when the emitter has traveled a specified distance. Useful for trail effects that change behavior—such as a projectile leaving a smoke trail that intensifies as it travels, or a mob's footsteps spawning dust particles at regular intervals as it walks.",
+  "title": "Client Particles Emitter Lifetime Events Travel Distance Events",
+  "id": "emitter_lifetime_events travel_distance_events"
+}

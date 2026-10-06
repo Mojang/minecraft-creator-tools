@@ -1,0 +1,68 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "3.0.0.ToggleSetting",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines a toggle setting with name, text, and default boolean value"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "default",
+      "title": "Default",
+      "dataType": "boolean",
+      "isRequired": true
+    },
+    {
+      "id": "name",
+      "title": "Name",
+      "dataType": "string",
+      "validity": [
+        {
+          "comparison": "pattern",
+          "value": "^(?:(?!^(minecraft):).)+:(?:.)+$"
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "text",
+      "title": "Text",
+      "dataType": "string",
+      "isRequired": true
+    },
+    {
+      "id": "type",
+      "title": "SettingType",
+      "dataType": "string",
+      "choices": [
+        {
+          "id": "dropdown",
+          "title": "Dropdown"
+        },
+        {
+          "id": "label",
+          "title": "Label"
+        },
+        {
+          "id": "slider",
+          "title": "Slider"
+        },
+        {
+          "id": "toggle",
+          "title": "Toggle"
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "description": "A boolean on/off setting that appears in the pack's world settings UI. Players can toggle features like 'Enable Hard Mode' or 'Show Tutorials' before entering a world. Scripts can read these values at runtime.",
+  "title": "Packmanifest ToggleSetting"
+}

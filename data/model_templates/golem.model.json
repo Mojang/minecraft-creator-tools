@@ -1,0 +1,413 @@
+{
+  "formatVersion": "1.0.0",
+  "identifier": "custom_golem",
+  "description": "A massive stone golem with thick limbs and glowing core. 48 units tall (~3 blocks). Perfect for guardian or construct mobs.",
+  "textureSize": [
+    64,
+    64
+  ],
+  "textures": {
+    "stone": {
+      "background": {
+        "type": "stipple_noise",
+        "colors": [
+          "#6B6B6B",
+          "#5B5B5B",
+          "#7B7B7B"
+        ],
+        "seed": 3001
+      }
+    },
+    "stone_dark": {
+      "background": {
+        "type": "stipple_noise",
+        "colors": [
+          "#404040",
+          "#303030",
+          "#505050"
+        ],
+        "seed": 3002
+      }
+    },
+    "moss": {
+      "background": {
+        "type": "perlin_noise",
+        "colors": [
+          "#4A7A4A",
+          "#3A6A3A",
+          "#5A8A5A"
+        ],
+        "seed": 3003,
+        "scale": 4
+      }
+    },
+    "core_glow": {
+      "background": {
+        "type": "gradient",
+        "colors": [
+          "#FF6600",
+          "#FFCC00"
+        ]
+      }
+    },
+    "eyes": {
+      "background": {
+        "type": "solid",
+        "colors": [
+          "#FFFF00"
+        ]
+      }
+    }
+  },
+  "bones": [
+    {
+      "name": "body",
+      "pivot": [
+        0,
+        24,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -10,
+            16,
+            -6
+          ],
+          "size": [
+            20,
+            20,
+            12
+          ],
+          "faces": {
+            "north": {
+              "textureId": "stone"
+            },
+            "south": {
+              "textureId": "stone"
+            },
+            "east": {
+              "textureId": "stone"
+            },
+            "west": {
+              "textureId": "stone"
+            },
+            "up": {
+              "textureId": "moss"
+            },
+            "down": {
+              "textureId": "stone_dark"
+            }
+          }
+        },
+        {
+          "origin": [
+            -3,
+            22,
+            -7
+          ],
+          "size": [
+            6,
+            8,
+            2
+          ],
+          "faces": {
+            "north": {
+              "textureId": "core_glow"
+            },
+            "south": {
+              "textureId": "core_glow"
+            },
+            "east": {
+              "textureId": "core_glow"
+            },
+            "west": {
+              "textureId": "core_glow"
+            },
+            "up": {
+              "textureId": "core_glow"
+            },
+            "down": {
+              "textureId": "core_glow"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "head",
+      "pivot": [
+        0,
+        36,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -6,
+            36,
+            -5
+          ],
+          "size": [
+            12,
+            10,
+            10
+          ],
+          "faces": {
+            "north": {
+              "textureId": "stone"
+            },
+            "south": {
+              "textureId": "stone"
+            },
+            "east": {
+              "textureId": "stone"
+            },
+            "west": {
+              "textureId": "stone"
+            },
+            "up": {
+              "textureId": "moss"
+            },
+            "down": {
+              "textureId": "stone_dark"
+            }
+          }
+        },
+        {
+          "origin": [
+            -4,
+            40,
+            -6
+          ],
+          "size": [
+            2,
+            3,
+            2
+          ],
+          "faces": {
+            "north": {
+              "textureId": "eyes"
+            },
+            "south": {
+              "textureId": "eyes"
+            },
+            "east": {
+              "textureId": "eyes"
+            },
+            "west": {
+              "textureId": "eyes"
+            },
+            "up": {
+              "textureId": "eyes"
+            },
+            "down": {
+              "textureId": "eyes"
+            }
+          }
+        },
+        {
+          "origin": [
+            2,
+            40,
+            -6
+          ],
+          "size": [
+            2,
+            3,
+            2
+          ],
+          "faces": {
+            "north": {
+              "textureId": "eyes"
+            },
+            "south": {
+              "textureId": "eyes"
+            },
+            "east": {
+              "textureId": "eyes"
+            },
+            "west": {
+              "textureId": "eyes"
+            },
+            "up": {
+              "textureId": "eyes"
+            },
+            "down": {
+              "textureId": "eyes"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "right_arm",
+      "pivot": [
+        12,
+        32,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            10,
+            8,
+            -5
+          ],
+          "size": [
+            8,
+            28,
+            10
+          ],
+          "faces": {
+            "north": {
+              "textureId": "stone"
+            },
+            "south": {
+              "textureId": "stone"
+            },
+            "east": {
+              "textureId": "stone"
+            },
+            "west": {
+              "textureId": "stone"
+            },
+            "up": {
+              "textureId": "moss"
+            },
+            "down": {
+              "textureId": "stone_dark"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "left_arm",
+      "pivot": [
+        -12,
+        32,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -18,
+            8,
+            -5
+          ],
+          "size": [
+            8,
+            28,
+            10
+          ],
+          "faces": {
+            "north": {
+              "textureId": "stone"
+            },
+            "south": {
+              "textureId": "stone"
+            },
+            "east": {
+              "textureId": "stone"
+            },
+            "west": {
+              "textureId": "stone"
+            },
+            "up": {
+              "textureId": "moss"
+            },
+            "down": {
+              "textureId": "stone_dark"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "right_leg",
+      "pivot": [
+        5,
+        16,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            2,
+            0,
+            -4
+          ],
+          "size": [
+            8,
+            16,
+            8
+          ],
+          "faces": {
+            "north": {
+              "textureId": "stone"
+            },
+            "south": {
+              "textureId": "stone"
+            },
+            "east": {
+              "textureId": "stone"
+            },
+            "west": {
+              "textureId": "stone"
+            },
+            "up": {
+              "textureId": "stone_dark"
+            },
+            "down": {
+              "textureId": "stone_dark"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "left_leg",
+      "pivot": [
+        -5,
+        16,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -10,
+            0,
+            -4
+          ],
+          "size": [
+            8,
+            16,
+            8
+          ],
+          "faces": {
+            "north": {
+              "textureId": "stone"
+            },
+            "south": {
+              "textureId": "stone"
+            },
+            "east": {
+              "textureId": "stone"
+            },
+            "west": {
+              "textureId": "stone"
+            },
+            "up": {
+              "textureId": "stone_dark"
+            },
+            "down": {
+              "textureId": "stone_dark"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "category": "entity"
+}

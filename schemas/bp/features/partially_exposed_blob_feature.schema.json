@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Partially Exposed Blob Feature",
+  "description": "\n\nProperties:\n• description ({ identifier })\n• placement_radius_around_floor (int)\n• exposed_face (string)",
+  "type": "object",
+  "properties": {
+    "description": {
+      "title": "Description",
+      "description": "\n\nProperties:\n• identifier (string)",
+      "type": "object",
+      "properties": {
+        "identifier": {
+          "title": "Identifier",
+          "description": "The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
+          "type": "string"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Description",
+          "description": "Create a Description",
+          "body": {
+            "identifier": ""
+          }
+        }
+      ]
+    },
+    "placement_radius_around_floor": {
+      "title": "Placement Radius Around Floor",
+      "description": "Defines the cubic radius of the blob. [1, 8]",
+      "type": "integer"
+    },
+    "exposed_face": {
+      "title": "Exposed Face",
+      "description": "Defines a block face that is allowed to be exposed to air and/or water. Other faces need to be embedded for blocks to be placed by this feature. Defaults to upwards face.",
+      "type": "string"
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "Partially Exposed Blob Feature",
+      "description": "Create a Partially Exposed Blob Feature",
+      "body": {
+        "description": "",
+        "placement_radius_around_floor": 0,
+        "exposed_face": ""
+      }
+    }
+  ]
+}

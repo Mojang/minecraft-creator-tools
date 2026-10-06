@@ -1,0 +1,47 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines spawn brightnessfilter settings"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Spawn BrightnessFilter",
+  "fields": [
+    {
+      "id": "adjust_for_weather",
+      "title": "Adjust For Weather",
+      "dataType": "boolean"
+    },
+    {
+      "id": "max",
+      "title": "Max",
+      "dataType": "int",
+      "validity": [
+        {
+          "comparison": "<=",
+          "value": 15
+        }
+      ]
+    },
+    {
+      "id": "min",
+      "title": "Min",
+      "dataType": "int",
+      "validity": [
+        {
+          "comparison": "<=",
+          "value": 15
+        }
+      ]
+    }
+  ],
+  "description": "Defines spawn brightnessfilter settings.",
+  "title": "Spawn BrightnessFilter Misc"
+}

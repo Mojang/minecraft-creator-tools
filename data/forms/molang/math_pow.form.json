@@ -1,0 +1,19 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "raises a base value to an exponent power"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "`math.pow(base, exponent)`",
+  "fields": [],
+  "description": "Elevates `base` to the `exponent`'th power",
+  "title": "Pow(base, Exponent)"
+}

@@ -1,0 +1,28 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines crafting catalog document configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "categories",
+      "title": "Categories",
+      "description": "The categories we are adding groups to.",
+      "dataType": "object",
+      "subFormId": "misc/crafting_catalog_category",
+      "isRequired": true
+    }
+  ],
+  "description": "The root object for defining the crafting catalog",
+  "title": "Crafting Catalog Document Misc",
+  "id": "Crafting Catalog Document"
+}

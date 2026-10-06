@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Item Description",
+  "description": "Contains the required identifier for the item. May contain optional fields like menu_category.",
+  "properties": {
+    "identifier": {
+      "title": "Identifier",
+      "description": "Unique name for the item that must include a namespace and must not use the Minecraft namespace unless overriding a Vanilla item.",
+      "type": "string"
+    },
+    "menu_category": {
+      "title": "Menu Category",
+      "description": "menu_category contains the creative group name and category for this item.",
+      "$ref": "./item_menu_category.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Item Menu Category",
+          "description": "menu_category contains the creative group name and category for this item.",
+          "body": {
+            "category": "none",
+            "group": "",
+            "is_hidden_in_commands": true
+          }
+        }
+      ]
+    }
+  },
+  "required": [
+    "identifier"
+  ]
+}

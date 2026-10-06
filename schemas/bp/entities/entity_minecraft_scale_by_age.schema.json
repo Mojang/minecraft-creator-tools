@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Scale By Age",
+  "description": "Defines the entity's size interpolation based on the entity's age.",
+  "properties": {
+    "end_scale": {
+      "title": "End Scale",
+      "description": "Ending scale of the entity when it's fully grown.",
+      "type": "number",
+      "default": 1
+    },
+    "start_scale": {
+      "title": "Start Scale",
+      "description": "Initial scale of the newborn entity.",
+      "type": "number",
+      "default": 1
+    }
+  }
+}

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Fog: Clouds/mist -->
+  <ellipse cx="5" cy="6" rx="3" ry="2" fill-opacity="0.3"/>
+  <ellipse cx="11" cy="5" rx="3" ry="2" fill-opacity="0.3"/>
+  <ellipse cx="8" cy="7" rx="4" ry="2.5" fill-opacity="0.4"/>
+  <ellipse cx="4" cy="10" rx="3" ry="1.5" fill-opacity="0.2"/>
+  <ellipse cx="12" cy="11" rx="3" ry="1.5" fill-opacity="0.2"/>
+  <ellipse cx="8" cy="12" rx="4" ry="2" fill-opacity="0.25"/>
+</svg>

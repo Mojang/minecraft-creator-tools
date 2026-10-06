@@ -1,0 +1,29 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:end_brick_wall"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "pattern": [
+      "###",
+      "###"
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:end_bricks"
+      }
+    },
+    "unlock": [
+      {
+        "item": "minecraft:end_bricks"
+      }
+    ],
+    "result": {
+      "item": "minecraft:end_stone_brick_wall",
+      "count": 6
+    }
+  }
+}

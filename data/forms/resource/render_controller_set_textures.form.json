@@ -1,0 +1,51 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "title": "Render Controller Set",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines texture selection logic for entity rendering"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "render_controllers",
+      "displayTitle": false,
+      "allowCreateDelete": false,
+      "dataType": "keyedObjectCollection",
+      "subForm": {
+        "fields": [
+          {
+            "id": "textures",
+            "title": "Textures",
+            "description": "A name or expression that expresses logic for which texture to select",
+            "dataType": "stringArray",
+            "allowCreateDelete": false
+          },
+          {
+            "id": "arrays",
+            "title": "Lists",
+            "dataType": "object",
+            "subForm": {
+              "fields": [
+                {
+                  "id": "textures",
+                  "title": "Textures",
+                  "description": "Lists of textures that can be used in selection calculations",
+                  "dataType": "keyedStringArrayCollection"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Defines texture selection logic for entity rendering."
+}

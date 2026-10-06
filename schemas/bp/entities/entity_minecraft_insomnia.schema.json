@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Insomnia",
+  "description": "Adds a timer since last rested to see if phantoms should spawn.",
+  "properties": {
+    "days_until_insomnia": {
+      "title": "Days Until Insomnia",
+      "description": "Number of days the mob has to stay up until the insomnia effect begins.\n\nSample values:\n• player: 3",
+      "type": "number",
+      "default": 3
+    }
+  }
+}

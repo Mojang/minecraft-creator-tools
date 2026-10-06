@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Voxel Shapes VoxelShapeFile",
+  "description": "Defines a complete voxel shape file.",
+  "properties": {
+    "description": {
+      "title": "Description",
+      "description": "\n\nProperties:\n• identifier (object)",
+      "$ref": "./voxel_shapes_description.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Voxel Shapes Description",
+          "description": "Defines voxel shape identifier.",
+          "body": {
+            "identifier": ""
+          }
+        }
+      ]
+    },
+    "shape": {
+      "title": "Shape",
+      "description": "\n\nProperties:\n• boxes [maxLen: 32]",
+      "$ref": "./voxel_shapes_shape.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Voxel Shapes Shape",
+          "description": "Defines a voxel shape with boxes.",
+          "body": {
+            "boxes": ""
+          }
+        }
+      ]
+    }
+  },
+  "required": [
+    "description",
+    "shape"
+  ]
+}

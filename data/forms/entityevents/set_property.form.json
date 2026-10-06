@@ -1,0 +1,41 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "set_property",
+  "tags": [
+    "entityevent"
+  ],
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "sets an entity property value"
+          }
+        ]
+      }
+    ]
+  },
+  "title": "Set Entity Property",
+  "description": "Sets the value of an entity property. The property must be defined in the 'properties' section of the file.",
+  "fields": [
+    {
+      "id": "property",
+      "description": "The property to set on the entity.",
+      "dataType": "string"
+    },
+    {
+      "id": "value",
+      "description": "The value to assign to the property.",
+      "dataType": "string"
+    }
+  ],
+  "samples": {
+    "samples": [
+      {
+        "path": "Example:",
+        "content": "\t\t\"set_property\": {\r\n\t\t\t\"minecraft:has_nectar\": false\r\n\t\t}\r\n\t"
+      }
+    ]
+  }
+}

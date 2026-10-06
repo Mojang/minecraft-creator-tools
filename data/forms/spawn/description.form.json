@@ -1,0 +1,37 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "Description",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "identifier",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "identifies as "
+          },
+          {
+            "type": "value",
+            "field": "identifier",
+            "humanify": "minecraft"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "identifier",
+      "title": "Identifier",
+      "dataType": "string",
+      "isRequired": true
+    }
+  ],
+  "description": "Contains the entity identifier that these spawn rules apply to. The identifier must match an entity defined in a behavior pack (e.g., 'minecraft:creeper' or 'mypack:custom_mob').",
+  "title": "Spawn Description"
+}

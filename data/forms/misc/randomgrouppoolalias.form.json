@@ -1,0 +1,28 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines randomgrouppoolalias configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "RandomGroupPoolAlias",
+  "fields": [
+    {
+      "id": "groups",
+      "title": "Groups",
+      "description": "Aliases for a RandomGroup",
+      "dataType": "object",
+      "subFormId": "misc/weightedrandomitem",
+      "isRequired": true
+    }
+  ],
+  "description": "Pool alias for a RandomGroup of aliases",
+  "title": "RandomGroupPoolAlias Misc"
+}

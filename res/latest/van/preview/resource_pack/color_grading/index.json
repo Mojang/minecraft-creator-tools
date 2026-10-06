@@ -1,0 +1,19 @@
+{
+  "files": [
+    "cold_color_grading.json",
+    "color_grading.json",
+    "coolish_color_grading.json",
+    "desert_color_grading.json",
+    "hot_color_grading.json",
+    "ice_plains_spikes_color_grading.json",
+    "lush_caves_color_grading.json",
+    "mangrove_swamp_color_grading.json",
+    "mesa_color_grading.json",
+    "mushroom_island_color_grading.json",
+    "pale_garden_color_grading.json",
+    "roofed_forest_color_grading.json",
+    "swampland_color_grading.json",
+    "warmish_color_grading.json"
+  ],
+  "folders": []
+}

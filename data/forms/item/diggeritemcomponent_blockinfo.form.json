@@ -1,0 +1,36 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has block digging configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "block",
+      "title": "block",
+      "description": "Block to be dug.",
+      "dataType": "object",
+      "subForm": {
+        "title": "Block",
+        "description": "Block",
+        "fields": []
+      }
+    },
+    {
+      "id": "speed",
+      "title": "speed",
+      "description": "Digging speed for the correlating block(s).",
+      "dataType": "int"
+    }
+  ],
+  "description": "DiggerItemComponent BlockInfo",
+  "title": "DiggerItemComponent BlockInfo"
+}

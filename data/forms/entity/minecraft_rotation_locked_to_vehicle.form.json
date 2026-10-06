@@ -1,0 +1,35 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has its rotation locked to match its vehicle"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "minecraft:rotation_locked_to_vehicle",
+  "versionIntroduced": "1.21.130",
+  "note": "Introduced in 1.21.130 as a rename of `minecraft:body_rotation_locked_to_vehicle`. Locks both the entity's body rotation and overall rotation to its mounted vehicle's facing direction.",
+  "fields": [],
+  "description": "Causes the entity's rotation to match their vehicle's facing direction.",
+  "title": "Rotation Locked To Vehicle",
+  "samples": {
+    "/vanilla/behavior_pack/entities/drowned.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:rotation_locked_to_vehicle/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/skeleton.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:rotation_locked_to_vehicle/",
+        "content": {}
+      }
+    ]
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "simpleMobGameTest": {
+    "description": "A simple mob test - the fox should attack the chicken. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server-gametest/minecraft-server-gametest/register",
+    "prefix": ["mc"],
+    "body": [
+      "// Note this code will run in experimental worlds with the Beta APIs experiment, and supporting GameTest structures.",
+      "function simpleMobGameTest(test: Test) {",
+      "  const attackerId = MinecraftEntityTypes.Fox;",
+      "  const victimId = MinecraftEntityTypes.Chicken;",
+      "  test.spawn(attackerId, { x: 5, y: 2, z: 5 });",
+      "  test.spawn(victimId, { x: 2, y: 2, z: 2 });",
+      "  test.assertEntityPresentInArea(victimId, true);",
+      "  test.succeedWhen(() => {",
+      "    test.assertEntityPresentInArea(victimId, false);",
+      "  });",
+      "}",
+      "register('StarterTests', 'simpleMobTest', simpleMobGameTest).maxTicks(400).structureName('gametests:mediumglass');",
+      ""
+    ]
+  },
+  "phantomsShouldFlyFromCats": {
+    "description": "Tests a failure case - phantoms should fly away from cats, but get captured by them. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server-gametest/minecraft-server-gametest/register",
+    "prefix": ["mc"],
+    "body": [
+      "// Note this code will run in experimental worlds with the Beta APIs experiment, and supporting GameTest structures.",
+      "function phantomsShouldFlyFromCats(test: Test) {",
+      "  test.spawn(MinecraftEntityTypes.Cat, { x: 4, y: 3, z: 3 });",
+      "  test.spawn(MinecraftEntityTypes.Phantom, { x: 4, y: 3, z: 3 });",
+      "  test.succeedWhenEntityPresent(MinecraftEntityTypes.Phantom, { x: 4, y: 6, z: 3 }, true);",
+      "}",
+      "register('MobBehaviorTests', 'phantoms_should_fly_from_cats', phantomsShouldFlyFromCats)",
+      "  .structureName('gametests:glass_cells');",
+      ""
+    ]
+  },
+  "minibiomes": {
+    "description": "Tests a roller coaster obstacle course. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server-gametest/minecraft-server-gametest/register",
+    "prefix": ["mc"],
+    "body": [
+      "// Note this code will run in experimental worlds with the Beta APIs experiment, and supporting GameTest structures.",
+      "function minibiomes(test: Test) {",
+      "  const minecart = test.spawn(MinecraftEntityTypes.Minecart, { x: 9, y: 7, z: 7 });",
+      "  const pig = test.spawn(MinecraftEntityTypes.Pig, { x: 9, y: 7, z: 7 });",
+      "  test.setBlockType(MinecraftBlockTypes.Cobblestone, { x: 10, y: 7, z: 7 });",
+      "  const minecartRideableComp = minecart.getComponent(EntityComponentTypes.Rideable);",
+      "  minecartRideableComp?.addRider(pig);",
+      "  test.succeedWhenEntityPresent(MinecraftEntityTypes.Pig, { x: 8, y: 3, z: 1 }, true);",
+      "}",
+      "register('ChallengeTests', 'minibiomes', minibiomes).structureName('gametests:minibiomes').maxTicks(160);",
+      ""
+    ]
+  }
+}

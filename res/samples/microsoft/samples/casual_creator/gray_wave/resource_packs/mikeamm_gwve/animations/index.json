@@ -1,0 +1,11 @@
+{
+  "files": [
+    "gray_wave.animation.json",
+    "gray_wave_generator.animation.json",
+    "gray_wave_generator_kit.animation.json",
+    "gray_zombie_leader.animation.json",
+    "turret.animation.json",
+    "turret_kit.animation.json"
+  ],
+  "folders": []
+}

@@ -1,0 +1,103 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "floats on liquid surfaces"
+          }
+        ]
+      }
+    ]
+  },
+  "note": "In 1.26.10 the `simulate_waves` boolean was replaced with the `movement_type` string field (`waves` / `bobbing` / `none`). `big_wave_probability` and `big_wave_speed` only apply when `movement_type` is `waves`.",
+  "fields": [
+    {
+      "id": "movement_type",
+      "title": "Movement Type",
+      "description": "Type of vertical movement applied to the entity. `waves` simulates wave movement based on the entity's speed (default). `bobbing` moves the entity up and down at a constant pace. `none` disables wave movement. Replaces the previous `simulate_waves` boolean.",
+      "defaultValue": "waves",
+      "dataType": "string",
+      "versionIntroduced": "1.26.10"
+    },
+    {
+      "id": "can_auto_step_from_liquid",
+      "title": "Can Auto Step From Liquid",
+      "description": "Whether the entity can step out of a liquid block onto a neighboring solid block when pushed against it.",
+      "defaultValue": false,
+      "dataType": "boolean",
+      "versionIntroduced": "1.26.10"
+    },
+    {
+      "id": "apply_gravity",
+      "title": "Apply Gravity",
+      "description": "Applies gravity each tick. Causes \"movement_type\" to be more impactful, but also gravity to be applied more intensely outside liquids.",
+      "defaultValue": true,
+      "dataType": "boolean"
+    },
+    {
+      "id": "base_buoyancy",
+      "title": "Base Buoyancy",
+      "description": "Base buoyancy used to calculate how much will a entity float.",
+      "defaultValue": 1,
+      "dataType": "float"
+    },
+    {
+      "id": "big_wave_probability",
+      "title": "Big Wave Probability",
+      "description": "Probability for a big wave hitting the entity. Only used if \"movement_type\" is \"waves\".",
+      "defaultValue": 0.03,
+      "dataType": "float"
+    },
+    {
+      "id": "big_wave_speed",
+      "title": "Big Wave Speed",
+      "description": "Multiplier for the speed to make a big wave. Triggered depending on \"big_wave_probability\".",
+      "defaultValue": 10,
+      "dataType": "float"
+    },
+    {
+      "id": "drag_down_on_buoyancy_removed",
+      "title": "Drag Down On Buoyancy Removed",
+      "description": "How much an entity will be dragged down when the component is removed.",
+      "defaultValue": 0,
+      "dataType": "float"
+    },
+    {
+      "id": "liquid_blocks",
+      "title": "Liquid Blocks",
+      "description": "List of blocks this entity can float on. Must be a liquid block.",
+      "dataType": "stringArray",
+      "samples": {
+        "/vanilla/behavior_pack/entities/xp_orb.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:buoyant/",
+            "content": [
+              "minecraft:flowing_water",
+              "minecraft:water"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Enables an entity to float on the specified liquid blocks.",
+  "title": "Buoyant",
+  "samples": {
+    "/vanilla/behavior_pack/entities/xp_orb.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:buoyant/",
+        "content": {
+          "apply_gravity": false,
+          "liquid_blocks": [
+            "minecraft:flowing_water",
+            "minecraft:water"
+          ]
+        }
+      }
+    ]
+  },
+  "id": "minecraft:buoyant"
+}

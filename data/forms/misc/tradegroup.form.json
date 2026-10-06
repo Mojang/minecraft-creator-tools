@@ -1,0 +1,33 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines tradegroup configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "TradeGroup",
+  "fields": [
+    {
+      "id": "num_to_select",
+      "title": "Num To Select",
+      "dataType": "int"
+    },
+    {
+      "id": "trades",
+      "title": "Trades",
+      "dataType": "object",
+      "minLength": 1,
+      "subFormId": "misc/trade",
+      "isRequired": true
+    }
+  ],
+  "description": "Defines tradegroup configuration.",
+  "title": "TradeGroup Misc"
+}

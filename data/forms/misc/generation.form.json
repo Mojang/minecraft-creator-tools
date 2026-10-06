@@ -1,0 +1,26 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines generation configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Generation",
+  "fields": [
+    {
+      "id": "generator_type",
+      "title": "Generator Type",
+      "dataType": "string",
+      "isRequired": true
+    }
+  ],
+  "description": "Defines generation configuration.",
+  "title": "Generation Misc"
+}

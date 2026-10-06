@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Apply Knockback Rules",
+  "description": "Defines how an entity applies knockback.",
+  "properties": {
+    "presets": {
+      "title": "Presets",
+      "description": "Array of rules instances defining how knockback should be applied to the entity.\n\nSample values:\n• drowned: [{\"horizontal_power\":0.6,\"vertical_power\":-0.6,...\n• egg: [{\"vertical_power\":0.1,\"vertical_velocity_cap\":...\n• iron_golem: [{\"horizontal_power\":0.52,\"vertical_power\":0.39...",
+      "type": "array",
+      "items": {
+        "$ref": "./entity_minecraft_apply_knockback_rules_instance.schema.json"
+      }
+    }
+  }
+}

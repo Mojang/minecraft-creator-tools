@@ -1,0 +1,42 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has friction value of "
+          },
+          {
+            "type": "value",
+            "field": "number"
+          }
+        ]
+      }
+    ]
+  },
+  "description": "Describes the friction for this block in a range of 0.0 to 0.9. Friction affects an entity's movement speed when it travels on the block. Higher values result in more friction (less sliding). The default value is 0.4, which is used by most blocks. Ice uses 0.02 for its slippery surface.",
+  "fields": [],
+  "scalarField": {
+    "id": "number",
+    "title": "Friction value",
+    "dataType": "number"
+  },
+  "samples": {
+    "Block Palm Leave": [
+      {
+        "path": "https://github.com/microsoft/minecraft-samples/tree/main/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/palm_leave.block.json",
+        "content": 0.38
+      }
+    ],
+    "Block White Sand": [
+      {
+        "path": "https://github.com/microsoft/minecraft-samples/tree/main/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/white_sand.block.json",
+        "content": 0.2
+      }
+    ]
+  },
+  "title": "Friction",
+  "id": "minecraft:friction"
+}

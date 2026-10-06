@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Markdown: MD with formatting symbols -->
+  <path d="M2 2H14V14H2V2Z" fill-opacity="0.15"/>
+  <path d="M3 10V6L5 8L7 6V10" stroke="currentColor" stroke-width="1.2" fill="none"/>
+  <path d="M10 10V6H12L14 8.5" stroke="currentColor" stroke-width="1.2" fill="none"/>
+  <path d="M14 10V8.5L12 6" stroke="currentColor" stroke-width="1.2" fill="none"/>
+</svg>

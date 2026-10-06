@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Blocks Catalog: Grid of block tiles -->
+  <rect x="1" y="1" width="4" height="4"/>
+  <rect x="6" y="1" width="4" height="4" fill-opacity="0.8"/>
+  <rect x="11" y="1" width="4" height="4" fill-opacity="0.6"/>
+  <rect x="1" y="6" width="4" height="4" fill-opacity="0.8"/>
+  <rect x="6" y="6" width="4" height="4" fill-opacity="0.6"/>
+  <rect x="11" y="6" width="4" height="4" fill-opacity="0.4"/>
+  <rect x="1" y="11" width="4" height="4" fill-opacity="0.6"/>
+  <rect x="6" y="11" width="4" height="4" fill-opacity="0.4"/>
+  <rect x="11" y="11" width="4" height="4" fill-opacity="0.2"/>
+</svg>

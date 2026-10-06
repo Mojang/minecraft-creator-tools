@@ -1,0 +1,42 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines behavior.swim idle configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "minecraft:behavior.swim_idle",
+  "fields": [
+    {
+      "id": "control_flags",
+      "title": "Control Flags",
+      "dataType": "stringArray"
+    },
+    {
+      "id": "idle_time",
+      "title": "Idle Time",
+      "description": "Amount of time (in seconds) to stay idle. Default value: 5.",
+      "dataType": "float"
+    },
+    {
+      "id": "priority",
+      "title": "Priority",
+      "dataType": "int"
+    },
+    {
+      "id": "success_rate",
+      "title": "Success Rate",
+      "description": "Percent chance this entity will go idle, 1.0 = 100%. Default value: 0.1.",
+      "dataType": "float"
+    }
+  ],
+  "description": "Allows the entity go idle, if swimming. Entity must be in water.",
+  "title": "Minecraft Behavior.swim Idle Misc"
+}

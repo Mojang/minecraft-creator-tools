@@ -1,0 +1,103 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Apply Knockback Rules Instance",
+  "description": "Intance of rules definition.",
+  "properties": {
+    "check_if_target_is_immersed_in_water": {
+      "title": "Check If Target Is Immersed In Water",
+      "description": "Whether or not the target should be fully immersed in water for the knockback rules to apply.",
+      "type": "boolean",
+      "default": false
+    },
+    "extra_knockback_approach": {
+      "title": "ExtraKnockbackApproach",
+      "description": "Defines the approach for combining extra knockback from enchantments or sprinting:\n- \"reapply_default\": Reapplies knockback again with default knockback parameters, i.e. values not defined by this component.\n- \"multiply_reduced\": Multiplies the extra knockback with the base knockback and a reduction factor, and adds it to the base knockback.",
+      "type": "string",
+      "enum": [
+        "multiply_reduced",
+        "reapply_default"
+      ],
+      "default": "reapply_default"
+    },
+    "filter": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "title": "Domain",
+              "description": "The domain the test should be performed in.",
+              "type": "object"
+            },
+            "operator": {
+              "title": "Operator",
+              "description": "The comparison to apply with 'value'.",
+              "type": "object"
+            },
+            "subject": {
+              "title": "Subject",
+              "description": "The subject of this filter test.",
+              "type": "object"
+            },
+            "test": {
+              "title": "Test",
+              "description": "The name of the test to apply.",
+              "type": "string"
+            },
+            "value": {
+              "title": "Value",
+              "description": "The value being compared with the test.",
+              "type": "object"
+            }
+          }
+        },
+        {
+          "type": "object"
+        }
+      ],
+      "description": "Filter for the entity type that will be affected by these knockback rules."
+    },
+    "horizontal_power": {
+      "title": "Horizontal Power",
+      "description": "Power with which a target should be knocked backwards.",
+      "type": "number",
+      "default": 1
+    },
+    "knockback_mode": {
+      "title": "KnockbackMode",
+      "description": "Defines how knockback is applied to the target:\n- \"relative_horizontal\": Applies knockback along the horizontal direction from the attacker to the target.\n- \"hit_direction\": Applies knockback based on the hit direction and the point of impact (e.g. hits to the bottom of the entity or from below push it upward, hits on the left side of the entity push it to the right).",
+      "type": "string",
+      "enum": [
+        "hit_direction",
+        "relative_horizontal"
+      ],
+      "default": "relative_horizontal"
+    },
+    "scale_with_damage": {
+      "title": "Scale With Damage",
+      "description": "Scaling factor to the magnitude of knockback based on the inverse square of the damage.",
+      "type": "boolean",
+      "default": false
+    },
+    "slowdown_scale": {
+      "title": "Slowdown Scale",
+      "description": "Scaling factor to apply to the target's velocity before applying knockback.",
+      "type": "number",
+      "maximum": 1,
+      "default": 0.5
+    },
+    "vertical_power": {
+      "title": "Vertical Power",
+      "description": "Power with which a target should be knocked upwards.",
+      "type": "number",
+      "default": 0.4000000059604645
+    },
+    "vertical_velocity_cap": {
+      "title": "Vertical Velocity Cap",
+      "description": "Maximum allowed Y velocity after target's knockback rules have been evaluated.",
+      "type": "number",
+      "default": 0.4000000059604645
+    }
+  }
+}

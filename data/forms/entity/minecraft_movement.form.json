@@ -1,0 +1,63 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "value",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has movement speed of "
+          },
+          {
+            "type": "value",
+            "field": "value"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "minecraft:movement",
+  "title": "Movement",
+  "description": "Defines the base movement speed of an entity. Typical values: creeper (0.2), cow (0.25), zombie baby (0.35).",
+  "fields": [
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "The base movement speed value. Higher values result in faster movement. Can be a single number or a range object with range_min and range_max properties.",
+      "dataType": "float",
+      "alternates": [
+        {
+          "id": "value",
+          "dataType": "object",
+          "subForm": {
+            "fields": [
+              {
+                "id": "range_min",
+                "dataType": "float",
+                "description": "Minimum movement speed"
+              },
+              {
+                "id": "range_max",
+                "dataType": "float",
+                "description": "Maximum movement speed"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "max",
+      "title": "Max",
+      "description": "Maximum movement speed this entity can have.",
+      "dataType": "float"
+    }
+  ],
+  "samples": {}
+}

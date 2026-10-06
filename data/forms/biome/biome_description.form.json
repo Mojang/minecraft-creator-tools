@@ -1,0 +1,43 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "identifier",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has identifier "
+          },
+          {
+            "type": "value",
+            "field": "identifier"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "identifier",
+      "title": "Identifier",
+      "description": "The name of the Biome, used by other features like the '/locate biome' command. Identifiers should only be lowercase.",
+      "dataType": "string",
+      "validity": [
+        {
+          "comparison": "pattern",
+          "value": "^[a-z0-9._%+-]+:[a-z0-9._%+-]+$"
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "description": "Contains non-component settings for a Biome.",
+  "title": "Biome Description",
+  "id": "Biome Description"
+}

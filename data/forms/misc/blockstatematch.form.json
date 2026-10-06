@@ -1,0 +1,39 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines blockstatematch configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "BlockStateMatch",
+  "fields": [
+    {
+      "id": "block_state",
+      "title": "Block State",
+      "description": "The block state to match against.",
+      "dataType": "object",
+      "subForm": {
+        "id": "block_state",
+        "title": "Block State",
+        "fields": []
+      },
+      "alternates": [],
+      "isRequired": true
+    },
+    {
+      "id": "predicate_type",
+      "title": "BlockType",
+      "dataType": "string",
+      "isRequired": true
+    }
+  ],
+  "description": "Predicate that evaluates to true if the block at the specified location matches the specified block.",
+  "title": "BlockStateMatch Misc"
+}

@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Block Range And Steps",
+  "description": "Defines an integer block state with a range of valid values and optional step increment. Used for block properties like growth stages (0-7 for crops), signal strength (0-15 for redstone), or rotation angles. The game only allows values within the specified min/max range at the given step intervals.",
+  "properties": {
+    "range": {
+      "title": "Range",
+      "description": "The range of the random offset.",
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        {
+          "$ref": "../../common/floatrange.schema.json"
+        }
+      ],
+      "x-runtime-constraint-description": "Check that the limits imposed on the range (minimum, maximum and maximum distance between values) are respected"
+    },
+    "steps": {
+      "title": "Steps",
+      "description": "The number of steps between the range. Specify 0 for all possible values between the range.",
+      "type": "integer",
+      "default": 0
+    }
+  },
+  "required": [
+    "range"
+  ]
+}

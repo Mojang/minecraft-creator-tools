@@ -1,0 +1,72 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "texture_set",
+  "title": "Texture Set (v1.21.30)",
+  "description": "Defines a PBR texture set document with format_version 1.21.30.",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines PBR texture layers including color, normal, and material maps"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "dataType": "version",
+      "id": "format_version",
+      "title": "Format Version",
+      "isRequired": true
+    },
+    {
+      "dataType": "object",
+      "id": "minecraft:texture_set",
+      "title": "Texture Set",
+      "isRequired": true,
+      "subForm": {
+        "fields": [
+          {
+            "dataType": "string",
+            "id": "color",
+            "title": "Color",
+            "description": "The texture name of a textureset layer",
+            "isRequired": false
+          },
+          {
+            "dataType": "string",
+            "id": "normal",
+            "title": "Normal",
+            "description": "The texture name of a textureset layer",
+            "isRequired": false
+          },
+          {
+            "dataType": "string",
+            "id": "heightmap",
+            "title": "Heightmap",
+            "description": "The texture name of a textureset layer",
+            "isRequired": false
+          },
+          {
+            "dataType": "string",
+            "id": "metalness_emissive_roughness",
+            "title": "Metalness Emissive Roughness",
+            "description": "The texture name of a textureset layer",
+            "isRequired": false
+          },
+          {
+            "dataType": "string",
+            "id": "metalness_emissive_roughness_subsurface",
+            "title": "Metalness Emissive Roughness Subsurface",
+            "description": "The texture name of a textureset layer",
+            "isRequired": false
+          }
+        ]
+      }
+    }
+  ],
+  "dataVersion": "1.21.30"
+}

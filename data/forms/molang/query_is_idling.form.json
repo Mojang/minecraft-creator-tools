@@ -1,0 +1,19 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "checks if entity is idling"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "query.is_idling",
+  "fields": [],
+  "description": "Returns 1.0 if the entity is idling, else it returns 0.0.",
+  "title": "Is Idling"
+}

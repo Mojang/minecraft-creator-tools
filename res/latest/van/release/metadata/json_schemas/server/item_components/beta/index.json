@@ -1,0 +1,10 @@
+{
+  "files": [
+    "DurabilitySensor.json",
+    "DurabilityThreshold.json",
+    "Record.json",
+    "SwingSoundsItemComponent.json",
+    "UseModifiers.json"
+  ],
+  "folders": []
+}

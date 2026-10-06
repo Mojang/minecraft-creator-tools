@@ -1,0 +1,71 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Timer",
+  "description": "Adds a timer after which an event will fire.",
+  "properties": {
+    "time": {
+      "oneOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        {
+          "type": "object",
+          "properties": {
+            "min": {
+              "type": "number",
+              "description": "Minimum value of the range"
+            },
+            "max": {
+              "type": "number",
+              "description": "Maximum value of the range"
+            }
+          }
+        }
+      ],
+      "title": "Time",
+      "description": "Amount of time in seconds for the timer. Can be specified as a number or a pair of numbers (min and max). Incompatible with random_time_choices."
+    },
+    "time_down_event": {
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "title": "Time Down Event",
+      "description": "Event to fire when the time on the timer runs out. Can be an object with event and target properties, or a simple event string."
+    },
+    "looping": {
+      "title": "Looping",
+      "description": "If true, the timer will restart every time after it fires.",
+      "type": "boolean",
+      "default": true
+    },
+    "randomInterval": {
+      "title": "RandomInterval",
+      "description": "If true, the amount of time on the timer will be random between the min and max values specified in time.",
+      "type": "boolean",
+      "default": true
+    },
+    "random_time_choices": {
+      "title": "Random Time Choices",
+      "description": "This is a list of objects, representing one value in seconds that can be picked before firing the event and an optional weight. Incompatible with time.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": "[ ]"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "minecraft:grass_appearance",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "controls grass color appearance for rendering"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "color",
+      "title": "Color",
+      "description": "RGB color of grass.",
+      "dataType": "object"
+    }
+  ],
+  "description": "Set the grass color or color map used during rendering. Biomes without this component will have default grass appearance.",
+  "title": "Client Biome Grass Appearance"
+}

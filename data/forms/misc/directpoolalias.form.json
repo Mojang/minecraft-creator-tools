@@ -1,0 +1,34 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines directpoolalias configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "DirectPoolAlias",
+  "fields": [
+    {
+      "id": "alias",
+      "title": "Alias",
+      "description": "Alias of Direct pool",
+      "dataType": "string",
+      "isRequired": true
+    },
+    {
+      "id": "target",
+      "title": "Target",
+      "description": "Target pool",
+      "dataType": "object",
+      "isRequired": true
+    }
+  ],
+  "description": "Pool alias for a Direct target.",
+  "title": "DirectPoolAlias Misc"
+}

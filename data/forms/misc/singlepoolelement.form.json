@@ -1,0 +1,46 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines singlepoolelement configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "SinglePoolElement",
+  "fields": [
+    {
+      "id": "element_type",
+      "title": "ElementType",
+      "description": "The type of element.",
+      "dataType": "string",
+      "isRequired": true
+    },
+    {
+      "id": "location",
+      "title": "Location",
+      "description": "The path of the structure file. This path is relative to the behavior pack's structures folder.",
+      "dataType": "object",
+      "isRequired": true
+    },
+    {
+      "id": "processors",
+      "title": "Processors",
+      "description": "The identifier of the processor list to use when placing the structure.",
+      "dataType": "object"
+    },
+    {
+      "id": "projection",
+      "title": "Projection",
+      "description": "Specifies how structures should be placed relative to the terrain.",
+      "dataType": "string"
+    }
+  ],
+  "description": "Defines singlepoolelement configuration.",
+  "title": "SinglePoolElement Misc"
+}

@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "block_culling/blockculling",
+  "title": "BlockCulling",
+  "description": "BlockCulling",
+  "type": "object",
+  "properties": {
+    "format_version": {
+      "title": "format_version",
+      "description": "format_version",
+      "type": "string"
+    },
+    "minecraft:block_culling_rules": {
+      "title": "minecraft:block_culling_rules",
+      "description": "minecraft:block_culling_rules",
+      "type": "object",
+      "properties": {
+        "description": {
+          "title": "description",
+          "description": "description",
+          "type": "object",
+          "properties": {
+            "identifier": {
+              "title": "identifier",
+              "description": "identifier",
+              "type": "string"
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Description",
+              "description": "Description",
+              "body": {
+                "identifier": ""
+              }
+            }
+          ]
+        },
+        "rules": {
+          "title": "rules",
+          "description": "rules",
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      }
+    }
+  }
+}

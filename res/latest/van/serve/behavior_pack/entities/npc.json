@@ -1,0 +1,261 @@
+{
+  "format_version": "1.26.0",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "minecraft:npc",
+      "is_experimental": false,
+      "is_summonable": true,
+      "is_spawnable": true,
+      "spawn_category": "creature"
+    },
+    "components": {
+      "minecraft:behavior.look_at_player": {
+        "look_time": {
+          "min": 1,
+          "max": 2
+        },
+        "look_distance": 6
+      },
+      "minecraft:collision_box": {
+        "height": 2.1,
+        "width": 0.6
+      },
+      "minecraft:damage_sensor": {
+        "triggers": {
+          "cause": "all",
+          "deals_damage": "no"
+        }
+      },
+      "minecraft:fire_immune": {},
+      "minecraft:loot": {
+        "table": "loot_tables/empty.json"
+      },
+      "minecraft:movement": {
+        "value": 0.5
+      },
+      "minecraft:nameable": {
+        "allow_name_tag_renaming": false,
+        "always_show": false
+      },
+      "minecraft:npc": {
+        "npc_data": {
+          "picker_offsets": {
+            "scale": [
+              1.7,
+              1.7,
+              1.7
+            ],
+            "translate": [
+              0,
+              20,
+              0
+            ]
+          },
+          "portrait_offsets": {
+            "scale": [
+              1.75,
+              1.75,
+              1.75
+            ],
+            "translate": [
+              -7,
+              50,
+              0
+            ]
+          },
+          "skin_list": [
+            {
+              "variant": 0
+            },
+            {
+              "variant": 1
+            },
+            {
+              "variant": 2
+            },
+            {
+              "variant": 3
+            },
+            {
+              "variant": 4
+            },
+            {
+              "variant": 5
+            },
+            {
+              "variant": 6
+            },
+            {
+              "variant": 7
+            },
+            {
+              "variant": 8
+            },
+            {
+              "variant": 9
+            },
+            {
+              "variant": 10
+            },
+            {
+              "variant": 11
+            },
+            {
+              "variant": 12
+            },
+            {
+              "variant": 13
+            },
+            {
+              "variant": 14
+            },
+            {
+              "variant": 15
+            },
+            {
+              "variant": 16
+            },
+            {
+              "variant": 17
+            },
+            {
+              "variant": 18
+            },
+            {
+              "variant": 19
+            },
+            {
+              "variant": 25
+            },
+            {
+              "variant": 26
+            },
+            {
+              "variant": 27
+            },
+            {
+              "variant": 28
+            },
+            {
+              "variant": 29
+            },
+            {
+              "variant": 30
+            },
+            {
+              "variant": 31
+            },
+            {
+              "variant": 32
+            },
+            {
+              "variant": 33
+            },
+            {
+              "variant": 34
+            },
+            {
+              "variant": 20
+            },
+            {
+              "variant": 21
+            },
+            {
+              "variant": 22
+            },
+            {
+              "variant": 23
+            },
+            {
+              "variant": 24
+            },
+            {
+              "variant": 35
+            },
+            {
+              "variant": 36
+            },
+            {
+              "variant": 37
+            },
+            {
+              "variant": 38
+            },
+            {
+              "variant": 39
+            },
+            {
+              "variant": 40
+            },
+            {
+              "variant": 41
+            },
+            {
+              "variant": 42
+            },
+            {
+              "variant": 43
+            },
+            {
+              "variant": 44
+            },
+            {
+              "variant": 50
+            },
+            {
+              "variant": 51
+            },
+            {
+              "variant": 52
+            },
+            {
+              "variant": 53
+            },
+            {
+              "variant": 54
+            },
+            {
+              "variant": 45
+            },
+            {
+              "variant": 46
+            },
+            {
+              "variant": 47
+            },
+            {
+              "variant": 48
+            },
+            {
+              "variant": 49
+            },
+            {
+              "variant": 55
+            },
+            {
+              "variant": 56
+            },
+            {
+              "variant": 57
+            },
+            {
+              "variant": 58
+            },
+            {
+              "variant": 59
+            }
+          ]
+        }
+      },
+      "minecraft:persistent": {},
+      "minecraft:physics": {},
+      "minecraft:type_family": {
+        "family": [
+          "npc",
+          "mob"
+        ]
+      }
+    },
+    "events": null
+  }
+}

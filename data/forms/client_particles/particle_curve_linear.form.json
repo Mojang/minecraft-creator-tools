@@ -1,0 +1,77 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines a linear curve for particle animation"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "horizontal_range",
+      "title": "Horizontal Range",
+      "dataType": "keyedStringCollection",
+      "defaultValue": 1,
+      "alternates": [
+        {
+          "id": "horizontal_range",
+          "dataType": "keyedObjectCollection",
+          "subFormId": "item/molang_expression"
+        },
+        {
+          "id": "horizontal_range",
+          "dataType": "float"
+        }
+      ]
+    },
+    {
+      "id": "input",
+      "title": "Input",
+      "dataType": "keyedStringCollection",
+      "alternates": [
+        {
+          "id": "input",
+          "dataType": "keyedObjectCollection",
+          "subFormId": "item/molang_expression"
+        },
+        {
+          "id": "input",
+          "dataType": "float"
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "nodes",
+      "title": "Nodes",
+      "dataType": "keyedStringCollection",
+      "alternates": [
+        {
+          "id": "nodes",
+          "dataType": "keyedObjectCollection",
+          "subFormId": "item/molang_expression"
+        },
+        {
+          "id": "nodes",
+          "dataType": "float"
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "type",
+      "title": "Type",
+      "dataType": "object",
+      "isRequired": true
+    }
+  ],
+  "description": "Creates animation curves using linear interpolation between keyframe values. Define input range and corresponding output values; the curve linearly blends between adjacent keyframes. Simpler than bezier curves but effective for straightforward animations like size growing, alpha fading, or color shifting over particle lifetime.",
+  "title": "Client Particles Particle Curve Linear",
+  "id": "particle_curve_linear"
+}

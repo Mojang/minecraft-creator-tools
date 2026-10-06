@@ -1,0 +1,24 @@
+{
+  "id": "Connection",
+  "versionIntroduced": "1.21.130",
+  "note": "`minecraft:connection` block trait exposes connection states (e.g. `minecraft:cardinal_connections`) that update when neighboring blocks change. Used by blocks that visually connect like fences or glass panes.",
+  "note2": "Available without the Upcoming Creator Features experimental toggle in 1.26.0.",
+  "fields": [
+    {
+      "id": "enabled_states",
+      "title": "Enabled States",
+      "description": "Which connection states to enable. Options: [\"minecraft:cardinal_connections\"]. Must specify at least one.",
+      "dataType": "stringArray",
+      "minLength": 1,
+      "choices": [
+        {
+          "id": "minecraft:cardinal_connections",
+          "title": "Minecraft:cardinal connections"
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "description": "Adds connection states to the block. The values of these states are updated when the block or neighboring blocks change.",
+  "title": "Block Connection"
+}

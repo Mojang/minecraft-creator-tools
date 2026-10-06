@@ -1,0 +1,17 @@
+{
+  "files": [
+    "manifest.json",
+    "sounds.json",
+    "pack_icon.png"
+  ],
+  "folders": [
+    "animations",
+    "attachables",
+    "entity",
+    "models",
+    "particles",
+    "render_controllers",
+    "texts",
+    "textures"
+  ]
+}

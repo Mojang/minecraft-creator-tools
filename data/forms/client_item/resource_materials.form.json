@@ -1,0 +1,24 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "title": "Item Materials",
+  "description": "Defines material references for an item's client resources.",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines materials for an item"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "materials",
+      "dataType": "keyedStringCollection",
+      "description": "A list of identified models that this item uses."
+    }
+  ]
+}

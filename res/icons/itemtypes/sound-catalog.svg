@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Sound Catalog: Musical notes -->
+  <circle cx="4" cy="12" r="2" fill-opacity="0.5"/>
+  <circle cx="12" cy="10" r="2" fill-opacity="0.5"/>
+  <path d="M6 12V4L14 2V10" fill="none" stroke="currentColor" stroke-width="1.5"/>
+  <path d="M6 4L14 2" fill="none" stroke="currentColor" stroke-width="2"/>
+  <path d="M6 7L14 5" fill="none" stroke="currentColor" stroke-width="1"/>
+</svg>

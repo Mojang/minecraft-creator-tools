@@ -1,0 +1,29 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:diorite_wall"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "pattern": [
+      "###",
+      "###"
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:diorite"
+      }
+    },
+    "unlock": [
+      {
+        "item": "minecraft:diorite"
+      }
+    ],
+    "result": {
+      "item": "minecraft:diorite_wall",
+      "count": 6
+    }
+  }
+}

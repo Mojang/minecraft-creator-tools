@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Tick: Timing/tick mark -->
+  <circle cx="8" cy="8" r="6" fill-opacity="0.15"/>
+  <circle cx="8" cy="8" r="5" fill="none" stroke="currentColor" stroke-width="1"/>
+  <line x1="8" y1="8" x2="8" y2="4" stroke="currentColor" stroke-width="1.5"/>
+  <line x1="8" y1="8" x2="11" y2="10" stroke="currentColor" stroke-width="1"/>
+  <circle cx="8" cy="8" r="0.8"/>
+  <circle cx="8" cy="2.5" r="0.6" fill-opacity="0.6"/>
+  <circle cx="13.5" cy="8" r="0.6" fill-opacity="0.6"/>
+  <circle cx="2.5" cy="8" r="0.6" fill-opacity="0.6"/>
+  <circle cx="8" cy="13.5" r="0.6" fill-opacity="0.6"/>
+</svg>

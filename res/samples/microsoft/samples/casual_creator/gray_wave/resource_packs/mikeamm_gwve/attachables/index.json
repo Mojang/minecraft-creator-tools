@@ -1,0 +1,11 @@
+{
+  "files": [
+    "axe_turret_kit.attachable.json",
+    "bow_turret_kit.attachable.json",
+    "crossbow_turret_kit.attachable.json",
+    "gray_wave_generator_kit.attachable.json",
+    "shbullet_turret_kit.attachable.json",
+    "smfireball_turret_kit.attachable.json"
+  ],
+  "folders": []
+}

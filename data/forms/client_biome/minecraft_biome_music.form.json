@@ -1,0 +1,34 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "minecraft:biome_music",
+  "versionIntroduced": "1.21.50",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "controls music playback within a biome"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "volume_multiplier",
+      "title": "Volume Multiplier",
+      "description": "Multiplier gradually applied to music volume when the audio listener is inside this biome. Must be between 0 and 1, inclusive.",
+      "dataType": "float",
+      "versionIntroduced": "1.21.50"
+    },
+    {
+      "id": "music_definition",
+      "title": "Music Definition",
+      "description": "Music to be played when inside this biome. If left off or not found the default music will be determined by the dimension. Empty string will result in no music.",
+      "dataType": "object"
+    }
+  ],
+  "title": "Minecraft Biome Music",
+  "description": "Affects how music plays within the biome"
+}

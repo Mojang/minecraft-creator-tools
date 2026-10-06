@@ -1,0 +1,30 @@
+{
+	"format_version": 2,
+	"header": {
+		"name": "shapeshifter",
+		"description": "shapeshifter Behavior Pack",
+		"uuid": "ddf2247e-ce95-9baf-4aa2-12cb3bc18afc",
+		"version": [1, 0, 0],
+		"min_engine_version": [1, 16, 0]
+	},
+	"metadata": {
+		"authors": ["camwilkerson"],
+		"generated_with": {
+			"blockbench_entity_wizard": ["1.8.2"]
+		}
+	},
+	"modules": [
+		{
+			"description": "Behavior",
+			"version": [1, 0, 0],
+			"uuid": "ecac06e5-1616-5df7-70b4-f01265b55524",
+			"type": "data"
+		}
+	],
+	"dependencies": [
+		{
+			"uuid": "0b9782bd-25c1-6929-669c-a114032526c5",
+			"version": [1, 0, 0]
+		}
+	]
+}

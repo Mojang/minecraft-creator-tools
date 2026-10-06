@@ -1,0 +1,91 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity PlaceBlockGoalWeightedBlockDescriptor",
+  "properties": {
+    "block": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "title": "Name",
+              "type": "string",
+              "default": ""
+            },
+            "states": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "boolean"
+                }
+              ],
+              "title": "States"
+            },
+            "tags": {
+              "title": "Tags",
+              "type": "string",
+              "default": ""
+            }
+          }
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "object"
+        }
+      ],
+      "description": "Block descriptor for this entry."
+    },
+    "filter": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "title": "Domain",
+              "description": "The domain the test should be performed in.",
+              "type": "object"
+            },
+            "operator": {
+              "title": "Operator",
+              "description": "The comparison to apply with 'value'.",
+              "type": "object"
+            },
+            "subject": {
+              "title": "Subject",
+              "description": "The subject of this filter test.",
+              "type": "object"
+            },
+            "test": {
+              "title": "Test",
+              "description": "The name of the test to apply.",
+              "type": "string"
+            },
+            "value": {
+              "title": "Value",
+              "description": "The value being compared with the test.",
+              "type": "object"
+            }
+          }
+        },
+        {
+          "type": "object"
+        }
+      ],
+      "description": "Filter for if this entry should be randomly selected from. Self, Target, and Block are set."
+    },
+    "weight": {
+      "title": "Weight",
+      "description": "Weight for this entry.",
+      "type": "integer",
+      "default": 1
+    }
+  }
+}

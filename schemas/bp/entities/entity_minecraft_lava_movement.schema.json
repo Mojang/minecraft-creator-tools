@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Lava Movement",
+  "description": "Allows a custom movement speed across lava blocks.",
+  "properties": {
+    "value": {
+      "title": "Value",
+      "description": "The speed the mob moves over a lava block.\n\nSample values:\n• strider: 0.32",
+      "type": "number"
+    }
+  }
+}

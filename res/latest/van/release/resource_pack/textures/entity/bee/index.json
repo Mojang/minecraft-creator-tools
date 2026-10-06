@@ -1,0 +1,29 @@
+{
+  "files": [
+    "bee.png",
+    "bee.texture_set.json",
+    "bee_angry.png",
+    "bee_angry.texture_set.json",
+    "bee_angry_baby.png",
+    "bee_angry_baby.texture_set.json",
+    "bee_angry_baby_mers.tga",
+    "bee_angry_mers.tga",
+    "bee_angry_nectar.png",
+    "bee_angry_nectar.texture_set.json",
+    "bee_angry_nectar_baby.png",
+    "bee_angry_nectar_baby.texture_set.json",
+    "bee_angry_nectar_baby_mers.tga",
+    "bee_angry_nectar_mers.tga",
+    "bee_baby.png",
+    "bee_baby.texture_set.json",
+    "bee_baby_mers.tga",
+    "bee_mers.tga",
+    "bee_nectar.png",
+    "bee_nectar.texture_set.json",
+    "bee_nectar_baby.png",
+    "bee_nectar_baby.texture_set.json",
+    "bee_nectar_baby_mers.tga",
+    "bee_nectar_mers.tga"
+  ],
+  "folders": []
+}

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Item Type Behavior: Diamond sword -->
+  <path d="M13 1L15 3L7 11L5 13L4 14L2 14L2 12L3 11L5 9L13 1Z" fill-opacity="0.15"/>
+  <path d="M12 2L14 4L7 11L5 9L12 2Z"/>
+  <rect x="3" y="11" width="2" height="2" transform="rotate(-45 4 12)"/>
+</svg>

@@ -1,0 +1,19 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "returns a random integer between low and high"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "`math.random_integer(low, high)`",
+  "fields": [],
+  "description": "Random integer value between low and high inclusive",
+  "title": "Random Integer(low, High)"
+}

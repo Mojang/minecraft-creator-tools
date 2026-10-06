@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Break Blocks",
+  "description": "Specifies the blocks that the entity can break as it moves around.",
+  "properties": {
+    "breakable_blocks": {
+      "title": "Breakable Blocks",
+      "description": "A list of the blocks that can be broken as this entity moves around.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

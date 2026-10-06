@@ -1,0 +1,28 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shapeless": {
+    "description": {
+      "identifier": "minecraft:mangrove_chest_boat"
+    },
+    "tags": [ "crafting_table" ],
+    "ingredients": [
+      {
+        "item": "minecraft:chest"
+      },
+      {
+        "item": "minecraft:boat",
+        "data": 6
+      }
+    ],
+	"unlock": [
+        {
+          "item": "minecraft:boat",
+		  "data": 6
+        }
+    ],
+    "result": {
+      "item": "minecraft:chest_boat",
+      "data": 6
+    }
+  }
+}

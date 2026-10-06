@@ -1,0 +1,16 @@
+{
+  "files": [
+    "Dream.ts",
+    "DreamTrack.ts",
+    "IDreamReference.ts",
+    "IMemory.ts",
+    "IMemorySet.ts",
+    "IPlayerSettings.ts",
+    "IVectorXZ.ts",
+    "Memory.ts",
+    "MemorySet.ts",
+    "Utilities.ts",
+    "main.ts"
+  ],
+  "folders": []
+}

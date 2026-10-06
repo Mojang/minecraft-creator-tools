@@ -1,0 +1,30 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:acacia_wood_stripped"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "group": "wood",
+    "pattern": [
+      "##",
+      "##"
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:stripped_acacia_log"
+      }
+    },
+	"unlock": [
+      {
+        "item": "minecraft:stripped_acacia_log"
+      }
+    ],
+    "result": {
+      "item": "minecraft:stripped_acacia_wood",
+      "count": 3
+    }
+  }
+}

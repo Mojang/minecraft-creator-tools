@@ -1,0 +1,20 @@
+{
+  "entity_sounds": {
+    "entities": {
+      "aop_mobs:sheepomelon": {
+        "events": {
+          "ambient": "mob.sheep.say",
+          "death": "mob.sheep.say",
+          "hurt": "mob.sheep.say",
+          "step": {
+            "pitch": 1,
+            "sound": "mob.sheep.step",
+            "volume": 0.4
+          }
+        },
+        "pitch": [0.8, 1.2],
+        "volume": 1
+      }
+    }
+  }
+}

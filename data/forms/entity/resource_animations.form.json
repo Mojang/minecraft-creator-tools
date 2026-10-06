@@ -1,0 +1,25 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "title": "Entity Animations",
+  "description": "Defines animation references for an entity's client resources.",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has animation resources"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "animations",
+      "dataType": "keyedStringCollection",
+      "title": "Animations",
+      "description": "A list of identified animation that this entity uses."
+    }
+  ]
+}

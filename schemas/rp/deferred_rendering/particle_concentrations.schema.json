@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "particle_concentrations",
+  "description": "particle_concentrations",
+  "type": "object",
+  "properties": {
+    "chlorophyll": {
+      "title": "chlorophyll",
+      "description": "chlorophyll",
+      "type": "number",
+      "maximum": 10
+    },
+    "suspended_sediment": {
+      "title": "suspended_sediment",
+      "description": "suspended_sediment",
+      "type": "number",
+      "maximum": 300
+    },
+    "cdom": {
+      "title": "cdom",
+      "description": "cdom",
+      "type": "number",
+      "maximum": 15
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "WaterConfig WaterConfigSettingsV0 WaterSettings PSY",
+      "description": "WaterConfig WaterConfigSettingsV0 WaterSettings PSY",
+      "body": {
+        "chlorophyll": 0,
+        "suspended_sediment": 0,
+        "cdom": 0
+      }
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Ground Offset",
+  "description": "Sets the offset from the ground that the entity is actually at.",
+  "properties": {
+    "value": {
+      "title": "Value",
+      "description": "The value of the entity's offset from the terrain, in blocks.",
+      "type": "number",
+      "default": 0
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "id": "NWayVisualRotation",
+  "fields": [
+    {
+      "id": "x",
+      "title": "X",
+      "description": "Block state name that controls visual rotation around the x axis.",
+      "dataType": "string",
+      "defaultValue": ""
+    },
+    {
+      "id": "y",
+      "title": "Y",
+      "description": "Block state name that controls visual rotation around the y axis.",
+      "dataType": "string",
+      "defaultValue": ""
+    },
+    {
+      "id": "z",
+      "title": "Z",
+      "description": "Block state name that controls visual rotation around the z axis.",
+      "dataType": "string",
+      "defaultValue": ""
+    }
+  ],
+  "title": "Block Components NWayVisualRotation"
+}

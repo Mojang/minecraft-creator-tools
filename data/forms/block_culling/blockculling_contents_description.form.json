@@ -1,0 +1,25 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines block culling rule identifier"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "identifier",
+      "title": "identifier",
+      "description": "identifier",
+      "dataType": "string"
+    }
+  ],
+  "description": "BlockCulling Contents Description",
+  "title": "BlockCulling Contents Description"
+}

@@ -1,0 +1,311 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "highlights",
+  "description": "highlights",
+  "type": "object",
+  "properties": {
+    "gain": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "maximum": 10
+        },
+        {
+          "description": "\n\nProperties:\n• x (float)\n• y (float)\n• z (float)",
+          "type": "object",
+          "properties": {
+            "x": {
+              "title": "x",
+              "description": "x",
+              "type": "number"
+            },
+            "y": {
+              "title": "y",
+              "description": "y",
+              "type": "number"
+            },
+            "z": {
+              "title": "z",
+              "description": "z",
+              "type": "number"
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Gain (object)",
+              "description": "Gain",
+              "body": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              }
+            }
+          ]
+        }
+      ],
+      "title": "gain",
+      "description": "gain",
+      "defaultSnippets": [
+        {
+          "label": "Gain (object)",
+          "description": "Gain",
+          "body": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    },
+    "enabled": {
+      "title": "enabled",
+      "description": "enabled",
+      "type": "boolean"
+    },
+    "highlightsMin": {
+      "title": "highlightsMin",
+      "description": "highlightsMin",
+      "type": "number",
+      "minimum": 1,
+      "maximum": 20
+    },
+    "contrast": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "maximum": 4
+        },
+        {
+          "description": "\n\nProperties:\n• x (float)\n• y (float)\n• z (float)",
+          "type": "object",
+          "properties": {
+            "x": {
+              "title": "x",
+              "description": "x",
+              "type": "number"
+            },
+            "y": {
+              "title": "y",
+              "description": "y",
+              "type": "number"
+            },
+            "z": {
+              "title": "z",
+              "description": "z",
+              "type": "number"
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Contrast (object)",
+              "description": "Contrast",
+              "body": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              }
+            }
+          ]
+        }
+      ],
+      "title": "contrast",
+      "description": "contrast",
+      "defaultSnippets": [
+        {
+          "label": "Contrast (object)",
+          "description": "Contrast",
+          "body": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    },
+    "offset": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minimum": -1,
+          "maximum": 1
+        },
+        {
+          "description": "\n\nProperties:\n• x (float)\n• y (float)\n• z (float)",
+          "type": "object",
+          "properties": {
+            "x": {
+              "title": "x",
+              "description": "x",
+              "type": "number"
+            },
+            "y": {
+              "title": "y",
+              "description": "y",
+              "type": "number"
+            },
+            "z": {
+              "title": "z",
+              "description": "z",
+              "type": "number"
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Offset (object)",
+              "description": "Offset",
+              "body": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              }
+            }
+          ]
+        }
+      ],
+      "title": "offset",
+      "description": "offset",
+      "defaultSnippets": [
+        {
+          "label": "Offset (object)",
+          "description": "Offset",
+          "body": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    },
+    "gamma": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "maximum": 4
+        },
+        {
+          "description": "\n\nProperties:\n• x (float)\n• y (float)\n• z (float)",
+          "type": "object",
+          "properties": {
+            "x": {
+              "title": "x",
+              "description": "x",
+              "type": "number"
+            },
+            "y": {
+              "title": "y",
+              "description": "y",
+              "type": "number"
+            },
+            "z": {
+              "title": "z",
+              "description": "z",
+              "type": "number"
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Gamma (object)",
+              "description": "Gamma",
+              "body": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              }
+            }
+          ]
+        }
+      ],
+      "title": "gamma",
+      "description": "gamma",
+      "defaultSnippets": [
+        {
+          "label": "Gamma (object)",
+          "description": "Gamma",
+          "body": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    },
+    "saturation": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "maximum": 10
+        },
+        {
+          "description": "\n\nProperties:\n• x (float)\n• y (float)\n• z (float)",
+          "type": "object",
+          "properties": {
+            "x": {
+              "title": "x",
+              "description": "x",
+              "type": "number"
+            },
+            "y": {
+              "title": "y",
+              "description": "y",
+              "type": "number"
+            },
+            "z": {
+              "title": "z",
+              "description": "z",
+              "type": "number"
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Saturation (object)",
+              "description": "Saturation",
+              "body": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              }
+            }
+          ]
+        }
+      ],
+      "title": "saturation",
+      "description": "saturation",
+      "defaultSnippets": [
+        {
+          "label": "Saturation (object)",
+          "description": "Saturation",
+          "body": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "ColorGraderConfig ColorGradingParametersSrc ColorGradingSettings Highlights",
+      "description": "ColorGraderConfig ColorGradingParametersSrc ColorGradingSettings Highlights",
+      "body": {
+        "enabled": true,
+        "highlightsMin": 0
+      }
+    }
+  ]
+}

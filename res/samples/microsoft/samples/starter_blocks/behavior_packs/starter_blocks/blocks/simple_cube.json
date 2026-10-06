@@ -1,0 +1,13 @@
+{
+  "format_version": "1.21.60",
+  "minecraft:block": {
+    "description": {
+      "identifier": "starter:simple_cube"
+    },
+    "components": {
+      "minecraft:geometry": {
+        "identifier": "minecraft:geometry.full_block"
+      }
+    }
+  }
+}

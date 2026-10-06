@@ -1,0 +1,8 @@
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Food: Cooldown timer icon - Green -->
+  <rect x="3" y="3" width="10" height="10" fill="#1a1a1a"/>
+  <rect x="4" y="4" width="8" height="8" fill="#333333"/>
+  <rect x="4" y="4" width="4" height="8" fill="#52a535" opacity="0.5"/>
+  <rect x="7" y="5" width="2" height="6" fill="#52a535"/>
+  <rect x="8" y="7" width="3" height="2" fill="#52a535"/>
+</svg>

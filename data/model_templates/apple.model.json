@@ -1,0 +1,240 @@
+{
+  "formatVersion": "1.0.0",
+  "identifier": "apple",
+  "description": "A shiny red apple with stem and leaf",
+  "pixelsPerUnit": 2,
+  "textures": {
+    "skin": {
+      "background": {
+        "type": "stipple_noise",
+        "colors": [
+          "#D32F2F",
+          "#C62828",
+          "#E53935"
+        ],
+        "seed": 3401,
+        "factor": 0.2
+      },
+      "effects": {
+        "lighting": {
+          "preset": "pillow",
+          "intensity": 0.25
+        }
+      }
+    },
+    "highlight": {
+      "background": {
+        "type": "stipple_noise",
+        "colors": [
+          "#EF5350",
+          "#E57373",
+          "#FF8A80"
+        ],
+        "seed": 3402,
+        "factor": 0.15
+      },
+      "effects": {
+        "lighting": {
+          "preset": "pillow",
+          "intensity": 0.3
+        }
+      }
+    },
+    "stem": {
+      "background": {
+        "type": "stipple_noise",
+        "colors": [
+          "#5D4037",
+          "#4E342E"
+        ],
+        "seed": 3403,
+        "factor": 0.2
+      }
+    },
+    "leaf": {
+      "background": {
+        "type": "stipple_noise",
+        "colors": [
+          "#4CAF50",
+          "#43A047",
+          "#66BB6A"
+        ],
+        "seed": 3404,
+        "factor": 0.2
+      }
+    }
+  },
+  "bones": [
+    {
+      "name": "apple",
+      "pivot": [
+        0,
+        4,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -3,
+            1,
+            -3
+          ],
+          "size": [
+            6,
+            5,
+            6
+          ],
+          "faces": {
+            "north": {
+              "textureId": "skin"
+            },
+            "south": {
+              "textureId": "skin"
+            },
+            "east": {
+              "textureId": "highlight"
+            },
+            "west": {
+              "textureId": "skin"
+            },
+            "up": {
+              "textureId": "skin"
+            },
+            "down": {
+              "textureId": "skin"
+            }
+          }
+        },
+        {
+          "origin": [
+            -2,
+            6,
+            -2
+          ],
+          "size": [
+            4,
+            1,
+            4
+          ],
+          "faces": {
+            "north": {
+              "textureId": "skin"
+            },
+            "south": {
+              "textureId": "skin"
+            },
+            "east": {
+              "textureId": "skin"
+            },
+            "west": {
+              "textureId": "skin"
+            },
+            "up": {
+              "textureId": "skin"
+            },
+            "down": {
+              "textureId": "skin"
+            }
+          }
+        },
+        {
+          "origin": [
+            -2,
+            0,
+            -2
+          ],
+          "size": [
+            4,
+            1,
+            4
+          ],
+          "faces": {
+            "north": {
+              "textureId": "skin"
+            },
+            "south": {
+              "textureId": "skin"
+            },
+            "east": {
+              "textureId": "skin"
+            },
+            "west": {
+              "textureId": "skin"
+            },
+            "up": {
+              "textureId": "skin"
+            },
+            "down": {
+              "textureId": "skin"
+            }
+          }
+        },
+        {
+          "origin": [
+            -0.5,
+            7,
+            -0.5
+          ],
+          "size": [
+            1,
+            3,
+            1
+          ],
+          "faces": {
+            "north": {
+              "textureId": "stem"
+            },
+            "south": {
+              "textureId": "stem"
+            },
+            "east": {
+              "textureId": "stem"
+            },
+            "west": {
+              "textureId": "stem"
+            },
+            "up": {
+              "textureId": "stem"
+            },
+            "down": {
+              "textureId": "stem"
+            }
+          }
+        },
+        {
+          "origin": [
+            0.5,
+            8,
+            -0.5
+          ],
+          "size": [
+            3,
+            2,
+            1
+          ],
+          "faces": {
+            "north": {
+              "textureId": "leaf"
+            },
+            "south": {
+              "textureId": "leaf"
+            },
+            "east": {
+              "textureId": "leaf"
+            },
+            "west": {
+              "textureId": "leaf"
+            },
+            "up": {
+              "textureId": "leaf"
+            },
+            "down": {
+              "textureId": "leaf"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "category": "item"
+}

@@ -1,0 +1,443 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "persona_actor_animation",
+  "title": "Persona Actor Animation (v1.8.0)",
+  "description": "Defines a persona actor animation document with format_version 1.8.0.",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "animates persona character bones with position, rotation, and scale keyframes"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "dataType": "version",
+      "id": "format_version",
+      "title": "Format Version",
+      "isRequired": true
+    },
+    {
+      "dataType": "keyedObjectCollection",
+      "id": "animations",
+      "title": "Animations",
+      "isRequired": true,
+      "subForm": {
+        "fields": [
+          {
+            "dataType": "boolean",
+            "id": "loop",
+            "title": "Loop",
+            "description": "should this animation stop, loop, or stay on the last frame when finished (true, false, \"hold_on_last_frame\"",
+            "isRequired": false
+          },
+          {
+            "dataType": "string",
+            "id": "loop\"<\"hold_on_last_frame\"",
+            "title": "Loop\"<\"hold On Last Frame\"",
+            "description": "should this animation stop, loop, or stay on the last frame when finished (true, false, \"hold_on_last_frame\"",
+            "isRequired": false
+          },
+          {
+            "dataType": "molang",
+            "id": "start_delay",
+            "title": "Start Delay",
+            "description": "How long to wait in seconds before playing this animation.  Note that this expression is evaluated once before playing, and only re-evaluated if asked to play from the beginning again.  A looping animation should use 'loop_delay' if it wants a delay between loops.",
+            "isRequired": false
+          },
+          {
+            "dataType": "molang",
+            "id": "loop_delay",
+            "title": "Loop Delay",
+            "description": "How long to wait in seconds before looping this animation.  Note that this expression is evaluated after each loop and on looping animation only.",
+            "isRequired": false
+          },
+          {
+            "dataType": "molang",
+            "id": "anim_time_update",
+            "title": "Anim Time Update",
+            "description": "how does time pass when playing the animation.  Defaults to \"query.anim_time + query.delta_time\" which means advance in seconds.",
+            "isRequired": false
+          },
+          {
+            "dataType": "molang",
+            "id": "blend_weight",
+            "title": "Blend Weight",
+            "isRequired": false
+          },
+          {
+            "dataType": "boolean",
+            "id": "override_previous_animation",
+            "title": "Override Previous Animation",
+            "description": "reset bones in this animation to the default pose before applying this animation",
+            "isRequired": false
+          },
+          {
+            "dataType": "keyedObjectCollection",
+            "id": "bones",
+            "title": "Bones",
+            "isRequired": false,
+            "subForm": {
+              "fields": [
+                {
+                  "dataType": "object",
+                  "id": "relative_to",
+                  "title": "Relative To",
+                  "isRequired": false,
+                  "subForm": {
+                    "fields": [
+                      {
+                        "dataType": "string",
+                        "id": "rotation\"<\"entity\"",
+                        "title": "Rotation\"<\"entity\"",
+                        "description": "if set, makes the bone rotation relative to the entity instead of the bone's parent",
+                        "isRequired": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "dataType": "keyedObjectCollection",
+                  "id": "position",
+                  "title": "Position",
+                  "isRequired": false,
+                  "subForm": {
+                    "fields": [
+                      {
+                        "dataType": "string",
+                        "id": "lerp_mode\"<\"linear\", \"catmullrom\"",
+                        "title": "Lerp Mode\"<\"linear\", \"catmullrom\"",
+                        "isRequired": false
+                      },
+                      {
+                        "dataType": "molangArray",
+                        "id": "pre",
+                        "title": "Pre",
+                        "isRequired": false
+                      },
+                      {
+                        "dataType": "molangArray",
+                        "id": "post",
+                        "title": "Post",
+                        "isRequired": false
+                      }
+                    ]
+                  },
+                  "keyDescription": "<time_stamp>",
+                  "alternates": [
+                    {
+                      "dataType": "molangArray",
+                      "id": "position",
+                      "isRequired": false
+                    },
+                    {
+                      "dataType": "molang",
+                      "id": "position",
+                      "isRequired": false
+                    },
+                    {
+                      "dataType": "keyedStringCollection",
+                      "id": "position",
+                      "title": "<time Stamp>",
+                      "isRequired": true,
+                      "keyDescription": "<time_stamp>"
+                    }
+                  ]
+                },
+                {
+                  "dataType": "keyedObjectCollection",
+                  "id": "rotation",
+                  "title": "Rotation",
+                  "isRequired": false,
+                  "subForm": {
+                    "fields": [
+                      {
+                        "dataType": "string",
+                        "id": "lerp_mode\"<\"linear\", \"catmullrom\"",
+                        "title": "Lerp Mode\"<\"linear\", \"catmullrom\"",
+                        "isRequired": false
+                      },
+                      {
+                        "dataType": "molangArray",
+                        "id": "pre",
+                        "title": "Pre",
+                        "isRequired": false
+                      },
+                      {
+                        "dataType": "molangArray",
+                        "id": "post",
+                        "title": "Post",
+                        "isRequired": false
+                      }
+                    ]
+                  },
+                  "keyDescription": "<time_stamp>",
+                  "alternates": [
+                    {
+                      "id": "rotation",
+                      "dataType": "objectArray",
+                      "subForm": {
+                        "fields": [
+                          {
+                            "dataType": "molang",
+                            "id": "[xyz]",
+                            "title": "",
+                            "isRequired": true
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "dataType": "molangArray",
+                      "id": "rotation",
+                      "isRequired": false
+                    },
+                    {
+                      "dataType": "molang",
+                      "id": "rotation",
+                      "isRequired": false
+                    },
+                    {
+                      "dataType": "keyedStringCollection",
+                      "id": "rotation",
+                      "title": "<time Stamp>",
+                      "isRequired": true,
+                      "keyDescription": "<time_stamp>"
+                    }
+                  ]
+                },
+                {
+                  "dataType": "keyedObjectCollection",
+                  "id": "scale",
+                  "title": "Scale",
+                  "isRequired": false,
+                  "subForm": {
+                    "fields": [
+                      {
+                        "dataType": "string",
+                        "id": "lerp_mode\"<\"linear\", \"catmullrom\"",
+                        "title": "Lerp Mode\"<\"linear\", \"catmullrom\"",
+                        "isRequired": false
+                      },
+                      {
+                        "dataType": "molangArray",
+                        "id": "pre",
+                        "title": "Pre",
+                        "isRequired": false
+                      },
+                      {
+                        "dataType": "molangArray",
+                        "id": "post",
+                        "title": "Post",
+                        "isRequired": false
+                      }
+                    ]
+                  },
+                  "keyDescription": "<time_stamp>",
+                  "alternates": [
+                    {
+                      "dataType": "molangArray",
+                      "id": "scale",
+                      "isRequired": false
+                    },
+                    {
+                      "dataType": "molang",
+                      "id": "scale",
+                      "isRequired": false
+                    },
+                    {
+                      "dataType": "keyedStringCollection",
+                      "id": "scale",
+                      "title": "<time Stamp>",
+                      "isRequired": true,
+                      "keyDescription": "<time_stamp>"
+                    }
+                  ]
+                }
+              ]
+            },
+            "keyDescription": "<identifier>"
+          },
+          {
+            "dataType": "keyedObjectCollection",
+            "id": "particle_effects",
+            "title": "Particle Effects",
+            "isRequired": false,
+            "subForm": {
+              "fields": [
+                {
+                  "dataType": "string",
+                  "id": "effect",
+                  "title": "Effect",
+                  "description": "The name of a particle effect that should be played",
+                  "isRequired": true
+                },
+                {
+                  "dataType": "string",
+                  "id": "locator",
+                  "title": "Locator",
+                  "description": "The name of a locator on the actor where the effect should be located",
+                  "isRequired": false
+                },
+                {
+                  "dataType": "molang",
+                  "id": "pre_effect_script",
+                  "title": "Pre Effect Script",
+                  "description": "A Molang script that will be run when the particle emitter is initialized",
+                  "isRequired": false
+                },
+                {
+                  "dataType": "boolean",
+                  "id": "bind_to_actor",
+                  "title": "Bind To Actor",
+                  "description": "Set to false to have the effect spawned in the world without being bound to an actor (by default an effect is bound to the actor).",
+                  "isRequired": false
+                }
+              ]
+            },
+            "keyDescription": "<time_stamp>",
+            "alternates": [
+              {
+                "id": "particle_effects",
+                "dataType": "objectArray",
+                "subForm": {
+                  "fields": [
+                    {
+                      "dataType": "string",
+                      "id": "effect",
+                      "title": "Effect",
+                      "description": "The name of a particle effect that should be played",
+                      "isRequired": true
+                    },
+                    {
+                      "dataType": "string",
+                      "id": "locator",
+                      "title": "Locator",
+                      "description": "The name of a locator on the actor where the effect should be located",
+                      "isRequired": false
+                    },
+                    {
+                      "dataType": "molang",
+                      "id": "pre_effect_script",
+                      "title": "Pre Effect Script",
+                      "description": "A Molang script that will be run when the particle emitter is initialized",
+                      "isRequired": false
+                    },
+                    {
+                      "dataType": "boolean",
+                      "id": "bind_to_actor",
+                      "title": "Bind To Actor",
+                      "description": "Set to false to have the effect spawned in the world without being bound to an actor (by default an effect is bound to the actor).",
+                      "isRequired": false
+                    }
+                  ]
+                },
+                "alternates": [
+                  {
+                    "dataType": "stringArray",
+                    "id": "<time_stamp>",
+                    "title": "<time Stamp>",
+                    "isRequired": false
+                  }
+                ],
+                "keyDescription": "<time_stamp>"
+              }
+            ]
+          },
+          {
+            "dataType": "keyedObjectCollection",
+            "id": "sound_effects",
+            "title": "Sound Effects",
+            "description": "sound effects to trigger as this animation plays, keyed by time",
+            "isRequired": false,
+            "subForm": {
+              "fields": [
+                {
+                  "dataType": "string",
+                  "id": "effect",
+                  "title": "Effect",
+                  "description": "Valid sound effect names should be listed in the entity's resource_definition json file.",
+                  "isRequired": true
+                },
+                {
+                  "dataType": "string",
+                  "id": "locator",
+                  "title": "Locator",
+                  "description": "The name of a locator on the actor where the sound should originate from",
+                  "isRequired": false
+                }
+              ]
+            },
+            "keyDescription": "<time_stamp>",
+            "alternates": [
+              {
+                "id": "sound_effects",
+                "dataType": "objectArray",
+                "subForm": {
+                  "fields": [
+                    {
+                      "dataType": "string",
+                      "id": "effect",
+                      "title": "Effect",
+                      "description": "Valid sound effect names should be listed in the entity's resource_definition json file.",
+                      "isRequired": true
+                    },
+                    {
+                      "dataType": "string",
+                      "id": "locator",
+                      "title": "Locator",
+                      "description": "The name of a locator on the actor where the sound should originate from",
+                      "isRequired": false
+                    }
+                  ]
+                },
+                "alternates": [
+                  {
+                    "dataType": "stringArray",
+                    "id": "<time_stamp>",
+                    "title": "<time Stamp>",
+                    "isRequired": false
+                  }
+                ],
+                "keyDescription": "<time_stamp>"
+              }
+            ]
+          },
+          {
+            "dataType": "keyedObjectCollection",
+            "id": "timeline",
+            "title": "Timeline",
+            "isRequired": false,
+            "subForm": {
+              "fields": []
+            },
+            "keyDescription": "<time_stamp>",
+            "alternates": [
+              {
+                "dataType": "keyedStringCollection",
+                "id": "timeline",
+                "title": "<time Stamp>",
+                "isRequired": false,
+                "alternates": [
+                  {
+                    "dataType": "string",
+                    "id": "<time_stamp>",
+                    "isRequired": false
+                  }
+                ],
+                "keyDescription": "<time_stamp>"
+              }
+            ]
+          }
+        ]
+      },
+      "keyDescription": "animation.<identifier>"
+    }
+  ],
+  "dataVersion": "1.8.0"
+}

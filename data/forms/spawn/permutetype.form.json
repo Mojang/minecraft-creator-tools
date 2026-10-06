@@ -1,0 +1,60 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "PermuteType",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "entity_type",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "spawns "
+          },
+          {
+            "type": "value",
+            "field": "entity_type",
+            "humanify": "minecraft"
+          },
+          {
+            "type": "literal",
+            "text": " with weight "
+          },
+          {
+            "type": "value",
+            "field": "weight"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "entity_type",
+      "title": "Entity Type",
+      "description": "Specifies the entity type to spawn when selected",
+      "dataType": "object",
+      "defaultValue": ""
+    },
+    {
+      "id": "min_guaranteed",
+      "title": "Min Guaranteed",
+      "description": "The minimum number of this permutation's entity to spawn",
+      "dataType": "int",
+      "defaultValue": 0
+    },
+    {
+      "id": "weight",
+      "title": "Weight",
+      "description": "The likelihood of this to be selected over the combined weight of all the entities in the permutation",
+      "dataType": "int",
+      "isRequired": true
+    }
+  ],
+  "description": "Defines a weighted spawn variant that may be selected when the spawn rule triggers. Configure the entity to spawn and its weight relative to other permutations—higher weights mean that variant spawns more frequently. Enables mob variety like zombie villagers occasionally replacing regular zombies.",
+  "title": "Spawn PermuteType"
+}

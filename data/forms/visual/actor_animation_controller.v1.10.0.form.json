@@ -1,0 +1,222 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "actor_animation_controller",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines a state machine for controlling animation playback and transitions"
+          }
+        ]
+      }
+    ]
+  },
+  "title": "Animation Controller (v1.10.0)",
+  "description": "Animation controllers are state machines that control which animations play and when. They support states with animations, transitions based on Molang conditions, particle effects, and sound effects. Each state can blend between animations and trigger events on entry and exit.",
+  "fields": [
+    {
+      "dataType": "version",
+      "id": "format_version",
+      "title": "Format Version",
+      "isRequired": true
+    },
+    {
+      "dataType": "keyedObjectCollection",
+      "id": "animation_controllers",
+      "title": "Animation Controllers",
+      "isRequired": true,
+      "subForm": {
+        "fields": [
+          {
+            "dataType": "keyedObjectCollection",
+            "id": "states",
+            "title": "States",
+            "isRequired": true,
+            "subForm": {
+              "fields": [
+                {
+                  "dataType": "keyedObjectCollection",
+                  "id": "variables",
+                  "title": "Variables",
+                  "isRequired": false,
+                  "subForm": {
+                    "fields": [
+                      {
+                        "dataType": "molang",
+                        "id": "input",
+                        "title": "Input",
+                        "isRequired": true
+                      },
+                      {
+                        "dataType": "object",
+                        "id": "remap_curve",
+                        "title": "Remap Curve",
+                        "isRequired": false,
+                        "subForm": {
+                          "fields": []
+                        }
+                      }
+                    ]
+                  },
+                  "keyDescription": "<identifier>"
+                },
+                {
+                  "id": "animations",
+                  "dataType": "objectArray",
+                  "subForm": {
+                    "fields": []
+                  },
+                  "alternates": [
+                    {
+                      "dataType": "stringArray",
+                      "id": "animations",
+                      "title": "Animations",
+                      "isRequired": false
+                    },
+                    {
+                      "dataType": "molang",
+                      "id": "animations",
+                      "title": "<identifier>",
+                      "isRequired": true,
+                      "keyDescription": "<identifier>"
+                    }
+                  ]
+                },
+                {
+                  "id": "transitions",
+                  "dataType": "objectArray",
+                  "subForm": {
+                    "fields": []
+                  },
+                  "alternates": [
+                    {
+                      "dataType": "stringArray",
+                      "id": "transitions",
+                      "title": "Transitions",
+                      "isRequired": false
+                    }
+                  ]
+                },
+                {
+                  "dataType": "boolean",
+                  "id": "blend_via_shortest_path",
+                  "title": "Blend Via Shortest Path",
+                  "description": "When blending a transition to another state, animate each euler axis through the shortest rotation, instead of by value",
+                  "isRequired": false
+                },
+                {
+                  "dataType": "object",
+                  "id": "blend_transition",
+                  "title": "Blend Transition",
+                  "description": "Specifies the cross-fade time in seconds when transitioning to another state",
+                  "isRequired": false,
+                  "subForm": {
+                    "fields": []
+                  }
+                },
+                {
+                  "id": "particle_effects",
+                  "dataType": "objectArray",
+                  "subForm": {
+                    "fields": [
+                      {
+                        "dataType": "string",
+                        "id": "effect",
+                        "title": "Effect",
+                        "description": "The name of a particle effect that should be played",
+                        "isRequired": true
+                      },
+                      {
+                        "dataType": "string",
+                        "id": "locator",
+                        "title": "Locator",
+                        "description": "The name of a locator on the actor where the effect should be located",
+                        "isRequired": false
+                      },
+                      {
+                        "dataType": "molang",
+                        "id": "pre_effect_script",
+                        "title": "Pre Effect Script",
+                        "description": "A Molang script that will be run when the particle emitter is initialized",
+                        "isRequired": false
+                      },
+                      {
+                        "dataType": "boolean",
+                        "id": "bind_to_actor",
+                        "title": "Bind To Actor",
+                        "description": "Set to false to have the effect spawned in the world without being bound to an actor (by default an effect is bound to the actor).",
+                        "isRequired": false
+                      }
+                    ]
+                  },
+                  "alternates": [
+                    {
+                      "dataType": "stringArray",
+                      "id": "particle_effects",
+                      "title": "Particle Effects",
+                      "isRequired": false
+                    }
+                  ]
+                },
+                {
+                  "dataType": "stringArray",
+                  "id": "on_entry",
+                  "title": "Entry",
+                  "isRequired": false
+                },
+                {
+                  "dataType": "stringArray",
+                  "id": "on_exit",
+                  "title": "Exit",
+                  "isRequired": false
+                },
+                {
+                  "id": "sound_effects",
+                  "dataType": "objectArray",
+                  "subForm": {
+                    "fields": [
+                      {
+                        "dataType": "string",
+                        "id": "effect",
+                        "title": "Effect",
+                        "description": "Valid sound effect names should be listed in the entity's resource_definition json file.",
+                        "isRequired": true
+                      },
+                      {
+                        "dataType": "string",
+                        "id": "locator",
+                        "title": "Locator",
+                        "description": "The name of a locator on the actor where the sound should originate from",
+                        "isRequired": false
+                      }
+                    ]
+                  },
+                  "alternates": [
+                    {
+                      "dataType": "stringArray",
+                      "id": "sound_effects",
+                      "title": "Sound Effects",
+                      "description": "Collection of sounds to trigger on entry to this animation state.",
+                      "isRequired": false
+                    }
+                  ]
+                }
+              ]
+            },
+            "keyDescription": "<identifier>"
+          },
+          {
+            "dataType": "string",
+            "id": "initial_state",
+            "title": "Initial State",
+            "isRequired": false
+          }
+        ]
+      },
+      "keyDescription": "controller.animation.<identifier>"
+    }
+  ],
+  "dataVersion": "1.10.0"
+}

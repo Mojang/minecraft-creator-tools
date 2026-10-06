@@ -1,0 +1,136 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "flees from sunlight"
+          }
+        ]
+      }
+    ]
+  },
+  "note": "This behavior is used by undead mobs like skeletons and zombies that burn in sunlight. The entity will seek shade or water during daytime to avoid sun damage.",
+  "fields": [
+    {
+      "id": "control_flags",
+      "title": "Control Flags",
+      "dataType": "stringArray",
+      "defaultValue": [],
+      "choices": [
+        {
+          "id": "jump",
+          "title": "Jump"
+        },
+        {
+          "id": "look",
+          "title": "Look"
+        },
+        {
+          "id": "move",
+          "title": "Move"
+        }
+      ]
+    },
+    {
+      "id": "priority",
+      "title": "Priority",
+      "dataType": "int",
+      "defaultValue": 0,
+      "samples": {
+        "/vanilla/behavior_pack/entities/bogged.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.flee_sun/",
+            "content": 2
+          }
+        ],
+        "/vanilla/behavior_pack/entities/drowned.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.flee_sun/",
+            "content": 2
+          }
+        ],
+        "/vanilla/behavior_pack/entities/parched.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.flee_sun/",
+            "content": 3
+          }
+        ]
+      },
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal."
+    },
+    {
+      "id": "speed_multiplier",
+      "title": "Speed Multiplier",
+      "description": "Movement speed multiplier of the mob when using this AI Goal",
+      "dataType": "float",
+      "defaultValue": 1,
+      "samples": {
+        "/vanilla/behavior_pack/entities/bogged.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.flee_sun/",
+            "content": 1
+          }
+        ],
+        "/vanilla/behavior_pack/entities/drowned.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.flee_sun/",
+            "content": 1
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Allows the mob to run away from direct sunlight and seek shade.",
+  "title": "Entity Flee Sun Behavior",
+  "samples": {
+    "/vanilla/behavior_pack/entities/bogged.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.flee_sun/",
+        "content": {
+          "priority": 2,
+          "speed_multiplier": 1
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/drowned.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.flee_sun/",
+        "content": {
+          "priority": 2,
+          "speed_multiplier": 1
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/parched.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.flee_sun/",
+        "content": {
+          "priority": 3,
+          "speed_multiplier": 1
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/skeleton.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.flee_sun/",
+        "content": {
+          "priority": 2,
+          "speed_multiplier": 1
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/stray.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.flee_sun/",
+        "content": {
+          "priority": 2,
+          "speed_multiplier": 1
+        }
+      }
+    ]
+  },
+  "id": "minecraft:behavior.flee_sun"
+}

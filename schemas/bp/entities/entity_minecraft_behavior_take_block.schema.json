@@ -1,0 +1,193 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Take Block Behavior",
+  "description": "AI goal that makes entities pick up blocks from the world, like Endermen grabbing blocks to carry. Configure which blocks the entity can take and the search radius. Works with place_block behavior to create entities that relocate blocks or harvest materials from the environment.",
+  "properties": {
+    "affected_by_griefing_rule": {
+      "title": "Affected By Griefing Rule",
+      "description": "If true, whether the goal is affected by the mob griefing game rule.",
+      "type": "boolean",
+      "default": true
+    },
+    "blocks": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "title": "Name",
+                "type": "string",
+                "default": ""
+              },
+              "states": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "boolean"
+                  }
+                ],
+                "title": "States"
+              },
+              "tags": {
+                "title": "Tags",
+                "type": "string",
+                "default": ""
+              }
+            }
+          }
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "object"
+        }
+      ],
+      "title": "Blocks",
+      "description": "Block descriptors for which blocks are valid to be taken by the entity, if empty all blocks are valid."
+    },
+    "can_take": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "title": "Domain",
+              "description": "The domain the test should be performed in.",
+              "type": "object"
+            },
+            "operator": {
+              "title": "Operator",
+              "description": "The comparison to apply with 'value'.",
+              "type": "object"
+            },
+            "subject": {
+              "title": "Subject",
+              "description": "The subject of this filter test.",
+              "type": "object"
+            },
+            "test": {
+              "title": "Test",
+              "description": "The name of the test to apply.",
+              "type": "string"
+            },
+            "value": {
+              "title": "Value",
+              "description": "The value being compared with the test.",
+              "type": "object"
+            }
+          }
+        },
+        {
+          "type": "object"
+        }
+      ],
+      "title": "Can Take",
+      "description": "Filters for if the entity should try to take a block. Self and Target are set."
+    },
+    "chance": {
+      "title": "Chance",
+      "description": "Chance each tick for the entity to try and take a block.",
+      "type": "number",
+      "maximum": 1,
+      "default": 1
+    },
+    "control_flags": {
+      "title": "Control Flags",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "jump",
+          "look",
+          "move"
+        ]
+      }
+    },
+    "on_take": {
+      "title": "Take",
+      "description": "Trigger ran if the entity does take a block. Self, Target, and Block are set.",
+      "$ref": "./entity_actordefinitiontrigger.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Entity ActorDefinitionTrigger",
+          "description": "Triggers an entity event when specified conditions are met. Events activate component groups that change entity behavior—transforming villagers into zombie villagers, switching mobs to aggressive mode, or triggering growth stages. Combine with filters to create conditional state machines that respond to gameplay.",
+          "body": {
+            "event": "",
+            "filters": {
+              "AND": null,
+              "NOT": null,
+              "OR": null,
+              "all": null,
+              "all_of": null,
+              "any": null,
+              "any_of": null,
+              "none_of": null
+            },
+            "target": "self"
+          }
+        }
+      ]
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "type": "integer",
+      "default": 0
+    },
+    "requires_line_of_sight": {
+      "title": "Requires Line Of Sight",
+      "description": "If true, whether the entity needs line of sight to the block they are trying to take.",
+      "type": "boolean",
+      "default": true
+    },
+    "xz_range": {
+      "title": "Xz Range",
+      "description": "XZ range from which the entity will try and take blocks from.",
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        {
+          "$ref": "../../common/intrange.schema.json"
+        }
+      ]
+    },
+    "y_range": {
+      "title": "y Range",
+      "description": "Y range from which the entity will try and take blocks from.",
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        {
+          "$ref": "../../common/intrange.schema.json"
+        }
+      ]
+    }
+  }
+}

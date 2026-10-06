@@ -1,0 +1,98 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "LootTable",
+  "title": "Loot Table",
+  "description": "Defines the loot that can be generated when an entity is killed, a chest is opened, fishing is performed, or other gameplay events occur. Loot tables consist of one or more pools, each containing entries with items or references to other loot tables.",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines loot drops and rewards"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "pools",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "contains "
+          },
+          {
+            "type": "value",
+            "field": "pools.length"
+          },
+          {
+            "type": "plural",
+            "countField": "pools.length",
+            "singular": [
+              {
+                "type": "literal",
+                "text": " loot pool"
+              }
+            ],
+            "plural": [
+              {
+                "type": "literal",
+                "text": " loot pools"
+              }
+            ],
+            "includeCount": false
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "pools[0].rolls",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "first pool rolls "
+          },
+          {
+            "type": "value",
+            "field": "pools[0].rolls"
+          },
+          {
+            "type": "plural",
+            "countField": "pools[0].rolls",
+            "singular": [
+              {
+                "type": "literal",
+                "text": " time"
+              }
+            ],
+            "plural": [
+              {
+                "type": "literal",
+                "text": " times"
+              }
+            ],
+            "includeCount": false
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "pools",
+      "title": "Pools",
+      "description": "A list of loot pools. Each pool is rolled independently to select entries.",
+      "dataType": "objectArray",
+      "noun": "Pool",
+      "subFormId": "loot/loot_pool"
+    }
+  ]
+}

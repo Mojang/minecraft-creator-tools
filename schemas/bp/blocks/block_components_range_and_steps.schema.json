@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Block Components Range And Steps",
+  "description": "Defines a value range with discrete steps.",
+  "properties": {
+    "range": {
+      "title": "Range",
+      "description": "The range of the random offset.",
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        {
+          "$ref": "../../common/floatrange.schema.json"
+        }
+      ],
+      "x-runtime-constraint-description": "Check that the limits imposed on the range (minimum, maximum and maximum distance between values) are respected"
+    },
+    "steps": {
+      "title": "Steps",
+      "description": "The number of steps between the range. Specify 0 for all possible values between the range.",
+      "type": "integer",
+      "default": 0
+    }
+  },
+  "required": [
+    "range"
+  ]
+}

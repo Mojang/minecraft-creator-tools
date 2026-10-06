@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Vex Random Move Behavior",
+  "description": "Allows the mob to move around randomly like the Vex.",
+  "properties": {
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "type": "integer"
+    }
+  }
+}

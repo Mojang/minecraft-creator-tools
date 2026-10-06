@@ -1,0 +1,337 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "into",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can transform into "
+          },
+          {
+            "type": "value",
+            "field": "into"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "into",
+            "comparison": "undefined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can transform into another entity"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "keep_owner",
+            "comparison": "==",
+            "value": true
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "remains owned by its owner after transformation"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "keep_level",
+            "comparison": "==",
+            "value": true
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "preserves its trading level after transformation"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "transformation_sound",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "plays a sound when transformation completes"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "delay",
+      "title": "Delay",
+      "description": "Defines the properties of the delay for the transformation. Can be a simple number (seconds) or a complex object.",
+      "dataType": "object",
+      "alternates": [
+        {
+          "id": "delay",
+          "dataType": "float"
+        }
+      ],
+      "samples": {
+        "/vanilla/behavior_pack/entities/pig.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:pig_transform/minecraft:transformation/",
+            "content": 0.5
+          }
+        ],
+        "/vanilla/behavior_pack/entities/stray.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:revert_to_skeleton/minecraft:transformation/",
+            "content": 0.5
+          }
+        ]
+      },
+      "subForm": {
+        "id": "",
+        "description": "Defines the properties of the delay for the transformation",
+        "fields": [
+          {
+            "id": "block_assist_chance",
+            "title": "Block Assist Chance",
+            "description": "Chance that the entity will look for nearby blocks that can speed up the transformation. Value must be between 0.0 and 1.0",
+            "defaultValue": 0,
+            "dataType": "float"
+          },
+          {
+            "id": "block_chance",
+            "title": "Block Chance",
+            "description": "Chance that, once a block is found, will help speed up the transformation",
+            "defaultValue": 0,
+            "dataType": "float"
+          },
+          {
+            "id": "block_max",
+            "title": "Block Max",
+            "description": "Maximum number of blocks the entity will look for to aid in the transformation. If not defined or set to 0, it will be set to the block radius",
+            "defaultValue": 0,
+            "dataType": "int"
+          },
+          {
+            "id": "block_radius",
+            "title": "Block Radius",
+            "description": "Distance in Blocks that the entity will search for blocks that can help the transformation",
+            "defaultValue": 0,
+            "dataType": "int"
+          },
+          {
+            "id": "block_types",
+            "title": "Block Types",
+            "description": "List of blocks that can help the transformation of this entity",
+            "dataType": "stringArray"
+          },
+          {
+            "id": "range_max",
+            "title": "Range Max",
+            "description": "Time in seconds to be added to value to have the maximum random time range value until the entity transforms (if non-zero then the time in seconds before the entity transforms will be random between value+range_min and value+range_max)",
+            "defaultValue": 0,
+            "dataType": "float"
+          },
+          {
+            "id": "range_min",
+            "title": "Range Min",
+            "description": "Time in seconds to be added to value to have the minimum random time range value until the entity transforms (if non-zero then the time in seconds before the entity transforms will be random between value+range_min and value+range_max)",
+            "defaultValue": 0,
+            "dataType": "float"
+          },
+          {
+            "id": "value",
+            "title": "Value",
+            "description": "Time in seconds before the entity transforms",
+            "defaultValue": 0,
+            "dataType": "float"
+          }
+        ]
+      }
+    },
+    {
+      "id": "add",
+      "title": "Add",
+      "description": "List of components to add to the entity after the transformation",
+      "dataType": "objectArray",
+      "subForm": {
+        "id": "",
+        "description": "List of components to add to the entity after the transformation",
+        "fields": [
+          {
+            "id": "component_groups",
+            "title": "Component Groups",
+            "description": "Names of component groups to add",
+            "dataType": "stringArray"
+          }
+        ]
+      }
+    },
+    {
+      "id": "begin_transform_sound",
+      "title": "Begin Transform Sound",
+      "description": "Sound to play when the transformation starts",
+      "dataType": "string"
+    },
+    {
+      "id": "drop_equipment",
+      "title": "Drop Equipment",
+      "description": "Cause the entity to drop all equipment upon transformation",
+      "defaultValue": false,
+      "dataType": "boolean"
+    },
+    {
+      "id": "drop_inventory",
+      "title": "Drop Inventory",
+      "description": "Cause the entity to drop all items in inventory upon transformation",
+      "defaultValue": false,
+      "dataType": "boolean",
+      "samples": {
+        "/vanilla/behavior_pack/entities/skeleton.json": [
+          {
+            "path": "/minecraft:entity/component_groups/become_stray/minecraft:transformation/",
+            "content": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "into",
+      "title": "Into",
+      "description": "Entity Definition that this entity will transform into",
+      "dataType": "string",
+      "samples": {
+        "/vanilla/behavior_pack/entities/pig.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:pig_transform/minecraft:transformation/",
+            "content": "minecraft:pig_zombie"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/skeleton.json": [
+          {
+            "path": "/minecraft:entity/component_groups/become_stray/minecraft:transformation/",
+            "content": "minecraft:stray"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/stray.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:revert_to_skeleton/minecraft:transformation/",
+            "content": "minecraft:skeleton"
+          }
+        ]
+      }
+    },
+    {
+      "id": "keep_level",
+      "title": "Keep Level",
+      "description": "If this entity has trades and has leveled up, it should maintain that level after transformation.",
+      "defaultValue": false,
+      "dataType": "boolean",
+      "samples": {
+        "/vanilla/behavior_pack/entities/skeleton.json": [
+          {
+            "path": "/minecraft:entity/component_groups/become_stray/minecraft:transformation/",
+            "content": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "keep_owner",
+      "title": "Keep Owner",
+      "description": "If this entity is owned by another entity, it should remain owned after transformation.",
+      "defaultValue": false,
+      "dataType": "boolean"
+    },
+    {
+      "id": "preserve_equipment",
+      "title": "Preserve Equipment",
+      "description": "Cause the entity to keep equipment after going through transformation",
+      "defaultValue": false,
+      "dataType": "boolean",
+      "samples": {
+        "/vanilla/behavior_pack/entities/skeleton.json": [
+          {
+            "path": "/minecraft:entity/component_groups/become_stray/minecraft:transformation/",
+            "content": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "transformation_sound",
+      "title": "Transformation Sound",
+      "description": "Sound to play when the entity is done transforming",
+      "dataType": "string",
+      "samples": {
+        "/vanilla/behavior_pack/entities/pig.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:pig_transform/minecraft:transformation/",
+            "content": "mob.pig.death"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/skeleton.json": [
+          {
+            "path": "/minecraft:entity/component_groups/become_stray/minecraft:transformation/",
+            "content": "convert_to_stray"
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Defines an entity's transformation from the current definition into another",
+  "title": "Transformation",
+  "samples": {
+    "/vanilla/behavior_pack/entities/pig.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:pig_transform/minecraft:transformation/",
+        "content": {
+          "into": "minecraft:pig_zombie",
+          "transformation_sound": "mob.pig.death",
+          "delay": 0.5
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/skeleton.json": [
+      {
+        "path": "/minecraft:entity/component_groups/become_stray/minecraft:transformation/",
+        "content": {
+          "drop_inventory": true,
+          "into": "minecraft:stray",
+          "keep_level": true,
+          "preserve_equipment": true,
+          "transformation_sound": "convert_to_stray"
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/stray.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:revert_to_skeleton/minecraft:transformation/",
+        "content": {
+          "delay": 0.5,
+          "into": "minecraft:skeleton"
+        }
+      }
+    ]
+  },
+  "id": "minecraft:transformation"
+}

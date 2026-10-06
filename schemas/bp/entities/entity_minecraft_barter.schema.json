@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Barter",
+  "description": "Enables the component to drop an item as a barter exchange.",
+  "properties": {
+    "barter_table": {
+      "title": "Barter Table",
+      "description": "Loot table that's used to drop a random item.",
+      "type": "string"
+    },
+    "cooldown_after_being_attacked": {
+      "title": "Cooldown After Being Attacked",
+      "description": "Duration, in seconds, for which mob won't barter items if it was hurt.",
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        {
+          "type": "object",
+          "properties": {
+            "min": {
+              "type": "integer",
+              "description": "Minimum value of the range"
+            },
+            "max": {
+              "type": "integer",
+              "description": "Maximum value of the range"
+            }
+          }
+        }
+      ],
+      "maximum": 60,
+      "default": 0
+    }
+  }
+}

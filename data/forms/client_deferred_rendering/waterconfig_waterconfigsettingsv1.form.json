@@ -1,0 +1,350 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "fields": [
+    {
+      "id": "format_version",
+      "title": "format_version",
+      "description": "[editor(readonly:true)]",
+      "dataType": "string"
+    },
+    {
+      "id": "minecraft:water_settings",
+      "title": "minecraft:water_settings",
+      "description": "minecraft:water_settings",
+      "dataType": "object",
+      "subForm": {
+        "title": "WaterConfig WaterConfigSettingsV1 WaterSettings",
+        "description": "WaterConfig WaterConfigSettingsV1 WaterSettings",
+        "fields": [
+          {
+            "id": "description",
+            "title": "description",
+            "description": "description",
+            "dataType": "object",
+            "subForm": {
+              "title": "WaterConfig WaterConfigSettingsV0 WaterSettings WaterDescription",
+              "description": "WaterConfig WaterConfigSettingsV0 WaterSettings WaterDescription",
+              "fields": [
+                {
+                  "id": "identifier",
+                  "title": "identifier",
+                  "description": "identifier",
+                  "dataType": "string"
+                }
+              ]
+            }
+          },
+          {
+            "id": "particle_concentrations",
+            "title": "particle_concentrations",
+            "description": "particle_concentrations",
+            "dataType": "object",
+            "subForm": {
+              "title": "WaterConfig WaterConfigSettingsV0 WaterSettings PSY",
+              "description": "WaterConfig WaterConfigSettingsV0 WaterSettings PSY",
+              "fields": [
+                {
+                  "id": "chlorophyll",
+                  "title": "chlorophyll",
+                  "description": "chlorophyll",
+                  "dataType": "float",
+                  "validity": [
+                    {
+                      "comparison": "<=",
+                      "value": 10
+                    }
+                  ]
+                },
+                {
+                  "id": "suspended_sediment",
+                  "title": "suspended_sediment",
+                  "description": "suspended_sediment",
+                  "dataType": "float",
+                  "validity": [
+                    {
+                      "comparison": "<=",
+                      "value": 300
+                    }
+                  ]
+                },
+                {
+                  "id": "cdom",
+                  "title": "cdom",
+                  "description": "cdom",
+                  "dataType": "float",
+                  "validity": [
+                    {
+                      "comparison": "<=",
+                      "value": 15
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "id": "caustics",
+            "title": "caustics",
+            "description": "caustics",
+            "dataType": "object",
+            "subForm": {
+              "title": "Mce Framebuilder CausticsParameters",
+              "description": "Mce Framebuilder CausticsParameters",
+              "fields": [
+                {
+                  "id": "enabled",
+                  "title": "enabled",
+                  "description": "enabled",
+                  "dataType": "boolean"
+                },
+                {
+                  "id": "power",
+                  "title": "power",
+                  "description": "power",
+                  "dataType": "int",
+                  "validity": [
+                    {
+                      "comparison": ">=",
+                      "value": 1
+                    },
+                    {
+                      "comparison": "<=",
+                      "value": 6
+                    }
+                  ]
+                },
+                {
+                  "id": "frame_length",
+                  "title": "frame_length",
+                  "description": "frame_length",
+                  "dataType": "float",
+                  "validity": [
+                    {
+                      "comparison": ">=",
+                      "value": 0.009999999776482582
+                    },
+                    {
+                      "comparison": "<=",
+                      "value": 5
+                    }
+                  ]
+                },
+                {
+                  "id": "texture",
+                  "title": "texture",
+                  "description": "texture",
+                  "dataType": "string"
+                },
+                {
+                  "id": "scale",
+                  "title": "scale",
+                  "description": "scale",
+                  "dataType": "float",
+                  "validity": [
+                    {
+                      "comparison": ">=",
+                      "value": 0.10000000149011612
+                    },
+                    {
+                      "comparison": "<=",
+                      "value": 5
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "id": "waves",
+            "title": "waves",
+            "description": "waves",
+            "dataType": "object",
+            "subForm": {
+              "title": "Mce Framebuilder WaterSurfaceParameters",
+              "description": "Mce Framebuilder WaterSurfaceParameters",
+              "fields": [
+                {
+                  "id": "enabled",
+                  "title": "enabled",
+                  "description": "enabled",
+                  "dataType": "boolean"
+                },
+                {
+                  "id": "pull",
+                  "title": "pull",
+                  "description": "pull",
+                  "dataType": "float",
+                  "validity": [
+                    {
+                      "comparison": ">=",
+                      "value": -1
+                    },
+                    {
+                      "comparison": "<=",
+                      "value": 1
+                    }
+                  ]
+                },
+                {
+                  "id": "frequency",
+                  "title": "frequency",
+                  "description": "frequency",
+                  "dataType": "float",
+                  "validity": [
+                    {
+                      "comparison": ">=",
+                      "value": 0.009999999776482582
+                    },
+                    {
+                      "comparison": "<=",
+                      "value": 3
+                    }
+                  ]
+                },
+                {
+                  "id": "sampleWidth",
+                  "title": "sampleWidth",
+                  "description": "sampleWidth",
+                  "dataType": "float",
+                  "validity": [
+                    {
+                      "comparison": ">=",
+                      "value": 0.009999999776482582
+                    },
+                    {
+                      "comparison": "<=",
+                      "value": 1
+                    }
+                  ]
+                },
+                {
+                  "id": "mix",
+                  "title": "mix",
+                  "description": "mix",
+                  "dataType": "float",
+                  "validity": [
+                    {
+                      "comparison": "<=",
+                      "value": 1
+                    }
+                  ]
+                },
+                {
+                  "id": "octaves",
+                  "title": "octaves",
+                  "description": "octaves",
+                  "dataType": "int",
+                  "validity": [
+                    {
+                      "comparison": ">=",
+                      "value": 1
+                    },
+                    {
+                      "comparison": "<=",
+                      "value": 30
+                    }
+                  ]
+                },
+                {
+                  "id": "speed_scaling",
+                  "title": "speed_scaling",
+                  "description": "speed_scaling",
+                  "dataType": "float",
+                  "validity": [
+                    {
+                      "comparison": "<=",
+                      "value": 2
+                    }
+                  ]
+                },
+                {
+                  "id": "depth",
+                  "title": "depth",
+                  "description": "depth",
+                  "dataType": "float",
+                  "validity": [
+                    {
+                      "comparison": "<=",
+                      "value": 3
+                    }
+                  ]
+                },
+                {
+                  "id": "speed",
+                  "title": "speed",
+                  "description": "speed",
+                  "dataType": "float",
+                  "validity": [
+                    {
+                      "comparison": ">=",
+                      "value": 0.009999999776482582
+                    },
+                    {
+                      "comparison": "<=",
+                      "value": 10
+                    }
+                  ]
+                },
+                {
+                  "id": "frequency_scaling",
+                  "title": "frequency_scaling",
+                  "description": "frequency_scaling",
+                  "dataType": "float",
+                  "validity": [
+                    {
+                      "comparison": "<=",
+                      "value": 2
+                    }
+                  ]
+                },
+                {
+                  "id": "direction_increment",
+                  "title": "direction_increment",
+                  "description": "direction_increment",
+                  "dataType": "float",
+                  "validity": [
+                    {
+                      "comparison": "<=",
+                      "value": 360
+                    }
+                  ]
+                },
+                {
+                  "id": "shape",
+                  "title": "shape",
+                  "description": "shape",
+                  "dataType": "float",
+                  "validity": [
+                    {
+                      "comparison": ">=",
+                      "value": 1
+                    },
+                    {
+                      "comparison": "<=",
+                      "value": 10
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "id": "minecraft:water_settings",
+  "title": "Water Settings",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "controls water rendering, caustics, and appearance for Vibrant Visuals"
+          }
+        ]
+      }
+    ]
+  },
+  "description": "Struct WaterConfig WaterConfigSettingsV1 Client Deferred Rendering"
+}

@@ -1,0 +1,20 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_furnace": {
+    "description": {
+    "identifier": "minecraft:furnace_log"
+    },
+    "unlock": [
+      {
+        "tag": "minecraft:logs_that_burn"
+      }
+    ],
+    "tags": ["furnace"],
+    "input": {
+      "tag": "minecraft:logs_that_burn"
+    },
+    "output": "minecraft:coal:1",
+    "priority": -1
+  }
+  
+}

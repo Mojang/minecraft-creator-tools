@@ -1,0 +1,160 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "extracts catalog pack metadata from files"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "packmetadata",
+  "title": "Pack Metadata Info",
+  "description": "Extracts and validates a project summary.",
+  "fields": [
+    {
+      "id": "101",
+      "title": "Metadata Pack Id",
+      "messageType": "info",
+      "dataType": "string"
+    },
+    {
+      "id": "102",
+      "title": "Metadata Offer Id",
+      "messageType": "info",
+      "dataType": "string"
+    },
+    {
+      "id": "141",
+      "title": "Card Title",
+      "messageType": "info",
+      "dataType": "string",
+      "description": "The title displayed for this content."
+    },
+    {
+      "id": "142",
+      "title": "Catalog Description",
+      "messageType": "info",
+      "dataType": "string",
+      "description": "The description shown for this content."
+    },
+    {
+      "id": "143",
+      "title": "Content Approved",
+      "messageType": "info",
+      "dataType": "string"
+    },
+    {
+      "id": "144",
+      "title": "Creator Name",
+      "messageType": "info",
+      "dataType": "string"
+    },
+    {
+      "id": "146",
+      "title": "Is Update",
+      "messageType": "info",
+      "dataType": "string"
+    },
+    {
+      "id": "147",
+      "title": "Last Updated",
+      "messageType": "info",
+      "dataType": "string"
+    },
+    {
+      "id": "148",
+      "title": "Product Genre",
+      "messageType": "info",
+      "dataType": "string"
+    },
+    {
+      "id": "149",
+      "title": "Product Price",
+      "messageType": "info",
+      "dataType": "string"
+    },
+    {
+      "id": "150",
+      "title": "Product Subgenre",
+      "messageType": "info",
+      "dataType": "string"
+    },
+    {
+      "id": "151",
+      "title": "Product Title",
+      "messageType": "info",
+      "dataType": "string"
+    },
+    {
+      "id": "152",
+      "title": "Original Release Date",
+      "messageType": "info",
+      "dataType": "string"
+    },
+    {
+      "id": "153",
+      "title": "Pack Type",
+      "messageType": "info",
+      "dataType": "string"
+    },
+    {
+      "id": "154",
+      "title": "Player Count",
+      "messageType": "info",
+      "dataType": "string"
+    },
+    {
+      "id": "155",
+      "title": "Acquirable",
+      "messageType": "info",
+      "dataType": "string"
+    },
+    {
+      "id": "156",
+      "title": "Readable Offer Id",
+      "messageType": "info",
+      "dataType": "string"
+    },
+    {
+      "id": "157",
+      "title": "Release Date",
+      "messageType": "info",
+      "dataType": "string"
+    },
+    {
+      "id": "158",
+      "title": "Product Id",
+      "messageType": "info",
+      "dataType": "string"
+    },
+    {
+      "id": "159",
+      "title": "Submission Date",
+      "messageType": "info",
+      "dataType": "string"
+    },
+    {
+      "id": "160",
+      "title": "Submission Version",
+      "messageType": "info",
+      "dataType": "string"
+    },
+    {
+      "id": "161",
+      "title": "World Type",
+      "messageType": "info",
+      "dataType": "string"
+    },
+    {
+      "id": "162",
+      "title": "Offer Type",
+      "messageType": "info",
+      "dataType": "string"
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "minecraft:color_grading_settings",
+  "description": "minecraft:color_grading_settings",
+  "type": "object",
+  "properties": {
+    "description": {
+      "title": "description",
+      "description": "description",
+      "type": "object",
+      "properties": {
+        "identifier": {
+          "title": "identifier",
+          "description": "identifier",
+          "type": "string"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "ColorGraderConfig ColorGradingParametersSrc ColorGradingSettings ColorGradingDescription",
+          "description": "ColorGraderConfig ColorGradingParametersSrc ColorGradingSettings ColorGradingDescription",
+          "body": {
+            "identifier": ""
+          }
+        }
+      ]
+    },
+    "color_grading": {
+      "$ref": "./color_grading.schema.json",
+      "title": "color_grading",
+      "description": "color_grading"
+    },
+    "tone_mapping": {
+      "title": "tone_mapping",
+      "description": "tone_mapping",
+      "type": "object",
+      "properties": {
+        "operator": {
+          "title": "enum dragon_framerenderer_modules_Tonemapper",
+          "description": "enum dragon_framerenderer_modules_Tonemapper",
+          "type": "string"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "ColorGraderConfig ColorGradingParametersSrc ColorGradingSettings ToneMapping",
+          "description": "ColorGraderConfig ColorGradingParametersSrc ColorGradingSettings ToneMapping",
+          "body": {
+            "operator": ""
+          }
+        }
+      ]
+    }
+  }
+}

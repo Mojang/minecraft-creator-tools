@@ -1,0 +1,29 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has a secondary texture color"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "The second Palette Color value of the entity.",
+      "defaultValue": 0,
+      "dataType": "int"
+    }
+  ],
+  "note": "Only works on vanilla entities that have a second predefined color values (tropical fish).",
+  "description": "Defines the entity's second texture color.",
+  "title": "Color2",
+  "samples": {},
+  "id": "minecraft:color2"
+}

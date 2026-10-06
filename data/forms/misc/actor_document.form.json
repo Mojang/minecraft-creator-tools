@@ -1,0 +1,45 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines actor document configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Actor Document",
+  "fields": [
+    {
+      "id": "component_groups",
+      "title": "Component Groups",
+      "dataType": "object",
+      "subFormId": "misc/entity_component_definitions"
+    },
+    {
+      "id": "components",
+      "title": "Components",
+      "dataType": "object",
+      "subFormId": "misc/entity_component_definitions"
+    },
+    {
+      "id": "description",
+      "title": "Description",
+      "description": "Dynamic value",
+      "dataType": "object",
+      "isRequired": true
+    },
+    {
+      "id": "events",
+      "title": "Events",
+      "description": "Dynamic value",
+      "dataType": "object"
+    }
+  ],
+  "description": "Defines actor document configuration.",
+  "title": "Actor Document Misc"
+}

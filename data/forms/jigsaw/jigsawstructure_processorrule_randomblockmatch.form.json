@@ -1,0 +1,37 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "matches blocks with a random probability"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "predicate_type",
+      "title": "Predicate Type",
+      "description": "The type of block predicate.",
+      "dataType": "string"
+    },
+    {
+      "id": "block",
+      "title": "Block",
+      "description": "The block to match against.",
+      "dataType": "string"
+    },
+    {
+      "id": "probability",
+      "title": "Probability",
+      "description": "Probability of evaluating to true when the block matches.",
+      "dataType": "float"
+    }
+  ],
+  "description": "Predicate that evaluates to true with a given probability if the block at the specified location matches the specified block.",
+  "title": "JigsawStructure ProcessorRule RandomBlockMatch"
+}

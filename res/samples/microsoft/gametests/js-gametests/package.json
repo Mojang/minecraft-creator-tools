@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@minecraft/server": "^1.11.0",
+    "@minecraft/server-gametest": "^1.0.0-beta.1.21.10-preview.23"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shapeless": {
+    "description": {
+    "identifier": "minecraft:stonecutter_andesite_wall"
+    },
+
+    
+    "tags": [ "stonecutter" ],
+    "priority": 2,
+    "ingredients": [
+      {
+        "item": "minecraft:andesite"
+      }
+    ],
+    "unlock": [
+      {
+        "item": "minecraft:andesite"
+      }
+    ],
+    "result": {
+      "item": "minecraft:andesite_wall",
+      "count": 1
+    }
+  }
+  
+}

@@ -1,0 +1,29 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shapeless": {
+    "description": {
+    "identifier": "minecraft:stonecutter_red_sandstone_wall"
+    },
+
+    
+    "tags": [ "stonecutter" ],
+    "priority": 4,
+    "ingredients": [
+      {
+        "item": "minecraft:red_sandstone",
+        "data": 0
+      }
+    ],
+    "unlock": [
+      {
+        "item": "minecraft:red_sandstone",
+        "data": 0
+      }
+    ],
+    "result": {
+      "item": "minecraft:red_sandstone_wall",
+      "count": 1
+    }
+  }
+  
+}

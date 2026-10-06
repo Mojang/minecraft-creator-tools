@@ -1,0 +1,105 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "waves",
+  "description": "waves",
+  "type": "object",
+  "properties": {
+    "enabled": {
+      "title": "enabled",
+      "description": "enabled",
+      "type": "boolean"
+    },
+    "pull": {
+      "title": "pull",
+      "description": "pull",
+      "type": "number",
+      "minimum": -1,
+      "maximum": 1
+    },
+    "frequency": {
+      "title": "frequency",
+      "description": "frequency",
+      "type": "number",
+      "minimum": 0.009999999776482582,
+      "maximum": 3
+    },
+    "sampleWidth": {
+      "title": "sampleWidth",
+      "description": "sampleWidth",
+      "type": "number",
+      "minimum": 0.009999999776482582,
+      "maximum": 1
+    },
+    "mix": {
+      "title": "mix",
+      "description": "mix",
+      "type": "number",
+      "maximum": 1
+    },
+    "octaves": {
+      "title": "octaves",
+      "description": "octaves",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 30
+    },
+    "speed_scaling": {
+      "title": "speed_scaling",
+      "description": "speed_scaling",
+      "type": "number",
+      "maximum": 2
+    },
+    "depth": {
+      "title": "depth",
+      "description": "depth",
+      "type": "number",
+      "maximum": 3
+    },
+    "speed": {
+      "title": "speed",
+      "description": "speed",
+      "type": "number",
+      "minimum": 0.009999999776482582,
+      "maximum": 10
+    },
+    "frequency_scaling": {
+      "title": "frequency_scaling",
+      "description": "frequency_scaling",
+      "type": "number",
+      "maximum": 2
+    },
+    "direction_increment": {
+      "title": "direction_increment",
+      "description": "direction_increment",
+      "type": "number",
+      "maximum": 360
+    },
+    "shape": {
+      "title": "shape",
+      "description": "shape",
+      "type": "number",
+      "minimum": 1,
+      "maximum": 10
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "Mce Framebuilder WaterSurfaceParameters",
+      "description": "Mce Framebuilder WaterSurfaceParameters",
+      "body": {
+        "enabled": true,
+        "pull": 0,
+        "frequency": 0,
+        "sampleWidth": 0,
+        "mix": 0,
+        "octaves": 0,
+        "speed_scaling": 0,
+        "depth": 0,
+        "speed": 0,
+        "frequency_scaling": 0,
+        "direction_increment": 0,
+        "shape": 0
+      }
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Distribution",
+  "description": "Parameters controlling the initial scatter of the feature.\n\nProperties:\n• iterations (int) = 1\n• scatter_chance (float) = 1\n• coordinate_eval_order (enum) = xzy\n• x (int) = 0\n• y (int) = 0\n• z (int) = 0",
+  "type": "object",
+  "properties": {
+    "iterations": {
+      "title": "Iterations",
+      "description": "Number of scattered positions to generate. Can be an integer or a Molang expression.",
+      "type": "integer",
+      "default": 1
+    },
+    "scatter_chance": {
+      "title": "Scatter Chance",
+      "description": "Probability that this scatter will occur (0.0 to 1.0 or Molang expression). If not triggered, no iterations will run.",
+      "type": "number",
+      "default": 1
+    },
+    "coordinate_eval_order": {
+      "title": "Coordinate Evaluation Order",
+      "description": "The order in which coordinates will be evaluated. Should be used when a coordinate depends on another. Defaults to 'xzy'.",
+      "type": "string",
+      "enum": [
+        "xyz",
+        "xzy",
+        "yxz",
+        "yzx",
+        "zxy",
+        "zyx"
+      ],
+      "default": "xzy"
+    },
+    "x": {
+      "title": "X Distribution",
+      "description": "Distribution for the X coordinate (evaluated each iteration). Can be an integer, range object, or Molang expression.",
+      "type": "integer",
+      "default": 0
+    },
+    "y": {
+      "title": "Y Distribution",
+      "description": "Distribution for the Y coordinate (evaluated each iteration). Can be an integer, range object, or Molang expression.",
+      "type": "integer",
+      "default": 0
+    },
+    "z": {
+      "title": "Z Distribution",
+      "description": "Distribution for the Z coordinate (evaluated each iteration). Can be an integer, range object, or Molang expression.",
+      "type": "integer",
+      "default": 0
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "Distribution",
+      "description": "Controls the scatter distribution of features during world generation.",
+      "body": {
+        "iterations": 1,
+        "scatter_chance": 1,
+        "coordinate_eval_order": "xzy",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    }
+  ]
+}

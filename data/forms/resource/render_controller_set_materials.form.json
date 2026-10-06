@@ -1,0 +1,50 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "title": "Render Controller Set",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines material selection logic for entity rendering"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "render_controllers",
+      "displayTitle": false,
+      "allowCreateDelete": false,
+      "dataType": "keyedObjectCollection",
+      "subForm": {
+        "fields": [
+          {
+            "id": "materials",
+            "title": "Materials",
+            "description": "A name or expression that expresses logic for which material to use to display this particular entity",
+            "dataType": "arrayOfKeyedStringCollection"
+          },
+          {
+            "id": "arrays",
+            "title": "Lists",
+            "dataType": "object",
+            "subForm": {
+              "fields": [
+                {
+                  "id": "materials",
+                  "title": "Materials",
+                  "description": "Lists of materials that can be used in selection calculations",
+                  "dataType": "keyedStringArrayCollection"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Defines material selection logic for entity rendering."
+}

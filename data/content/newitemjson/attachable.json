@@ -1,0 +1,18 @@
+{
+  "format_version": "1.8.0",
+  "minecraft:attachable": {
+    "description": {
+      "identifier": "examplens:examplename",
+      "materials": {
+        "default": "examplename"
+      },
+      "textures": {
+        "default": "textures/models/examplename"
+      },
+      "geometry": {
+        "default": "geometry.examplename"
+      },
+      "render_controllers": ["controller.render.examplename"]
+    }
+  }
+}

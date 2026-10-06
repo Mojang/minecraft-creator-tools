@@ -1,0 +1,98 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Client Particles Particle Appearance Tinting",
+  "description": "Applies color tinting to particle textures, from simple solid colors to complex gradients. Use hex colors for static tints, RGBA arrays with Molang for dynamic colors, or gradient objects to blend between colors over particle lifetime. Essential for flames fading orange-to-gray, magical auras shifting colors, or any effect needing color variation.",
+  "properties": {
+    "color": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          }
+        },
+        {
+          "description": "A hex color string like '#dfe5ed' or '#RRGGBBAA'.",
+          "type": "string"
+        },
+        {
+          "description": "\n\nProperties:\n• gradient\n• interpolant",
+          "type": "object",
+          "properties": {
+            "gradient": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "description": "Object mapping time points to hex color strings.",
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "description": "Object mapping time points to color arrays with Molang/numbers.",
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    }
+                  }
+                }
+              ],
+              "title": "Gradient",
+              "description": "Color gradient - can be an array of color arrays (each being [r, g, b, a] molang/numbers), or an object mapping time points to hex color strings or color arrays."
+            },
+            "interpolant": {
+              "title": "Interpolant",
+              "description": "A Molang expression that determines which gradient color to use.",
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "title": "Color",
+      "description": "The color of the particle, can be a hex color string (like '#RRGGBB'), an array of [r, g, b, a] values (numbers or Molang), or an object with gradient and interpolant."
+    }
+  },
+  "required": [
+    "color"
+  ]
+}

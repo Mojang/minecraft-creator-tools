@@ -1,0 +1,12 @@
+{
+  "files": [
+    "FireResistantItemComponent.json",
+    "KineticEffectConditions.json",
+    "KineticWeaponItemComponent.json",
+    "PiercingWeaponItemComponent.json",
+    "SwingDurationItemComponent.json",
+    "SwingSoundsItemComponent.json",
+    "Wearable.json"
+  ],
+  "folders": []
+}

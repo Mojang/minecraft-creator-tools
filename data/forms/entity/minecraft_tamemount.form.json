@@ -1,0 +1,354 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can be tamed by repeatedly mounting it"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "min_temper",
+            "comparison": "defined"
+          },
+          {
+            "field": "max_temper",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has temper range "
+          },
+          {
+            "type": "value",
+            "field": "min_temper"
+          },
+          {
+            "type": "literal",
+            "text": "-"
+          },
+          {
+            "type": "value",
+            "field": "max_temper"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "feed_items",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can be fed items to speed up taming"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "auto_reject_items",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "rejects certain items when untamed"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "attempt_temper_mod",
+      "title": "Attempt Temper Mod",
+      "description": "The amount the entity's temper will increase when mounted.",
+      "defaultValue": 5,
+      "dataType": "int"
+    },
+    {
+      "id": "autoRejectItems",
+      "title": "AutoRejectItems",
+      "description": "The list of items that, if carried while interacting with the entity, will anger it.",
+      "dataType": "objectArray",
+      "subForm": {
+        "id": "",
+        "description": "The list of items that, if carried while interacting with the entity, will anger it.",
+        "fields": [
+          {
+            "id": "item",
+            "title": "Item",
+            "description": "Name of the item this entity dislikes and will cause it to get angry if used while untamed.",
+            "dataType": "string"
+          }
+        ]
+      }
+    },
+    {
+      "id": "feed_items",
+      "title": "Feed Items",
+      "description": "The list of items that can be used to increase the entity's temper and speed up the taming process.",
+      "dataType": "objectArray",
+      "subForm": {
+        "id": "",
+        "description": "The list of items that can be used to increase the entity's temper and speed up the taming process.",
+        "fields": [
+          {
+            "id": "item",
+            "title": "Item",
+            "description": "Name of the item this entity likes and can be used to increase this entity's temper.",
+            "dataType": "string"
+          },
+          {
+            "id": "temper_mod",
+            "title": "Temper Mod",
+            "description": "The amount of temper this entity gains when fed this item.",
+            "defaultValue": 0,
+            "dataType": "int"
+          }
+        ]
+      },
+      "samples": {
+        "/vanilla/behavior_pack/entities/llama.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:llama_wild/minecraft:tamemount/",
+            "content": [
+              {
+                "item": "wheat",
+                "temper_mod": 3
+              },
+              {
+                "item": "hay_block",
+                "temper_mod": 6
+              }
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/trader_llama.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:llama_wild/minecraft:tamemount/",
+            "content": [
+              {
+                "item": "wheat",
+                "temper_mod": 3
+              },
+              {
+                "item": "hay_block",
+                "temper_mod": 6
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "feed_text",
+      "title": "Feed Text",
+      "description": "The text that shows in the feeding interact button.",
+      "dataType": "string",
+      "samples": {
+        "/vanilla/behavior_pack/entities/llama.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:llama_wild/minecraft:tamemount/",
+            "content": "action.interact.feed"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/trader_llama.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:llama_wild/minecraft:tamemount/",
+            "content": "action.interact.feed"
+          }
+        ]
+      }
+    },
+    {
+      "id": "max_temper",
+      "title": "Max Temper",
+      "description": "The maximum value for the entity's random starting temper.",
+      "defaultValue": 100,
+      "dataType": "int",
+      "samples": {
+        "/vanilla/behavior_pack/entities/llama.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:llama_wild/minecraft:tamemount/",
+            "content": 30
+          }
+        ],
+        "/vanilla/behavior_pack/entities/trader_llama.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:llama_wild/minecraft:tamemount/",
+            "content": 30
+          }
+        ]
+      }
+    },
+    {
+      "id": "min_temper",
+      "title": "Min Temper",
+      "description": "The minimum value for the entity's random starting temper.",
+      "defaultValue": 0,
+      "dataType": "int"
+    },
+    {
+      "id": "ride_text",
+      "title": "Ride Text",
+      "description": "The text that shows in the riding interact button.",
+      "dataType": "string",
+      "samples": {
+        "/vanilla/behavior_pack/entities/llama.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:llama_wild/minecraft:tamemount/",
+            "content": "action.interact.mount"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/trader_llama.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:llama_wild/minecraft:tamemount/",
+            "content": "action.interact.mount"
+          }
+        ]
+      }
+    },
+    {
+      "id": "tame_event",
+      "title": "Tame Event",
+      "description": "Event that triggers when the entity becomes tamed.",
+      "dataType": "minecraftEventTrigger",
+      "samples": {
+        "/vanilla/behavior_pack/entities/llama.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:llama_wild/minecraft:tamemount/",
+            "content": {
+              "event": "minecraft:on_tame",
+              "target": "self"
+            }
+          }
+        ],
+        "/vanilla/behavior_pack/entities/trader_llama.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:llama_wild/minecraft:tamemount/",
+            "content": {
+              "event": "minecraft:on_tame",
+              "target": "self"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "auto_reject_items",
+      "title": "Auto Reject Items",
+      "dataType": "objectArray",
+      "subForm": {
+        "id": "auto_reject_items",
+        "title": "Auto reject items",
+        "fields": [
+          {
+            "id": "item",
+            "title": "Item",
+            "dataType": "string",
+            "samples": {
+              "/vanilla/behavior_pack/entities/trader_llama.json": [
+                {
+                  "path": "item",
+                  "content": "horsearmorleather"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "samples": {}
+    }
+  ],
+  "description": "Allows the Entity to be tamed by mounting it.",
+  "title": "Tamemount",
+  "samples": {
+    "/vanilla/behavior_pack/entities/llama.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:llama_wild/minecraft:tamemount/",
+        "content": {
+          "min_temper": 0,
+          "max_temper": 30,
+          "feed_text": "action.interact.feed",
+          "ride_text": "action.interact.mount",
+          "feed_items": [
+            {
+              "item": "wheat",
+              "temper_mod": 3
+            },
+            {
+              "item": "hay_block",
+              "temper_mod": 6
+            }
+          ],
+          "tame_event": {
+            "event": "minecraft:on_tame",
+            "target": "self"
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/trader_llama.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:llama_wild/minecraft:tamemount/",
+        "content": {
+          "min_temper": 0,
+          "max_temper": 30,
+          "feed_text": "action.interact.feed",
+          "ride_text": "action.interact.mount",
+          "feed_items": [
+            {
+              "item": "wheat",
+              "temper_mod": 3
+            },
+            {
+              "item": "hay_block",
+              "temper_mod": 6
+            }
+          ],
+          "auto_reject_items": [
+            {
+              "item": "horsearmorleather"
+            },
+            {
+              "item": "horsearmoriron"
+            },
+            {
+              "item": "horsearmorgold"
+            },
+            {
+              "item": "horsearmordiamond"
+            },
+            {
+              "item": "minecraft:copper_horse_armor"
+            },
+            {
+              "item": "minecraft:netherite_horse_armor"
+            },
+            {
+              "item": "saddle"
+            }
+          ],
+          "tame_event": {
+            "event": "minecraft:on_tame",
+            "target": "self"
+          }
+        }
+      }
+    ]
+  },
+  "id": "minecraft:tamemount"
+}

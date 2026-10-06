@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "world_common/filter_test",
+  "title": "World Common Filter Test",
+  "description": "Defines a common filter test with domain, operator, subject, and value comparisons.",
+  "type": "object",
+  "properties": {
+    "domain": {
+      "title": "Domain",
+      "description": "The domain the test should be performed in.",
+      "type": "string"
+    },
+    "operator": {
+      "title": "Operator",
+      "description": "The comparison to apply with 'value'.",
+      "type": "string"
+    },
+    "subject": {
+      "title": "Subject",
+      "description": "The subject of this filter test.",
+      "type": "string"
+    },
+    "value": {
+      "title": "Value",
+      "description": "The value being compared with the test.",
+      "type": "integer"
+    },
+    "test": {
+      "title": "Test",
+      "description": "The name of the test to apply.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "test"
+  ]
+}

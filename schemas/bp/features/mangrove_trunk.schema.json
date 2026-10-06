@@ -1,0 +1,61 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Mangrove Trunk",
+  "description": "\n\nProperties:\n• trunk_decoration ({ decoration_block, decoration_blocks_sequence, decoration_chance, ... })\n• trunk_width (int)\n• trunk_height ({ base, height_rand_a, height_rand_b })\n• branches (object)",
+  "type": "object",
+  "properties": {
+    "trunk_decoration": {
+      "$ref": "./trunk_decoration_3.schema.json",
+      "title": "Trunk Decoration",
+      "description": "Configuration object for the trunk decoration.",
+      "defaultSnippets": [
+        {
+          "label": "Trunk Decoration",
+          "description": "Configuration object for the trunk decoration.",
+          "body": {
+            "decoration_block": "",
+            "num_steps": 0,
+            "step_direction": ""
+          }
+        }
+      ]
+    },
+    "trunk_width": {
+      "title": "Trunk Width",
+      "description": "The width of the tree trunk.",
+      "type": "integer"
+    },
+    "trunk_height": {
+      "$ref": "./trunk_height_2.schema.json",
+      "title": "Trunk Height",
+      "description": "Configuration object for the trunk height.",
+      "defaultSnippets": [
+        {
+          "label": "Trunk Height",
+          "description": "Configuration object for the trunk height.",
+          "body": {
+            "base": 0,
+            "height_rand_a": 0,
+            "height_rand_b": 0
+          }
+        }
+      ]
+    },
+    "branches": {
+      "title": "Branches",
+      "description": "Configuration object for branches.",
+      "type": "object",
+      "properties": {}
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "Mangrove Trunk",
+      "description": "Create a Mangrove Trunk",
+      "body": {
+        "trunk_width": 0,
+        "trunk_height": ""
+      }
+    }
+  ]
+}

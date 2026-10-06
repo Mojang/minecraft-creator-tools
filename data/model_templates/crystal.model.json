@@ -1,0 +1,283 @@
+{
+  "formatVersion": "1.0.0",
+  "identifier": "custom_crystal",
+  "description": "A glowing crystal formation with multiple facets. 20 units tall (~1.25 blocks). Perfect for decorative blocks or magical items.",
+  "textureSize": [
+    32,
+    32
+  ],
+  "textures": {
+    "crystal_main": {
+      "background": {
+        "type": "perlin_noise",
+        "colors": [
+          "#9932CC",
+          "#8B008B",
+          "#BA55D3"
+        ],
+        "seed": 5001,
+        "scale": 3
+      }
+    },
+    "crystal_light": {
+      "background": {
+        "type": "gradient",
+        "colors": [
+          "#E6E6FA",
+          "#DDA0DD"
+        ]
+      }
+    },
+    "crystal_dark": {
+      "background": {
+        "type": "perlin_noise",
+        "colors": [
+          "#4B0082",
+          "#2E0854",
+          "#6B238E"
+        ],
+        "seed": 5002,
+        "scale": 4
+      }
+    },
+    "base": {
+      "background": {
+        "type": "stipple_noise",
+        "colors": [
+          "#404040",
+          "#303030",
+          "#505050"
+        ],
+        "seed": 5003
+      }
+    }
+  },
+  "bones": [
+    {
+      "name": "base",
+      "pivot": [
+        0,
+        0,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -6,
+            0,
+            -6
+          ],
+          "size": [
+            12,
+            3,
+            12
+          ],
+          "faces": {
+            "north": {
+              "textureId": "base"
+            },
+            "south": {
+              "textureId": "base"
+            },
+            "east": {
+              "textureId": "base"
+            },
+            "west": {
+              "textureId": "base"
+            },
+            "up": {
+              "textureId": "base"
+            },
+            "down": {
+              "textureId": "base"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "main_crystal",
+      "pivot": [
+        0,
+        3,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -4,
+            3,
+            -4
+          ],
+          "size": [
+            8,
+            16,
+            8
+          ],
+          "faces": {
+            "north": {
+              "textureId": "crystal_main"
+            },
+            "south": {
+              "textureId": "crystal_main"
+            },
+            "east": {
+              "textureId": "crystal_light"
+            },
+            "west": {
+              "textureId": "crystal_dark"
+            },
+            "up": {
+              "textureId": "crystal_light"
+            },
+            "down": {
+              "textureId": "crystal_dark"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "side_crystal_1",
+      "pivot": [
+        4,
+        3,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        -20
+      ],
+      "cubes": [
+        {
+          "origin": [
+            4,
+            3,
+            -2
+          ],
+          "size": [
+            4,
+            10,
+            4
+          ],
+          "faces": {
+            "north": {
+              "textureId": "crystal_main"
+            },
+            "south": {
+              "textureId": "crystal_main"
+            },
+            "east": {
+              "textureId": "crystal_light"
+            },
+            "west": {
+              "textureId": "crystal_dark"
+            },
+            "up": {
+              "textureId": "crystal_light"
+            },
+            "down": {
+              "textureId": "crystal_dark"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "side_crystal_2",
+      "pivot": [
+        -4,
+        3,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        20
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -8,
+            3,
+            -2
+          ],
+          "size": [
+            4,
+            10,
+            4
+          ],
+          "faces": {
+            "north": {
+              "textureId": "crystal_main"
+            },
+            "south": {
+              "textureId": "crystal_main"
+            },
+            "east": {
+              "textureId": "crystal_light"
+            },
+            "west": {
+              "textureId": "crystal_dark"
+            },
+            "up": {
+              "textureId": "crystal_light"
+            },
+            "down": {
+              "textureId": "crystal_dark"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "side_crystal_3",
+      "pivot": [
+        0,
+        3,
+        4
+      ],
+      "rotation": [
+        20,
+        0,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -2,
+            3,
+            4
+          ],
+          "size": [
+            4,
+            8,
+            4
+          ],
+          "faces": {
+            "north": {
+              "textureId": "crystal_main"
+            },
+            "south": {
+              "textureId": "crystal_main"
+            },
+            "east": {
+              "textureId": "crystal_light"
+            },
+            "west": {
+              "textureId": "crystal_dark"
+            },
+            "up": {
+              "textureId": "crystal_light"
+            },
+            "down": {
+              "textureId": "crystal_dark"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "category": "entity"
+}

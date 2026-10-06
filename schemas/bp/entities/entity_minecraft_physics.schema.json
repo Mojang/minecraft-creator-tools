@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Physics",
+  "description": "Defines physics properties of an actor, including if it is affected by gravity or if it collides with objects.",
+  "properties": {
+    "has_collision": {
+      "title": "Has Collision",
+      "description": "Whether or not the entity collides with things.",
+      "type": "boolean",
+      "default": true
+    },
+    "has_gravity": {
+      "title": "Has Gravity",
+      "description": "Whether or not the entity is affected by gravity.",
+      "type": "boolean",
+      "default": true
+    },
+    "push_towards_closest_space": {
+      "title": "Push Towards Closest Space",
+      "description": "Whether or not the entity should be pushed towards the nearest open area when stuck inside a block.",
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

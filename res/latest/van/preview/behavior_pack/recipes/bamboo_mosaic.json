@@ -1,0 +1,27 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:bamboo_mosaic"
+    },
+    "tags": [ "crafting_table" ],
+    "pattern": [
+      "#",
+      "#"
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:bamboo_slab"
+      }
+    },
+    "unlock": [
+      {
+        "item": "minecraft:bamboo_slab"
+      }
+    ],
+    "result": {
+      "item": "minecraft:bamboo_mosaic",
+      "count": 1
+    }
+  }
+}

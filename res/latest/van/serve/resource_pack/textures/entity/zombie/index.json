@@ -1,0 +1,31 @@
+{
+  "files": [
+    "drowned.png",
+    "drowned.texture_set.json",
+    "drowned.tga",
+    "drowned_baby.png",
+    "drowned_baby.texture_set.json",
+    "drowned_baby.tga",
+    "drowned_baby_mers.png",
+    "drowned_baby_mers.tga",
+    "drowned_mers.png",
+    "drowned_mers.tga",
+    "husk.png",
+    "husk.texture_set.json",
+    "husk_baby.png",
+    "husk_baby.texture_set.json",
+    "husk_baby_mers.png",
+    "husk_baby_mers.tga",
+    "husk_mers.png",
+    "husk_mers.tga",
+    "zombie.png",
+    "zombie.texture_set.json",
+    "zombie_baby.png",
+    "zombie_baby.texture_set.json",
+    "zombie_baby_mers.png",
+    "zombie_baby_mers.tga",
+    "zombie_mers.png",
+    "zombie_mers.tga"
+  ],
+  "folders": []
+}

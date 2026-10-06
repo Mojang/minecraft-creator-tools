@@ -1,0 +1,226 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "detects nearby entities and triggers events"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "find_players_only",
+      "title": "Find Players Only",
+      "description": "Limits the search to Players only for all subsensors.",
+      "defaultValue": false,
+      "dataType": "boolean"
+    },
+    {
+      "id": "relative_range",
+      "title": "Relative Range",
+      "description": "If true the subsensors' range is additive on top of the entity's size.",
+      "defaultValue": true,
+      "dataType": "boolean"
+    },
+    {
+      "id": "subsensors",
+      "title": "Subsensors",
+      "description": "The list of subsensors which sense for entities and emit events when all their conditions are met.",
+      "dataType": "objectArray",
+      "subForm": {
+        "id": "",
+        "description": "The list of subsensors which sense for entities and emit events when all their conditions are met.",
+        "fields": [
+          {
+            "id": "cooldown",
+            "title": "Cooldown",
+            "description": "How many seconds should elapse before the subsensor can once again sense for entities. The cooldown is applied on top of the base 1 tick (0.05 seconds) delay. Negative values will result in no cooldown being used.",
+            "defaultValue": -1,
+            "dataType": "float"
+          },
+          {
+            "id": "event",
+            "title": "Event",
+            "description": "Event to fire when the conditions are met.",
+            "dataType": "minecraftEventTrigger"
+          },
+          {
+            "id": "event_filters",
+            "title": "Event Filters",
+            "description": "The set of conditions that must be satisfied to fire the event.",
+            "dataType": "minecraftFilter"
+          },
+          {
+            "id": "maximum_count",
+            "title": "Maximum Count",
+            "description": "The maximum number of entities that must pass the filter conditions for the event to send.",
+            "defaultValue": -1,
+            "dataType": "int"
+          },
+          {
+            "id": "minimum_count",
+            "title": "Minimum Count",
+            "description": "The minimum number of entities that must pass the filter conditions for the event to send.",
+            "defaultValue": 1,
+            "dataType": "int"
+          },
+          {
+            "id": "range",
+            "title": "Range",
+            "description": "The maximum horizontal and vertical distance another entity can be from this and have the filters checked against it.",
+            "defaultValue": "[10, 10]",
+            "dataType": "point2"
+          },
+          {
+            "id": "require_all",
+            "title": "Require All",
+            "description": "If true requires all nearby entities to pass the filter conditions for the events to send.",
+            "defaultValue": false,
+            "dataType": "boolean"
+          },
+          {
+            "id": "y_offset",
+            "title": "y Offset",
+            "description": "Vertical offset applied to the entity's position when computing the distance from other entities.",
+            "defaultValue": 0,
+            "dataType": "float"
+          }
+        ]
+      },
+      "samples": {
+        "/vanilla/behavior_pack/entities/parrot.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:parrot_not_riding_player/minecraft:entity_sensor/",
+            "content": [
+              {
+                "event": "minecraft:on_riding_player",
+                "event_filters": {
+                  "all_of": [
+                    {
+                      "test": "is_riding",
+                      "operator": "equals",
+                      "subject": "self",
+                      "value": true
+                    },
+                    {
+                      "test": "has_component",
+                      "operator": "equals",
+                      "subject": "self",
+                      "value": "minecraft:behavior.look_at_player"
+                    }
+                  ]
+                },
+                "range": [
+                  2,
+                  2
+                ]
+              }
+            ]
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:parrot_riding_player/minecraft:entity_sensor/",
+            "content": [
+              {
+                "event": "minecraft:on_not_riding_player",
+                "event_filters": {
+                  "all_of": [
+                    {
+                      "test": "is_riding",
+                      "operator": "equals",
+                      "subject": "self",
+                      "value": false
+                    },
+                    {
+                      "test": "has_component",
+                      "operator": "not",
+                      "subject": "self",
+                      "value": "minecraft:behavior.look_at_player"
+                    }
+                  ]
+                },
+                "range": [
+                  2,
+                  2
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "description": "A component that owns multiple subsensors, each one firing an event when a set of conditions are met by other entities within the defined range.",
+  "title": "Entity Sensor",
+  "samples": {
+    "/vanilla/behavior_pack/entities/parrot.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:parrot_not_riding_player/minecraft:entity_sensor/",
+        "content": {
+          "relative_range": false,
+          "subsensors": [
+            {
+              "event": "minecraft:on_riding_player",
+              "event_filters": {
+                "all_of": [
+                  {
+                    "test": "is_riding",
+                    "operator": "equals",
+                    "subject": "self",
+                    "value": true
+                  },
+                  {
+                    "test": "has_component",
+                    "operator": "equals",
+                    "subject": "self",
+                    "value": "minecraft:behavior.look_at_player"
+                  }
+                ]
+              },
+              "range": [
+                2,
+                2
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:parrot_riding_player/minecraft:entity_sensor/",
+        "content": {
+          "relative_range": false,
+          "subsensors": [
+            {
+              "event": "minecraft:on_not_riding_player",
+              "event_filters": {
+                "all_of": [
+                  {
+                    "test": "is_riding",
+                    "operator": "equals",
+                    "subject": "self",
+                    "value": false
+                  },
+                  {
+                    "test": "has_component",
+                    "operator": "not",
+                    "subject": "self",
+                    "value": "minecraft:behavior.look_at_player"
+                  }
+                ]
+              },
+              "range": [
+                2,
+                2
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "id": "minecraft:entity_sensor"
+}

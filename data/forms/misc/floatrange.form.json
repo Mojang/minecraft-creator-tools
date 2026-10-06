@@ -1,0 +1,30 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines floatrange configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "FloatRange",
+  "fields": [
+    {
+      "id": "max",
+      "title": "Max",
+      "dataType": "float"
+    },
+    {
+      "id": "min",
+      "title": "Min",
+      "dataType": "float"
+    }
+  ],
+  "description": "Defines floatrange configuration.",
+  "title": "FloatRange Misc"
+}

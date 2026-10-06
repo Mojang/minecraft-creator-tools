@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Home",
+  "description": "Saves a home position for when the entity is spawned. This component allows entities like bees to remember and return to a specific location such as a hive or nest.",
+  "properties": {
+    "restriction_type": {
+      "title": "Restriction Type",
+      "description": "Defines how the entity will be restricted to its home position. Valid values are: 'none' (no restriction), 'random_movement' (restricts random wandering to be near home), and 'all_movement' (restricts all movement to be near home, though entities can always move closer to home if they are too far away).\n\n*Introduced in version 1.21.40*",
+      "type": "string",
+      "default": "none"
+    },
+    "home_block_list": {
+      "title": "Home Block List",
+      "description": "Optional list of blocks that can be considered a valid home. If no such block longer exists at that position,\n\t\t\t\t\t\t\t\t\t\t\tthe home restriction is removed. Example syntax: minecraft:sand. Not supported: minecraft:sand:1.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "restriction_radius": {
+      "title": "Restriction Radius",
+      "description": "Optional radius that the entity will be restricted to in relation to its home.",
+      "type": "integer",
+      "default": 0
+    }
+  }
+}

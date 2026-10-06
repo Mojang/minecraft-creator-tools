@@ -1,0 +1,36 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "validates texture_list.json against the pack's texture images"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "texturelist",
+  "title": "Texture List",
+  "description": "Validates the optional texture_list.json file in a resource pack. When present, it must reference every non-Vibrant Visuals texture image in the pack, and it must not reference images that belong to a texture_set.json (the PBR companion images). When texture_list.json is absent, this validation is skipped.",
+  "fields": [
+    {
+      "id": "101",
+      "title": "Texture Not Listed",
+      "messageType": "error",
+      "dataType": "string",
+      "description": "Error when a non-Vibrant Visuals texture image in the pack is not referenced in texture_list.json. Every regular pack texture must be listed.",
+      "technicalDescription": "Data contains the normalized pack-relative path of the texture image that is missing from texture_list.json."
+    },
+    {
+      "id": "102",
+      "title": "Texture Set Image Listed",
+      "messageType": "error",
+      "dataType": "string",
+      "description": "Error when an image that belongs to a texture_set.json (such as a _mer/_mers/heightmap/normal companion) is referenced in texture_list.json. Texture set images must not be listed.",
+      "technicalDescription": "Data contains the normalized texture_list.json entry that incorrectly references a texture set image."
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "files": [
+    "manifest.json",
+    "pack_icon.png"
+  ],
+  "folders": [
+    "biomes",
+    "feature_rules",
+    "features"
+  ]
+}

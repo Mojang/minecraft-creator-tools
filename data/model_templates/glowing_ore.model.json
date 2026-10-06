@@ -1,0 +1,102 @@
+{
+  "formatVersion": "1.0.0",
+  "identifier": "glowing_ore",
+  "description": "A stone block with glowing crystal ore veins",
+  "pixelsPerUnit": 2,
+  "textures": {
+    "stone": {
+      "background": {
+        "type": "stipple_noise",
+        "colors": [
+          "#5A5A5A",
+          "#4A4A4A",
+          "#6A6A6A"
+        ],
+        "seed": 2201,
+        "factor": 0.3
+      }
+    },
+    "ore": {
+      "background": {
+        "type": "stipple_noise",
+        "colors": [
+          "#5A5A5A",
+          "#4A4A4A"
+        ],
+        "seed": 2201,
+        "factor": 0.3
+      },
+      "pixelArt": [
+        {
+          "lines": [
+            "    ##          ",
+            "   ####         ",
+            "    ##    ##    ",
+            "         ####   ",
+            "  ##      ##    ",
+            " ####           ",
+            "  ##      ##    ",
+            "         ###    "
+          ],
+          "palette": {
+            "#": {
+              "hex": "#00FFFF"
+            }
+          },
+          "scaleMode": "cover"
+        }
+      ],
+      "effects": {
+        "lighting": {
+          "preset": "pillow",
+          "intensity": 0.3
+        }
+      }
+    }
+  },
+  "bones": [
+    {
+      "name": "block",
+      "pivot": [
+        0,
+        8,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -8,
+            0,
+            -8
+          ],
+          "size": [
+            16,
+            16,
+            16
+          ],
+          "faces": {
+            "north": {
+              "textureId": "ore"
+            },
+            "south": {
+              "textureId": "ore"
+            },
+            "east": {
+              "textureId": "ore"
+            },
+            "west": {
+              "textureId": "ore"
+            },
+            "up": {
+              "textureId": "stone"
+            },
+            "down": {
+              "textureId": "stone"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "category": "block"
+}

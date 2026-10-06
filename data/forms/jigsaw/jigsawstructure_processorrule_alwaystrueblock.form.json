@@ -1,0 +1,25 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines a block predicate that always evaluates to true"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "predicate_type",
+      "title": "Predicate Type",
+      "description": "The type of block predicate.",
+      "dataType": "string"
+    }
+  ],
+  "description": "Predicate that always evaluates to true. This is the default predicate if no other predicate is specified.",
+  "title": "JigsawStructure ProcessorRule AlwaysTrueBlock"
+}

@@ -1,0 +1,398 @@
+{
+  "formatVersion": "1.0.0",
+  "identifier": "custom_bird",
+  "description": "A bird template with head, beak, body, wings, and legs. ~12 units tall (~0.75 blocks). Based on chicken geometry. All coordinates in Minecraft units (16 = 1 block).",
+  "textureSize": [
+    64,
+    32
+  ],
+  "textures": {
+    "feathers": {
+      "background": {
+        "type": "stipple_noise",
+        "colors": [
+          "#FFFFFF",
+          "#F0F0F0",
+          "#E8E8E8"
+        ],
+        "seed": 7001
+      }
+    },
+    "beak": {
+      "background": {
+        "type": "dither_noise",
+        "colors": [
+          "#FFA500",
+          "#E89500",
+          "#FFB520"
+        ],
+        "seed": 7002
+      }
+    },
+    "comb": {
+      "background": {
+        "type": "stipple_noise",
+        "colors": [
+          "#CC0000",
+          "#AA0000",
+          "#DD2222"
+        ],
+        "seed": 7003
+      }
+    },
+    "legs": {
+      "background": {
+        "type": "dither_noise",
+        "colors": [
+          "#FFCC00",
+          "#E8B800",
+          "#FFD830"
+        ],
+        "seed": 7004
+      }
+    }
+  },
+  "bones": [
+    {
+      "name": "body",
+      "pivot": [
+        0,
+        8,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -3,
+            4,
+            -3
+          ],
+          "size": [
+            6,
+            6,
+            8
+          ],
+          "faces": {
+            "north": {
+              "textureId": "feathers"
+            },
+            "south": {
+              "textureId": "feathers"
+            },
+            "east": {
+              "textureId": "feathers"
+            },
+            "west": {
+              "textureId": "feathers"
+            },
+            "up": {
+              "textureId": "feathers"
+            },
+            "down": {
+              "textureId": "feathers"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "head",
+      "pivot": [
+        0,
+        9,
+        -4
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -2,
+            9,
+            -6
+          ],
+          "size": [
+            4,
+            6,
+            3
+          ],
+          "faces": {
+            "north": {
+              "textureId": "feathers"
+            },
+            "south": {
+              "textureId": "feathers"
+            },
+            "east": {
+              "textureId": "feathers"
+            },
+            "west": {
+              "textureId": "feathers"
+            },
+            "up": {
+              "textureId": "feathers"
+            },
+            "down": {
+              "textureId": "feathers"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "comb",
+      "parent": "head",
+      "pivot": [
+        0,
+        15,
+        -5
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -1,
+            15,
+            -6
+          ],
+          "size": [
+            2,
+            2,
+            2
+          ],
+          "faces": {
+            "north": {
+              "textureId": "comb"
+            },
+            "south": {
+              "textureId": "comb"
+            },
+            "east": {
+              "textureId": "comb"
+            },
+            "west": {
+              "textureId": "comb"
+            },
+            "up": {
+              "textureId": "comb"
+            },
+            "down": {
+              "textureId": "comb"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "beak",
+      "parent": "head",
+      "pivot": [
+        0,
+        11,
+        -6
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -2,
+            11,
+            -8
+          ],
+          "size": [
+            4,
+            2,
+            2
+          ],
+          "faces": {
+            "north": {
+              "textureId": "beak"
+            },
+            "south": {
+              "textureId": "beak"
+            },
+            "east": {
+              "textureId": "beak"
+            },
+            "west": {
+              "textureId": "beak"
+            },
+            "up": {
+              "textureId": "beak"
+            },
+            "down": {
+              "textureId": "beak"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "right_wing",
+      "parent": "body",
+      "pivot": [
+        3,
+        8,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            3,
+            4,
+            -2
+          ],
+          "size": [
+            1,
+            4,
+            6
+          ],
+          "faces": {
+            "north": {
+              "textureId": "feathers"
+            },
+            "south": {
+              "textureId": "feathers"
+            },
+            "east": {
+              "textureId": "feathers"
+            },
+            "west": {
+              "textureId": "feathers"
+            },
+            "up": {
+              "textureId": "feathers"
+            },
+            "down": {
+              "textureId": "feathers"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "left_wing",
+      "parent": "body",
+      "pivot": [
+        -3,
+        8,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -4,
+            4,
+            -2
+          ],
+          "size": [
+            1,
+            4,
+            6
+          ],
+          "faces": {
+            "north": {
+              "textureId": "feathers"
+            },
+            "south": {
+              "textureId": "feathers"
+            },
+            "east": {
+              "textureId": "feathers"
+            },
+            "west": {
+              "textureId": "feathers"
+            },
+            "up": {
+              "textureId": "feathers"
+            },
+            "down": {
+              "textureId": "feathers"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "right_leg",
+      "pivot": [
+        1,
+        4,
+        1
+      ],
+      "cubes": [
+        {
+          "origin": [
+            0,
+            0,
+            0
+          ],
+          "size": [
+            3,
+            4,
+            3
+          ],
+          "faces": {
+            "north": {
+              "textureId": "legs"
+            },
+            "south": {
+              "textureId": "legs"
+            },
+            "east": {
+              "textureId": "legs"
+            },
+            "west": {
+              "textureId": "legs"
+            },
+            "up": {
+              "textureId": "legs"
+            },
+            "down": {
+              "textureId": "legs"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "left_leg",
+      "pivot": [
+        -1,
+        4,
+        1
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -3,
+            0,
+            0
+          ],
+          "size": [
+            3,
+            4,
+            3
+          ],
+          "faces": {
+            "north": {
+              "textureId": "legs"
+            },
+            "south": {
+              "textureId": "legs"
+            },
+            "east": {
+              "textureId": "legs"
+            },
+            "west": {
+              "textureId": "legs"
+            },
+            "up": {
+              "textureId": "legs"
+            },
+            "down": {
+              "textureId": "legs"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "category": "entity"
+}

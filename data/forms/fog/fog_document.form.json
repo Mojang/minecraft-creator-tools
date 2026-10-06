@@ -1,0 +1,120 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines a fog settings document structure"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "fog_document",
+  "title": "Fog Settings Document",
+  "description": "A Minecraft Bedrock Edition fog settings definition document. Fog settings control the appearance of fog in different environments including distance-based fog, volumetric fog density, and media coefficients for scattering and absorption effects.",
+  "fields": [
+    {
+      "dataType": "version",
+      "id": "format_version",
+      "title": "Format Version",
+      "description": "The format version of this fog settings file. Use '1.16.100' or later.",
+      "isRequired": true
+    },
+    {
+      "dataType": "object",
+      "id": "minecraft:fog_settings",
+      "title": "Fog Settings",
+      "description": "The fog settings definition containing description, distance, and volumetric properties.",
+      "isRequired": true,
+      "subForm": {
+        "id": "fog_settings_wrapper",
+        "title": "Fog Settings Definition",
+        "fields": [
+          {
+            "id": "description",
+            "title": "Description",
+            "description": "Contains the fog settings identifier.",
+            "dataType": "object",
+            "isRequired": true,
+            "subForm": {
+              "id": "fog_description",
+              "title": "Fog Description",
+              "fields": [
+                {
+                  "id": "identifier",
+                  "title": "Identifier",
+                  "description": "The unique identifier for this fog setting, e.g., 'custom:my_fog'.",
+                  "dataType": "boolean",
+                  "isRequired": true
+                }
+              ]
+            }
+          },
+          {
+            "id": "distance",
+            "title": "Distance",
+            "description": "Distance-based fog settings for air, water, lava, and weather conditions.",
+            "dataType": "object",
+            "subForm": {
+              "id": "fog_distance",
+              "title": "Fog Distance Settings",
+              "fields": [
+                {
+                  "id": "air",
+                  "title": "Air",
+                  "description": "Fog settings when the player is in air.",
+                  "dataType": "object",
+                  "subFormId": "fog/fog_distance_settings"
+                },
+                {
+                  "id": "water",
+                  "title": "Water",
+                  "description": "Fog settings when the player is in water.",
+                  "dataType": "object",
+                  "subFormId": "fog/fog_distance_settings_with_transition"
+                },
+                {
+                  "id": "lava",
+                  "title": "Lava",
+                  "description": "Fog settings when the player is in lava.",
+                  "dataType": "object",
+                  "subFormId": "fog/fog_distance_settings"
+                },
+                {
+                  "id": "lava_resistance",
+                  "title": "Lava Resistance",
+                  "description": "Fog settings when the player is in lava with fire resistance.",
+                  "dataType": "object",
+                  "subFormId": "fog/fog_distance_settings"
+                },
+                {
+                  "id": "weather",
+                  "title": "Weather",
+                  "description": "Fog settings during weather conditions.",
+                  "dataType": "object",
+                  "subFormId": "fog/fog_distance_settings"
+                },
+                {
+                  "id": "powder_snow",
+                  "title": "Powder Snow",
+                  "description": "Fog settings when the player is in powder snow.",
+                  "dataType": "object",
+                  "subFormId": "fog/fog_distance_settings"
+                }
+              ]
+            }
+          },
+          {
+            "id": "volumetric",
+            "title": "Volumetric",
+            "description": "Volumetric fog settings including density and media coefficients.",
+            "dataType": "object"
+          }
+        ]
+      }
+    }
+  ]
+}

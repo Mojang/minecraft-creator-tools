@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "item/intrange",
+  "title": "Item IntRange",
+  "description": "Specifies an integer range between minimum and maximum values for item properties requiring whole numbers. Used for stack count variations, discrete charge levels, or quantity ranges in loot tables. Ensures values stay within valid bounds for countable item properties.",
+  "type": "object",
+  "properties": {
+    "max": {
+      "title": "Max",
+      "type": "integer",
+      "default": 0
+    },
+    "min": {
+      "title": "Min",
+      "type": "integer",
+      "default": 0
+    }
+  }
+}

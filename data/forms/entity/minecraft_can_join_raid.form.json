@@ -1,0 +1,20 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can join village raids"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [],
+  "description": "Specifies if an entity can join a raid.",
+  "title": "Can Join Raid",
+  "samples": {},
+  "id": "minecraft:can_join_raid"
+}

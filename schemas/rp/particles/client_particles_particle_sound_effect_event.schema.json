@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Client Particles Particle Sound Effect Event",
+  "description": "Plays a sound effect when triggered by particle events like spawning, collision, or expiration. Reference sounds defined in sound_definitions.json using their identifier. Synchronizes audio with visual particle moments—sparks crackling, explosions booming, or magical effects chiming for immersive multi-sensory feedback.",
+  "properties": {
+    "event_name": {
+      "title": "Event Name",
+      "type": "string"
+    }
+  },
+  "required": [
+    "event_name"
+  ]
+}

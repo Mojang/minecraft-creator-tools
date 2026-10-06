@@ -1,0 +1,92 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "3.0.0.SliderSetting",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines a slider setting with min, max, step, and default values"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "default",
+      "title": "Default",
+      "dataType": "float",
+      "isRequired": true
+    },
+    {
+      "id": "max",
+      "title": "Max",
+      "dataType": "float",
+      "isRequired": true
+    },
+    {
+      "id": "min",
+      "title": "Min",
+      "dataType": "float",
+      "isRequired": true
+    },
+    {
+      "id": "name",
+      "title": "Name",
+      "dataType": "string",
+      "validity": [
+        {
+          "comparison": "pattern",
+          "value": "^(?:(?!^(minecraft):).)+:(?:.)+$"
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "step",
+      "title": "Step",
+      "dataType": "float",
+      "validity": [
+        {
+          "comparison": ">",
+          "value": 0
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "text",
+      "title": "Text",
+      "dataType": "string",
+      "isRequired": true
+    },
+    {
+      "id": "type",
+      "title": "SettingType",
+      "dataType": "string",
+      "choices": [
+        {
+          "id": "dropdown",
+          "title": "Dropdown"
+        },
+        {
+          "id": "label",
+          "title": "Label"
+        },
+        {
+          "id": "slider",
+          "title": "Slider"
+        },
+        {
+          "id": "toggle",
+          "title": "Toggle"
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "description": "A numeric slider setting that appears in the pack's world settings UI. Allows players to adjust values like 'Difficulty Multiplier' or 'Spawn Rate' within defined min/max bounds. Scripts can read the chosen value at runtime.",
+  "title": "Packmanifest SliderSetting"
+}

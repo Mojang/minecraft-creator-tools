@@ -1,0 +1,21 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "returns value of pack setting slider"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "query.get_pack_setting",
+  "versionIntroduced": "1.21.130",
+  "note": "Pack settings (sliders/toggles/dropdowns) are read-only at runtime via this and related queries. Available on the Client (Resource Packs) only.",
+  "fields": [],
+  "description": "Returns value of Pack Setting slider, parameter is name of slider. Available on the Client (Resource Packs) only.",
+  "title": "Get Pack Setting"
+}

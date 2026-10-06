@@ -1,0 +1,31 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "specifies a block by name and states"
+          }
+        ]
+      }
+    ]
+  },
+  "title": "Block Specifier",
+  "description": "Specifies a particular block. Can be a string block name or a JSON object",
+  "fields": [
+    {
+      "id": "name",
+      "title": "name",
+      "description": "Name of the block",
+      "dataType": "string"
+    },
+    {
+      "id": "states",
+      "title": "states",
+      "description": "Contains members named after each state, with boolean, integer, or string values.",
+      "dataType": "keyedStringCollection"
+    }
+  ]
+}

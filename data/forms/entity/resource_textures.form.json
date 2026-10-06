@@ -1,0 +1,25 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "title": "Entity Textures",
+  "description": "Defines texture references for an entity's client resources.",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has texture resources"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "textures",
+      "dataType": "keyedStringCollection",
+      "title": "Textures",
+      "description": "A list of identified textures that this entity uses."
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can break through doors"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "min_difficulty",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "requires "
+          },
+          {
+            "type": "value",
+            "field": "min_difficulty"
+          },
+          {
+            "type": "literal",
+            "text": " difficulty or higher"
+          }
+        ]
+      }
+    ]
+  },
+  "title": "Break doors annotation",
+  "note": "Requires the entity's `navigation` component to have the parameter `can_break_doors` set to `true`.",
+  "description": "Allows an entity to break doors, assuming that that flags set up for the component to use in navigation.",
+  "fields": [
+    {
+      "id": "break_time",
+      "description": "The time in seconds required to break through doors.",
+      "dataType": "int",
+      "defaultValue": 12,
+      "title": "Break Time"
+    },
+    {
+      "id": "min_difficulty",
+      "title": "Minimum Difficulty",
+      "description": "The minimum difficulty that the world must be on for this entity to break doors.",
+      "dataType": "stringLookup",
+      "lookupId": "difficulty",
+      "defaultValue": "hard"
+    }
+  ],
+  "samples": {
+    "/vanilla/behavior_pack/entities/drowned.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:can_break_doors/minecraft:annotation.break_door/",
+        "content": {}
+      }
+    ]
+  },
+  "id": "minecraft:annotation.break_door"
+}

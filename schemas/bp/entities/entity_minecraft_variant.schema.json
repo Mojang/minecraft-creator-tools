@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Variant",
+  "description": "Variant is typically used as a per-type way to express a different visual form of the same mob. For example, for cats, variant is a number that defines the breed of cat.",
+  "properties": {
+    "value": {
+      "title": "Value",
+      "description": "The Id of the variant. By convention, 0 is the Id of the base entity/default appearance.",
+      "type": "integer",
+      "default": 0
+    }
+  }
+}

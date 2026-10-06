@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Snap To Surface Feature",
+  "description": "\n\nProperties:\n• description ({ identifier })\n• vertical_search_range (int)\n• surface (string)\n• allow_air_placement (boolean)\n• allow_underwater_placement (boolean)\n• allowed_surface_blocks (string[])\n• embed_in_surface (boolean)",
+  "type": "object",
+  "properties": {
+    "description": {
+      "title": "Description",
+      "description": "\n\nProperties:\n• identifier (string)",
+      "type": "object",
+      "properties": {
+        "identifier": {
+          "title": "Identifier",
+          "description": "The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
+          "type": "string"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Description",
+          "description": "Create a Description",
+          "body": {
+            "identifier": ""
+          }
+        }
+      ]
+    },
+    "vertical_search_range": {
+      "title": "Vertical Search Range",
+      "description": "Range to search for a floor or ceiling for snaping the feature.",
+      "type": "integer"
+    },
+    "surface": {
+      "title": "Surface",
+      "description": "Defines the surface that the y-value of the placement position will be snapped to. Valid values: 'ceiling', 'floor' and 'random_horizontal'",
+      "type": "string"
+    },
+    "allow_air_placement": {
+      "title": "Allow Air Placement",
+      "description": "Determines whether the feature can snap through air blocks. Defaults to true.",
+      "type": "boolean"
+    },
+    "allow_underwater_placement": {
+      "title": "Allow Underwater Placement",
+      "description": "Determines whether the feature can snap through water blocks. Defaults to false.",
+      "type": "boolean"
+    },
+    "allowed_surface_blocks": {
+      "title": "Allowed Surface Blocks",
+      "description": "A list of blocks that the feature is permitted to snap to. Leaving this empty results in the feature snapping to blocks that can provide support for the given face (up/down/horizontal)",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "embed_in_surface": {
+      "title": "Embed In Surface",
+      "description": "Determines whether the placed feature should be embedded in the found surface.",
+      "type": "boolean"
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "Snap To Surface Feature",
+      "description": "Create a Snap To Surface Feature",
+      "body": {
+        "description": "",
+        "vertical_search_range": 0,
+        "surface": "",
+        "allow_air_placement": true,
+        "allow_underwater_placement": true,
+        "embed_in_surface": true
+      }
+    }
+  ]
+}

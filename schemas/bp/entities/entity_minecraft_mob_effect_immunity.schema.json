@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Mob Effect Immunity",
+  "description": "Entities with this component will have an immunity to the provided mob effects.",
+  "properties": {
+    "mob_effects": {
+      "title": "Mob Effects",
+      "description": "List of names of effects the entity is immune to.\n\nSample values:\n• parched: [\"weakness\"]\n• silverfish: [\"infested\"]\n• slime: [\"oozing\"]",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

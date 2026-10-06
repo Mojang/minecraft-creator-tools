@@ -1,0 +1,33 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines tradetier configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "TradeTier",
+  "fields": [
+    {
+      "id": "groups",
+      "title": "Groups",
+      "dataType": "object",
+      "subFormId": "misc/tradegroup",
+      "isRequired": true
+    },
+    {
+      "id": "total_exp_required",
+      "title": "Total Exp Required",
+      "dataType": "int",
+      "isRequired": true
+    }
+  ],
+  "description": "Defines tradetier configuration.",
+  "title": "TradeTier Misc"
+}

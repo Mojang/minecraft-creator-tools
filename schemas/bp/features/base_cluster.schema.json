@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Base Cluster",
+  "description": "Clusters of blocks randomly replaced with \"base_block\" around the base of the tree.",
+  "type": "object",
+  "properties": {
+    "may_replace": {
+      "title": "May Replace",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "num_clusters": {
+      "title": "Num Clusters",
+      "description": "Number of clusters to generate.",
+      "type": "integer"
+    },
+    "cluster_radius": {
+      "title": "Cluster Radius",
+      "description": "The radius of each cluster.",
+      "type": "integer"
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "Base Cluster",
+      "description": "Clusters of blocks randomly replaced with \"base_block\" around the base of the tree.",
+      "body": {
+        "may_replace": "",
+        "num_clusters": 0,
+        "cluster_radius": 0
+      }
+    }
+  ]
+}

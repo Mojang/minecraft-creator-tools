@@ -1,0 +1,40 @@
+{
+  "id": "minecraft:pushable_by_block",
+  "versionIntroduced": "1.26.10",
+  "note": "Added in 1.26.10 as part of the split of `minecraft:pushable` into `minecraft:pushable_by_block` (pistons and Shulker Boxes) and `minecraft:pushable_by_entity` (other entities). The legacy `minecraft:pushable` component is no longer parsed.",
+  "fields": [],
+  "description": "Allows the entity to be pushed by certain blocks, like Shulker Boxes and Pistons.",
+  "title": "Pushable By Block",
+  "samples": {
+    "/vanilla/behavior_pack/entities/boat.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:pushable_by_block/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/bogged.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:pushable_by_block/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/chest_boat.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:pushable_by_block/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/chest_minecart.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:pushable_by_block/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/chicken.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:pushable_by_block/",
+        "content": {}
+      }
+    ]
+  }
+}

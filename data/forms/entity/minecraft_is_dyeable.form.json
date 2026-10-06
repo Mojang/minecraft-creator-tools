@@ -1,0 +1,44 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can be dyed different colors"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "interact_text",
+      "title": "Interact Text",
+      "description": "The text that will display when interacting with this entity with a dye when playing with Touch-screen controls.",
+      "dataType": "string",
+      "samples": {
+        "/vanilla/behavior_pack/entities/sheep.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:sheep_dyeable/minecraft:is_dyeable/",
+            "content": "action.interact.dye"
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Allows dyes to be used on this entity to change its color.",
+  "title": "Is Dyeable",
+  "samples": {
+    "/vanilla/behavior_pack/entities/sheep.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:sheep_dyeable/minecraft:is_dyeable/",
+        "content": {
+          "interact_text": "action.interact.dye"
+        }
+      }
+    ]
+  },
+  "id": "minecraft:is_dyeable"
+}

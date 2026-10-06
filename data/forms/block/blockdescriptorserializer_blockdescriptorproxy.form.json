@@ -1,0 +1,37 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has block descriptor with name, tags, and states"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "name",
+      "title": "name",
+      "description": "name",
+      "dataType": "string"
+    },
+    {
+      "id": "tags",
+      "title": "tags",
+      "description": "tags",
+      "dataType": "string"
+    },
+    {
+      "id": "states",
+      "title": "states",
+      "description": "states",
+      "dataType": "object"
+    }
+  ],
+  "description": "BlockDescriptorSerializer BlockDescriptorProxy",
+  "title": "BlockDescriptorSerializer BlockDescriptorProxy"
+}

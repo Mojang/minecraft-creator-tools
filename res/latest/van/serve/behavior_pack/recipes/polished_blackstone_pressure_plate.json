@@ -1,0 +1,25 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "minecraft:polished_blackstone_pressure_plate"
+    },
+    "tags": [ "crafting_table" ],
+    "pattern": [
+      "##"
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:polished_blackstone"
+      }
+    },
+	"unlock": [
+      {
+        "item": "minecraft:polished_blackstone"
+      }
+    ],
+    "result": {
+      "item": "minecraft:polished_blackstone_pressure_plate"
+    }
+  }
+}

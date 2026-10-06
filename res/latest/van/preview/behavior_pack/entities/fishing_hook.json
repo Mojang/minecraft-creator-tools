@@ -1,0 +1,63 @@
+{
+  "format_version": "1.26.0",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "minecraft:fishing_hook",
+      "is_summonable": false,
+      "is_spawnable": false
+    },
+    "components": {
+      "minecraft:collision_box": {
+        "height": 0.15,
+        "width": 0.15
+      },
+      "minecraft:conditional_bandwidth_optimization": {
+        "default_values": {
+          "max_dropped_ticks": 7,
+          "max_optimized_distance": 80.0,
+          "use_motion_prediction_hints": true
+        }
+      },
+      "minecraft:dimension_bound": {},
+      "minecraft:loot": {
+        "table": "loot_tables/gameplay/fishing.json"
+      },
+      "minecraft:physics": {},
+      "minecraft:projectile": {
+        "on_hit": {
+          "impact_damage": null,
+          "stick_in_ground": {}
+        }
+      },
+      "minecraft:pushable": {
+        "is_pushable": false,
+        "is_pushable_by_piston": true
+      },
+      "minecraft:transient": {}
+    },
+    "component_groups": {
+      "loot_jungle": {
+        "minecraft:loot": {
+          "table": "loot_tables/gameplay/jungle_fishing.json"
+        }
+      }
+    },
+    "events": {
+      "minecraft:entity_spawned": {
+        "sequence": [
+          {
+            "filters": {
+              "test": "is_biome",
+              "value": "jungle"
+            },
+            "add": {
+              "component_groups": [
+                "loot_jungle"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

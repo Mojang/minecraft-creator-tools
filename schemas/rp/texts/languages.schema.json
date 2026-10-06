@@ -1,0 +1,154 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "resource/languages",
+  "title": "Languages",
+  "description": "The languages.json file is a simple array of locale codes that specifies which language translations are available in this resource pack. Located at texts/languages.json in resource packs.",
+  "type": "object",
+  "properties": {
+    "0": {
+      "title": "Language Code",
+      "description": "A locale code identifying a language translation (e.g., en_US, de_DE, ja_JP).\n\nSample values:\n• languages: en_US",
+      "type": "string"
+    },
+    "1": {
+      "title": "1",
+      "description": "\n\nSample values:\n• languages: en_GB",
+      "type": "string"
+    },
+    "2": {
+      "title": "2",
+      "description": "\n\nSample values:\n• languages: de_DE",
+      "type": "string"
+    },
+    "3": {
+      "title": "3",
+      "description": "\n\nSample values:\n• languages: es_ES",
+      "type": "string"
+    },
+    "4": {
+      "title": "4",
+      "description": "\n\nSample values:\n• languages: es_MX",
+      "type": "string"
+    },
+    "5": {
+      "title": "5",
+      "description": "\n\nSample values:\n• languages: fr_FR",
+      "type": "string"
+    },
+    "6": {
+      "title": "6",
+      "description": "\n\nSample values:\n• languages: fr_CA",
+      "type": "string"
+    },
+    "7": {
+      "title": "7",
+      "description": "\n\nSample values:\n• languages: it_IT",
+      "type": "string"
+    },
+    "8": {
+      "title": "8",
+      "description": "\n\nSample values:\n• languages: ja_JP",
+      "type": "string"
+    },
+    "9": {
+      "title": "9",
+      "description": "\n\nSample values:\n• languages: ko_KR",
+      "type": "string"
+    },
+    "10": {
+      "title": "10",
+      "description": "\n\nSample values:\n• languages: pt_BR",
+      "type": "string"
+    },
+    "11": {
+      "title": "11",
+      "description": "\n\nSample values:\n• languages: pt_PT",
+      "type": "string"
+    },
+    "12": {
+      "title": "12",
+      "description": "\n\nSample values:\n• languages: ru_RU",
+      "type": "string"
+    },
+    "13": {
+      "title": "13",
+      "description": "\n\nSample values:\n• languages: zh_CN",
+      "type": "string"
+    },
+    "14": {
+      "title": "14",
+      "description": "\n\nSample values:\n• languages: zh_TW",
+      "type": "string"
+    },
+    "15": {
+      "title": "15",
+      "description": "\n\nSample values:\n• languages: nl_NL",
+      "type": "string"
+    },
+    "16": {
+      "title": "16",
+      "description": "\n\nSample values:\n• languages: bg_BG",
+      "type": "string"
+    },
+    "17": {
+      "title": "17",
+      "description": "\n\nSample values:\n• languages: cs_CZ",
+      "type": "string"
+    },
+    "18": {
+      "title": "18",
+      "description": "\n\nSample values:\n• languages: da_DK",
+      "type": "string"
+    },
+    "19": {
+      "title": "19",
+      "description": "\n\nSample values:\n• languages: el_GR",
+      "type": "string"
+    },
+    "20": {
+      "title": "20",
+      "description": "\n\nSample values:\n• languages: fi_FI",
+      "type": "string"
+    },
+    "21": {
+      "title": "21",
+      "description": "\n\nSample values:\n• languages: hu_HU",
+      "type": "string"
+    },
+    "22": {
+      "title": "22",
+      "description": "\n\nSample values:\n• languages: id_ID",
+      "type": "string"
+    },
+    "23": {
+      "title": "23",
+      "description": "\n\nSample values:\n• languages: nb_NO",
+      "type": "string"
+    },
+    "24": {
+      "title": "24",
+      "description": "\n\nSample values:\n• languages: pl_PL",
+      "type": "string"
+    },
+    "25": {
+      "title": "25",
+      "description": "\n\nSample values:\n• languages: sk_SK",
+      "type": "string"
+    },
+    "26": {
+      "title": "26",
+      "description": "\n\nSample values:\n• languages: sv_SE",
+      "type": "string"
+    },
+    "27": {
+      "title": "27",
+      "description": "\n\nSample values:\n• languages: tr_TR",
+      "type": "string"
+    },
+    "28": {
+      "title": "28",
+      "description": "\n\nSample values:\n• languages: uk_UA",
+      "type": "string"
+    }
+  }
+}

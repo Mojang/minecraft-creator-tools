@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "World Age Filter",
+  "description": "Restricts spawning based on how long the world has existed (measured in ticks). Useful for progressive difficulty where certain mobs only start appearing after the world has been played for a minimum amount of time.",
+  "properties": {
+    "max": {
+      "title": "Max",
+      "type": "integer",
+      "default": -1
+    },
+    "min": {
+      "title": "Min",
+      "type": "integer",
+      "default": 0
+    }
+  }
+}

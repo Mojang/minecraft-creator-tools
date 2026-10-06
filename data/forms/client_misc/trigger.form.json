@@ -1,0 +1,37 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines an event trigger with optional conditions"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "target",
+      "title": "Filter target subject",
+      "description": "Filter target subject",
+      "dataType": "string"
+    },
+    {
+      "id": "event",
+      "title": "event",
+      "description": "event",
+      "dataType": "string"
+    },
+    {
+      "id": "condition",
+      "title": "condition",
+      "description": "condition",
+      "dataType": "object"
+    }
+  ],
+  "description": "Trigger",
+  "title": "Trigger"
+}

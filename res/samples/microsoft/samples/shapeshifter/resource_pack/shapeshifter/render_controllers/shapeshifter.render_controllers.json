@@ -1,0 +1,23 @@
+{
+  "format_version": "1.8.0",
+  "render_controllers": {
+    "controller.render.shapeshifter": {
+      "arrays": {
+        "materials": {
+          "Array.materials": ["material.default", "material.invisible"]
+        },
+        "geometries": {
+          "Array.geos": ["geometry.default", "geometry.chicken", "geometry.cat", "geometry.sheep", "geometry.polar_bear"]
+        },
+        "textures": {
+          "Array.textures": ["texture.default", "texture.chicken", "texture.cat", "texture.sheep", "texture.polar_bear"]
+        }
+      },
+      "geometry": "Array.geos[(q.property('minecraft:shape') == 'shapeshifter' ? 0 : (q.property('minecraft:shape') == 'chicken' ? 1  : (q.property('minecraft:shape') == 'cat' ? 2 : (q.property('minecraft:shape') == 'sheep' ? 3 : 4))))]",
+      "materials": [{ "*": "Array.materials[query.is_invisible]" }],
+      "textures": [
+        "Array.textures[(q.property('minecraft:shape') == 'shapeshifter' ? 0 : (q.property('minecraft:shape') == 'chicken' ? 1  : (q.property('minecraft:shape') == 'cat' ? 2 : (q.property('minecraft:shape') == 'sheep' ? 3 : 4))))]"
+      ]
+    }
+  }
+}

@@ -1,0 +1,112 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Look At Entity Behavior",
+  "description": "Compels an entity to look at a specific entity by rotating the `head` bone pose within a set limit.",
+  "properties": {
+    "angle_of_view_horizontal": {
+      "title": "Angle Of View Horizontal",
+      "description": "The angle in degrees that the mob can see rotated on the Y-axis (left-right).\n\nSample values:\n• ravager: 45",
+      "type": "integer",
+      "maximum": 360,
+      "default": 360
+    },
+    "angle_of_view_vertical": {
+      "title": "Angle Of View Vertical",
+      "description": "The angle in degrees that the mob can see rotated on the X-axis (up-down).",
+      "type": "integer",
+      "maximum": 360,
+      "default": 360
+    },
+    "control_flags": {
+      "title": "Control Flags",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "jump",
+          "look",
+          "move"
+        ]
+      }
+    },
+    "filters": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "title": "Domain",
+              "description": "The domain the test should be performed in.",
+              "type": "object"
+            },
+            "operator": {
+              "title": "Operator",
+              "description": "The comparison to apply with 'value'.",
+              "type": "object"
+            },
+            "subject": {
+              "title": "Subject",
+              "description": "The subject of this filter test.",
+              "type": "object"
+            },
+            "test": {
+              "title": "Test",
+              "description": "The name of the test to apply.",
+              "type": "string"
+            },
+            "value": {
+              "title": "Value",
+              "description": "The value being compared with the test.",
+              "type": "object"
+            }
+          }
+        },
+        {
+          "type": "object"
+        }
+      ],
+      "title": "Filters",
+      "description": "Filter to determine the conditions for this mob to look at the entity\n\nSample values:\n• evocation_illager: {\"test\":\"is_family\",\"subject\":\"other\",\"value\":\"..."
+    },
+    "look_distance": {
+      "title": "Look Distance",
+      "description": "The distance in blocks from which the entity will look at the nearest entity.\n\nSample values:\n• evocation_illager: 8\n• vex: 6",
+      "type": "number",
+      "default": 8
+    },
+    "look_time": {
+      "title": "Look Time",
+      "description": "Time range to look at the nearest entity.",
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        {
+          "$ref": "../../common/floatrange.schema.json"
+        }
+      ]
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.\n\nSample values:\n• evocation_illager: 10\n• vex: 9",
+      "type": "integer",
+      "default": 0
+    },
+    "probability": {
+      "title": "Probability",
+      "description": "The probability of looking at the target. A value of 1.00 is 100%.\n\nSample values:\n• vex: 0.02",
+      "type": "number",
+      "maximum": 1,
+      "default": 0.019999999552965164
+    }
+  }
+}

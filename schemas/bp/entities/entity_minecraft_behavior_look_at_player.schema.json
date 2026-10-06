@@ -1,0 +1,88 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Look At Player Behavior",
+  "description": "Compels an entity to look at the player by rotating the `head` bone pose within a set limit.",
+  "properties": {
+    "angle_of_view_horizontal": {
+      "title": "Angle Of View Horizontal",
+      "description": "The angle in degrees that the mob can see rotated on the Y-axis (left-right).\n\nSample values:\n• ravager: 45",
+      "type": "integer",
+      "maximum": 360,
+      "default": 360
+    },
+    "angle_of_view_vertical": {
+      "title": "Angle Of View Vertical",
+      "description": "The angle in degrees that the mob can see rotated on the X-axis (up-down).",
+      "type": "integer",
+      "maximum": 360,
+      "default": 360
+    },
+    "control_flags": {
+      "title": "Control Flags",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "jump",
+          "look",
+          "move"
+        ]
+      }
+    },
+    "look_distance": {
+      "title": "Look Distance",
+      "description": "The distance in blocks from which the entity will look at the nearest entity.\n\nSample values:\n• bogged: 8\n• breeze: 16\n• cave_spider: 6",
+      "type": "number",
+      "default": 8
+    },
+    "look_time": {
+      "title": "Look Time",
+      "description": "Time range to look at the nearest entity.\n\nSample values:\n• zombie_horse: [2,4]\n• campghost: [0,100]",
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        {
+          "$ref": "../../common/floatrange.schema.json"
+        }
+      ]
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.\n\nSample values:\n• allay: 8\n• armadillo: 7\n• axolotl: 10",
+      "type": "integer",
+      "default": 0
+    },
+    "probability": {
+      "title": "Probability",
+      "description": "The probability of looking at the target. A value of 1.00 is 100%.\n\nSample values:\n• allay: 0.02\n• elder_guardian: 0.01\n• enderman: 8",
+      "type": "number",
+      "maximum": 1,
+      "default": 0.019999999552965164
+    },
+    "target_distance": {
+      "title": "Target Distance",
+      "description": "\n\nSample values:\n• allay: 6",
+      "type": "number"
+    },
+    "min_look_time": {
+      "title": "Min Look Time",
+      "description": "\n\nSample values:\n• armadillo: 40",
+      "type": "number"
+    },
+    "max_look_time": {
+      "title": "Max Look Time",
+      "description": "\n\nSample values:\n• armadillo: 80",
+      "type": "number"
+    }
+  }
+}

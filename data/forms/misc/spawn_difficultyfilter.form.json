@@ -1,0 +1,30 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines spawn difficultyfilter settings"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Spawn DifficultyFilter",
+  "fields": [
+    {
+      "id": "max",
+      "title": "SpawnDifficulty Legacy",
+      "dataType": "string"
+    },
+    {
+      "id": "min",
+      "title": "SpawnDifficulty Legacy",
+      "dataType": "string"
+    }
+  ],
+  "description": "Defines spawn difficultyfilter settings.",
+  "title": "Spawn DifficultyFilter Misc"
+}

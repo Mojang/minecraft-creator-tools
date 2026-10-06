@@ -1,0 +1,74 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "Herd",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "spawns in groups of "
+          },
+          {
+            "type": "value",
+            "field": "min"
+          },
+          {
+            "type": "literal",
+            "text": " to "
+          },
+          {
+            "type": "value",
+            "field": "max"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "event",
+      "title": "Event",
+      "description": "An event to run after 'event_skip_count' number of entities in the group have spawned",
+      "dataType": "string",
+      "defaultValue": ""
+    },
+    {
+      "id": "event_skip_count",
+      "title": "Event Skip Count",
+      "description": "Number of entities spawned in the group to skip before running the event",
+      "dataType": "int",
+      "defaultValue": 0
+    },
+    {
+      "id": "initial_event",
+      "title": "Initial Event",
+      "description": "Event run for the first 'initial_event_count' number of the group are placed.",
+      "dataType": "string",
+      "defaultValue": ""
+    },
+    {
+      "id": "initial_event_count",
+      "title": "Initial Event Count",
+      "description": "Number of times that 'initial_event' can run",
+      "dataType": "int",
+      "defaultValue": 0
+    },
+    {
+      "id": "max",
+      "title": "Max",
+      "description": "Maximum number of entities in this group to attempt to spawn",
+      "dataType": "int",
+      "defaultValue": 1
+    },
+    {
+      "id": "min",
+      "title": "Min",
+      "description": "Minimum number of entities in this group to attempt to spawn",
+      "dataType": "int",
+      "defaultValue": 1
+    }
+  ],
+  "description": "Configures group spawning behavior with min/max herd sizes. Allows running events on the first N entities spawned (initial_event) or after skipping M entities (event). Common for pack animals like wolves or swarm mobs like silverfish.",
+  "title": "Spawn Herd"
+}

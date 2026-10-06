@@ -1,0 +1,20 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "returns normalized progress of a value between start and end"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "`math.inverse_lerp(start, end, value)`",
+  "versionIntroduced": "1.21.120",
+  "fields": [],
+  "description": "Returns the normalized progress between start and end given value",
+  "title": "Inverse Lerp(start, End, Value)"
+}

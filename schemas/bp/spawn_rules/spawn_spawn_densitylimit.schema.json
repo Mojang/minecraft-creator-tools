@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Density Limit",
+  "description": "Limits how many of this entity type can exist in an area, with separate caps for surface and underground spawning. This prevents overpopulation and controls mob density for performance and gameplay balance.",
+  "properties": {
+    "surface": {
+      "title": "Surface",
+      "type": "integer",
+      "minimum": -1,
+      "default": -1
+    },
+    "underground": {
+      "title": "Underground",
+      "type": "integer",
+      "minimum": -1,
+      "default": -1
+    }
+  }
+}

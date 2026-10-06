@@ -1,0 +1,161 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Scripts",
+  "description": "\n\nProperties:\n• variables ({ variable.[a-zA-Z_][a-zA-Z0-9_]* })\n• initialize\n• pre_animation\n• scale\n• scale[xX]\n• scale[yY]\n• scale[zZ]\n• parent_setup\n• ... and 3 more properties",
+  "type": "object",
+  "properties": {
+    "variables": {
+      "title": "Variables",
+      "description": "A list of variables that need certain settings applied to them.  Currently, for the client, only \"public\" is supported.",
+      "type": "object",
+      "properties": {
+        "variable.[a-zA-Z_][a-zA-Z0-9_]*": {
+          "title": "[a-zA-Z0-9 ]*\"<\"public\" Variable",
+          "description": "If a variable is public, it can be read by other mobs.  See the molang '->' operator for details.",
+          "type": "string"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Variables",
+          "description": "A list of variables that need certain settings applied to them.  Currently, for the client, only \"public\" is supported.",
+          "body": {
+            "variable.[a-zA-Z_][a-zA-Z0-9_]*\"<\"public\"": ""
+          }
+        }
+      ]
+    },
+    "initialize": {
+      "title": "Initialize",
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "number"
+          }
+        ]
+      }
+    },
+    "pre_animation": {
+      "title": "Pre Animation",
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "number"
+          }
+        ]
+      }
+    },
+    "scale": {
+      "title": "Scale",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        }
+      ]
+    },
+    "scale[xX]": {
+      "title": "Scale",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        }
+      ]
+    },
+    "scale[yY]": {
+      "title": "Scale",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        }
+      ]
+    },
+    "scale[zZ]": {
+      "title": "Scale",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        }
+      ]
+    },
+    "parent_setup": {
+      "title": "Parent Setup",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        }
+      ]
+    },
+    "animate": {
+      "title": "Animate",
+      "description": "List of animations to play. Each item can be a string animation name or an object mapping animation name to a Molang condition.",
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "object",
+            "additionalProperties": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "should_update_bones_and_effects_offscreen": {
+      "title": "Should Update Bones And Effects Offscreen",
+      "description": "Bones and effects will still be updated if the entity is off screen if this expression returns anything other than 0.0.",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        }
+      ]
+    },
+    "should_update_effects_offscreen": {
+      "title": "Should Update Effects Offscreen",
+      "description": "Effects will still be updated if the entity is off screen if this expression or `should_update_bones_and_effects_offscreen` returns anything other than 0.0.",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        }
+      ]
+    }
+  }
+}

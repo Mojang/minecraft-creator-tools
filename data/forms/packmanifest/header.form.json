@@ -1,0 +1,84 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "3.0.0.Header",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines the pack header with name, description, version, and engine requirements"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "allow_random_seed",
+      "title": "Allow Random Seed",
+      "dataType": "boolean"
+    },
+    {
+      "id": "base_game_version",
+      "title": "Base Game Version",
+      "dataType": "string"
+    },
+    {
+      "id": "description",
+      "title": "Description",
+      "dataType": "string"
+    },
+    {
+      "id": "lock_template_options",
+      "title": "Lock Template Options",
+      "dataType": "boolean"
+    },
+    {
+      "id": "min_engine_version",
+      "title": "Min Engine Version",
+      "dataType": "string"
+    },
+    {
+      "id": "name",
+      "title": "Name",
+      "dataType": "string",
+      "isRequired": true
+    },
+    {
+      "id": "pack_optimization_version",
+      "title": "Pack Optimization Version",
+      "dataType": "object"
+    },
+    {
+      "id": "pack_scope",
+      "title": "Pack Scope",
+      "dataType": "string"
+    },
+    {
+      "id": "platform_locked",
+      "title": "Platform Locked",
+      "dataType": "boolean"
+    },
+    {
+      "id": "uuid",
+      "title": "Uuid",
+      "dataType": "object",
+      "validity": [
+        {
+          "comparison": "pattern",
+          "value": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "version",
+      "title": "Version",
+      "dataType": "object",
+      "isRequired": true
+    }
+  ],
+  "description": "The header section of manifest.json containing the pack's identity: its name shown in the UI, description, unique UUID, and version. The min_engine_version field specifies the minimum Minecraft version required to load the pack.",
+  "title": "Packmanifest Header"
+}

@@ -1,0 +1,11 @@
+{
+  "files": [
+    "blocks.json",
+    "manifest.json"
+  ],
+  "folders": [
+    "models",
+    "texts",
+    "textures"
+  ]
+}

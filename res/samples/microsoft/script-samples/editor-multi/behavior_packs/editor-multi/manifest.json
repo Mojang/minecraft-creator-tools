@@ -1,0 +1,35 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Minecraft Editor Multiple Plugin",
+    "description": "A gallery of editor code snippets",
+    "uuid": "abfc8701-02a7-4cbb-87d6-004f5d56c1d1",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 21, 90]
+  },
+  "modules": [
+    {
+      "description": "Script resources",
+      "type": "script",
+      "language": "javascript",
+      "uuid": "8ccf8621-4501-42db-920a-33ec231c4739",
+      "version": [1, 0, 0],
+      "entry": "scripts/main.js"
+    }
+  ],
+  "capabilities": ["editorExtension"],
+  "dependencies": [
+    {
+      "uuid": "83e67115-f576-4335-b014-dc3c1a102620",
+      "version": [1, 0, 0]
+    },
+    {
+      "module_name": "@minecraft/server-editor",
+      "version": "beta"
+    },
+    {
+      "module_name": "@minecraft/server",
+      "version": "beta"
+    }
+  ]
+}

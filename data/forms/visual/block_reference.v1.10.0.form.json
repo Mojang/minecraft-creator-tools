@@ -1,0 +1,55 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "block_reference",
+  "title": "Block Reference (v1.10.0)",
+  "description": "Defines a block reference object as used by resource pack client definitions (format_version 1.10.0).",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "references a block by name and its state values"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "dataType": "string",
+      "id": "name",
+      "title": "Name",
+      "isRequired": true
+    },
+    {
+      "dataType": "object",
+      "id": "states",
+      "title": "States",
+      "isRequired": true,
+      "subForm": {
+        "fields": [
+          {
+            "dataType": "boolean",
+            "id": "\\w*:?\\w+",
+            "title": "\\w* ?\\w+",
+            "isRequired": false,
+            "alternates": [
+              {
+                "dataType": "int",
+                "id": "\\w*:?\\w+",
+                "isRequired": false
+              },
+              {
+                "dataType": "string",
+                "id": "\\w*:?\\w+",
+                "isRequired": false
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "dataVersion": "1.10.0"
+}

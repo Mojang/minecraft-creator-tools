@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- MCPack: Minecraft package -->
+  <path d="M8 1L14 4V12L8 15L2 12V4L8 1Z" fill-opacity="0.2"/>
+  <path d="M8 1L14 4L8 7L2 4L8 1Z" fill-opacity="0.4"/>
+  <path d="M8 7V15L2 12V4L8 7Z" fill-opacity="0.3"/>
+  <path d="M8 7V15L14 12V4L8 7Z" fill-opacity="0.5"/>
+  <rect x="5" y="4" width="6" height="4" fill-opacity="0.6"/>
+  <text x="5.5" y="7.2" font-family="monospace" font-size="3" font-weight="bold">MC</text>
+</svg>

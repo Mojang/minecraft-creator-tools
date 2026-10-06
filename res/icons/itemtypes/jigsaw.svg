@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Jigsaw: Puzzle pieces -->
+  <path d="M2 4H6V3C6 2 7 2 7 3V4H10V6H11C12 6 12 7 11 7H10V10H7V11C7 12 6 12 6 11V10H2V7H3C4 7 4 6 3 6H2V4Z" fill-opacity="0.3"/>
+  <path d="M10 6H14V9H13C12 9 12 10 13 10H14V14H11V13C11 12 10 12 10 13V14H7V10H6C5 10 5 9 6 9H7V6H10Z" fill-opacity="0.5"/>
+</svg>

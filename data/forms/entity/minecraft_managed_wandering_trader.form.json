@@ -1,0 +1,26 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "is a managed wandering trader"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [],
+  "restrictions": [
+    {
+      "id": "minecraft:wandering_trader",
+      "type": "entity_type"
+    }
+  ],
+  "description": "Manages the entity's ability to trade.",
+  "title": "Managed Wandering Trader",
+  "samples": {},
+  "id": "minecraft:managed_wandering_trader"
+}

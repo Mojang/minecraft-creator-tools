@@ -1,0 +1,126 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Economy Trade Table",
+  "description": "Defines this entity's ability to trade with players.",
+  "properties": {
+    "convert_trades_economy": {
+      "title": "Convert Trades Economy",
+      "description": "Determines when the mob transforms, if the trades should be converted when the new mob has a economy_trade_table. When the trades are converted, the mob will generate a new trade list with their new trade table, but then it will try to convert any of the same trades over to have the same enchantments and user data. For example, if the original has a Emerald to Enchanted Iron Sword (Sharpness 1), and the new trade also has an Emerald for Enchanted Iron Sword, then the enchantment will be Sharpness 1.",
+      "type": "boolean",
+      "default": false
+    },
+    "cured_discount": {
+      "title": "Cured Discount",
+      "description": "How much should the discount be modified by when the player has cured the Zombie Villager. Can be specified as a pair of numbers (When use_legacy_price_formula is true this is the low-tier trade discount and high-tier trade discount, otherwise it is the minor positive gossip and major positive gossip.)",
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        {
+          "type": "object",
+          "properties": {
+            "min": {
+              "type": "integer",
+              "description": "Minimum value of the range"
+            },
+            "max": {
+              "type": "integer",
+              "description": "Maximum value of the range"
+            }
+          }
+        }
+      ]
+    },
+    "display_name": {
+      "title": "Display Name",
+      "description": "Name to be displayed while trading with this entity",
+      "type": "string"
+    },
+    "hero_demand_discount": {
+      "title": "Hero Demand Discount",
+      "description": "Used in legacy prices to determine how much should Demand be modified by when the player has the Hero of the Village mob effect",
+      "type": "integer",
+      "default": -4
+    },
+    "max_cured_discount": {
+      "title": "Max Cured Discount",
+      "description": "The max the discount can be modified by when the player has cured the Zombie Villager. Can be specified as a pair of numbers (When use_legacy_price_formula is true this is the low-tier trade discount and high-tier trade discount, otherwise it is the minor positive gossip and major positive gossip.)",
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        {
+          "type": "object",
+          "properties": {
+            "min": {
+              "type": "integer",
+              "description": "Minimum value of the range"
+            },
+            "max": {
+              "type": "integer",
+              "description": "Maximum value of the range"
+            }
+          }
+        }
+      ]
+    },
+    "max_nearby_cured_discount": {
+      "title": "Max Nearby Cured Discount",
+      "description": "The max the discount can be modified by when the player has cured a nearby Zombie Villager. Only used when use_legacy_price_formula is true, otherwise max_cured_discount (low) is used.",
+      "type": "integer",
+      "default": -200
+    },
+    "nearby_cured_discount": {
+      "title": "Nearby Cured Discount",
+      "description": "How much should the discount be modified by when the player has cured a nearby Zombie Villager",
+      "type": "integer",
+      "default": -20
+    },
+    "new_screen": {
+      "title": "New Screen",
+      "description": "Used to determine if trading with entity opens the new trade screen",
+      "type": "boolean",
+      "default": false
+    },
+    "persist_trades": {
+      "title": "Persist Trades",
+      "description": "Determines if the trades should persist when the mob transforms. This makes it so that the next time the mob is transformed to something with a trade_table or economy_trade_table, then it keeps their trades.",
+      "type": "boolean",
+      "default": false
+    },
+    "show_trade_screen": {
+      "title": "Show Trade Screen",
+      "description": "Show an in game trade screen when interacting with the mob.",
+      "type": "boolean",
+      "default": true
+    },
+    "table": {
+      "title": "Table",
+      "description": "File path relative to the resource pack root for this entity's trades",
+      "type": "string"
+    },
+    "use_legacy_price_formula": {
+      "title": "Use Legacy Price Formula",
+      "description": "Determines whether the legacy formula is used to determines the trade prices.",
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

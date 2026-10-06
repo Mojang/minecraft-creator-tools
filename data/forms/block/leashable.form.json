@@ -1,0 +1,50 @@
+{
+  "id": "leashable",
+  "versionIntroduced": "1.21.130",
+  "note": "`minecraft:leashable` block component added in 1.21.130. Lets a custom block receive a lead attachment; `offset` controls the position of the leash knot relative to the block.",
+  "note2": "In 1.26.0 and higher, this component is available without the Upcoming Creator Features experimental toggle for `format_version` 1.26.0+.",
+  "fields": [
+    {
+      "id": "offset",
+      "title": "Offset",
+      "dataType": "numberArray",
+      "defaultValue": [
+        0,
+        0.25,
+        0
+      ],
+      "alternates": [
+        {
+          "id": "offset",
+          "dataType": "object",
+          "subForm": {
+            "id": "offset",
+            "title": "Offset",
+            "fields": [
+              {
+                "id": "x",
+                "title": "X",
+                "dataType": "float",
+                "defaultValue": 0
+              },
+              {
+                "id": "y",
+                "title": "Y",
+                "dataType": "float",
+                "defaultValue": 0
+              },
+              {
+                "id": "z",
+                "title": "Z",
+                "dataType": "float",
+                "defaultValue": 0
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "description": "Allows a block to have a lead tied to it.",
+  "title": "Block Leashable"
+}

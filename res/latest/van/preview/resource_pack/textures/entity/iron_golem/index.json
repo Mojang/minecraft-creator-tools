@@ -1,0 +1,20 @@
+{
+  "files": [
+    "cracked_high.png",
+    "cracked_high.texture_set.json",
+    "cracked_high_mers.tga",
+    "cracked_low.png",
+    "cracked_low.texture_set.json",
+    "cracked_low_mers.tga",
+    "cracked_medium.png",
+    "cracked_medium.texture_set.json",
+    "cracked_medium_mers.tga",
+    "cracked_none.png",
+    "cracked_none.texture_set.json",
+    "cracked_none_mers.tga",
+    "iron_golem.png",
+    "iron_golem.texture_set.json",
+    "iron_golem_mers.tga"
+  ],
+  "folders": []
+}

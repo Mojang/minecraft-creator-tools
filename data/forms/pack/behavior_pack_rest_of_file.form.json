@@ -1,0 +1,63 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "title": "Behavior Pack Content",
+  "description": "Defines the non-header content section of a behavior pack document.",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "specifies the modules and dependencies for a behavior pack"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "modules",
+      "title": "Modules",
+      "dataType": "objectArray",
+      "subForm": {
+        "fields": [
+          {
+            "id": "description",
+            "description": "Description of this module.",
+            "dataType": "longFormString"
+          },
+          {
+            "id": "language",
+            "description": "The scripting language of this module (e.g., 'javascript').",
+            "dataType": "string"
+          },
+          {
+            "id": "type",
+            "description": "Type of this module.",
+            "dataType": "string"
+          },
+          {
+            "id": "uuid",
+            "description": "Unique identifier of this module.",
+            "dataType": "string"
+          },
+          {
+            "id": "version",
+            "description": "Version",
+            "dataType": "string"
+          },
+          {
+            "id": "entry",
+            "description": "Script entry point for this behavior pack.",
+            "dataType": "string"
+          }
+        ]
+      }
+    },
+    {
+      "id": "dependencies",
+      "title": "Dependencies",
+      "dataType": "keyedStringCollection"
+    }
+  ]
+}

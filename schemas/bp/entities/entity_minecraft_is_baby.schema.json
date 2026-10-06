@@ -1,0 +1,7 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Is Baby",
+  "description": "Sets that this entity is a baby. This is used to set the is_baby value for use in query functions like Molang and Filters.",
+  "properties": {}
+}

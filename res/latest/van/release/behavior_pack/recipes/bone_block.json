@@ -1,0 +1,31 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:bone_block"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "pattern": [
+      "XXX",
+      "XXX",
+      "XXX"
+    ],
+    "key": {
+      "X": {
+        "item": "minecraft:dye",
+        "data": 15
+      }
+    },
+	"unlock": [
+      {
+        "item": "minecraft:dye",
+        "data": 15
+      }
+    ],
+    "result": {
+      "item": "minecraft:bone_block"
+    }
+  }
+}

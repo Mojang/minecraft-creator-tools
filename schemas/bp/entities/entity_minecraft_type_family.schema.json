@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Type Family",
+  "description": "Defines the family categories this entity belongs to. Type families are used by filters and other game systems to group entities (e.g., 'mob', 'monster', 'undead', 'zombie').",
+  "properties": {
+    "family": {
+      "title": "Type Family (Tag)",
+      "description": "A set of tags that describe the categories of this entity. In addition to typically having a tag for the type of mob, entities frequently have additional type family tags that modify how the rest of the Minecraft world reacts to them.\n\nSample values:\n• allay: [\"allay\",\"mob\"]\n• armor_stand: [\"armor_stand\",\"inanimate\",\"mob\"]\n• bat: [\"bat\",\"mob\"]",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

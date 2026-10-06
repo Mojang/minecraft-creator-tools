@@ -1,0 +1,29 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Bribeable",
+  "description": "Defines the way an entity can get into the 'bribed' state.",
+  "properties": {
+    "bribe_items": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "title": "Bribe Items",
+      "description": "The list of items that can be used to bribe the entity. Can be an array or a single item string.\n\nSample values:\n• dolphin: [\"fish\",\"salmon\"]"
+    },
+    "bribe_cooldown": {
+      "title": "Bribe Cooldown",
+      "description": "Time in seconds before the Entity can be bribed again.",
+      "type": "number",
+      "default": 2
+    }
+  }
+}

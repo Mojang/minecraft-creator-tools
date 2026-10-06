@@ -1,0 +1,51 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines ammunition configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Ammunition",
+  "fields": [
+    {
+      "id": "item",
+      "title": "Item",
+      "description": "Ammunition item description identifier.",
+      "dataType": "string",
+      "alternates": [
+        {
+          "id": "item",
+          "dataType": "keyedStringCollection"
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "search_inventory",
+      "title": "Search Inventory",
+      "description": "Can search inventory? Default is set to false.",
+      "dataType": "boolean"
+    },
+    {
+      "id": "use_in_creative",
+      "title": "Use In Creative",
+      "description": "Can use in creative mode? Default is set to false.",
+      "dataType": "boolean"
+    },
+    {
+      "id": "use_offhand",
+      "title": "Use Offhand",
+      "description": "Can use off-hand? Default is set to false.",
+      "dataType": "boolean"
+    }
+  ],
+  "description": "Defines ammunition configuration.",
+  "title": "Ammunition Misc"
+}

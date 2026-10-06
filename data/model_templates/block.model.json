@@ -1,0 +1,90 @@
+{
+  "formatVersion": "1.0.0",
+  "identifier": "custom_block",
+  "description": "A simple unit cube block (16x16x16 units = 1 block). All coordinates in Minecraft units (16 = 1 block).",
+  "textureSize": [
+    64,
+    64
+  ],
+  "textures": {
+    "top": {
+      "background": {
+        "type": "perlin_noise",
+        "colors": [
+          "#7CFC00",
+          "#6AE000",
+          "#8EFF12"
+        ],
+        "seed": 5001,
+        "scale": 6
+      }
+    },
+    "side": {
+      "background": {
+        "type": "stipple_noise",
+        "colors": [
+          "#8B4513",
+          "#7A3A0E",
+          "#6B3510"
+        ],
+        "seed": 5002
+      }
+    },
+    "bottom": {
+      "background": {
+        "type": "stipple_noise",
+        "colors": [
+          "#8B4513",
+          "#7A3A0E",
+          "#9C5018"
+        ],
+        "seed": 5003
+      }
+    }
+  },
+  "bones": [
+    {
+      "name": "block",
+      "pivot": [
+        0,
+        8,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -8,
+            0,
+            -8
+          ],
+          "size": [
+            16,
+            16,
+            16
+          ],
+          "faces": {
+            "north": {
+              "textureId": "side"
+            },
+            "south": {
+              "textureId": "side"
+            },
+            "east": {
+              "textureId": "side"
+            },
+            "west": {
+              "textureId": "side"
+            },
+            "up": {
+              "textureId": "top"
+            },
+            "down": {
+              "textureId": "bottom"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "category": "block"
+}

@@ -1,0 +1,27 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "minecraft:blackstone_wall"
+    },
+    "tags": [ "crafting_table" ],
+    "pattern": [
+      "###",
+      "###"
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:blackstone"
+      }
+    },
+	"unlock": [
+          {
+            "item": "minecraft:blackstone"
+          }
+        ],
+    "result": {
+      "item": "minecraft:blackstone_wall",
+      "count": 6
+    }
+  }
+}

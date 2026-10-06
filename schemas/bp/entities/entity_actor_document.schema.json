@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Actor Document",
+  "description": "The root structure for entity behavior definitions in behavior packs. Contains the entity's unique identifier, components that define its capabilities, component groups for state variations, and events that trigger state changes. Every custom mob, NPC, or creature requires an actor document defining its AI, health, movement, and interactions.",
+  "properties": {
+    "component_groups": {
+      "title": "Component Groups",
+      "description": "Named groups of components that can be dynamically added/removed via events. Each key is a group name (e.g., 'minecraft:baby'), and the value contains components for that state.",
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "./entity_entity_component_definitions.schema.json"
+      }
+    },
+    "components": {
+      "title": "Components",
+      "description": "The base components always active on this entity, defining its default behavior, attributes, and AI.",
+      "$ref": "./entity_entity_component_definitions.schema.json"
+    },
+    "description": {
+      "title": "Description",
+      "description": "Contains the entity's unique identifier and runtime_identifier for spawn egg and other behaviors.",
+      "type": "object"
+    },
+    "events": {
+      "title": "Events",
+      "description": "Named events that can add/remove component groups and trigger actions. Events are invoked by component logic or spawning.",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object"
+      }
+    }
+  },
+  "required": [
+    "description"
+  ]
+}

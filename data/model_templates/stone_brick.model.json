@@ -1,0 +1,82 @@
+{
+  "formatVersion": "1.0.0",
+  "identifier": "stone_brick",
+  "description": "A classic stone brick block with masonry pattern",
+  "pixelsPerUnit": 2,
+  "textures": {
+    "brick": {
+      "background": {
+        "type": "stipple_noise",
+        "colors": ["#808080", "#6E6E6E", "#929292"],
+        "seed": 2001,
+        "factor": 0.3
+      },
+      "effects": {
+        "border": {
+          "all": {
+            "style": "solid",
+            "width": 1,
+            "color": "#505050"
+          }
+        },
+        "lighting": {
+          "preset": "inset",
+          "intensity": 0.2
+        }
+      },
+      "pixelArt": [
+        {
+          "lines": [
+            "########        ",
+            "########        ",
+            "                ",
+            "    ########    ",
+            "    ########    ",
+            "                ",
+            "########        ",
+            "########        "
+          ],
+          "palette": {
+            "#": {
+              "hex": "#5A5A5A"
+            }
+          },
+          "scaleMode": "cover"
+        }
+      ]
+    }
+  },
+  "bones": [
+    {
+      "name": "block",
+      "pivot": [0, 8, 0],
+      "cubes": [
+        {
+          "origin": [-8, 0, -8],
+          "size": [16, 16, 16],
+          "faces": {
+            "north": {
+              "textureId": "brick"
+            },
+            "south": {
+              "textureId": "brick"
+            },
+            "east": {
+              "textureId": "brick"
+            },
+            "west": {
+              "textureId": "brick"
+            },
+            "up": {
+              "textureId": "brick"
+            },
+            "down": {
+              "textureId": "brick"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "category": "block"
+}

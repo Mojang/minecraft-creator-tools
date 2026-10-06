@@ -1,0 +1,10 @@
+{
+  "files": [
+    "LICENSE",
+    "README.md"
+  ],
+  "folders": [
+    "js-gametests",
+    "starterTestsTutorial"
+  ]
+}

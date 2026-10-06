@@ -1,0 +1,14 @@
+{
+  "files": [
+    "axe_turret.loot.json",
+    "bow_turret.loot.json",
+    "crossbow_turret.loot.json",
+    "fabricator.loot.json",
+    "gray_ore.loot.json",
+    "gray_wave_generator.loot.json",
+    "gray_zombie_leader.loot.json",
+    "shbullet_turret.loot.json",
+    "smfireball_turret.loot.json"
+  ],
+  "folders": []
+}

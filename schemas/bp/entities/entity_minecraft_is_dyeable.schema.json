@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Is Dyeable",
+  "description": "Allows dyes to be used on this entity to change its color.",
+  "properties": {
+    "interact_text": {
+      "title": "Interact Text",
+      "description": "The text that will display when interacting with this entity with a dye when playing with Touch-screen controls.\n\nSample values:\n• sheep: action.interact.dye",
+      "type": "string"
+    }
+  }
+}

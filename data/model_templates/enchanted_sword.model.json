@@ -1,0 +1,308 @@
+{
+  "formatVersion": "1.0.0",
+  "identifier": "custom_enchanted_sword",
+  "description": "A glowing enchanted sword with ornate hilt and magical aura. 32 units tall (~2 blocks). Perfect for legendary weapon items.",
+  "textureSize": [
+    32,
+    32
+  ],
+  "textures": {
+    "blade": {
+      "background": {
+        "type": "dither_noise",
+        "colors": [
+          "#E8E8E8",
+          "#D0D0D0",
+          "#FFFFFF"
+        ],
+        "seed": 6001
+      }
+    },
+    "blade_edge": {
+      "background": {
+        "type": "gradient",
+        "colors": [
+          "#00FFFF",
+          "#0080FF"
+        ]
+      }
+    },
+    "hilt_gold": {
+      "background": {
+        "type": "dither_noise",
+        "colors": [
+          "#FFD700",
+          "#E8C000",
+          "#FFE828"
+        ],
+        "seed": 6002
+      }
+    },
+    "hilt_leather": {
+      "background": {
+        "type": "stipple_noise",
+        "colors": [
+          "#4A3020",
+          "#3A2010",
+          "#5A4030"
+        ],
+        "seed": 6003
+      }
+    },
+    "gem": {
+      "background": {
+        "type": "gradient",
+        "colors": [
+          "#FF0080",
+          "#FF00FF"
+        ]
+      }
+    }
+  },
+  "bones": [
+    {
+      "name": "blade",
+      "pivot": [
+        0,
+        8,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -1,
+            8,
+            -0.5
+          ],
+          "size": [
+            2,
+            20,
+            1
+          ],
+          "faces": {
+            "north": {
+              "textureId": "blade"
+            },
+            "south": {
+              "textureId": "blade"
+            },
+            "east": {
+              "textureId": "blade_edge"
+            },
+            "west": {
+              "textureId": "blade_edge"
+            },
+            "up": {
+              "textureId": "blade_edge"
+            },
+            "down": {
+              "textureId": "blade"
+            }
+          }
+        },
+        {
+          "origin": [
+            -0.5,
+            28,
+            -0.5
+          ],
+          "size": [
+            1,
+            4,
+            1
+          ],
+          "faces": {
+            "north": {
+              "textureId": "blade_edge"
+            },
+            "south": {
+              "textureId": "blade_edge"
+            },
+            "east": {
+              "textureId": "blade_edge"
+            },
+            "west": {
+              "textureId": "blade_edge"
+            },
+            "up": {
+              "textureId": "blade_edge"
+            },
+            "down": {
+              "textureId": "blade"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "crossguard",
+      "pivot": [
+        0,
+        8,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -4,
+            6,
+            -1
+          ],
+          "size": [
+            8,
+            2,
+            2
+          ],
+          "faces": {
+            "north": {
+              "textureId": "hilt_gold"
+            },
+            "south": {
+              "textureId": "hilt_gold"
+            },
+            "east": {
+              "textureId": "hilt_gold"
+            },
+            "west": {
+              "textureId": "hilt_gold"
+            },
+            "up": {
+              "textureId": "hilt_gold"
+            },
+            "down": {
+              "textureId": "hilt_gold"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "handle",
+      "pivot": [
+        0,
+        4,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -1,
+            0,
+            -1
+          ],
+          "size": [
+            2,
+            6,
+            2
+          ],
+          "faces": {
+            "north": {
+              "textureId": "hilt_leather"
+            },
+            "south": {
+              "textureId": "hilt_leather"
+            },
+            "east": {
+              "textureId": "hilt_leather"
+            },
+            "west": {
+              "textureId": "hilt_leather"
+            },
+            "up": {
+              "textureId": "hilt_leather"
+            },
+            "down": {
+              "textureId": "hilt_leather"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "pommel",
+      "pivot": [
+        0,
+        0,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -1.5,
+            -2,
+            -1.5
+          ],
+          "size": [
+            3,
+            2,
+            3
+          ],
+          "faces": {
+            "north": {
+              "textureId": "hilt_gold"
+            },
+            "south": {
+              "textureId": "hilt_gold"
+            },
+            "east": {
+              "textureId": "hilt_gold"
+            },
+            "west": {
+              "textureId": "hilt_gold"
+            },
+            "up": {
+              "textureId": "hilt_gold"
+            },
+            "down": {
+              "textureId": "gem"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "gem_center",
+      "parent": "crossguard",
+      "pivot": [
+        0,
+        8,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -1,
+            7,
+            -1.5
+          ],
+          "size": [
+            2,
+            2,
+            1
+          ],
+          "faces": {
+            "north": {
+              "textureId": "gem"
+            },
+            "south": {
+              "textureId": "gem"
+            },
+            "east": {
+              "textureId": "gem"
+            },
+            "west": {
+              "textureId": "gem"
+            },
+            "up": {
+              "textureId": "gem"
+            },
+            "down": {
+              "textureId": "gem"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "category": "item"
+}

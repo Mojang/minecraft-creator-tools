@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "loot/loot_table",
+  "title": "Loot Table",
+  "description": "Defines the loot that can be generated when an entity is killed, a chest is opened, fishing is performed, or other gameplay events occur. Loot tables consist of one or more pools, each containing entries with items or references to other loot tables.",
+  "type": "object",
+  "properties": {
+    "pools": {
+      "title": "Pools",
+      "description": "A list of loot pools. Each pool is rolled independently to select entries.",
+      "type": "array",
+      "items": {
+        "$ref": "./loot_loot_pool.schema.json"
+      }
+    }
+  }
+}

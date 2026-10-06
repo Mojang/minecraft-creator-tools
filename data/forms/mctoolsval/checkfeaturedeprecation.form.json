@@ -1,0 +1,52 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "checks for deprecated features, blocks, and textures"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "checkfeaturedeprecation",
+  "title": "Deprecated Features",
+  "description": "Checks for deprecated features, blocks, and textures that may be removed in future Minecraft versions. Update deprecated content to ensure long-term compatibility.",
+  "fields": [
+    {
+      "id": "101",
+      "title": "Deprecated Block",
+      "messageType": "warning",
+      "dataType": "string",
+      "description": "Warning when overriding a deprecated vanilla block. The block may be removed in future versions, breaking your content.",
+      "technicalDescription": "Data contains the deprecated block identifier"
+    },
+    {
+      "id": "102",
+      "title": "Deprecated Terrain",
+      "messageType": "warning",
+      "dataType": "string",
+      "description": "Warning when referencing a deprecated terrain texture name. Update to the current texture identifier.",
+      "technicalDescription": "Data contains the deprecated terrain texture name"
+    },
+    {
+      "id": "103",
+      "title": "Deprecated Texture",
+      "messageType": "warning",
+      "dataType": "string",
+      "description": "Warning when using a deprecated texture path. Update to the current texture location.",
+      "technicalDescription": "Data contains the deprecated texture path"
+    },
+    {
+      "id": "104",
+      "title": "JSON Syntax Error (Deprecation Check)",
+      "messageType": "error",
+      "dataType": "string",
+      "description": "Error when a JSON file could not be parsed during deprecation checking.",
+      "technicalDescription": "Data contains the JSON parse error message"
+    }
+  ]
+}

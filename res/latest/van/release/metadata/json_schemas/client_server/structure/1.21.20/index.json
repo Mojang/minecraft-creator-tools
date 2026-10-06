@@ -1,0 +1,25 @@
+{
+  "files": [
+    "AnchorAboveBottom.json",
+    "AnchorAbsolute.json",
+    "AnchorBelowTop.json",
+    "AnchorFromSea.json",
+    "ConstantHeightProviderType.json",
+    "DimensionPadding.json",
+    "DimensionPaddingRange.json",
+    "DirectPoolAlias.json",
+    "GenerationStep.json",
+    "HeightProviderType.json",
+    "HeightmapProjection.json",
+    "JigsawDescriptionIdentifier.json",
+    "JigsawTemplatePool.json",
+    "LiquidSettings.json",
+    "MaxDistanceFromCenter.json",
+    "RandomGroupBindings.json",
+    "RandomGroupPoolAlias.json",
+    "RandomPoolAlias.json",
+    "TerrainAdaptation.json",
+    "UniformHeightProviderType.json"
+  ],
+  "folders": []
+}

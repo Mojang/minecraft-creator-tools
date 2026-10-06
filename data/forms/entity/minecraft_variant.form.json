@@ -1,0 +1,227 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has different visual variants"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "value",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "switch",
+            "cases": [
+              {
+                "conditions": [
+                  {
+                    "field": "value",
+                    "comparison": "=",
+                    "value": 0
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "using default variant (0)"
+                  }
+                ]
+              }
+            ],
+            "default": [
+              {
+                "type": "literal",
+                "text": "set to variant "
+              },
+              {
+                "type": "value",
+                "field": "value"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "description": "Variant is typically used as a per-type way to express a different visual form of the same mob. For example, for cats, variant is a number that defines the breed of cat.",
+  "note": "This behavior is a requirement for setting up multiple types of variants for an entity.",
+  "fields": [
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "The Id of the variant. By convention, 0 is the Id of the base entity/default appearance.",
+      "defaultValue": 0,
+      "dataType": "int",
+      "hideSamples": true,
+      "samples": {
+        "/vanilla/behavior_pack/entities/frog.json": [
+          {
+            "path": "/minecraft:entity/component_groups/cold_frog/minecraft:variant/",
+            "content": 1
+          },
+          {
+            "path": "/minecraft:entity/component_groups/warm_frog/minecraft:variant/",
+            "content": 2
+          }
+        ],
+        "/vanilla/behavior_pack/entities/goat.json": [
+          {
+            "path": "/minecraft:entity/component_groups/goat_screamer/minecraft:variant/",
+            "content": 1
+          }
+        ],
+        "/vanilla/behavior_pack/entities/llama.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:llama_brown/minecraft:variant/",
+            "content": 2
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:llama_gray/minecraft:variant/",
+            "content": 3
+          }
+        ],
+        "/vanilla/behavior_pack/entities/magma_cube.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:slime_large/minecraft:variant/",
+            "content": 4
+          }
+        ],
+        "/vanilla/behavior_pack/entities/parrot.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:parrot_cyan/minecraft:variant/",
+            "content": 3
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:parrot_silver/minecraft:variant/",
+            "content": 4
+          }
+        ]
+      }
+    }
+  ],
+  "title": "Variant",
+  "samples": {
+    "/vanilla/behavior_pack/entities/frog.json": [
+      {
+        "path": "/minecraft:entity/component_groups/cold_frog/minecraft:variant/",
+        "content": {
+          "value": 1
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/temperate_frog/minecraft:variant/",
+        "content": {
+          "value": 0
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/warm_frog/minecraft:variant/",
+        "content": {
+          "value": 2
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/goat.json": [
+      {
+        "path": "/minecraft:entity/component_groups/goat_default/minecraft:variant/",
+        "content": {
+          "value": 0
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/goat_screamer/minecraft:variant/",
+        "content": {
+          "value": 1
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/llama.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:llama_creamy/minecraft:variant/",
+        "content": {
+          "value": 0
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:llama_white/minecraft:variant/",
+        "content": {
+          "value": 1
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:llama_brown/minecraft:variant/",
+        "content": {
+          "value": 2
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:llama_gray/minecraft:variant/",
+        "content": {
+          "value": 3
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/magma_cube.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:slime_large/minecraft:variant/",
+        "content": {
+          "value": 4
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:slime_medium/minecraft:variant/",
+        "content": {
+          "value": 2
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:slime_small/minecraft:variant/",
+        "content": {
+          "value": 1
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/parrot.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:parrot_blue/minecraft:variant/",
+        "content": {
+          "value": 1
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:parrot_cyan/minecraft:variant/",
+        "content": {
+          "value": 3
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:parrot_green/minecraft:variant/",
+        "content": {
+          "value": 2
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:parrot_red/minecraft:variant/",
+        "content": {
+          "value": 0
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:parrot_silver/minecraft:variant/",
+        "content": {
+          "value": 4
+        }
+      }
+    ]
+  },
+  "id": "minecraft:variant"
+}

@@ -1,0 +1,475 @@
+{
+  "id": "minecraft:apply_knockback_rules",
+  "versionIntroduced": "1.26.30",
+  "note": "Released out of beta in format version 1.26.30. The preset field `extra_knockback_approach` controls how knockback from enchantments, sprinting, and swimming combines with the preset's power (`reapply_default` preserves the prior behavior; `multiply` multiplies the preset's power by the extra-knockback factor).",
+  "fields": [
+    {
+      "id": "presets",
+      "title": "Presets",
+      "description": "Array of rules instances defining how knockback should be applied to the entity.",
+      "dataType": "objectArray",
+      "defaultValue": [],
+      "subFormId": "entity/minecraft_apply_knockback_rules_instance",
+      "samples": {
+        "/vanilla/behavior_pack/entities/drowned.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:apply_knockback_rules/",
+            "content": [
+              {
+                "horizontal_power": 0.6,
+                "vertical_power": -0.6,
+                "vertical_velocity_cap": -0.4,
+                "check_if_target_is_immersed_in_water": true
+              }
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/egg.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:apply_knockback_rules/",
+            "content": [
+              {
+                "vertical_power": 0.1,
+                "vertical_velocity_cap": 0.1
+              }
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/iron_golem.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:apply_knockback_rules/",
+            "content": [
+              {
+                "horizontal_power": 0.52,
+                "vertical_power": 0.39,
+                "vertical_velocity_cap": 0.8
+              }
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/player.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:apply_knockback_rules/",
+            "content": [
+              {
+                "filter": {
+                  "test": "enum_property",
+                  "subject": "other",
+                  "domain": "minecraft:sulfur_cube_archetype",
+                  "value": "bouncy"
+                },
+                "horizontal_power": 0.165,
+                "vertical_power": 0.105,
+                "vertical_velocity_cap": 8,
+                "slowdown_scale": 1,
+                "scale_with_damage": true,
+                "knockback_mode": "hit_direction",
+                "extra_knockback_approach": "multiply_reduced"
+              },
+              {
+                "filter": {
+                  "test": "enum_property",
+                  "subject": "other",
+                  "domain": "minecraft:sulfur_cube_archetype",
+                  "value": "regular"
+                },
+                "horizontal_power": 0.165,
+                "vertical_power": 0.105,
+                "vertical_velocity_cap": 8,
+                "slowdown_scale": 1,
+                "scale_with_damage": true,
+                "knockback_mode": "hit_direction",
+                "extra_knockback_approach": "multiply_reduced"
+              },
+              {
+                "filter": {
+                  "test": "enum_property",
+                  "subject": "other",
+                  "domain": "minecraft:sulfur_cube_archetype",
+                  "value": "slow_bouncy"
+                },
+                "horizontal_power": 0.165,
+                "vertical_power": 0.24,
+                "vertical_velocity_cap": 8,
+                "slowdown_scale": 1,
+                "scale_with_damage": true,
+                "knockback_mode": "hit_direction",
+                "extra_knockback_approach": "multiply_reduced"
+              },
+              {
+                "filter": {
+                  "test": "enum_property",
+                  "subject": "other",
+                  "domain": "minecraft:sulfur_cube_archetype",
+                  "value": "slow_flat"
+                },
+                "horizontal_power": 0.165,
+                "vertical_power": 0.105,
+                "vertical_velocity_cap": 8,
+                "slowdown_scale": 1,
+                "scale_with_damage": true,
+                "knockback_mode": "hit_direction",
+                "extra_knockback_approach": "multiply_reduced"
+              },
+              {
+                "filter": {
+                  "test": "enum_property",
+                  "subject": "other",
+                  "domain": "minecraft:sulfur_cube_archetype",
+                  "value": "fast_flat"
+                },
+                "horizontal_power": 0.365,
+                "vertical_power": 0.09,
+                "vertical_velocity_cap": 8,
+                "slowdown_scale": 1,
+                "scale_with_damage": true,
+                "knockback_mode": "hit_direction",
+                "extra_knockback_approach": "multiply_reduced"
+              },
+              {
+                "filter": {
+                  "test": "enum_property",
+                  "subject": "other",
+                  "domain": "minecraft:sulfur_cube_archetype",
+                  "value": "light"
+                },
+                "horizontal_power": 0.165,
+                "vertical_power": 0.18,
+                "vertical_velocity_cap": 8,
+                "slowdown_scale": 1,
+                "scale_with_damage": true,
+                "knockback_mode": "hit_direction",
+                "extra_knockback_approach": "multiply_reduced"
+              },
+              {
+                "filter": {
+                  "test": "enum_property",
+                  "subject": "other",
+                  "domain": "minecraft:sulfur_cube_archetype",
+                  "value": "fast_sliding"
+                },
+                "horizontal_power": 0.265,
+                "vertical_power": 0.09,
+                "vertical_velocity_cap": 8,
+                "slowdown_scale": 1,
+                "scale_with_damage": true,
+                "knockback_mode": "hit_direction",
+                "extra_knockback_approach": "multiply_reduced"
+              },
+              {
+                "filter": {
+                  "test": "enum_property",
+                  "subject": "other",
+                  "domain": "minecraft:sulfur_cube_archetype",
+                  "value": "slow_sliding"
+                },
+                "horizontal_power": 0.165,
+                "vertical_power": 0.09,
+                "vertical_velocity_cap": 8,
+                "slowdown_scale": 1,
+                "scale_with_damage": true,
+                "knockback_mode": "hit_direction",
+                "extra_knockback_approach": "multiply_reduced"
+              },
+              {
+                "filter": {
+                  "test": "enum_property",
+                  "subject": "other",
+                  "domain": "minecraft:sulfur_cube_archetype",
+                  "value": "sticky"
+                },
+                "horizontal_power": 0.165,
+                "vertical_power": 0.09,
+                "vertical_velocity_cap": 8,
+                "slowdown_scale": 1,
+                "scale_with_damage": true,
+                "knockback_mode": "hit_direction",
+                "extra_knockback_approach": "multiply_reduced"
+              },
+              {
+                "filter": {
+                  "test": "enum_property",
+                  "subject": "other",
+                  "domain": "minecraft:sulfur_cube_archetype",
+                  "value": "high_resistance"
+                },
+                "horizontal_power": 0.165,
+                "vertical_power": 0.09,
+                "vertical_velocity_cap": 8,
+                "slowdown_scale": 1,
+                "scale_with_damage": true,
+                "knockback_mode": "hit_direction",
+                "extra_knockback_approach": "multiply_reduced"
+              },
+              {
+                "filter": {
+                  "test": "enum_property",
+                  "subject": "other",
+                  "domain": "minecraft:sulfur_cube_archetype",
+                  "value": "explosive"
+                },
+                "horizontal_power": 0.165,
+                "vertical_power": 0.09,
+                "vertical_velocity_cap": 8,
+                "slowdown_scale": 1,
+                "scale_with_damage": true,
+                "knockback_mode": "hit_direction",
+                "extra_knockback_approach": "multiply_reduced"
+              },
+              {
+                "filter": {
+                  "test": "enum_property",
+                  "subject": "other",
+                  "domain": "minecraft:sulfur_cube_archetype",
+                  "value": "hot"
+                },
+                "horizontal_power": 0.165,
+                "vertical_power": 0.105,
+                "vertical_velocity_cap": 8,
+                "slowdown_scale": 1,
+                "scale_with_damage": true,
+                "knockback_mode": "hit_direction",
+                "extra_knockback_approach": "multiply_reduced"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Defines how an entity applies knockback.",
+  "title": "Entity Apply Knockback Rules",
+  "samples": {
+    "/vanilla/behavior_pack/entities/drowned.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:apply_knockback_rules/",
+        "content": {
+          "presets": [
+            {
+              "horizontal_power": 0.6,
+              "vertical_power": -0.6,
+              "vertical_velocity_cap": -0.4,
+              "check_if_target_is_immersed_in_water": true
+            }
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/egg.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:apply_knockback_rules/",
+        "content": {
+          "presets": [
+            {
+              "vertical_power": 0.1,
+              "vertical_velocity_cap": 0.1
+            }
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/iron_golem.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:apply_knockback_rules/",
+        "content": {
+          "presets": [
+            {
+              "horizontal_power": 0.52,
+              "vertical_power": 0.39,
+              "vertical_velocity_cap": 0.8
+            }
+          ]
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/player.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:apply_knockback_rules/",
+        "content": {
+          "presets": [
+            {
+              "filter": {
+                "test": "enum_property",
+                "subject": "other",
+                "domain": "minecraft:sulfur_cube_archetype",
+                "value": "bouncy"
+              },
+              "horizontal_power": 0.165,
+              "vertical_power": 0.105,
+              "vertical_velocity_cap": 8,
+              "slowdown_scale": 1,
+              "scale_with_damage": true,
+              "knockback_mode": "hit_direction",
+              "extra_knockback_approach": "multiply_reduced"
+            },
+            {
+              "filter": {
+                "test": "enum_property",
+                "subject": "other",
+                "domain": "minecraft:sulfur_cube_archetype",
+                "value": "regular"
+              },
+              "horizontal_power": 0.165,
+              "vertical_power": 0.105,
+              "vertical_velocity_cap": 8,
+              "slowdown_scale": 1,
+              "scale_with_damage": true,
+              "knockback_mode": "hit_direction",
+              "extra_knockback_approach": "multiply_reduced"
+            },
+            {
+              "filter": {
+                "test": "enum_property",
+                "subject": "other",
+                "domain": "minecraft:sulfur_cube_archetype",
+                "value": "slow_bouncy"
+              },
+              "horizontal_power": 0.165,
+              "vertical_power": 0.24,
+              "vertical_velocity_cap": 8,
+              "slowdown_scale": 1,
+              "scale_with_damage": true,
+              "knockback_mode": "hit_direction",
+              "extra_knockback_approach": "multiply_reduced"
+            },
+            {
+              "filter": {
+                "test": "enum_property",
+                "subject": "other",
+                "domain": "minecraft:sulfur_cube_archetype",
+                "value": "slow_flat"
+              },
+              "horizontal_power": 0.165,
+              "vertical_power": 0.105,
+              "vertical_velocity_cap": 8,
+              "slowdown_scale": 1,
+              "scale_with_damage": true,
+              "knockback_mode": "hit_direction",
+              "extra_knockback_approach": "multiply_reduced"
+            },
+            {
+              "filter": {
+                "test": "enum_property",
+                "subject": "other",
+                "domain": "minecraft:sulfur_cube_archetype",
+                "value": "fast_flat"
+              },
+              "horizontal_power": 0.365,
+              "vertical_power": 0.09,
+              "vertical_velocity_cap": 8,
+              "slowdown_scale": 1,
+              "scale_with_damage": true,
+              "knockback_mode": "hit_direction",
+              "extra_knockback_approach": "multiply_reduced"
+            },
+            {
+              "filter": {
+                "test": "enum_property",
+                "subject": "other",
+                "domain": "minecraft:sulfur_cube_archetype",
+                "value": "light"
+              },
+              "horizontal_power": 0.165,
+              "vertical_power": 0.18,
+              "vertical_velocity_cap": 8,
+              "slowdown_scale": 1,
+              "scale_with_damage": true,
+              "knockback_mode": "hit_direction",
+              "extra_knockback_approach": "multiply_reduced"
+            },
+            {
+              "filter": {
+                "test": "enum_property",
+                "subject": "other",
+                "domain": "minecraft:sulfur_cube_archetype",
+                "value": "fast_sliding"
+              },
+              "horizontal_power": 0.265,
+              "vertical_power": 0.09,
+              "vertical_velocity_cap": 8,
+              "slowdown_scale": 1,
+              "scale_with_damage": true,
+              "knockback_mode": "hit_direction",
+              "extra_knockback_approach": "multiply_reduced"
+            },
+            {
+              "filter": {
+                "test": "enum_property",
+                "subject": "other",
+                "domain": "minecraft:sulfur_cube_archetype",
+                "value": "slow_sliding"
+              },
+              "horizontal_power": 0.165,
+              "vertical_power": 0.09,
+              "vertical_velocity_cap": 8,
+              "slowdown_scale": 1,
+              "scale_with_damage": true,
+              "knockback_mode": "hit_direction",
+              "extra_knockback_approach": "multiply_reduced"
+            },
+            {
+              "filter": {
+                "test": "enum_property",
+                "subject": "other",
+                "domain": "minecraft:sulfur_cube_archetype",
+                "value": "sticky"
+              },
+              "horizontal_power": 0.165,
+              "vertical_power": 0.09,
+              "vertical_velocity_cap": 8,
+              "slowdown_scale": 1,
+              "scale_with_damage": true,
+              "knockback_mode": "hit_direction",
+              "extra_knockback_approach": "multiply_reduced"
+            },
+            {
+              "filter": {
+                "test": "enum_property",
+                "subject": "other",
+                "domain": "minecraft:sulfur_cube_archetype",
+                "value": "high_resistance"
+              },
+              "horizontal_power": 0.165,
+              "vertical_power": 0.09,
+              "vertical_velocity_cap": 8,
+              "slowdown_scale": 1,
+              "scale_with_damage": true,
+              "knockback_mode": "hit_direction",
+              "extra_knockback_approach": "multiply_reduced"
+            },
+            {
+              "filter": {
+                "test": "enum_property",
+                "subject": "other",
+                "domain": "minecraft:sulfur_cube_archetype",
+                "value": "explosive"
+              },
+              "horizontal_power": 0.165,
+              "vertical_power": 0.09,
+              "vertical_velocity_cap": 8,
+              "slowdown_scale": 1,
+              "scale_with_damage": true,
+              "knockback_mode": "hit_direction",
+              "extra_knockback_approach": "multiply_reduced"
+            },
+            {
+              "filter": {
+                "test": "enum_property",
+                "subject": "other",
+                "domain": "minecraft:sulfur_cube_archetype",
+                "value": "hot"
+              },
+              "horizontal_power": 0.165,
+              "vertical_power": 0.105,
+              "vertical_velocity_cap": 8,
+              "slowdown_scale": 1,
+              "scale_with_damage": true,
+              "knockback_mode": "hit_direction",
+              "extra_knockback_approach": "multiply_reduced"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Scatter Feature",
+  "description": "\n\nProperties:\n• description ({ identifier })\n• project_input_to_floor (boolean)\n• distribution (object)",
+  "type": "object",
+  "properties": {
+    "description": {
+      "title": "Description",
+      "description": "\n\nProperties:\n• identifier (string)",
+      "type": "object",
+      "properties": {
+        "identifier": {
+          "title": "Identifier",
+          "description": "The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
+          "type": "string"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Description",
+          "description": "Create a Description",
+          "body": {
+            "identifier": ""
+          }
+        }
+      ]
+    },
+    "project_input_to_floor": {
+      "title": "Project Input To Floor",
+      "description": "If true, snaps the y-value of the scattered position to the terrain heightmap. If false or unset, y-value is unmodified.",
+      "type": "boolean"
+    },
+    "distribution": {
+      "title": "Distribution",
+      "description": "Parameters controlling the scatter of the feature. Object of type ScatterParams",
+      "type": "object"
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "Scatter Feature",
+      "description": "Create a Scatter Feature",
+      "body": {
+        "description": "",
+        "project_input_to_floor": true,
+        "distribution": ""
+      }
+    }
+  ]
+}

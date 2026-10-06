@@ -1,0 +1,21 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "checks if entity has a player riding it in any ..."
+          }
+        ]
+      }
+    ]
+  },
+  "id": "query.has_player_rider",
+  "versionIntroduced": "1.20.70",
+  "note": "Available without experimental toggle in 1.20.70.",
+  "fields": [],
+  "description": "Returns 1 if the entity has a player riding it in any seat, else it returns 0.",
+  "title": "Has Player Rider"
+}

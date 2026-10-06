@@ -1,0 +1,34 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "RandomGroupBindings",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines weighted random bindings for pool groups"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "data",
+      "title": "Data",
+      "description": "Item's data",
+      "dataType": "stringArray",
+      "isRequired": true
+    },
+    {
+      "id": "weight",
+      "title": "Weight",
+      "description": "Weight of item",
+      "dataType": "int",
+      "isRequired": true
+    }
+  ],
+  "description": "Weighted Random Item",
+  "title": "World RandomGroupBindings"
+}

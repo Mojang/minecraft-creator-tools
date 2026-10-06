@@ -1,0 +1,51 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has an exhaustion level"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "minecraft:player.exhaustion",
+  "title": "Player Exhaustion",
+  "description": "Defines the player's exhaustion level.",
+  "fields": [
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "The initial value of a player's exhaustion level.",
+      "dataType": "int"
+    },
+    {
+      "id": "max",
+      "title": "Maximum Value",
+      "description": "A maximum value for a player's exhaustion.",
+      "dataType": "int",
+      "samples": {
+        "/vanilla/behavior_pack/entities/player.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:player.exhaustion/",
+            "content": 20
+          }
+        ]
+      }
+    }
+  ],
+  "samples": {
+    "/vanilla/behavior_pack/entities/player.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:player.exhaustion/",
+        "content": {
+          "max": 20,
+          "value": 0
+        }
+      }
+    ]
+  }
+}

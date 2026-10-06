@@ -1,0 +1,32 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:tnt"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "pattern": [
+      "X#X",
+      "#X#",
+      "X#X"
+    ],
+    "key": {
+      "#": {
+          "item": "minecraft:sand"
+      },
+      "X": {
+        "item": "minecraft:gunpowder"
+      }
+    },
+	"unlock": [
+      {
+        "item": "minecraft:gunpowder"
+      }
+    ],
+    "result": {
+      "item": "minecraft:tnt"
+    }
+  }
+}

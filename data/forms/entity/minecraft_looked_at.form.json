@@ -1,0 +1,237 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "reacts when looked at by entities"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "search_radius",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "within "
+          },
+          {
+            "type": "value",
+            "field": "search_radius"
+          },
+          {
+            "type": "literal",
+            "text": " blocks"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "find_players_only",
+            "comparison": "=",
+            "value": true
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "detecting players only"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "set_target",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "switch",
+            "cases": [
+              {
+                "conditions": [
+                  {
+                    "field": "set_target",
+                    "comparison": "=",
+                    "value": "once_and_stop_scanning"
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "targets looker once then stops"
+                  }
+                ]
+              },
+              {
+                "conditions": [
+                  {
+                    "field": "set_target",
+                    "comparison": "=",
+                    "value": "once_and_keep_scanning"
+                  }
+                ],
+                "tokens": [
+                  {
+                    "type": "literal",
+                    "text": "targets looker and continues scanning"
+                  }
+                ]
+              }
+            ],
+            "default": [
+              {
+                "type": "literal",
+                "text": "never targets lookers"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "looked_at_event",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "triggers events when spotted"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "filters",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "with entity filters"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "set_target",
+      "dataType": "string",
+      "description": "Defines if and how the owner entity will set entities that are looking at it as its combat targets. Valid values: 'never', 'once_and_stop_scanning', 'once_and_keep_scanning'.",
+      "choices": [
+        {
+          "id": "never",
+          "title": "Never"
+        },
+        {
+          "id": "once_and_stop_scanning",
+          "title": "Once And Stop Scanning"
+        },
+        {
+          "id": "once_and_keep_scanning",
+          "title": "Once And Keep Scanning"
+        }
+      ],
+      "alternates": [
+        {
+          "id": "set_target",
+          "dataType": "intEnum",
+          "description": "Set to true/false for legacy boolean targeting behavior."
+        }
+      ],
+      "defaultValue": false,
+      "title": "Set Target"
+    },
+    {
+      "id": "field_of_view",
+      "title": "Field Of View",
+      "description": "Defines, in degrees, the width of the field of view for entities looking at the owner entity. If \"scale_fov_by_distance\" is set to true, this value corresponds to the field of view at a distance of one block between the entities.",
+      "defaultValue": 26,
+      "dataType": "float"
+    },
+    {
+      "id": "filters",
+      "title": "Filters",
+      "description": "Defines which entities are considered when searching for entities looking at the owner entity.",
+      "dataType": "minecraftFilter"
+    },
+    {
+      "id": "find_players_only",
+      "title": "Find Players Only",
+      "description": "Limits the search to only the nearest Player that meets the specified \"filters\" rather than all nearby entities.",
+      "defaultValue": false,
+      "dataType": "boolean"
+    },
+    {
+      "id": "line_of_sight_obstruction_type",
+      "title": "Line Of Sight Obstruction Type",
+      "description": "Defines the type of block shape used to check for line of sight obstructions. Valid values: \"outline\", \"collision\", \"collision_for_camera\".",
+      "defaultValue": "collision",
+      "dataType": "string"
+    },
+    {
+      "id": "look_at_locations",
+      "title": "Look At Locations",
+      "description": "A list of locations on the owner entity towards which line of sight checks are performed. At least one location must be unobstructed for the entity to be considered as looked at.",
+      "dataType": "stringArray"
+    },
+    {
+      "id": "looked_at_cooldown",
+      "title": "Looked At Cooldown",
+      "description": "Specifies the range for the random number of seconds that must pass before the owner entity can check again for entities looking at it, after detecting an entity looking at it.",
+      "dataType": "intRange"
+    },
+    {
+      "id": "looked_at_event",
+      "title": "Looked At Event",
+      "description": "Defines the event to trigger when an entity is detected looking at the owner entity.",
+      "dataType": "minecraftEventTrigger"
+    },
+    {
+      "id": "min_looked_at_duration",
+      "title": "Min Looked At Duration",
+      "description": "Defines the minimum, continuous time the owner entity has to be looked at before being considered as such. Defaults to 0 if not explicitly specified.",
+      "defaultValue": 0,
+      "dataType": "float"
+    },
+    {
+      "id": "not_looked_at_event",
+      "title": "Not Looked At Event",
+      "description": "Defines the event to trigger when no entity is found looking at the owner entity.",
+      "dataType": "minecraftEventTrigger"
+    },
+    {
+      "id": "scale_fov_by_distance",
+      "title": "Scale Fov By Distance",
+      "description": "When true, the field of view narrows as the distance between the owner entity and the entity looking at it increases. This ensures that the width of the view cone remains somewhat constant towards the owner entity position, regardless of distance.",
+      "defaultValue": true,
+      "dataType": "boolean"
+    },
+    {
+      "id": "search_radius",
+      "title": "Search Radius",
+      "description": "Maximum distance the owner entity will search for entities looking at it.",
+      "defaultValue": 10,
+      "dataType": "float"
+    }
+  ],
+  "description": "Defines the behavior when another entity looks at the owner entity.",
+  "title": "Looked At",
+  "samples": {},
+  "id": "minecraft:looked_at"
+}

@@ -1,0 +1,14 @@
+{
+  "files": [
+    "cold_frog.png",
+    "cold_frog.texture_set.json",
+    "cold_frog_mers.tga",
+    "temperate_frog.png",
+    "temperate_frog.texture_set.json",
+    "temperate_frog_mers.tga",
+    "warm_frog.png",
+    "warm_frog.texture_set.json",
+    "warm_frog_mers.tga"
+  ],
+  "folders": []
+}

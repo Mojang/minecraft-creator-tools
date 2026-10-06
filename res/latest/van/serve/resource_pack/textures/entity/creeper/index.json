@@ -1,0 +1,13 @@
+{
+  "files": [
+    "creeper.png",
+    "creeper.texture_set.json",
+    "creeper_armor.png",
+    "creeper_armor.texture_set.json",
+    "creeper_armor_mers.png",
+    "creeper_armor_mers.tga",
+    "creeper_mers.png",
+    "creeper_mers.tga"
+  ],
+  "folders": []
+}

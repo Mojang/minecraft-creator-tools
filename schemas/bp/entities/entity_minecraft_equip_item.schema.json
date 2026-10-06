@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Equip Item",
+  "description": "The entity puts on the desired equipment.",
+  "properties": {
+    "excluded_items": {
+      "title": "Excluded Items",
+      "description": "List of items that the entity should not equip.\n\nSample values:\n• bogged: [{\"item\":\"minecraft:banner:15\"}]",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "can_wear_armor": {
+      "title": "Can Wear Armor",
+      "description": "If true, the entity can pick up and wear armor items from the ground.",
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

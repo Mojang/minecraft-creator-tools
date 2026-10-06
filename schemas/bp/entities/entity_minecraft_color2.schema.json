@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Color2",
+  "description": "Defines the entity's second texture color.",
+  "properties": {
+    "value": {
+      "title": "Value",
+      "description": "The second Palette Color value of the entity.",
+      "type": "integer",
+      "default": 0
+    }
+  }
+}

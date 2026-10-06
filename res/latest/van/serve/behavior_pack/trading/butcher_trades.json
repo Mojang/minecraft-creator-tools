@@ -1,0 +1,155 @@
+{
+  "format_version": "1.26.10",
+  "tiers": [
+    {
+      "groups": [
+        {
+          "num_to_select": -1,
+          "trades": [
+            {
+              "wants": [
+                {
+                  "choice": [
+                    {
+                      "quantity": {
+                        "min": 14,
+                        "max": 18
+                      },
+                      "item": "minecraft:porkchop",
+                      "functions": []
+                    }
+                  ]
+                }
+              ],
+              "gives": [
+                {
+                  "choice": [
+                    {
+                      "item": "minecraft:emerald",
+                      "functions": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "wants": [
+                {
+                  "choice": [
+                    {
+                      "quantity": {
+                        "min": 14,
+                        "max": 18
+                      },
+                      "item": "minecraft:chicken",
+                      "functions": []
+                    }
+                  ]
+                }
+              ],
+              "gives": [
+                {
+                  "choice": [
+                    {
+                      "item": "minecraft:emerald",
+                      "functions": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "total_exp_required": 0
+    },
+    {
+      "groups": [
+        {
+          "num_to_select": -1,
+          "trades": [
+            {
+              "wants": [
+                {
+                  "choice": [
+                    {
+                      "quantity": {
+                        "min": 16,
+                        "max": 24
+                      },
+                      "item": "minecraft:coal:0",
+                      "functions": []
+                    }
+                  ]
+                }
+              ],
+              "gives": [
+                {
+                  "choice": [
+                    {
+                      "item": "minecraft:emerald",
+                      "functions": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "wants": [
+                {
+                  "choice": [
+                    {
+                      "item": "minecraft:emerald",
+                      "functions": []
+                    }
+                  ]
+                }
+              ],
+              "gives": [
+                {
+                  "choice": [
+                    {
+                      "quantity": {
+                        "min": 5,
+                        "max": 7
+                      },
+                      "item": "minecraft:cooked_porkchop",
+                      "functions": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "wants": [
+                {
+                  "choice": [
+                    {
+                      "item": "minecraft:emerald",
+                      "functions": []
+                    }
+                  ]
+                }
+              ],
+              "gives": [
+                {
+                  "choice": [
+                    {
+                      "quantity": {
+                        "min": 6,
+                        "max": 8
+                      },
+                      "item": "minecraft:cooked_chicken",
+                      "functions": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "total_exp_required": 1
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can perform dash actions"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "can_dash_underwater",
+            "comparison": "==",
+            "value": true
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can dash underwater"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "minecraft:dash_action",
+  "fields": [
+    {
+      "id": "can_dash_underwater",
+      "title": "Can Dash Underwater",
+      "description": "Whether the entity can dash underwater. Default value is false.",
+      "defaultValue": false,
+      "dataType": "boolean"
+    },
+    {
+      "id": "cooldown_time",
+      "title": "Cooldown Time",
+      "description": "The dash cooldown in seconds. Default value is 1.000000.",
+      "defaultValue": 1,
+      "dataType": "float"
+    },
+    {
+      "id": "direction",
+      "title": "Direction",
+      "description": "Should the momentum be applied in the direction of the 'entity' or 'passenger'. When 'entity' is used the momentum is applied horizontally according to the direction the entity is looking, using only the entity's yaw. When 'passenger' is used the momentum will be applied in the direction the controlling passenger is looking, using the passenger's pitch and yaw.",
+      "defaultValue": "entity",
+      "dataType": "string"
+    },
+    {
+      "id": "horizontal_momentum",
+      "title": "Horizontal Momentum",
+      "description": "Horizontal momentum of the dash.",
+      "defaultValue": 1,
+      "dataType": "float"
+    },
+    {
+      "id": "vertical_momentum",
+      "title": "Vertical Momentum",
+      "description": "Vertical momentum of the dash.",
+      "defaultValue": 1,
+      "dataType": "float"
+    }
+  ],
+  "description": "Ability for a rideable entity to dash.",
+  "title": "Dash Action",
+  "samples": {}
+}

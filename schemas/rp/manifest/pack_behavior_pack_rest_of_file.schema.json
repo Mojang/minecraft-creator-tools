@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Behavior Pack Content",
+  "description": "Defines the non-header content section of a behavior pack document.",
+  "properties": {
+    "modules": {
+      "title": "Modules",
+      "description": "\n\nProperties:\n• description\n• language (string)\n• type (string)\n• uuid (string)\n• version (string)\n• entry (string)",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "description": "Description of this module.",
+            "type": "string"
+          },
+          "language": {
+            "description": "The scripting language of this module (e.g., 'javascript').",
+            "type": "string"
+          },
+          "type": {
+            "description": "Type of this module.",
+            "type": "string"
+          },
+          "uuid": {
+            "description": "Unique identifier of this module.",
+            "type": "string"
+          },
+          "version": {
+            "description": "Version",
+            "type": "string"
+          },
+          "entry": {
+            "description": "Script entry point for this behavior pack.",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "dependencies": {
+      "title": "Dependencies",
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  }
+}

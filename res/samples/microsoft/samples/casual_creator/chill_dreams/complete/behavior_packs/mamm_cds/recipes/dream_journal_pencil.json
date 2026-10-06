@@ -1,0 +1,29 @@
+{
+  "format_version": "1.21.20",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "mamm_cds:journal_pencil"
+    },
+    "tags": ["crafting_table"],
+    "pattern": [" # ", " # ", "C.C"],
+    "key": {
+      "C": {
+        "item": "minecraft:brown_concrete"
+      },
+      ".": {
+        "item": "mamm_cds:dream_essence"
+      },
+      "#": {
+        "item": "minecraft:stick"
+      }
+    },
+    "unlock": [
+      {
+        "item": "mamm_cds:dream_essence"
+      }
+    ],
+    "result": {
+      "item": "mamm_cds:journal_pencil"
+    }
+  }
+}

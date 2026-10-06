@@ -1,0 +1,38 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "vector3",
+  "title": "Vector3",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines a 3D coordinate"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "x",
+      "title": "x",
+      "dataType": "float",
+      "required": true
+    },
+    {
+      "id": "y",
+      "title": "y",
+      "dataType": "float",
+      "required": true
+    },
+    {
+      "id": "z",
+      "title": "z",
+      "dataType": "float",
+      "required": true
+    }
+  ],
+  "description": "A 3D coordinate (x, y, z) representing a position or direction in the Minecraft world. Y is the vertical axis (up/down), while X and Z form the horizontal plane. Used for specifying locations, offsets, and movement directions."
+}

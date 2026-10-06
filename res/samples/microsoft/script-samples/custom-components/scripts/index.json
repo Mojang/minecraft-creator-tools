@@ -1,0 +1,11 @@
+{
+  "files": [
+    "CauseHungerOnConsumeComponent.ts",
+    "CropGrowthComponent.ts",
+    "GrownStrawberryCropComponent.ts",
+    "NightVisionConsumeComponent.ts",
+    "SprayerComponents.ts",
+    "main.ts"
+  ],
+  "folders": []
+}
