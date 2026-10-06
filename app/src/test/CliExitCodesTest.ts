@@ -12,6 +12,7 @@ import { assert } from "chai";
 import { spawn } from "child_process";
 import "../app/Project";
 import { collectLines } from "./CommandLineTestHelpers";
+import { cliEnv } from "./TestDataDir";
 
 interface ICase {
   name: string;
@@ -22,6 +23,8 @@ interface ICase {
   expectExit?: number;
   /** If true, allow exit code 0 (test only verifies the command runs & message appears). */
   allowZero?: boolean;
+  /** Accept the Minecraft EULA, for a command that checks it before the failure under test. */
+  acceptEula?: boolean;
 }
 
 const cases: ICase[] = [
@@ -38,6 +41,7 @@ const cases: ICase[] = [
     name: "add --yes with no type argument",
     args: ["add", "--yes"],
     expectIn: "type",
+    acceptEula: true,
   },
 ];
 
@@ -51,7 +55,9 @@ describe("cliExitCodes", () => {
       before(function (done) {
         this.timeout(20000);
 
-        const proc = spawn("node", ["./toolbuild/jsn/cli/index.mjs", ...c.args]);
+        const proc = spawn("node", ["./toolbuild/jsn/cli/index.mjs", ...c.args], {
+          env: cliEnv({ acceptEula: c.acceptEula }),
+        });
 
         collectLines(proc.stdout, stdoutLines);
         collectLines(proc.stderr, stderrLines);

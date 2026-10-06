@@ -7,9 +7,15 @@ import IUpdateResult, { UpdateResultType } from "./IUpdateResult";
 
 export default class ProjectUpdateResult {
   #data: IUpdateResult;
+  #projectItem?: ProjectItem;
 
   get dataObject() {
     return this.#data;
+  }
+
+  /** The item the updater changed, if any. Not part of the serializable data. */
+  get projectItem() {
+    return this.#projectItem;
   }
 
   get resultType() {
@@ -101,6 +107,7 @@ export default class ProjectUpdateResult {
     itemId?: string,
     content?: string
   ) {
+    this.#projectItem = projectItem;
     this.#data = {
       resultType: resultType,
       updaterId: updaterId,

@@ -52,6 +52,7 @@ export default abstract class StorageBase implements IStorage {
   abstract rootFolder: IFolder;
   isContentUpdated: boolean = false;
   readOnly: boolean = false;
+  readOnlyReason?: string;
   scanForChangesPhase: number = 0;
 
   static readonly slashFolderDelimiter = "/";

@@ -21,6 +21,7 @@ export class DocsGenerateJsonSchemaCommand extends CommandBase implements IComma
     isEditInPlace: false,
     isLongRunning: false,
     category: "Documentation",
+    globalOptionGroups: ["input", "outputFolder"],
     internal: true,
   };
 

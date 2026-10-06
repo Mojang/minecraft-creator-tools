@@ -98,6 +98,11 @@ export enum FieldDataType {
    */
   stringArray = "stringArray",
   /**
+   * Represents an array of JSON scalars where every element keeps its own type: strings, numbers and booleans may be mixed.
+   * Used for values that mirror an entity property's declared type, e.g. offspring mutation values [1, 5, 9] or ["warm", "cold"].
+   */
+  primitiveArray = "primitiveArray",
+  /**
    * Represents a range of integers. This can either be represented as a pair of integers on an object with min and max properties, or as a two element array, or as a single integer if the range is collapsed.
    * For example, { "min": 0, "max": 100 } or [0, 100] or 50.
    */
@@ -429,6 +434,11 @@ export default interface IField {
    * Prototype example of the data structure for new items that are created
    */
   newItemPrototype?: any;
+  /**
+   * For keyed collections, the key given to a new entry (numbered when taken), e.g. "minecraft:property".
+   * Defaults to a generic placeholder; the user renames it in the editor.
+   */
+  defaultNewKey?: string;
   /**
    * Human-readable name for the field, which is used in the UI to display the field.
    */

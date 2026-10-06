@@ -1,0 +1,18 @@
+$ mct fix setnewestminengineversion -i simple -n
+cwd: <work>
+exit code: 0
+
+stdout:
+Dry run: would apply fix 'setnewestminengineversion' to project: simple
+
+stderr: (empty)
+
+files under <work>: (none)
+
+files under <data-dir>:
+  created cli/
+  created server/envprefs/
+  created server/packCache/
+  created worlds/
+
+network requests: (none)

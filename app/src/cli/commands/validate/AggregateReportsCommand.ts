@@ -43,6 +43,7 @@ export class AggregateReportsCommand extends CommandBase {
     isEditInPlace: false,
     isLongRunning: true,
     category: "Validation",
+    globalOptionGroups: ["input", "outputFolder", "json"],
     arguments: [
       {
         name: "buildContentIndex",

@@ -59,6 +59,17 @@ export default interface ILocalUtilities {
 
   readJsonFile(path: string): Promise<object | null>;
 
+  /** Reads a JSON file without awaiting, where the host can (Node); absent on hosts that cannot. */
+  readJsonFileSync?(path: string): object | null;
+
+  /**
+   * The checked-in override shipped for a `data/forms/` file (a path such as
+   * `entity/minecraft_offspring.form.json`), when the host carries one; see
+   * `LocalUtilities.getLocalFormOverridePath`. Absent on hosts whose forms
+   * tree already has the overrides merged in at build time.
+   */
+  getLocalFormOverridePath?(subPath: string): string | undefined;
+
   createStorage(path: string): IStorage | null;
 
   processConversion(settings: IConversionSettings): Promise<boolean>;

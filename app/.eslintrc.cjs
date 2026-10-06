@@ -1,17 +1,26 @@
+const indexLibImportPattern = {
+  group: ["**/index.lib", "**/index.lib.js"],
+  message:
+    "Do not import from index.lib. Import directly from the source file instead (for example '../core/Utilities' instead of '../index.lib').",
+};
+
 const restrictedIndexLibImports = {
-  patterns: [
-    {
-      group: ["**/index.lib", "**/index.lib.js"],
-      message:
-        "Do not import from index.lib. Import directly from the source file instead (for example '../core/Utilities' instead of '../index.lib').",
-    },
-  ],
+  patterns: [indexLibImportPattern],
+};
+
+// Prompts go through src/cli/core/Prompt.ts, the only file allowed to import the prompt library (see its override below).
+const promptLibraryMessage =
+  "Ask through prompt() in src/cli/core/Prompt.ts, which doesn't prompt when stdin or stdout isn't a terminal.";
+
+const restrictedImports = {
+  paths: [{ name: "inquirer", message: promptLibraryMessage }],
+  patterns: [indexLibImportPattern, { group: ["@inquirer/*"], message: promptLibraryMessage }],
 };
 
 const stagedRules = {
   "no-constant-binary-expression": "error",
   "no-debugger": "error",
-  "no-restricted-imports": ["error", restrictedIndexLibImports],
+  "no-restricted-imports": ["error", restrictedImports],
   "no-self-compare": "error",
   "no-unreachable": "error",
   "no-unsafe-finally": "error",
@@ -114,6 +123,12 @@ module.exports = {
       files: ["src/core/Log.ts"],
       rules: {
         "no-debugger": "off",
+      },
+    },
+    {
+      files: ["src/cli/core/Prompt.ts"],
+      rules: {
+        "no-restricted-imports": ["error", restrictedIndexLibImports],
       },
     },
   ],

@@ -78,7 +78,6 @@ const OVERVIEW_MODE_DEFAULT = EntityTypeEditorMode.overview;
 const STATE_DIAGRAMS_MODE_INTERIOR_HEIGHT_OFFSET = 72;
 const OVERVIEW_MODE_INTERIOR_HEIGHT_OFFSET = 72;
 const PROPERTIES_MODE_INTERIOR_HEIGHT_OFFSET = 72;
-const COMPONENTS_LIST_TOP_HEIGHT = 144;
 const COMPONENTS_MODE_HEIGHT_OFFSET = 115;
 const ACTIONS_MODE_HEIGHT_OFFSET = 115;
 const SPAWN_RULES_MODE_HEIGHT_OFFSET = 92;
@@ -692,12 +691,7 @@ class EntityTypeEditor extends Component<IEntityTypeEditorProps, IEntityTypeEdit
     return thumbnailUrl;
   }
 
-  buildModeArea(
-    colors: ThemeColors,
-    et: EntityTypeDefinition,
-    selectedIndex: number,
-    componentListHeight: string
-  ): ReactNode {
+  buildModeArea(colors: ThemeColors, et: EntityTypeDefinition, selectedIndex: number): ReactNode {
     if (this.state.mode === EntityTypeEditorMode.overview) {
       let selItem = undefined;
       if (this.state.fileToEdit && this.state.fileToEdit.manager) {
@@ -908,10 +902,7 @@ class EntityTypeEditor extends Component<IEntityTypeEditorProps, IEntityTypeEdit
               <div className="ete-groupsInfo">
                 {this.props.intl.formatMessage({ id: "project_editor.entity.states_guidance" })}
               </div>
-              <div
-                className="ete-listInterior"
-                style={{ minHeight: componentListHeight, maxHeight: componentListHeight }}
-              >
+              <div className="ete-listInterior">
                 <McSelectableList
                   aria-label="List of components"
                   selectedIndex={selectedIndex}
@@ -1018,10 +1009,7 @@ class EntityTypeEditor extends Component<IEntityTypeEditorProps, IEntityTypeEdit
                 {this.props.intl.formatMessage({ id: "project_editor.entity.add_action_btn" })}
               </button>
             </div>
-            <div
-              className="ete-listInterior"
-              style={{ minHeight: componentListHeight, maxHeight: componentListHeight }}
-            >
+            <div className="ete-listInterior">
               <McSelectableList
                 aria-label={this.props.intl.formatMessage({ id: "project_editor.entity.aria_actions_list" })}
                 items={items}
@@ -1300,8 +1288,6 @@ class EntityTypeEditor extends Component<IEntityTypeEditorProps, IEntityTypeEdit
       isButtonCompact = true;
     }
 
-    let topHeight = COMPONENTS_LIST_TOP_HEIGHT;
-
     if (
       this.state === null ||
       this.state.fileToEdit === null ||
@@ -1379,8 +1365,7 @@ class EntityTypeEditor extends Component<IEntityTypeEditorProps, IEntityTypeEdit
     const componentsLabel = this.props.intl.formatMessage({ id: "project_editor.entity.tab_components" });
     const actionsLabel = this.props.intl.formatMessage({ id: "project_editor.entity.tab_actions" });
 
-    const componentListHeight = "calc(100vh - " + String(this.props.heightOffset + topHeight) + "px)";
-    const modeArea = this.buildModeArea(colors, et, selectedIndex, componentListHeight);
+    const modeArea = this.buildModeArea(colors, et, selectedIndex);
 
     return (
       <div

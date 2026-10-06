@@ -24,6 +24,7 @@ export class AutotestCommand extends CommandBase implements ICommand {
     isEditInPlace: false,
     isLongRunning: true,
     category: "Content",
+    globalOptionGroups: ["input", "projects", "outputFolder"],
   };
 
   public configure(_cmd: Commander): void {

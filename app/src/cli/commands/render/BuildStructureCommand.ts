@@ -28,6 +28,7 @@ export class BuildStructureCommand extends CommandBase implements ICommand {
     isEditInPlace: false,
     isLongRunning: false,
     category: "Render",
+    globalOptionGroups: ["force"],
     arguments: [
       {
         name: "inputPath",

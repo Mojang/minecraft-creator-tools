@@ -52,6 +52,7 @@ interface IProfileValidateArgs {
   inputFolder?: string;
   displayInfo: boolean;
   displayVerbose: boolean;
+  logToStdError: boolean;
   force: boolean;
   profileMode: ProfileMode;
   profileName: string;
@@ -70,6 +71,7 @@ export class ProfileValidationCommand extends CommandBase {
     isEditInPlace: false,
     isLongRunning: true,
     category: "Validation",
+    globalOptionGroups: ["input", "projects", "outputFolder", "outputType", "force", "threads", "json"],
     internal: true,
   };
 
@@ -112,6 +114,7 @@ export class ProfileValidationCommand extends CommandBase {
           inputFolder: context.inputFolder,
           displayInfo: context.localEnv.displayInfo,
           displayVerbose: context.verbose,
+          logToStdError: context.localEnv.logToStdError,
           force: context.force,
           profileMode: requestedMode,
           profileName,

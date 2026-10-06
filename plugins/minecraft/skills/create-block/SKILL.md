@@ -86,7 +86,7 @@ Open `behavior_packs/<pack>/blocks/<id>.json` and compare it with the request. K
 
 ## 5. Give it a readable name
 
-Creator Tools doesn't create localization, so the block shows as `tile.<namespace>:<id>.name`. Run the debug-addon skill's names script with the display names the user asked for:
+Creator Tools doesn't create localization, so the block shows as `tile.<namespace>:<id>.name`. Run the debug-addon skill's names script with the display names the user asked for. `<debug-addon-skill-folder>` is the debug-addon skill's folder, next to this skill's folder; if it's missing, install the debug-addon skill too.
 
 ```bash
 node "<debug-addon-skill-folder>/scripts/add-missing-names.mjs" <project-folder> --name "gems:ruby_ore=Ruby Ore"

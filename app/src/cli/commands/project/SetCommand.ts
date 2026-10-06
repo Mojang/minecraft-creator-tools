@@ -37,6 +37,7 @@ export class SetCommand extends CommandBase {
     isEditInPlace: true,
     isLongRunning: false,
     category: "Project",
+    globalOptionGroups: ["input", "projects"],
     arguments: [
       {
         name: "propertyName",

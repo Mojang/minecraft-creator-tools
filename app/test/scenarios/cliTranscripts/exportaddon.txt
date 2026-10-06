@@ -1,0 +1,20 @@
+$ mct exportaddon -i simple -o exported
+cwd: <work>
+exit code: 0
+
+stdout:
+Packaging project: simple
+Exported: simple.mcpack
+
+stderr: (empty)
+
+files under <work>:
+  created exported/simple.mcpack
+
+files under <data-dir>:
+  created cli/
+  created server/envprefs/
+  created server/packCache/
+  created worlds/
+
+network requests: (none)

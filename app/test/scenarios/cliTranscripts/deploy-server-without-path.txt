@@ -1,0 +1,21 @@
+$ mct deploy server -i simple
+cwd: <work>
+exit code: 1
+
+stdout:
+[<timestamp>] [MESSAGE ] [##] mct v<version>  in (-i): <work>/simple  out (-o): <work>/out
+
+stderr:
+Error: No server path specified. Use the --server-path option.
+Error: Could not determine target storage for deployment mode 'server'. Check the <mode> argument or the output path.
+
+files under <work>:
+  created out/
+
+files under <data-dir>:
+  created cli/
+  created server/envprefs/
+  created server/packCache/
+  created worlds/
+
+network requests: (none)

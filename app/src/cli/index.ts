@@ -1,5 +1,4 @@
-﻿import { Command } from "commander";
-import CreatorTools from "./../app/CreatorTools.js";
+﻿import CreatorTools from "./../app/CreatorTools.js";
 import CreatorToolsHost, { HostType } from "../app/CreatorToolsHost.js";
 import Utilities from "./../core/Utilities.js";
 import ServerManager from "../local/ServerManager.js";
@@ -15,13 +14,17 @@ import MinecraftUtilities from "../minecraft/MinecraftUtilities.js";
 import * as path from "path";
 import { commandRegistry } from "./core/CommandRegistry.js";
 import { registerAllCommands } from "./commands/index.js";
-import { configureGlobalOptions } from "./core/GlobalOptions.js";
+import { createCliProgram } from "./core/CliProgram.js";
+import { escapeControlCharacters, parseCommandLine } from "./core/CommandLineHelp.js";
+import { applyMcpInputAlias } from "./commands/server/McpCommand.js";
 import { CommandContextFactory } from "./core/CommandContextFactory.js";
+import { needsOutputFolder } from "./core/CommandEffects.js";
+import { hasInputFileOption } from "./core/InputFileOption.js";
 import { ErrorCodes } from "./core/ICommandContext.js";
 import ImageCodecNode from "../local/ImageCodecNode.js";
 import McpSkillLibrary from "../local/McpSkillLibrary.js";
-import { buildSkillsHelpText, printSkills } from "./commands/content/SkillsCommand.js";
-import { createLogger } from "./core/Logger.js";
+import { buildSkillsHelpSection, printSkills } from "./commands/content/SkillsCommand.js";
+import { colorCodesFor, createLogger } from "./core/Logger.js";
 
 if (typeof btoa === "undefined") {
   // @ts-ignore
@@ -45,8 +48,8 @@ CreatorToolsHost.encodeToPng = ImageCodecNode.encodeToPng;
 
 const MAX_LINES_PER_CSV_FILE = 500000;
 
-// ANSI color codes for CLI styling
-const CLR = {
+// ANSI color codes for CLI styling, empty where stdout has no color support, such as a pipe
+const CLR = colorCodesFor(process.stdout, {
   reset: "\x1b[0m",
   bold: "\x1b[1m",
   dim: "\x1b[2m",
@@ -55,7 +58,7 @@ const CLR = {
   yellow: "\x1b[33m",
   magenta: "\x1b[35m",
   gray: "\x1b[90m",
-};
+});
 
 /**
  * Execute a command via the CommandRegistry.
@@ -122,7 +125,8 @@ async function executeViaRegistry(options: any): Promise<void> {
     betaApis: options.betaApis,
     editor: options.editor,
     testWorld: capturedState.commandOptions.testWorld,
-    launch: capturedState.commandOptions.launch,
+    // -l/--launch is a program option, so Commander stores it there, not with the command.
+    launch: options.launch || capturedState.commandOptions.launch,
     // Validation options from captured args
     suite: capturedState.args.suite,
     exclusions: capturedState.args.exclusions,
@@ -156,7 +160,7 @@ async function executeViaRegistry(options: any): Promise<void> {
       errorLevel = context.exitCode;
     }
   } catch (e: any) {
-    Log.error(`Error executing ${command.metadata.name}: ${e.message || e}`);
+    Log.error(escapeControlCharacters(`Error executing ${command.metadata.name}: ${e.message || e}`));
     errorLevel = ErrorCodes.INIT_ERROR;
   }
 }
@@ -164,10 +168,11 @@ async function executeViaRegistry(options: any): Promise<void> {
 /**
  * Displays a compact styled header with version and paths.
  * Format: [##] mct v0.0.1  in (-i): <path>  out (-o): <path>
- * For edit-in-place commands, only shows the input path.
+ * Without an outputPath, as for edit-in-place commands and runs that don't use the output folder, it shows
+ * only the input path.
  * Uses a Minecraft-block-inspired ASCII art.
  */
-function displayMctHeader(inputPath: string, outputPath: string, editInPlace: boolean = false) {
+function displayMctHeader(inputPath: string, outputPath?: string) {
   const ver = `v${constants.version}`;
   // Compact block-style icon: [##] looks like a Minecraft grass block top
   const icon = `${CLR.green}[##]${CLR.reset}`;
@@ -176,16 +181,16 @@ function displayMctHeader(inputPath: string, outputPath: string, editInPlace: bo
 
   // Canonicalize paths for display
   const inPath = path.resolve(inputPath);
-  const outPath = path.resolve(outputPath);
 
   // Compact format with colored labels (include CLI flag hints)
   const inLabel = `${CLR.cyan}in (-i):${CLR.reset}`;
   const outLabel = `${CLR.yellow}out (-o):${CLR.reset}`;
 
-  if (editInPlace) {
-    // For edit-in-place commands, only show input path
+  if (outputPath === undefined) {
     Log.message(`${icon} ${name} ${version}  ${inLabel} ${CLR.dim}${inPath}${CLR.reset}`);
   } else {
+    const outPath = path.resolve(outputPath);
+
     Log.message(
       `${icon} ${name} ${version}  ${inLabel} ${CLR.dim}${inPath}${CLR.reset}  ${outLabel} ${CLR.green}${outPath}${CLR.reset}`
     );
@@ -194,20 +199,6 @@ function displayMctHeader(inputPath: string, outputPath: string, editInPlace: bo
 
 // Exit codes unified to ErrorCodes enum (imported from ICommandContext).
 // Legacy constants (44, 53, 56, 57) removed — all commands now use ErrorCodes.
-
-const program = new Command();
-
-// Configure help formatting up-front so subcommand help also benefits.
-// Without this, help text on Windows can render with collapsed blank lines
-// when stdout columns are unset (piped/captured output) — the description
-// then visually runs into the next section ("create --help" was reported as
-// "mashed together" by the prograde review). A modest but explicit width
-// keeps boxWrap honest and leaves room for examples in `addHelpText("after", ...)`.
-const _helpWidth = (process.stdout && process.stdout.columns) || 100;
-program.configureHelp({
-  helpWidth: _helpWidth,
-  showGlobalOptions: false,
-});
 
 let creatorTools: CreatorTools | undefined;
 const projectStarts: (IProjectStartInfo | undefined)[] = [];
@@ -232,98 +223,32 @@ for (let i = 0; i < process.argv.length; i++) {
   const str = process.argv[i]?.toLowerCase();
 
   if (str === "-debug" || str === "--debug") {
-    Log.debug("Using debug mode.");
+    // No logger is registered yet, so Log.debug would fall back to stdout, which must stay clean for --json and mcp.
+    process.stderr.write("Using debug mode.\n");
     Utilities.setIsDebug(true);
   }
 }
 
-program
-  .name("mct")
-  .description("Minecraft Creator Tools v" + constants.version)
-  .version(constants.version, "-v, --version", "Output the current version");
-
-configureGlobalOptions(program);
-
-if (Utilities.isDebug) {
-  program
-    .option(
-      "--ssp, --source-server-path [path to folder]",
-      "Source path to use for instances Bedrock Dedicated Server. You can download this from https://www.minecraft.net/download/server/bedrock.  If not specified, this tool will manage downloads of Minecraft Dedicated Server itself."
-    )
-    .option(
-      "--dsp, --direct-server-path [path to folder]",
-      "If specified, dedicated servers are run directly from a particular folder."
-    )
-    .option(
-      "--difficulty [difficulty]",
-      "For the world, a difficulty level. Options include peaceful, easy, normal, and hard",
-      "peaceful"
-    )
-    .option(
-      "--gametype [gametype]",
-      "For the world, a game type. Options include survival, creative, and adventure.",
-      "survival"
-    )
-    .option(
-      "--generator [generator]",
-      "For the world, a world generator type. Options old, infinite, and flat.",
-      "infinite"
-    )
-    .option("--seed [seed]", "For the world, a random seed to use.")
-    .option("--create", "For the world, will force the creation of a new world.")
-    .option("--op, --operator <player ID>", "A list of player IDs to make operator when the server starts")
-    .option("--cmd, --commands <command line>", "Commands to run, if running a dedicated server.", "out")
-    .option("--gt, --gametest <gametest name>", "Game Test to run on the command line.");
-}
-
-program.addHelpText("before", "\x1b[32m┌─────┐\x1b[0m");
-program.addHelpText("before", "\x1b[32m│ ▄ ▄ │\x1b[0m Minecraft Creator Tools (preview) command line");
-program.addHelpText("before", "\x1b[32m│ ┏▀┓ │\x1b[0m See " + constants.homeUrl + " for more info.");
-program.addHelpText("before", "\x1b[32m└─────┘\x1b[0m");
-program.addHelpText("before", " ");
-
-// Name the bundled agent skills at the end of `mct --help`, so agents that only use the CLI (not
-// `mct mcp`) learn they exist. Computed when help is shown, so other commands don't read the files.
-program.addHelpText("after", () => buildSkillsHelpText(McpSkillLibrary.load(constants.version)) ?? "");
-
-// --all-commands: display full command list including content-production tools
-program.option("--all-commands", "Show all commands including content-production tools");
-
-// Register all commands with the registry before configuring Commander
-// This must be done before parsing so all commands are available
+// Register all commands with the registry, then build the Commander program from them:
+// global options (GlobalOptions.ts), one Commander command per registered command, and the
+// unified help experience (CommandLineHelp.ts / CommandHelpWriter.ts).
 registerAllCommands();
 
-// Handle --all-commands before configureCommander so we can show the full list.
-// We use console.log here directly rather than Log.message because LocalEnvironment
-// (which sets up the Log subscriber that writes to stdout in Node) is not yet
-// constructed at this point in CLI startup. Calling Log.message before then would
-// silently drop the output. See ready-to-ship-report.md issue #1.
-if (process.argv.includes("--all-commands")) {
-  console.log("\nAll commands (including content-production tools):");
-  console.log(commandRegistry.generateCategoryHelp(true));
-  process.exit(0);
-}
+const program = createCliProgram({
+  registry: commandRegistry,
+  includeDebugOptions: Utilities.isDebug,
+  showAllCommands: process.argv.includes("--all-commands"),
+  // Name the bundled agent skills in `mct --help`, so agents that only use the CLI (not `mct mcp`)
+  // learn they exist. Only called when root help is shown, so other commands don't read the files.
+  rootHelpSections: () => {
+    const skills = buildSkillsHelpSection(McpSkillLibrary.load(constants.version));
+    return skills ? [skills] : [];
+  },
+});
 
-// Configure Commander.js with all registered commands from the CommandRegistry
-// This replaces the legacy per-command registration that was previously here
-// Each command's metadata.arguments and configure() method are used to set up
-// the Commander command, and action handlers capture args to the registry
-commandRegistry.configureCommander(program);
+parseCommandLine(program, process.argv);
 
-// Guard against running CLI initialization when imported during tests
-// This checks if we're being run via mocha or other test runners
-const isTestEnvironment =
-  process.env.NODE_ENV === "test" ||
-  process.argv.some((arg) => arg.includes("mocha") || arg.includes("jest") || arg.includes("vitest"));
-
-if (isTestEnvironment) {
-  // Don't run CLI when imported during tests - export for testing instead
-  module.exports = { program, TaskType };
-} else {
-  program.parse(process.argv);
-}
-
-const options = isTestEnvironment ? {} : program.opts();
+const options = program.opts();
 
 // Get the captured task type from the registry (set by command action handlers)
 const capturedTaskType = commandRegistry.getCapturedState().taskType;
@@ -332,6 +257,21 @@ localEnv = new LocalEnvironment(true);
 
 if (capturedTaskType === TaskType.mcp || options.json) {
   localEnv.logToStdError = true;
+}
+
+if (options.json) {
+  ignoreEpipeOnStdout();
+}
+
+// `mcp --input` must become the program's inputFolder before anything below loads projects.
+// (After LocalEnvironment is created, so Log output is not dropped.)
+if (capturedTaskType === TaskType.mcp) {
+  const aliasError = applyMcpInputAlias(options, commandRegistry.getCapturedState().commandOptions);
+  if (aliasError) {
+    Log.error(aliasError);
+    errorLevel = 1;
+    process.exitCode = 1;
+  }
 }
 
 if (options.isolated || options.offline) {
@@ -362,10 +302,6 @@ if (options.dryRun) {
   if (!options.quiet && !options.json) {
     localEnv.displayInfo = true;
   }
-
-  if (options.outputFolder === "out") {
-    options.outputFolder = undefined;
-  }
 } else if (options.outputFolder === "out") {
   if (
     !options.quiet &&
@@ -377,7 +313,16 @@ if (options.dryRun) {
     capturedTaskType !== TaskType.skills
   ) {
     const isEditInPlace = ClUtils.getIsEditInPlaceCommand(capturedTaskType);
-    displayMctHeader(options.inputFolder || process.cwd(), options.outputFolder, isEditInPlace);
+    const command = commandRegistry.getByTaskType(capturedTaskType);
+    // Name the output folder for runs that use it: the CLI creates it for them (needsOutputFolder), or the command
+    // reads it itself, as ensureworld does to choose where a world goes. Other runs don't create it.
+    const namesOutputFolder =
+      !isEditInPlace &&
+      command !== undefined &&
+      (needsOutputFolder(command.metadata.name, options) ||
+        command.metadata.globalOptionGroups.includes("outputFolder"));
+
+    displayMctHeader(options.inputFolder || process.cwd(), namesOutputFolder ? options.outputFolder : undefined);
   }
 
   if (!options.quiet && !options.json) {
@@ -435,8 +380,7 @@ if (!errorLevel && (experimentalSslCertPath || experimentalSslPfxPath)) {
   }
 }
 
-// Only run the CLI main function if not in a test environment
-if (!isTestEnvironment && !errorLevel) {
+if (!errorLevel) {
   (async () => {
     try {
       // Note: registerAllCommands() was already called before configureCommander()
@@ -472,8 +416,11 @@ if (!isTestEnvironment && !errorLevel) {
       await loadPacks();
       await loadProjects();
 
-      // Set passcodes if provided via command line
-      if (options.displayPasscode || options.updatePasscode || options.adminPasscode || options.fullReadOnlyPasscode) {
+      // Set passcodes if provided via command line. A dry run doesn't save them.
+      if (
+        !options.dryRun &&
+        (options.displayPasscode || options.updatePasscode || options.adminPasscode || options.fullReadOnlyPasscode)
+      ) {
         await setPasscode(
           options.displayPasscode,
           options.fullReadOnlyPasscode,
@@ -496,8 +443,8 @@ if (!isTestEnvironment && !errorLevel) {
       await executeViaRegistry(options);
       cleanupInput?.();
 
-      // Exit unless this is a long-running server command (those handle their own lifecycle)
-      if (!isLongRunningCommand) {
+      // Successful servers handle their own lifecycle; a failed startup must still exit non-zero.
+      if (!isLongRunningCommand || errorLevel) {
         await doExit();
       }
     } catch (err: any) {
@@ -516,11 +463,11 @@ if (!isTestEnvironment && !errorLevel) {
       try {
         await doExit();
       } catch {
-        process.exit(errorLevel);
+        await exitAfterFlush(errorLevel);
       }
     }
   })();
-} // end if (!isTestEnvironment)
+}
 
 // ============================================================================
 // UTILITY FUNCTIONS
@@ -537,7 +484,7 @@ async function loadProjects() {
 
   const additionalFiles: string[] = [];
 
-  if (options.inputFile && options.inputFolder) {
+  if (hasInputFileOption(options.inputFile) && options.inputFolder) {
     throw new Error("Cannot specify both an input file and an input folder.");
   }
 
@@ -549,7 +496,7 @@ async function loadProjects() {
     }
   }
 
-  if (options.inputFile) {
+  if (hasInputFileOption(options.inputFile)) {
     const inputFolderPath = StorageUtilities.getFolderPath(options.inputFile);
     const inputFileName = StorageUtilities.getLeafName(options.inputFile);
 
@@ -566,7 +513,9 @@ async function loadProjects() {
     const fileExists = await file.exists();
 
     if (!fileExists) {
-      throw new Error("Could not find file with path: `" + options.inputFile + "`.");
+      throw new Error(
+        `Could not find input package '${escapeControlCharacters(options.inputFile)}'. Check the path supplied with --if.`
+      );
     }
 
     const fileName = StorageUtilities.getLeafName(options.inputFile);
@@ -582,7 +531,12 @@ async function loadProjects() {
     return;
   }
 
-  const workFolder = await ClUtils.getMainWorkFolder(capturedTaskType, options.inputFolder, options.outputFolder);
+  const workFolder = await ClUtils.getMainWorkFolder(
+    capturedTaskType,
+    options.inputFolder,
+    options.outputFolder,
+    options.dryRun
+  );
 
   const name = StorageUtilities.getLeafName(workFolder.fullPath);
   let isMultiLevelMultiProject = true;
@@ -829,7 +783,7 @@ function hookInput(): () => void {
       }
     } catch (err) {
       Log.debug("Error during exit: " + err);
-      process.exit(1);
+      await exitAfterFlush(1);
     }
   };
 
@@ -890,8 +844,40 @@ async function doExit() {
   await stop();
 
   if (errorLevel !== undefined) {
-    process.exit(errorLevel);
+    await exitAfterFlush(errorLevel);
   }
+}
+
+/**
+ * Exits once stdout and stderr have flushed. process.exit() drops output still queued for a pipe,
+ * which cut off large --json documents from commands that fail.
+ */
+async function exitAfterFlush(code: number | undefined) {
+  await Promise.all([flush(process.stdout), flush(process.stderr)]);
+  process.exit(code);
+}
+
+/** Resolves once everything written to `stream` so far has flushed, or the stream has failed. */
+function flush(stream: NodeJS.WriteStream) {
+  return new Promise<void>((resolve) => {
+    // Handles EPIPE from a reader that closed the pipe early, which would otherwise be uncaught.
+    stream.once("error", () => resolve());
+    stream.write("", () => resolve());
+  });
+}
+
+/**
+ * Lets a --json command finish when its reader stops early, as `mct validate --json | head -c 100`
+ * does. Writing the rest of the document then fails with EPIPE, which would otherwise be an uncaught
+ * exception that exits 1, even for a command that succeeded. The command keeps its own exit code
+ * instead. Other stdout errors still throw.
+ */
+function ignoreEpipeOnStdout() {
+  process.stdout.on("error", (err: NodeJS.ErrnoException) => {
+    if (err.code !== "EPIPE") {
+      throw err;
+    }
+  });
 }
 
 // ============================================================================

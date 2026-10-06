@@ -41,6 +41,7 @@ export class RenderStructureCommand extends CommandBase implements ICommand {
     isEditInPlace: false,
     isLongRunning: false,
     category: "Render",
+    globalOptionGroups: ["input", "projects"],
     arguments: [
       {
         name: "structureName",

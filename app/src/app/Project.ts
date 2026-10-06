@@ -63,6 +63,29 @@
  *     changes
  * 4. ensureInflate() - Load file contents and initialize managers (isInflated)
  *
+ * A localFilePath binds the project to that package. Missing or unreadable packages fail loading;
+ * they must never fall back to projectsStorage, where a same-name saved project may be unrelated.
+ * StorageUtilities.getFileStorageFolder reports container errors as strings for file-level validation.
+ * Project loading promotes those errors to failures, retaining the cause in errorState/errorMessage.
+ * Hosts such as Electron reuse IFile instances. Rejection and an explicit forced reload must discard both
+ * the outer file's loaded bytes and its parsed container, without disposing the reusable outer IFile.
+ * Before disposing a cabinet, unloadProjectCabinet also clears folder-derived items, indexes, pack/world
+ * folders, localization and validation caches. Accessory input paths are retained, but their inferred
+ * registrations are rebuilt so a retry cannot expose disposed files or accumulate duplicate accessories.
+ * Inflation retains items already inferred from the current storage: their runtime bindings can point to
+ * external accessory files, whose origin cannot be reconstructed from serialized project-relative paths.
+ * Ordinary successful ensures retain the cached package, including any unsaved edits.
+ *
+ * Package reload is fail-fast while a Project-managed read/validation/relation pass or worker serialization
+ * is active. Nested reads never wait on their own operation; callers retry reload after the read completes.
+ * Reads started during an actual reload are rejected too. Worker computation uses a separate snapshot, so
+ * reload may proceed once serialization ends, but generation guards reject obsolete results and identity
+ * checks keep an old promise's cleanup from clearing newer work.
+ *
+ * Manifest-inferred variants are transient package state. The last loaded/saved preference variant data
+ * is copied separately; unload restores external configuration (including overlapping labels) and drops
+ * discarded package inference. Preferences inside the discarded cabinet are discarded with it.
+ *
  * OPTIONAL ADDITION THINGS YOU SHOULD DO:
  * ---------------------------------------
  *
@@ -133,6 +156,7 @@ import IProjectItemData, { ProjectItemCreationType, ProjectItemStorageType, Proj
 import Utilities from "./../core/Utilities";
 import { EventDispatcher } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
+import ZipStorage from "../storage/ZipStorage";
 import Log from "../core/Log";
 import DifferenceSet from "../storage/DifferenceSet";
 import IProjectScriptState from "./IProjectScriptState";
@@ -175,7 +199,7 @@ import ProjectVariant from "./ProjectVariant";
 import { ProjectItemVariantType } from "./IProjectItemVariant";
 import ProjectItemInference from "./ProjectItemInference";
 import IVersionContent from "../storage/IVersionContent";
-import { getProjectWorkerManager } from "./IProjectWorkerManager";
+import { getProjectWorkerManager, ProjectOperationCancelledError } from "./IProjectWorkerManager";
 import { ScriptModuleInfoProvider } from "../langcore/javascript/ScriptModuleInfo";
 
 export enum ProjectAutoDeploymentMode {
@@ -278,6 +302,7 @@ const ProcessItemRelationsBatchSize = 400;
 export default class Project {
   #data: IProjectData;
   #preferencesFile: IFile | null;
+  #configuredVariants: IProjectData["variants"] = {};
   #creatorTools: CreatorTools;
   loc: LocManager;
   #errorState = ProjectErrorState.noError;
@@ -300,6 +325,10 @@ export default class Project {
 
   // Promise to track in-progress info set generation (allows callers to wait for existing operation)
   #infoSetGenerationPromise: Promise<ProjectInfoSet> | null = null;
+  #packageGeneration = 0;
+  #packageReloadInProgress = false;
+  #packageReaders = new Set<Promise<void>>();
+  #relationsProcessingPromise: Promise<void> | null = null;
 
   /**
    * Debounce timer for batching external file changes.
@@ -388,16 +417,15 @@ export default class Project {
   private _onItemAdded = new EventDispatcher<Project, ProjectItem>();
   private _onItemRemoved = new EventDispatcher<Project, ProjectItem>();
 
-  #isProcessingRelations: boolean = false;
   #relationsBatchOperId: number = -1;
   #itemsToBeProcessed: number = 0;
   #itemsProcessed: number = 0;
-  #pendingProcessingRelationsRequests: ((value: unknown) => void)[] = [];
 
   public variants: { [label: string]: ProjectVariant };
 
   hasInferredFiles = false;
   #readOnlySafety = false;
+  #readOnlyReason: string | undefined;
   #isVanillaEditSession: boolean | undefined;
 
   get unknownFiles(): IFile[] {
@@ -439,6 +467,22 @@ export default class Project {
 
     if (this.#projectFolder) {
       this.#projectFolder.storage.readOnly = this.#readOnlySafety;
+    }
+  }
+
+  /**
+   * Why the project is read-only, such as a command-line dry run. When set, errors from blocked saves and
+   * file writes include it, so the user learns why the write failed.
+   */
+  public get readOnlyReason() {
+    return this.#readOnlyReason;
+  }
+
+  public set readOnlyReason(newReason: string | undefined) {
+    this.#readOnlyReason = newReason;
+
+    if (this.#projectFolder) {
+      this.#projectFolder.storage.readOnlyReason = this.#readOnlyReason;
     }
   }
 
@@ -1765,11 +1809,8 @@ export default class Project {
   }
 
   public async ensureIndevInfoSetGenerated() {
+    this.assertPackageReadable();
     const infoSet = this.indevInfoSet;
-
-    if (infoSet.completedGeneration) {
-      return infoSet;
-    }
 
     // If a generation is already in progress, wait for it instead of starting a new one
     // This allows the Inspector view to wait for an existing worker operation
@@ -1778,15 +1819,26 @@ export default class Project {
       return this.#infoSetGenerationPromise;
     }
 
+    if (infoSet.completedGeneration) {
+      return infoSet;
+    }
+
     // Create a promise that will be resolved when generation completes
     // This allows other callers to wait for the same operation
-    this.#infoSetGenerationPromise = this._performInfoSetGeneration(infoSet);
+    const generation = this.#packageGeneration;
+    const promise = this._performInfoSetGeneration(infoSet, generation).then((result) => {
+      // Completion notifications can initiate reload. Every coalesced caller must validate after cleanup.
+      this.assertPackageGeneration(generation);
+      return result;
+    });
+    this.#infoSetGenerationPromise = promise;
 
     try {
-      return await this.#infoSetGenerationPromise;
+      return await promise;
     } finally {
-      // Clear the promise when done (success or failure)
-      this.#infoSetGenerationPromise = null;
+      if (this.#infoSetGenerationPromise === promise) {
+        this.#infoSetGenerationPromise = null;
+      }
     }
   }
 
@@ -1794,7 +1846,7 @@ export default class Project {
    * Internal method that performs the actual info set generation.
    * Separated from ensureInfoSetGenerated to allow tracking via promise.
    */
-  private async _performInfoSetGeneration(infoSet: ProjectInfoSet): Promise<ProjectInfoSet> {
+  private async _performInfoSetGeneration(infoSet: ProjectInfoSet, generation: number): Promise<ProjectInfoSet> {
     // Track the worker-tracked operation across the entire try/catch so we can
     // guarantee it is ended in the finally block. Without this, edge cases where
     // the worker resolves but doesn't fire both streaming callbacks (or where any
@@ -1803,6 +1855,7 @@ export default class Project {
     // visible "forever" with a stale tooltip from whatever last status got pushed
     // (often "Done loading project files for '<title>'").
     let workerOperationId: number | undefined;
+    const isCurrent = () => this.isPackageGenerationCurrent(generation);
 
     // Try to use combined worker operation in browser environments
     // @ts-ignore
@@ -1816,9 +1869,11 @@ export default class Project {
             StatusTopic.validation
           );
           const operationId = workerOperationId;
+          this.assertPackageGeneration(generation);
 
           // Create progress callback that forwards to CreatorTools status updates
           const onProgress = (message: string, percent?: number) => {
+            if (!isCurrent()) return;
             // Floor the percent to ensure integer values for status bar regex matching
             const statusMessage = percent !== undefined ? `${message} (${Math.floor(percent)}%)` : message;
             this.#creatorTools.notifyOperationUpdate(operationId, statusMessage, StatusTopic.validation);
@@ -1830,7 +1885,9 @@ export default class Project {
 
           // Streaming callbacks for receiving results as they complete
           const streamingCallbacks = {
+            isCurrent,
             onRelationsComplete: () => {
+              if (!isCurrent()) return;
               // Relations are applied automatically by the worker manager
               this.#relationsProcessed = true;
               relationsComplete = true;
@@ -1841,6 +1898,7 @@ export default class Project {
             onValidationComplete: async (
               serializedInfoItems: import("../workers/IProjectWorkerMessage").ISerializableInfoItem[]
             ) => {
+              if (!isCurrent()) return;
               // Preload topic forms in main thread so aggregateFeatures can look up proper titles
               const allGeneratorIds = [
                 ...GeneratorRegistrations.projectGenerators.map((g) => g.id),
@@ -1848,40 +1906,46 @@ export default class Project {
                 ...GeneratorRegistrations.fileGenerators.map((g) => g.id),
               ];
               await InfoGeneratorTopicUtilities.preloadAllForms(allGeneratorIds);
+              if (!isCurrent()) return;
 
-              // Deserialize info items and apply to infoSet
-              const items = this.getItemsCopy();
-              const itemsByPath = new Map<string, ProjectItem>();
-              for (const item of items) {
-                if (item.projectPath) {
-                  itemsByPath.set(item.projectPath, item);
+              await this.withPackageRead(async () => {
+                this.assertPackageGeneration(generation);
+                const items = this.getItemsCopy();
+                const itemsByPath = new Map<string, ProjectItem>();
+                for (const item of items) {
+                  if (item.projectPath) {
+                    itemsByPath.set(item.projectPath, item);
+                  }
                 }
-              }
 
-              infoSet.items = serializedInfoItems.map((s) => {
-                const infoItem = new ProjectInfoItem(
-                  s.itemType,
-                  s.generatorId,
-                  s.generatorIndex,
-                  s.message,
-                  s.projectItemStoragePath ? itemsByPath.get(s.projectItemStoragePath) : undefined,
-                  s.data,
-                  s.content
-                );
-                if (s.featureSets) {
-                  infoItem.featureSets = s.featureSets;
-                }
-                return infoItem;
+                infoSet.items = serializedInfoItems.map((s) => {
+                  const infoItem = new ProjectInfoItem(
+                    s.itemType,
+                    s.generatorId,
+                    s.generatorIndex,
+                    s.message,
+                    s.projectItemStoragePath ? itemsByPath.get(s.projectItemStoragePath) : undefined,
+                    s.data,
+                    s.content
+                  );
+                  if (s.featureSets) {
+                    infoItem.featureSets = s.featureSets;
+                  }
+                  return infoItem;
+                });
+
+                // Annotation generators read live files after their awaits, so generation checks alone are insufficient.
+                await infoSet.markGenerationCompleteAsync();
+                this.assertPackageGeneration(generation);
+                validationComplete = true;
+                Log.verbose(`[Project] Validation streamed from worker: ${infoSet.items.length} items`);
               });
-
-              await infoSet.markGenerationCompleteAsync();
-              validationComplete = true;
-              Log.verbose(`[Project] Validation streamed from worker: ${infoSet.items.length} items`);
             },
             onThumbnailBatch: (
               thumbnails: { [projectPath: string]: string },
               thumbnailLinks?: { [projectPath: string]: string }
             ) => {
+              if (!isCurrent()) return;
               // Thumbnails are applied automatically by the worker manager.
               // Notify the UI to re-render so thumbnails appear in the sidebar.
               const thumbnailCount = Object.keys(thumbnails).length;
@@ -1893,6 +1957,7 @@ export default class Project {
               }
             },
             onThumbnailsFinished: (cancelled: boolean, totalGenerated: number) => {
+              if (!isCurrent()) return;
               Log.debug(`[Project] Thumbnails finished: ${totalGenerated} generated, cancelled=${cancelled}`);
             },
           };
@@ -1904,6 +1969,7 @@ export default class Project {
               streamingCallbacks,
               onProgress
             );
+            this.assertPackageGeneration(generation);
             if (result && relationsComplete && validationComplete) {
               // Worker successfully processed relations and validation via streaming
               this.#indevInfoSetNeedsUpdating = false;
@@ -1928,6 +1994,9 @@ export default class Project {
               );
             }
           } catch (e) {
+            if (!isCurrent() || e instanceof ProjectOperationCancelledError) {
+              throw e;
+            }
             // End the operation with error
             await this.#creatorTools.notifyOperationEnded(
               operationId,
@@ -1960,11 +2029,13 @@ export default class Project {
     }
 
     // Fallback: use the standard main-thread approach
-    await infoSet.generateForProject(this.#indevInfoSetNeedsUpdating);
-
-    this.#indevInfoSetNeedsUpdating = false;
-
-    return infoSet;
+    this.assertPackageGeneration(generation);
+    return this.withPackageRead(async () => {
+      await infoSet.generateForProject(this.#indevInfoSetNeedsUpdating);
+      this.assertPackageGeneration(generation);
+      this.#indevInfoSetNeedsUpdating = false;
+      return infoSet;
+    });
   }
 
   async ensureScriptInDestination() {
@@ -2151,10 +2222,18 @@ export default class Project {
     }
 
     this.#projectFolder = null;
+    this.#distBuildFolder = null;
+    this.#distBuildScriptsFolder = null;
+    this.#libFolder = null;
+    this.#libScriptsFolder = null;
     this.defaultBehaviorPackFolder = null;
     this.defaultWorldFolder = null;
     this.defaultSkinPackFolder = null;
     this.defaultDesignPackFolder = null;
+    this.designPacksContainer = null;
+    this.defaultPersonaPackFolder = null;
+    this.personaPacksContainer = null;
+    this.projectItemAccessoryFolder = null;
     this.#defaultScriptsFolder = null;
     this.behaviorPacksContainer = null;
     this.docsContainer = null;
@@ -2164,6 +2243,11 @@ export default class Project {
     this.worldContainer = null;
 
     this.#packs = [];
+    this.#containerFiles = [];
+    this.#hasMultiplePacksOfSameType = undefined;
+    this.#isVanillaEditSession = undefined;
+    this.#isProjectFolderEnsured = false;
+    this.#folderStructureLoaded = false;
   }
 
   ensureVariant(label: string) {
@@ -2184,6 +2268,14 @@ export default class Project {
     }
 
     return this.variants[label];
+  }
+
+  private copyVariantData(variants: IProjectData["variants"]): IProjectData["variants"] {
+    return Object.fromEntries(Object.entries(variants).map(([label, variant]) => [label, { ...variant }]));
+  }
+
+  private rememberConfiguredVariants() {
+    this.#configuredVariants = this.copyVariantData(this.#data.variants ?? {});
   }
 
   async ensureWorldContainer() {
@@ -2461,6 +2553,14 @@ export default class Project {
     processingCallback?: (area: string) => void,
     deepScanJson?: boolean
   ) {
+    return this.withPackageRead(() => this._inferProjectItemsFromFiles(force, processingCallback, deepScanJson));
+  }
+
+  private async _inferProjectItemsFromFiles(
+    force?: boolean,
+    processingCallback?: (area: string) => void,
+    deepScanJson?: boolean
+  ) {
     if (!this.hasInferredFiles || force) {
       // Reset cached vanilla-edit-session flag so it's recomputed after items are inferred
       this.#isVanillaEditSession = undefined;
@@ -2526,30 +2626,175 @@ export default class Project {
     }
   }
 
-  async ensureProjectFolderFromCabinet() {
+  async ensureProjectFolderFromCabinet(force?: boolean) {
+    if (force) {
+      return this.withPackageReload(() => this._ensureProjectFolderFromCabinet(true));
+    }
+    return this.withPackageRead(() => this._ensureProjectFolderFromCabinet());
+  }
+
+  private async _ensureProjectFolderFromCabinet(force?: boolean) {
     if (!this.#projectCabinetFile) {
       Log.unexpectedUndefined("EPFFC");
       return;
     }
 
-    if (!this.#projectCabinetFile.isContentLoaded) {
-      await this.#projectCabinetFile.loadContent();
+    const file = this.#projectCabinetFile;
+    if (force) {
+      this.unloadProjectCabinet();
+      this.#projectCabinetFile = file;
     }
 
-    const rootFolder = await StorageUtilities.getFileStorageFolder(this.#projectCabinetFile);
+    let rootFolder: IFolder | undefined | string;
 
-    if (rootFolder && typeof rootFolder === "string") {
-      this.#errorState = ProjectErrorState.cabinetFileCouldNotBeProcessed;
-      this.#errorMessage = rootFolder;
-    } else if (rootFolder !== this.#projectFolder && typeof rootFolder !== "string") {
-      this._unapplyFromProjectFolder();
-      if (rootFolder) {
-        this.#projectFolder = rootFolder;
-
-        this._applyToProjectFolder();
-      } else {
-        this.#projectFolder = null;
+    try {
+      if (force || !file.isContentLoaded) {
+        await file.loadContent(force);
       }
+
+      rootFolder = await StorageUtilities.getFileStorageFolder(file);
+    } catch (error) {
+      this.rejectPackageLoad(file.fullPath, error instanceof Error ? error.message : String(error));
+    }
+
+    if (!rootFolder || typeof rootFolder === "string") {
+      this.rejectPackageLoad(
+        file.fullPath,
+        typeof rootFolder === "string" ? rootFolder : "The file could not be read as a package."
+      );
+    }
+
+    this.#errorState = ProjectErrorState.noError;
+    this.#errorMessage = undefined;
+
+    if (rootFolder !== this.#projectFolder) {
+      this._unapplyFromProjectFolder();
+      this.#projectFolder = rootFolder;
+
+      this._applyToProjectFolder();
+    }
+  }
+
+  private rejectPackageLoad(
+    filePath: string,
+    cause: string,
+    errorState = ProjectErrorState.cabinetFileCouldNotBeProcessed
+  ): never {
+    this.#errorState = errorState;
+    this.#errorMessage = cause;
+    this.unloadProjectCabinet();
+
+    throw new Error(
+      `Can't open package '${filePath}': ${cause} Check that the file exists and is a readable, complete package.`
+    );
+  }
+
+  private assertPackageReadable() {
+    if (this.#packageReloadInProgress) {
+      throw new Error("A package reload is in progress. Retry the read after the reload finishes.");
+    }
+  }
+
+  private beginPackageRead(): () => void {
+    this.assertPackageReadable();
+    let finish: () => void;
+    const completion = new Promise<void>((resolve) => {
+      finish = resolve;
+    });
+    this.#packageReaders.add(completion);
+    return () => {
+      this.#packageReaders.delete(completion);
+      finish();
+    };
+  }
+
+  private async withPackageRead<T>(read: () => Promise<T>): Promise<T> {
+    const finish = this.beginPackageRead();
+    try {
+      return await read();
+    } finally {
+      finish();
+    }
+  }
+
+  async withWorkerStorageRead<T>(read: () => Promise<T>): Promise<T> {
+    return this.withPackageRead(read);
+  }
+
+  private async withPackageReload<T>(reload: () => Promise<T>): Promise<T> {
+    if (this.#packageReloadInProgress || this.#packageReaders.size > 0) {
+      throw new Error(
+        `Can't reload package '${this.localFilePath ?? this.name}' while its content is being read or reloaded. ` +
+          "Retry after the current validation, relation processing, or file read finishes."
+      );
+    }
+    this.#packageReloadInProgress = true;
+    try {
+      return await reload();
+    } finally {
+      this.#packageReloadInProgress = false;
+    }
+  }
+
+  private isPackageGenerationCurrent(generation: number): boolean {
+    return generation === this.#packageGeneration && !this.#packageReloadInProgress && !this.#isDisposed;
+  }
+
+  private assertPackageGeneration(generation: number) {
+    if (!this.isPackageGenerationCurrent(generation)) {
+      throw new ProjectOperationCancelledError();
+    }
+  }
+
+  private unloadProjectCabinet() {
+    this.#packageGeneration++;
+    const file = this.#projectCabinetFile;
+    const storage = file?.fileContainerStorage;
+    this.clearFolders();
+    this.hasInferredFiles = false;
+    this.#isInflated = false;
+    this.#items = [];
+    this.#itemsByProjectPath.clear();
+    this.#itemsByType.clear();
+    this.#data.items = [];
+    this._unknownFiles.clear();
+    this.#accessoryFoldersForFilePaths = null;
+    this.changedFilesSinceLastSaved = {};
+    this.differencesFromGitHub = undefined;
+    this.#relationsProcessed = false;
+    this.#indevInfoSet = null;
+    this.#indevInfoSetNeedsUpdating = true;
+    this.#infoSetGenerationPromise = null;
+    this.loc = new LocManager(this);
+    if (storage && this.#preferencesFile?.parentFolder.storage === storage) {
+      this.#preferencesFile = null;
+      this.#isLoaded = false;
+      this.#configuredVariants = {};
+    }
+    this.#data.variants = this.copyVariantData(this.#configuredVariants);
+    this.variants = {};
+    for (const label of Object.keys(this.#data.variants)) {
+      this.ensureVariant(label);
+    }
+
+    this.#projectCabinetFile = null;
+    if (file) {
+      file.fileContainerStorage = null;
+      if (storage instanceof ZipStorage) {
+        const readers = [...this.#packageReaders];
+        if (readers.length === 0) {
+          storage.dispose();
+        } else {
+          // A failed initial load can unwind through its own reader. Release storage only after those reads end.
+          void Promise.all(readers)
+            .then(() => storage.dispose())
+            .catch((error: unknown) => Log.error(`Could not release package storage: ${String(error)}`));
+        }
+      }
+      file.unload();
+      // NodeFile and ElectronFile also treat modified != null as loaded, even after unload().
+      file.modified = null;
+      file.errorStateMessage = undefined;
     }
   }
 
@@ -2585,77 +2830,84 @@ export default class Project {
   }
 
   async processRelations(force?: boolean) {
+    this.assertPackageReadable();
     if (this.#relationsProcessed && !force) {
       return;
     }
 
-    if (this.#isProcessingRelations) {
-      const pendingProcessing = this.#pendingProcessingRelationsRequests;
+    if (this.#relationsProcessingPromise) {
+      return this.#relationsProcessingPromise;
+    }
 
-      const prom = (resolve: (value: unknown) => void, reject: (reason?: any) => void) => {
-        pendingProcessing.push(resolve);
-      };
-
-      await new Promise(prom);
-
-      return;
-    } else {
-      this.#isProcessingRelations = true;
-
-      this.#relationsBatchOperId = await this.creatorTools.notifyOperationStarted(
-        "Processing relations for '" + this.name + "'",
-        StatusTopic.processing
-      );
-
-      const items = this.getItemsCopy();
-
-      ProjectItemRelations.clearDependenciesForItems(items);
-
-      this.#itemsToBeProcessed = items.length;
-      this.#itemsProcessed = 0;
-
-      // Note: Relation processing in worker is now handled by the combined
-      // processRelationsAndGenerateInfoSetInWorker method when validation is requested.
-      // For standalone relation processing, we use the main thread to avoid complexity.
-
-      // Process on main thread
-      // @ts-ignore
-      if (items.length < ProcessItemRelationsBatchSize || typeof window === "undefined") {
-        await ProjectItemRelations.calculateForItems(items);
-        this.#itemsProcessed = this.#itemsToBeProcessed;
-        await this.completeProcessItemRelationsBatchProcessing();
-      } else {
-        // batch through setTimeout -- with small breaks in between -- to ensure the browser remains responsive
-        const batches = Math.floor(items.length / ProcessItemRelationsBatchSize);
-
-        for (let i = 0; i < batches; i++) {
-          // @ts-ignore
-          window.setTimeout(async () => {
-            await ProjectItemRelations.calculateForItems(
-              items.slice(i * ProcessItemRelationsBatchSize, (i + 1) * ProcessItemRelationsBatchSize)
-            );
-
-            this.#itemsProcessed += ProcessItemRelationsBatchSize;
-            await this.completeProcessItemRelationsBatchProcessing();
-          }, 0);
-        }
-
-        const leftOver = items.length % ProcessItemRelationsBatchSize;
-
-        if (leftOver > 0) {
-          // @ts-ignore
-          window.setTimeout(async () => {
-            await ProjectItemRelations.calculateForItems(items.slice(batches * ProcessItemRelationsBatchSize));
-
-            this.#itemsProcessed += leftOver;
-            await this.completeProcessItemRelationsBatchProcessing();
-          }, 0);
-        }
+    const generation = this.#packageGeneration;
+    const promise = this.withPackageRead(() => this._processRelations(generation));
+    this.#relationsProcessingPromise = promise;
+    try {
+      await promise;
+    } finally {
+      if (this.#relationsProcessingPromise === promise) {
+        this.#relationsProcessingPromise = null;
       }
     }
   }
 
-  async completeProcessItemRelationsBatchProcessing() {
+  private async _processRelations(generation: number) {
+    const name = this.name;
+    const operationId = await this.creatorTools.notifyOperationStarted(
+      "Processing relations for '" + name + "'",
+      StatusTopic.processing
+    );
+    let completed = false;
+    try {
+      this.assertPackageGeneration(generation);
+      this.#relationsBatchOperId = operationId;
+      const items = this.getItemsCopy();
+      ProjectItemRelations.clearDependenciesForItems(items);
+      this.#itemsToBeProcessed = items.length;
+      this.#itemsProcessed = 0;
+
+      const calculateBatch = async (batch: ProjectItem[]) => {
+        this.assertPackageGeneration(generation);
+        await ProjectItemRelations.calculateForItems(batch);
+        this.assertPackageGeneration(generation);
+        this.#itemsProcessed += batch.length;
+        await this.completeProcessItemRelationsBatchProcessing(generation);
+      };
+
+      // @ts-ignore
+      if (items.length < ProcessItemRelationsBatchSize || typeof window === "undefined") {
+        await calculateBatch(items);
+      } else {
+        const batches: Promise<void>[] = [];
+        for (let offset = 0; offset < items.length; offset += ProcessItemRelationsBatchSize) {
+          const batch = items.slice(offset, offset + ProcessItemRelationsBatchSize);
+          batches.push(
+            (async () => {
+              await new Promise<void>((resolve) => setTimeout(resolve, 0));
+              await calculateBatch(batch);
+            })()
+          );
+        }
+        // Keep the read alive until every scheduled batch ends, including when one batch fails.
+        const results = await Promise.allSettled(batches);
+        for (const result of results) {
+          if (result.status === "rejected") throw result.reason;
+        }
+      }
+      this.assertPackageGeneration(generation);
+      completed = true;
+    } finally {
+      await this.creatorTools.notifyOperationEnded(
+        operationId,
+        completed ? "Completed processing of '" + name + "'" : "Relation processing stopped for '" + name + "'",
+        StatusTopic.processing,
+        !completed
+      );
+    }
+  }
+
+  async completeProcessItemRelationsBatchProcessing(generation = this.#packageGeneration) {
+    this.assertPackageGeneration(generation);
     Log.verbose(
       `[Thumbnails] completeProcessItemRelationsBatchProcessing called: ${this.#itemsProcessed}/${
         this.#itemsToBeProcessed
@@ -2673,28 +2925,9 @@ export default class Project {
       );
     }
 
+    this.assertPackageGeneration(generation);
     if (this.#itemsProcessed >= this.#itemsToBeProcessed) {
       this.#relationsProcessed = true;
-
-      if (this.#relationsBatchOperId !== undefined) {
-        await this.creatorTools.notifyOperationEnded(
-          this.#relationsBatchOperId,
-          "Completed processing of '" + this.name + "'",
-          StatusTopic.processing
-        );
-      }
-
-      this.#isProcessingRelations = false;
-
-      const pendingProcessing = this.#pendingProcessingRelationsRequests;
-      this.#pendingProcessingRelationsRequests = [];
-
-      for (const prom of pendingProcessing) {
-        prom(undefined);
-      }
-
-      // Note: Thumbnail generation is now handled in the combined relations+validation worker task
-      // (processRelationsAndGenerateInfoSet) as a low-priority background queue for efficiency.
     }
   }
 
@@ -3297,6 +3530,10 @@ export default class Project {
   }
 
   async loadPreferencesAndFolder() {
+    return this.withPackageRead(() => this._loadPreferencesAndFolder());
+  }
+
+  private async _loadPreferencesAndFolder() {
     Log.assert(!this.#isDisposed, "PLF");
 
     if (this.#isLoaded) {
@@ -3319,6 +3556,7 @@ export default class Project {
     if (Utilities.isString(this.#preferencesFile.content) && this.#preferencesFile.content != null) {
       try {
         this.#data = JSON.parse(this.#preferencesFile.content as string);
+        this.rememberConfiguredVariants();
       } catch (e) {
         Log.debug("Failed to parse project preferences JSON: " + e);
       }
@@ -3336,6 +3574,10 @@ export default class Project {
    * Useful for displaying project metadata in lists without full project initialization.
    */
   async ensurePreferencesLoaded() {
+    return this.withPackageRead(() => this._ensurePreferencesLoaded());
+  }
+
+  private async _ensurePreferencesLoaded() {
     if (this.#preferencesFile === null) {
       return;
     }
@@ -3347,6 +3589,7 @@ export default class Project {
     if (Utilities.isString(this.#preferencesFile.content) && this.#preferencesFile.content != null) {
       try {
         this.#data = JSON.parse(this.#preferencesFile.content as string);
+        this.rememberConfiguredVariants();
       } catch (e) {
         Log.debug("Failed to parse project preferences JSON: " + e);
       }
@@ -3354,6 +3597,10 @@ export default class Project {
   }
 
   async ensureInflated() {
+    return this.withPackageRead(() => this._ensureInflated());
+  }
+
+  private async _ensureInflated() {
     Log.assert(!this.#isDisposed, "PLINF");
 
     if (this.#isInflated) {
@@ -3362,6 +3609,7 @@ export default class Project {
 
     await this.loadPreferencesAndFolder();
 
+    const inferredItemsByProjectPath = this.#itemsByProjectPath;
     this.#items = [];
     this.#itemsByProjectPath = new Map();
 
@@ -3369,10 +3617,13 @@ export default class Project {
       for (let i = 0; i < this.#data.items.length; i++) {
         const projectItemData = this.#data.items[i];
 
-        const projectItem = new ProjectItem(this, projectItemData);
+        let projectItem = new ProjectItem(this, projectItemData);
         const path = ProjectUtilities.canonicalizeStoragePath(projectItem.projectPath);
 
         if (Utilities.isUsableAsObjectKey(path)) {
+          // Preference loading and cabinet unload clear stale items; any current inference already has the
+          // correct file/folder/variant bindings, including external accessories outside the project root.
+          projectItem = inferredItemsByProjectPath.get(path) ?? projectItem;
           this.#itemsByProjectPath.set(path, projectItem);
           this.#itemsByType.set(projectItem.itemType, undefined);
 
@@ -3417,15 +3668,21 @@ export default class Project {
   }
 
   async saveToFile() {
+    return this.withPackageRead(() => this._saveToFile());
+  }
+
+  private async _saveToFile() {
     Log.assert(!this.#isDisposed, "PSF");
 
     if (this.#preferencesFile === null) {
       return;
     }
 
+    const configuredVariants = this.copyVariantData(this.#data.variants ?? {});
     if (this.#preferencesFile.setObjectContentIfSemanticallyDifferent(this.#data, FileUpdateType.versionlessEdit)) {
       await this.#preferencesFile.saveContent();
     }
+    this.#configuredVariants = configuredVariants;
   }
 
   /**
@@ -3540,10 +3797,18 @@ export default class Project {
   }
 
   async save(force?: boolean) {
+    return this.withPackageRead(() => this._save(force));
+  }
+
+  private async _save(force?: boolean) {
     Log.assert(!this.#isDisposed, "PSFA");
 
     if (this.#readOnlySafety) {
-      throw new Error("Attempting to save project in read-only mode.");
+      throw new Error(
+        this.#readOnlyReason
+          ? `Can't save project '${this.name}': ${this.#readOnlyReason}`
+          : "Attempting to save project in read-only mode."
+      );
     }
 
     await this.ensureProjectFolder();
@@ -3663,6 +3928,7 @@ export default class Project {
   _applyToProjectFolder() {
     if (this.#projectFolder) {
       this.#projectFolder.storage.readOnly = this.#readOnlySafety;
+      this.#projectFolder.storage.readOnlyReason = this.#readOnlyReason;
 
       this.#projectFolder.storage.onFileContentsUpdated.subscribe(this._handleProjectFileContentsUpdated);
       this.#projectFolder.storage.onFileAdded.subscribe(this._handleProjectFileAdded);
@@ -3671,7 +3937,44 @@ export default class Project {
     }
   }
 
+  /**
+   * Makes storage the project reads besides its own folder, such as the folder that holds its package and
+   * accessory files, read-only when the project is read-only for a reason (a command-line dry run).
+   */
+  _applyReadOnlyReasonTo(storage: IStorage) {
+    if (this.#readOnlySafety && this.#readOnlyReason) {
+      storage.readOnly = true;
+      storage.readOnlyReason = this.#readOnlyReason;
+    }
+  }
+
+  /**
+   * Creates the project folder when it's missing. A project that is read-only for a reason (a command-line dry
+   * run) leaves a missing folder missing instead: the folder at the project's local path, such as a missing -o
+   * that the real run creates first, or an intentionally new saved project. The folder then loads as empty,
+   * as it would once created. Failed package inputs never reach this step.
+   */
+  async _ensureProjectFolderExists(folder: IFolder): Promise<boolean> {
+    if (this.#readOnlySafety && this.#readOnlyReason && !(await folder.exists())) {
+      return true;
+    }
+
+    return await folder.ensureExists();
+  }
+
   async ensureProjectFolder(force?: boolean): Promise<IFolder> {
+    if (
+      force &&
+      this.localFilePath !== undefined &&
+      this.localFolderPath === undefined &&
+      this.mainDeployFolderPath === undefined
+    ) {
+      return this.withPackageReload(() => this._ensureProjectFolder(true));
+    }
+    return this.withPackageRead(() => this._ensureProjectFolder(force));
+  }
+
+  private async _ensureProjectFolder(force?: boolean): Promise<IFolder> {
     if (!force && this.#projectFolder !== null && this.#isProjectFolderEnsured) {
       return this.#projectFolder;
     }
@@ -3689,7 +3992,22 @@ export default class Project {
         if (folder !== this.#projectFolder) {
           this._unapplyFromProjectFolder();
 
-          await folder.ensureExists();
+          this.#projectFolder = folder;
+          this.#folderStructureLoaded = false;
+
+          // Apply read-only settings before creating the folder, so a dry run doesn't create it.
+          this._applyToProjectFolder();
+
+          await this._ensureProjectFolderExists(folder);
+        }
+      } else if (this.#readOnlySafety && this.#readOnlyReason) {
+        // A dry run creates no folders, so the project's folder may not exist yet, as with a missing -o, which the
+        // real run creates before it works on it. Use that folder, empty and not created. Never fall back to a
+        // saved project with the same name, so a dry run doesn't read it in place of the requested folder.
+        const folder = this.#creatorTools.ensureLocalFolder(this.#data.localFolderPath);
+
+        if (folder !== this.#projectFolder) {
+          this._unapplyFromProjectFolder();
 
           this.#projectFolder = folder;
           this.#folderStructureLoaded = false;
@@ -3704,12 +4022,12 @@ export default class Project {
         if (folder !== this.#projectFolder) {
           this._unapplyFromProjectFolder();
 
-          await folder.ensureExists();
-
           this.#projectFolder = folder;
           this.#folderStructureLoaded = false;
 
           this._applyToProjectFolder();
+
+          await this._ensureProjectFolderExists(folder);
           Log.debug(
             "Using project storage root folder as a backup because local folder path " +
               this.#data.localFolderPath +
@@ -3732,12 +4050,13 @@ export default class Project {
       if (folder !== this.#projectFolder) {
         this._unapplyFromProjectFolder();
 
-        await folder.ensureExists();
-
         this.#projectFolder = folder;
         this.#folderStructureLoaded = false;
 
+        // Apply read-only settings before creating the folder, so a dry run doesn't create it.
         this._applyToProjectFolder();
+
+        await this._ensureProjectFolderExists(folder);
       }
 
       const deployFolderExists = await this.#creatorTools.localFolderExists(this.#data.mainDeployFolderPath);
@@ -3764,12 +4083,14 @@ export default class Project {
 
       if (folder !== this.#projectFolder) {
         this._unapplyFromProjectFolder();
-        await folder.ensureExists();
 
         this.#projectFolder = folder;
         this.#folderStructureLoaded = false;
 
+        // Apply read-only settings before creating the folder, so a dry run doesn't create it.
         this._applyToProjectFolder();
+
+        await this._ensureProjectFolderExists(folder);
       }
 
       const deployFolder = await this.#creatorTools.defaultDeploymentStorage.ensureFolderFromStorageRelativePath(
@@ -3786,20 +4107,25 @@ export default class Project {
           await this.#mainDeploySync.fullIngestIntoProject();
         }
       }
-    } else if (
-      this.#data.localFilePath !== undefined &&
-      this.#creatorTools.ensureLocalFolder !== undefined &&
-      this.#creatorTools.localFileExists !== undefined &&
-      this.#creatorTools.localFolderExists !== undefined
-    ) {
+    } else if (this.#data.localFilePath !== undefined) {
+      if (
+        !this.#creatorTools.ensureLocalFolder ||
+        !this.#creatorTools.localFileExists ||
+        !this.#creatorTools.localFolderExists
+      ) {
+        this.rejectPackageLoad(this.#data.localFilePath, "Local package access is not available in this environment.");
+      }
+
       const folderPath = StorageUtilities.getFolderPath(this.#data.localFilePath);
       const fileName = StorageUtilities.getLeafName(this.#data.localFilePath);
 
       if (!fileName || fileName.length < 2 || !folderPath || folderPath.length < 2) {
-        throw new Error("Could not process file with path: `" + this.#data.localFilePath + "`");
+        this.rejectPackageLoad(this.#data.localFilePath, "The file path is invalid.");
       }
 
       const containingFolder = this.#creatorTools.ensureLocalFolder(folderPath);
+
+      this._applyReadOnlyReasonTo(containingFolder.storage);
 
       const file = containingFolder.ensureFile(fileName);
 
@@ -3808,14 +4134,7 @@ export default class Project {
       if (fileExists) {
         this.#projectCabinetFile = file;
 
-        await this.ensureProjectFolderFromCabinet();
-
-        Log.assert(
-          this.#projectFolder !== null && this.#projectFolder !== undefined,
-          "Could not create a project folder from " + this.#data.localFilePath + "." + this.errorMessage
-            ? " " + this.errorMessage
-            : ""
-        );
+        await this._ensureProjectFolderFromCabinet(force);
 
         if (this.#accessoryFilePaths && this.#projectFolder) {
           for (let i = 0; i < this.#accessoryFilePaths.length; i++) {
@@ -3834,6 +4153,7 @@ export default class Project {
 
                   if (folder) {
                     folder.storage.readOnly = true;
+                    this._applyReadOnlyReasonTo(folder.storage);
 
                     const fileName = StorageUtilities.getLeafName(this.#accessoryFilePaths[i]);
                     await folder.load();
@@ -3884,20 +4204,12 @@ export default class Project {
         }
       }
 
-      if (!this.#projectFolder) {
-        const folder = this.#creatorTools.projectsStorage.rootFolder.ensureFolder(
-          ProjectUtilities.canonicalizeStoragePath(this.#data.name)
+      if (!fileExists || !this.#projectFolder) {
+        this.rejectPackageLoad(
+          this.#data.localFilePath,
+          "The file does not exist.",
+          ProjectErrorState.projectFolderOrFileDoesNotExist
         );
-        if (folder !== this.#projectFolder) {
-          this._unapplyFromProjectFolder();
-
-          this.#projectFolder = folder;
-          this.#folderStructureLoaded = false;
-
-          this._applyToProjectFolder();
-        }
-
-        this.#errorState = ProjectErrorState.projectFolderOrFileDoesNotExist;
       }
     } else if (this.#useProjectNameInProjectStorage) {
       const folder = this.#creatorTools.projectsStorage.rootFolder.ensureFolder(this.name);
@@ -3927,7 +4239,7 @@ export default class Project {
       }
     }
 
-    const result = await this.#projectFolder.ensureExists();
+    const result = await this._ensureProjectFolderExists(this.#projectFolder);
 
     this.#isProjectFolderEnsured = result;
 

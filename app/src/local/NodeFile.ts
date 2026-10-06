@@ -41,6 +41,13 @@ export default class NodeFile extends FileBase implements IFile {
     this._name = folderName;
   }
 
+  /** The error message for a blocked write, naming the storage's read-only reason when it has one. */
+  private describeReadOnlyWrite(action: "save" | "delete"): string {
+    const reason = this.parentFolder.storage.readOnlyReason;
+
+    return reason ? `Can't ${action} '${this.fullPath}': ${reason}` : "Can't save read-only file.";
+  }
+
   async scanForChanges(): Promise<void> {
     // No-op for node storage
   }
@@ -122,7 +129,7 @@ export default class NodeFile extends FileBase implements IFile {
 
   async saveContent(): Promise<Date> {
     if (this.parentFolder.storage.readOnly) {
-      throw new Error("Can't save read-only file.");
+      throw new Error(this.describeReadOnlyWrite("save"));
     }
 
     if (this.needsSave) {
@@ -153,6 +160,12 @@ export default class NodeFile extends FileBase implements IFile {
   }
 
   async writeContent(content: String[]) {
+    const readOnlyReason = this.parentFolder.storage.strictReadOnlyReason;
+
+    if (readOnlyReason) {
+      throw new Error(`Can't save '${this.fullPath}': ${readOnlyReason}`);
+    }
+
     this.lastLoadedOrSaved = new Date();
 
     await this._parentFolder.ensureExists();
@@ -173,7 +186,7 @@ export default class NodeFile extends FileBase implements IFile {
 
   async deleteThisFile(skipRemoveFromParent?: boolean): Promise<boolean> {
     if (this.parentFolder.storage.readOnly) {
-      throw new Error("Can't save read-only file.");
+      throw new Error(this.describeReadOnlyWrite("delete"));
     }
 
     if (skipRemoveFromParent !== true) {
@@ -184,6 +197,12 @@ export default class NodeFile extends FileBase implements IFile {
   }
 
   async moveTo(newStorageRelativePath: string): Promise<boolean> {
+    const readOnlyReason = this.parentFolder.storage.strictReadOnlyReason;
+
+    if (readOnlyReason) {
+      throw new Error(`Can't move '${this.fullPath}': ${readOnlyReason}`);
+    }
+
     const newFolderPath = StorageUtilities.getFolderPath(newStorageRelativePath);
     const newFileName = StorageUtilities.getLeafName(newStorageRelativePath);
 

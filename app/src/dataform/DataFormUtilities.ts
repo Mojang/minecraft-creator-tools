@@ -254,6 +254,7 @@ export default class DataFormUtilities {
         // Value is an array - prefer array types
         if (
           dt === FieldDataType.stringArray ||
+          dt === FieldDataType.primitiveArray ||
           dt === FieldDataType.numberArray ||
           dt === FieldDataType.objectArray ||
           dt === FieldDataType.longFormStringArray
@@ -644,6 +645,8 @@ export default class DataFormUtilities {
         return "Object";
       case FieldDataType.stringArray:
         return "Array of strings";
+      case FieldDataType.primitiveArray:
+        return "Array of strings, numbers or booleans";
       case FieldDataType.intRange:
         return "Range of integers";
       case FieldDataType.floatRange:

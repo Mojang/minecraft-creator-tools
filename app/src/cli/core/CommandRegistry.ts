@@ -39,7 +39,7 @@
  * - CommandContextFactory.ts: Creates context passed to command.execute()
  *
  * CATEGORY SYSTEM:
- * Commands are organized into categories for help output:
+ * Commands are organized into categories, which CommandHelpWriter uses to group root help:
  * - Validation: validate, search, aggregate-reports, profile-validation
  * - Project: create, add, fix, info, set, export-addon, export-world, deploy
  * - Server: serve, mcp, dedicated-serve, passcodes, eula, set-server-props
@@ -47,6 +47,11 @@
  * - Docs: docs-generate-* commands for documentation generation
  * - World: world, ensure-world, deploy-test-world
  * - Content: view, edit, version, autotest, run-tests
+ *
+ * HELP:
+ * Help is rendered by CommandHelpWriter from the Commander tree built here plus each command's
+ * metadata (category, examples, learnMore, globalOptionGroups). Do not use addHelpText() in a
+ * command's configure(); see CommandHelpWriter.ts.
  */
 
 import { Command, Argument } from "commander";
@@ -289,46 +294,6 @@ export class CommandRegistry {
         }
       });
     }
-  }
-
-  /**
-   * Generate help text organized by category.
-   * @param showAll If true, includes hidden commands. Default: false.
-   */
-  generateCategoryHelp(showAll: boolean = false): string {
-    const lines: string[] = [];
-    const categories = this.getCategories();
-
-    for (const category of categories) {
-      const commands = this.getByCategory(category);
-
-      const visibleCommands = commands.filter((cmd) => {
-        if (cmd.metadata.debugOnly && !Utilities.isDebug) return false;
-        if (cmd.metadata.internal && !showAll) return false;
-        return true;
-      });
-
-      if (visibleCommands.length === 0) continue;
-
-      lines.push(`\n${category}:`);
-
-      for (const cmd of visibleCommands) {
-        const { name, description, aliases } = cmd.metadata;
-        const aliasText = aliases && aliases.length > 0 ? ` (${aliases.join(", ")})` : "";
-        lines.push(`  ${name.padEnd(20)}${aliasText.padEnd(10)} ${description}`);
-      }
-    }
-
-    if (!showAll) {
-      const internalCount = this.getAll().filter((cmd) => cmd.metadata.internal).length;
-      if (internalCount > 0) {
-        lines.push(
-          `\n  ${internalCount} content-production command(s) not shown. Use --all-commands to see the full list.`
-        );
-      }
-    }
-
-    return lines.join("\n");
   }
 }
 

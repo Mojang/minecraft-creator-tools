@@ -21,6 +21,7 @@ export class DocsGenerateFormJsonCommand extends CommandBase implements ICommand
     isEditInPlace: false,
     isLongRunning: false,
     category: "Documentation",
+    globalOptionGroups: ["input", "outputFolder"],
     internal: true,
   };
 

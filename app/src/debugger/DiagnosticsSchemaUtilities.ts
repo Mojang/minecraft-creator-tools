@@ -93,7 +93,7 @@ export interface IDiagnosticsControlsModel {
 
 /**
  * Minimal stat shape needed for tab matching. Structurally compatible with
- * IDebugStatItem (local/IServerNotification.ts) without importing it here.
+ * IDebugStatItem (app/IServerNotification.ts) without importing it here.
  */
 export interface IDiagnosticsStatValue {
   name: string;

@@ -25,7 +25,7 @@ import {
   IDebugProfilerStateNotificationBody,
   IDebugStageNotificationBody,
   IProfilerCaptureNotificationBody,
-} from "../local/IServerNotification";
+} from "../app/IServerNotification";
 import { DebugOwnershipState } from "../debugger/IMinecraftDebugProtocol";
 import { ISlotConfig } from "../app/CreatorToolsAuthentication";
 

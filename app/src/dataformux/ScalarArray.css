@@ -4,6 +4,22 @@
   margin-bottom: 4px;
 }
 
+.sarr-add {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sarr-newType select {
+  padding: 4px 26px 4px 8px;
+  font-size: 12px;
+}
+
+.sarr-type {
+  font-size: 11px;
+  opacity: 0.7;
+}
+
 .sarr-add BUTTON {
   padding-left: 3px;
   padding-right: 3px;

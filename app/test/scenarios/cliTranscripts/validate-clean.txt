@@ -1,0 +1,23 @@
+$ mct validate -i simple
+cwd: <work>
+exit code: 0
+note: The per-check lines that validate prints from its worker thread are left out. The CLI stops the worker as soon as it returns its results, so how many of those lines get through varies from run to run.
+
+stdout:
+[<timestamp>] [MESSAGE ] [##] mct v<version>  in (-i): <work>/simple  out (-o): <work>/out
+Processing project 1/1: simple
+
+stderr: (empty)
+
+files under <work>:
+  created out/simple.csv
+  created out/simple.mcr.json
+  created out/simple.report.html
+
+files under <data-dir>:
+  created cli/
+  created server/envprefs/
+  created server/packCache/
+  created worlds/
+
+network requests: (none)

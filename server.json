@@ -1,0 +1,43 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "net.minecraft/mcp",
+  "title": "Minecraft",
+  "description": "Create Minecraft mobs, items, and blocks by describing them, then validate and package for Bedrock.",
+  "version": "0.0.0-semantically-released",
+  "websiteUrl": "https://github.com/Mojang/minecraft-creator-tools",
+  "repository": {
+    "url": "https://github.com/Mojang/minecraft-creator-tools",
+    "source": "github"
+  },
+  "icons": [
+    {
+      "src": "https://raw.githubusercontent.com/Mojang/minecraft-creator-tools/main/plugins/minecraft/assets/icon.png",
+      "mimeType": "image/png",
+      "sizes": ["512x512"]
+    }
+  ],
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "@minecraft/creator-tools",
+      "version": "0.0.0-semantically-released",
+      "runtimeHint": "npx",
+      "runtimeArguments": [
+        {
+          "type": "positional",
+          "value": "-y"
+        }
+      ],
+      "transport": {
+        "type": "stdio"
+      },
+      "packageArguments": [
+        {
+          "type": "positional",
+          "value": "mcp"
+        }
+      ]
+    }
+  ]
+}

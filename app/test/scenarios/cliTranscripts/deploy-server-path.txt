@@ -1,0 +1,26 @@
+$ mct deploy server -i simple --server-path server
+cwd: <work>
+exit code: 0
+
+stdout:
+[<timestamp>] [MESSAGE ] [##] mct v<version>  in (-i): <work>/simple  out (-o): <work>/out
+Deploying project 'simple' to 'server/'...
+Deployed: simple
+
+stderr: (empty)
+
+files under <work>:
+  created out/
+  created server/development_behavior_packs/StarterTestsTutorial/manifest.json
+  created server/development_behavior_packs/StarterTestsTutorial/pack_icon.png
+  created server/development_behavior_packs/StarterTestsTutorial/scripts/index.js
+  created server/development_behavior_packs/StarterTestsTutorial/scripts/starttests.js
+  created server/development_behavior_packs/StarterTestsTutorial/structures/starttests/mediumglass.mcstructure
+
+files under <data-dir>:
+  created cli/
+  created server/envprefs/
+  created server/packCache/
+  created worlds/
+
+network requests: (none)

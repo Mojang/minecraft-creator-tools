@@ -29,6 +29,7 @@ export class GenerateSchemaPackageCommand extends CommandBase implements IComman
     isEditInPlace: false,
     isLongRunning: false,
     category: "Documentation",
+    globalOptionGroups: ["input", "outputFolder"],
     internal: true,
   };
 

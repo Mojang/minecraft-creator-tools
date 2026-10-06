@@ -1,6 +1,19 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+/**
+ * Metadata-only world validation consumes LevelDb.forEachRecord without retaining payloads.
+ * Coordinates and live-record counters are stored once per chunk; each exact record suffix
+ * maps to a scalar combining its sequence and deletion bit, not a second metadata object/map.
+ * Tombstone versions survive even when a chunk becomes empty so older SST/LOG records cannot
+ * resurrect it. BigInt preserves the full LevelDB sequence; unversioned records retain visit order.
+ *
+ * Within a chunk, suffix identity includes the tag, optional trailing byte (including zero),
+ * and explicit-dimension marker. Implicit and explicit dimension-zero keys must remain distinct:
+ * both contribute dimension adoption, but only implicit overworld keys contribute world bounds.
+ * MCWorld's full-load path also uses getChunkRecordMetadata; its classification stays shared.
+ */
+
 import DataUtilities from "../core/DataUtilities";
 import type { ILevelDbParsedRecord } from "./LevelDb";
 
@@ -26,9 +39,21 @@ export interface IChunkRecordMetadata {
   includeInWorldMetrics: boolean;
 }
 
+// BigInt: sequence in the high bits, deletion in bit zero. Boolean: unversioned live/deleted.
+type ChunkRecordState = bigint | boolean;
+
+interface IChunkMetricsState {
+  x: number;
+  z: number;
+  dimension: number;
+  records: Map<number, ChunkRecordState>;
+  liveRecords: number;
+  worldRecords: number;
+  worldSubchunks: number;
+}
+
 const LevelChunkTags = new Set<number>([
-  43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 72, 115, 118, 119,
-  120,
+  43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 72, 115, 118, 119, 120,
 ]);
 
 const SubchunkPrefixTag = 47;
@@ -90,20 +115,21 @@ const NamedWorldRecordPrefixes = [
 ];
 
 export default class WorldDataMetricsReducer {
-  private _effectiveRecordsByKey = new Map<string, IChunkRecordMetadata>();
-  private _recordVersionsByKey = new Map<string, { sourceKind: "ldb" | "log"; sequenceNumber?: bigint }>();
+  private _chunks = new Map<string, IChunkMetricsState>();
+  private _dimensionNameIdTableState?: ChunkRecordState;
   private _hasDimensionNameIdTable = false;
   private _dimensionNameIdTableBytes?: Uint8Array;
 
   visit(record: ILevelDbParsedRecord) {
     if (record.key === "DimensionNameIdTable") {
-      if (!this._shouldApplyRecord(record, record.key)) {
+      const sequenceNumber = record.sequenceNumber === undefined ? undefined : BigInt(record.sequenceNumber);
+      if (!WorldDataMetricsReducer.shouldApplyRecord(this._dimensionNameIdTableState, sequenceNumber)) {
         return;
       }
 
+      this._dimensionNameIdTableState = WorldDataMetricsReducer.getRecordState(record, sequenceNumber);
       this._hasDimensionNameIdTable = !record.isDeleted;
-      this._dimensionNameIdTableBytes =
-        !record.isDeleted && record.value ? new Uint8Array(record.value) : undefined;
+      this._dimensionNameIdTableBytes = !record.isDeleted && record.value ? new Uint8Array(record.value) : undefined;
       return;
     }
 
@@ -117,73 +143,82 @@ export default class WorldDataMetricsReducer {
       return;
     }
 
-    const identity = WorldDataMetricsReducer.getRecordIdentity(record.keyBytes);
-    if (!this._shouldApplyRecord(record, identity)) {
+    let chunk = this._chunks.get(metadata.chunkKey);
+    if (!chunk) {
+      chunk = {
+        x: metadata.x,
+        z: metadata.z,
+        dimension: metadata.dimension,
+        records: new Map(),
+        liveRecords: 0,
+        worldRecords: 0,
+        worldSubchunks: 0,
+      };
+      this._chunks.set(metadata.chunkKey, chunk);
+    }
+
+    const identity = WorldDataMetricsReducer.getRecordSuffixIdentity(record.keyBytes);
+    const currentState = chunk.records.get(identity);
+    const sequenceNumber = record.sequenceNumber === undefined ? undefined : BigInt(record.sequenceNumber);
+    if (!WorldDataMetricsReducer.shouldApplyRecord(currentState, sequenceNumber)) {
       return;
     }
 
-    if (record.isDeleted) {
-      this._effectiveRecordsByKey.delete(identity);
-    } else {
-      this._effectiveRecordsByKey.set(identity, metadata);
+    const wasLive = WorldDataMetricsReducer.isLiveRecord(currentState);
+    const isLive = !record.isDeleted;
+    chunk.records.set(identity, WorldDataMetricsReducer.getRecordState(record, sequenceNumber));
+
+    if (wasLive !== isLive) {
+      const delta = isLive ? 1 : -1;
+      chunk.liveRecords += delta;
+      if (metadata.includeInWorldMetrics) {
+        chunk.worldRecords += delta;
+        if (metadata.hasSubchunk) {
+          chunk.worldSubchunks += delta;
+        }
+      }
     }
   }
 
-  private _shouldApplyRecord(record: ILevelDbParsedRecord, identity: string): boolean {
-    const currentVersion = this._recordVersionsByKey.get(identity);
-    const sequenceNumber = record.sequenceNumber === undefined ? undefined : BigInt(record.sequenceNumber);
+  private static shouldApplyRecord(currentState: ChunkRecordState | undefined, sequenceNumber?: bigint): boolean {
+    return sequenceNumber === undefined || typeof currentState !== "bigint" || currentState >> 1n < sequenceNumber;
+  }
 
-    if (
-      sequenceNumber !== undefined &&
-      currentVersion?.sequenceNumber !== undefined &&
-      currentVersion.sequenceNumber >= sequenceNumber
-    ) {
-      return false;
+  private static getRecordState(record: ILevelDbParsedRecord, sequenceNumber?: bigint): ChunkRecordState {
+    if (sequenceNumber === undefined) {
+      return !record.isDeleted;
     }
 
-    this._recordVersionsByKey.set(identity, { sourceKind: record.sourceKind, sequenceNumber });
-    return true;
+    return (sequenceNumber << 1n) | (record.isDeleted ? 1n : 0n);
+  }
+
+  private static isLiveRecord(state: ChunkRecordState | undefined): boolean {
+    return typeof state === "bigint" ? (state & 1n) === 0n : state === true;
   }
 
   getMetrics(): IWorldDataMetrics {
-    const chunks = new Map<string, { x: number; z: number; hasSubchunk: boolean }>();
-    const customDimensionChunks = new Set<string>();
-    const dimensionIds = new Set<number>();
-
-    for (const metadata of this._effectiveRecordsByKey.values()) {
-      dimensionIds.add(metadata.dimension);
-
-      if (metadata.dimension >= 1000) {
-        customDimensionChunks.add(metadata.chunkKey);
-      }
-
-      if (!metadata.includeInWorldMetrics) {
-        continue;
-      }
-
-      let chunk = chunks.get(metadata.chunkKey);
-
-      if (!chunk) {
-        chunk = { x: metadata.x, z: metadata.z, hasSubchunk: false };
-        chunks.set(metadata.chunkKey, chunk);
-      }
-
-      if (metadata.hasSubchunk) {
-        chunk.hasSubchunk = true;
-      }
-    }
-
     const metrics: IWorldDataMetrics = {
-      chunkCount: chunks.size,
-      customDimensionChunkCount: customDimensionChunks.size,
+      chunkCount: 0,
+      customDimensionChunkCount: 0,
       subchunkLessChunkCount: 0,
-      dimensionIds,
+      dimensionIds: new Set(),
       hasDimensionNameIdTable: this._hasDimensionNameIdTable,
       dimensionNameIdTableBytes: this._dimensionNameIdTableBytes,
     };
 
-    for (const chunk of chunks.values()) {
-      if (!chunk.hasSubchunk) {
+    for (const chunk of this._chunks.values()) {
+      if (chunk.liveRecords === 0) {
+        continue;
+      }
+      metrics.dimensionIds.add(chunk.dimension);
+      if (chunk.dimension >= 1000) {
+        metrics.customDimensionChunkCount++;
+      }
+      if (chunk.worldRecords === 0) {
+        continue;
+      }
+      metrics.chunkCount++;
+      if (chunk.worldSubchunks === 0) {
         metrics.subchunkLessChunkCount++;
       }
 
@@ -258,13 +293,12 @@ export default class WorldDataMetricsReducer {
     };
   }
 
-  private static getRecordIdentity(keyBytes: Uint8Array): string {
-    let identity = "";
-
-    for (let i = 0; i < keyBytes.length; i++) {
-      identity += String.fromCharCode(keyBytes[i]);
-    }
-
-    return identity;
+  private static getRecordSuffixIdentity(keyBytes: Uint8Array): number {
+    const hasDimension = keyBytes.length >= 13;
+    const tagOffset = hasDimension ? 12 : 8;
+    // Exact byte fields, not a hash: tag occupies bits 0-7, trailing byte + 1 occupies
+    // bits 8-16 (zero means absent), and bit 17 distinguishes explicit dimensions.
+    const trailingByte = keyBytes.length > tagOffset + 1 ? keyBytes[tagOffset + 1] + 1 : 0;
+    return keyBytes[tagOffset] | (trailingByte << 8) | (hasDimension ? 1 << 17 : 0);
   }
 }

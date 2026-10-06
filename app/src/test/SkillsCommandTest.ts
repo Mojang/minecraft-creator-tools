@@ -15,7 +15,7 @@ import {
   buildSkillFileJson,
   buildSkillListJson,
   buildSkillListText,
-  buildSkillsHelpText,
+  buildSkillsHelpSection,
   printSkills,
   skillsCommand,
 } from "../cli/commands/content/SkillsCommand";
@@ -214,19 +214,20 @@ describe("mct skills", () => {
 
   describe("mct --help", () => {
     it("names the skills and how to read them", () => {
-      const help = buildSkillsHelpText(library)!;
-      expect(help).to.include("Agent skills:");
+      const section = buildSkillsHelpSection(library)!;
+      const help = section.paragraphs.join("\n");
+      expect(section.title).to.equal("AGENT SKILLS");
       expect(help).to.include(library.skillNames.join(", "));
       expect(help).to.include("`mct skills`");
       expect(help).to.include("`mct skills <name>`");
       expect(help).to.include("`npx -y @minecraft/creator-tools@0.18.0 skills`");
-      expect(buildSkillsHelpText(new McpSkillLibrary(library.skills, "0.0.1-dev"))).to.include(
-        "`npx -y @minecraft/creator-tools@latest skills`"
-      );
+      expect(
+        buildSkillsHelpSection(new McpSkillLibrary(library.skills, "0.0.1-dev"))!.paragraphs.join("\n")
+      ).to.include("`npx -y @minecraft/creator-tools@latest skills`");
     });
 
     it("leaves the section out when there are no skills", () => {
-      expect(buildSkillsHelpText(empty)).to.equal(undefined);
+      expect(buildSkillsHelpSection(empty)).to.equal(undefined);
     });
   });
 });

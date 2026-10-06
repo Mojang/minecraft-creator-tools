@@ -1,0 +1,243 @@
+$ mct add --list-types
+cwd: <work>/simple
+exit code: 0
+
+stdout:
+[<timestamp>] [MESSAGE ] [##] mct v<version>  in (-i): <work>/simple
+Categories:
+  entity — Entity Type (entity)
+  block — Block Type (block)
+  item — Item Type (item)
+  spawnLootRecipes — Spawn rules, loot tables, recipes
+  worldGen — World generation features
+  visuals — Visual assets (textures, models)
+  singleFiles — Individual definition files
+
+Gallery templates (214):
+  addonStarter — Add-On Starter
+  tsStarter — TypeScript Starter
+  addonFull — Full Add-On
+  editor-basics — Editor Add-on
+  dlStarter — Vibrant Visuals
+  cottaGame — Cotta Game with TypeScript
+  registeringExampleCustomComponent — Custom Components
+  editor-multi — Editor Full Add-on
+  scriptBox — Script Box
+  editor-scriptBox — Editor Script Box
+  basicUnitCubeBlock — Solid Cube Block Starter
+  crateBlock — Crate Starter Block
+  basicDieBlock — Solid Cube Dice Block
+  sushiRollBlock — Sushi Block
+  fishBowlBlock — Block with Custom State
+  hardBiscuit — Simple Food (Biscuit)
+  pear — Simple Food (Pear)
+  elixir — Simple Drink (Elixir)
+  rod — Simple Tool (Rod)
+  key — Simple Item (Key)
+  customSword — Custom sword
+  wrench — Custom Wrench
+  spawnFeatherItem — Spawn Feather Item
+  testThatEntityIsFeatherItem — Test that Entity is Feather Item
+  givePlayerEquipment — Give player equipment
+  giveHurtDiamondSword — Give player a damaged sword
+  giveDestroyRestrictedPickaxe — Give player a destroy-restricted pickaxe
+  givePlaceRestrictedGoldBlock — Give player a place-restricted gold block
+  diamondAwesomeSword — Give player a sword with custom lore
+  getFirstHotbarItem — Get first hotbar item
+  moveBetweenContainers — Move an item between containers
+  swapBetweenContainers — Swap an item between containers
+  transferBetweenContainers — Transfer an item between containers
+  createExplosion — Create Explosion
+  createExplosions — Explosions of Different Types
+  buttonPushEvent — Button Push Event
+  leverActionEvent — Lever Action Event
+  tripWireTripEvent — TripWire Trip Event
+  addBlockColorCube — Block Color Cube
+  createNoBlockExplosion — No-Block Explosion
+  itemStacks — Item Stacks
+  quickFoxLazyDog — Spawn Mobs with Effects
+  incrementDynamicProperty — Set Dynamic Property
+  incrementDynamicPropertyInJsonBlob — Set Json Dynamic Property
+  triggerEvent — Trigger Event
+  applyImpulse — Apply Impulse
+  getFireworkVelocity — Get Entity Velocity
+  applyDamageThenHeal — Apply Damage and Heal
+  setOnFire — Set On Fire
+  teleport — Teleport
+  teleportMovement — Teleport for Movement
+  bounceSkeletons — Apply Knockback
+  tagsQuery — Tag Query
+  logEntitySpawnEvent — Entity spawn event with test
+  spawnAdultHorse — Create mob
+  spawnPoisonedVillager — Spawn poisoned villager
+  blockConditional — Conditionally spawn entities on block
+  shootArrow — Shoot arrow
+  findEntitiesHavingPropertyEqualsTo — Find entities based on properties
+  givePlayerElytra — Give player elytra
+  playSoundChained — Play sound chained
+  setScoreboardChained — Set scoreboard chained
+  scoreWildcard — A message that displays a scoreboard score using a wildcard
+  updateSignText — Update a signs existing sign text
+  summonMobChained — Summon mob chained
+  playMusicAndSound — Play Music and Sound
+  spawnParticle — Spawn Particles
+  pistonAfterEvent — Piston After Event
+  updateScoreboard — Update Scoreboard
+  setTitle — Set Onscreen Display Title
+  setTitleAndSubtitle — Set Display Title/Subtitle
+  countdown — Countdown
+  sendBasicMessage — Send Basic Message
+  sendTranslatedMessage — Send Translated Message
+  sendPlayerMessages — Send Players Different Message Types
+  nestedTranslation — Messages with nested translatations
+  cubeGenerator — Cube generator
+  phantomsShouldFlyFromCats — Phantoms should fly from cats
+  minibiomes — Tests a roller coaster obstacle course.
+  simpleMobGameTest — A simple mob test - the fox should attack the chicken.
+  getPlayerProfile — Get Player Profile
+  updateScore — Update score via Http Request
+  showTranslatedMessageForm — Translated Message Form
+  addSign — Add Sign
+  addTranslatedSign — Add Translated Sign
+  addTwoSidedSign — Add Two Sided Sign
+  trapTick — Trap Tick
+  every30Seconds — Every 30 Seconds
+  checkBlockTags — Check Block Tags
+  containers — Containers
+  placeItemsInChest — Place Items in Chest
+  showActionForm — Show action form
+  showFavoriteMonth — Show favorite month dialog
+  showBasicMessageForm — Show message form
+  showBasicModalForm — Show basic modal form
+  allay — Allay
+  axolotl — Axolotl
+  cat — Cat
+  cow — Cow
+  creeper — Creeper
+  enderman — Enderman
+  rabbit — Rabbit
+  pig — Pig
+  sheep — Sheep
+  skeleton — Skeleton
+  wolf — Wolf
+  zombie — Zombie
+  camera-grapple.ts — Camera Grapple
+  star-brush-shape.ts — Star Shape Brush
+  dye-brush.ts — Dye Brush
+  farm-generator.ts — Farm Generator
+  goto-mark.ts — Go to Mark
+  portal-generator.ts — Portal Generator
+  simple-locate-biome.ts — Locate Biome
+  tree-generator.ts — Tree Generator
+  helloWorldGameTest — Starter GameTest
+  mobGameTest — Basic GameTest
+  spawn_rule — Spawn Rule
+  loot_table — Loot Table
+  trade_table — Trade Table
+  recipe_shapeless — Recipe (Shapeless)
+  recipe_shaped — Recipe (Shaped)
+  feature_rule — Feature + Rule
+  jigsaw — Jigsaw Structure Set
+  atmospherics — Atmospherics
+  color_grading — Color grading
+  lighting — Lighting
+  pbr — PBR
+  point_lights — Point lights
+  shadows — Shadows
+  water — Water
+  biome_behavior — Partial Biome
+  entity_behavior — Entity (Behavior)
+  entity_resources — Entity (Resource)
+  item_behavior — Item (Behavior)
+  attachable — Attachable (Item Resource)
+  block_behavior — Block (Behavior)
+  block_culling — Block Culling
+  block_catalog — Block Visual Catalog (Singleton)
+  voxel_shape — Voxel Shape
+  biome_resource — Biome client resource
+  aggregate_feature — Aggregate Feature
+  cave_carver_feature — Cave Carver Feature
+  fossil_feature — Fossil Feature
+  geode_feature — Geode Feature
+  growing_plant_feature — Growing Plant Feature
+  multiface_feature — Multiface Feature
+  nether_cave_carver_feature — Nether Cave Carver Feature
+  ore_feature — Ore Feature
+  animation — Animation
+  action_set — Action Set
+  animation_controller — Animation Controller
+  render_controller — Render Controller
+  wizard_quadruped_passive — Passive Quadruped (Wizard)
+  wizard_humanoid_hostile — Hostile Humanoid (Wizard)
+  wizard_quadruped_neutral — Neutral Wolf-like (Wizard)
+  wizard_flying_passive — Flying Creature (Wizard)
+  wizard_aquatic_passive — Aquatic Fish (Wizard)
+  wizard_arthropod_hostile — Spider-like Arthropod (Wizard)
+  wizard_slime_hostile — Slime Creature (Wizard)
+  wizard_boss_humanoid — Boss Entity (Wizard)
+  wizard_solid_cube — Solid Cube Block (Wizard)
+  wizard_wood_planks — Wood Planks Block (Wizard)
+  wizard_light_block — Light Block (Wizard)
+  wizard_container_block — Container Block (Wizard)
+  wizard_door_block — Door Block (Wizard)
+  wizard_glass_block — Glass Block (Wizard)
+  wizard_crafting_block — Crafting Station (Wizard)
+  wizard_slab_block — Slab Block (Wizard)
+  wizard_stairs_block — Stairs Block (Wizard)
+  wizard_ore_block — Ore Block (Wizard)
+  wizard_sword_iron — Iron Sword (Wizard)
+  wizard_sword_gold — Gold Sword (Wizard)
+  wizard_pickaxe_iron — Iron Pickaxe (Wizard)
+  wizard_food_basic — Basic Food (Wizard)
+  wizard_potion_healing — Healing Potion (Wizard)
+  wizard_armor_helmet — Helmet (Wizard)
+  wizard_armor_chestplate — Chestplate (Wizard)
+  wizard_throwable_item — Throwable Item (Wizard)
+  wizard_music_disc — Music Disc (Wizard)
+  wizard_fuel_item — Fuel Item (Wizard)
+  humanoid — Humanoid Mob Template
+  small_animal — Small Animal Template
+  large_animal — Large Animal Template
+  vehicle — Vehicle Template
+  bird — Bird Template
+  insect — Insect Template
+  flying — Flying Creature Template
+  fish — Fish Template
+  slime — Slime Creature Template
+  wizard — Wizard Template
+  golem — Golem Template
+  fox — Fox Template
+  crystal — Crystal Entity Template
+  tropical_fish — Tropical Fish Template
+  ghost — Ghost Template
+  robot — Robot Template
+  mushroom_creature — Mushroom Creature Template
+  treasure_chest — Treasure Chest Template
+  block — Custom Block Template
+  stone_brick — Stone Brick Block Template
+  wooden_crate — Wooden Crate Template
+  glowing_ore — Glowing Ore Template
+  mossy_stone — Mossy Stone Template
+  crystal_block — Crystal Block Template
+  tech_block — Tech Block Template
+  item — Handheld Item Template
+  enchanted_sword — Enchanted Sword Template
+  potion_bottle — Potion Bottle Template
+  magic_wand — Magic Wand Template
+  ornate_key — Ornate Key Template
+  gemstone — Gemstone Template
+  apple — Apple Template
+  pickaxe — Pickaxe Template
+
+stderr: (empty)
+
+files under <work>:
+  created simple/out/
+
+files under <data-dir>:
+  created cli/
+  created server/envprefs/
+  created server/packCache/
+  created worlds/
+
+network requests: (none)

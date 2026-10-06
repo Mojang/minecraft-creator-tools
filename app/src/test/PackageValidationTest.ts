@@ -20,8 +20,12 @@ import { execSync } from "child_process";
 import * as fs from "fs";
 import * as path from "path";
 import TestPaths from "./TestPaths";
+import { DATA_DIR_ENV, applyTestDataDir } from "./TestDataDir";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+
+// The installed CLI keeps its saved state in a temporary folder, not the real profile.
+const testDataDir = applyTestDataDir();
 
 const packagesDir = path.join(TestPaths.appRoot, "debugoutput", "packages");
 const unpackedDir = path.join(packagesDir, "unpacked");
@@ -244,6 +248,8 @@ describe("PackageValidation", function () {
           args: [cliPath, "mcp"],
           cwd: packageDir,
           stderr: "ignore",
+          // The SDK passes the server only a few variables, such as PATH and HOME, unless given more.
+          env: { [DATA_DIR_ENV]: testDataDir },
         })
       );
       try {

@@ -27,6 +27,18 @@
 import { ICommandContext } from "./ICommandContext";
 import { Command } from "commander";
 import { TaskType } from "../ClUtils";
+import { GlobalOptionGroup } from "./GlobalOptions";
+
+/**
+ * A runnable example shown under EXAMPLES in a command's help.
+ */
+export interface ICommandExample {
+  /** Complete invocation, without the leading `$ ` prompt (the help renderer adds it). */
+  command: string;
+
+  /** Optional short explanation, rendered as a `#` comment above the command. */
+  description?: string;
+}
 
 /**
  * Defines a command-line argument.
@@ -106,6 +118,20 @@ export interface ICommandMetadata {
    * Run `mct --all-commands` to see the full command list.
    */
   internal?: boolean;
+
+  /** Runnable examples for help, most common first. */
+  examples?: ICommandExample[];
+
+  /** Extra tips or caveats shown under LEARN MORE in help. */
+  learnMore?: string[];
+
+  /**
+   * The global option groups this command reads from its context, shown under INHERITED FLAGS in
+   * help. Required, so every command states its flags deliberately; use [] for none. The
+   * `process` group (logging, network, base path) applies to every command and is not listed.
+   * See GlobalOptions.ts for the groups.
+   */
+  globalOptionGroups: GlobalOptionGroup[];
 }
 
 /**

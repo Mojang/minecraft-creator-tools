@@ -4,6 +4,11 @@
  * Provides environment setup and helper functions used across all
  * split CommandLineTest files. Each test file imports from here
  * instead of duplicating boilerplate.
+ *
+ * Importing this file gives the whole test process a temporary Creator Tools
+ * data folder (MCTOOLS_DATA_DIR) and no Minecraft EULA acceptance. Spawned CLI
+ * processes inherit both. To spawn a command that needs the EULA accepted, pass
+ * `env: cliEnv({ acceptEula: true })` from TestDataDir.ts.
  */
 
 import CreatorTools from "../app/CreatorTools";
@@ -15,21 +20,18 @@ import { chunksToLinesAsync } from "@rauschma/stringio";
 import Log from "../core/Log";
 import TestPaths, { ITestEnvironment } from "./TestPaths";
 import { applyTestVersionPin } from "./TestVersionPin";
+import { applyTestDataDir } from "./TestDataDir";
 
 // Pin the "current Minecraft version" before any spawned CLI subprocess starts,
 // so its environment inherits the pin and validators emit deterministic
 // version-bearing messages. See TestVersionPin.ts for rationale.
 applyTestVersionPin();
 
-// Auto-accept the Minecraft EULA for spawned CLI subprocesses in tests.
-// `mct create`, `mct add`, and `mct dedicatedserve` gate on EULA acceptance and
-// will exit with a non-zero code otherwise. Test environments (especially CI)
-// don't have an interactively-accepted EULA on disk, so we set the documented
-// non-interactive opt-in env var here. Spawned subprocesses inherit process.env
-// automatically, so this propagates without per-spawn plumbing.
-if (typeof process !== "undefined" && process.env && !process.env.MCTOOLS_I_ACCEPT_EULA_AT_MINECRAFTDOTNETSLASHEULA) {
-  process.env.MCTOOLS_I_ACCEPT_EULA_AT_MINECRAFTDOTNETSLASHEULA = "true";
-}
+// Keep saved state, such as EULA acceptance, out of the developer's real profile,
+// and start every test as a user who hasn't accepted the EULA. This runs before
+// createTestEnvironment() below and before any suite spawns the CLI, so both use
+// the temporary folder. See TestDataDir.ts.
+applyTestDataDir();
 
 export let creatorTools: CreatorTools | undefined = undefined;
 export let scenariosFolder: IFolder | undefined = undefined;

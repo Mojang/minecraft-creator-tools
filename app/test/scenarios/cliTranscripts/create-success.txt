@@ -1,0 +1,45 @@
+$ mct create testerName addonStarter testerCreatorName testerDescription -o created
+cwd: <work>
+exit code: 0
+note: testerName and testerCreatorName are test-only names that skip the EULA check without accepting it. The DEBUG lines about the refused registry.npmjs.org lookups are left out.
+
+stdout:
+Creating project 'testerName' from template 'addonStarter'...
+Updating file: <work>/created/package.json (size: 1068)
+Updating file: <work>/created/tsconfig.json (size: 818)
+Updating file: <work>/created/behavior_packs/cn_testerna/manifest.json (size: 918)
+Updating file: <work>/created/behavior_packs/cn_testerna/pack_icon.png (size: 1406)
+Updating file: <work>/created/resource_packs/cn_testerna/manifest.json (size: 548)
+Updating file: <work>/created/resource_packs/cn_testerna/pack_icon.png (size: 1406)
+Updating file: <work>/created/scripts/main.ts (size: 241)
+Project created at: <work>/created/
+
+Now run npm i in the project folder to install dependencies, if any.
+
+stderr: (empty)
+
+files under <work>:
+  created created/.env
+  created created/.prettierrc.json
+  created created/.vscode/extensions.json
+  created created/.vscode/launch.json
+  created created/.vscode/settings.json
+  created created/.vscode/tasks.json
+  created created/behavior_packs/cn_testerna/manifest.json
+  created created/behavior_packs/cn_testerna/pack_icon.png
+  created created/eslint.config.mjs
+  created created/just.config.ts
+  created created/package.json
+  created created/resource_packs/cn_testerna/manifest.json
+  created created/resource_packs/cn_testerna/pack_icon.png
+  created created/scripts/main.ts
+  created created/tsconfig.json
+
+files under <data-dir>:
+  created cli/prefs/mctools.json
+  created server/envprefs/
+  created server/packCache/
+  created worlds/
+
+network requests (refused by the test):
+  registry.npmjs.org:443

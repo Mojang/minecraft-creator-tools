@@ -13,6 +13,7 @@ import ResourceManifestDefinition from "./ResourceManifestDefinition";
 import IDefinition from "./IDefinition";
 import MinecraftUtilities from "./MinecraftUtilities";
 import Log from "../core/Log";
+import { getManifestVersionValue } from "../core/versioning/MinecraftVersionRules";
 
 export default class BehaviorManifestDefinition implements IDefinition {
   private _file?: IFile;
@@ -284,7 +285,11 @@ export default class BehaviorManifestDefinition implements IDefinition {
   setMinEngineVersion(versionArray: number[], project: Project) {
     const header = this.ensureHeaderForProject(project);
 
-    header.min_engine_version = versionArray;
+    header.min_engine_version = getManifestVersionValue(
+      this.definition?.format_version,
+      versionArray,
+      header.min_engine_version
+    );
   }
 
   setModuleVersion(moduleName: string, version: string) {

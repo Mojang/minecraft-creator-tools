@@ -20,6 +20,7 @@ import {
   removeResultFolder,
   collectLines,
 } from "./CommandLineTestHelpers";
+import { cliEnv, createTestDataDir } from "./TestDataDir";
 
 const SERVER_STARTUP_TIMEOUT_MS = 15000;
 const SERVER_HOST = "127.0.0.1";
@@ -677,8 +678,8 @@ describe("eulaCommandDisplay", async () => {
   before(function (done) {
     this.timeout(15000);
 
-    // Run with the env var set to skip interactive prompt
-    const env = { ...process.env, MCTOOLS_I_ACCEPT_EULA_AT_MINECRAFTDOTNETSLASHEULA: "true" };
+    // Accept through the environment variable, which skips the interactive prompt.
+    const env = cliEnv({ acceptEula: true });
 
     const process2 = spawn("node", ["./toolbuild/jsn/cli/index.mjs", "eula"], { env });
 
@@ -714,21 +715,32 @@ describe("dedicatedServeCommandMissingEula", async () => {
   before(function (done) {
     this.timeout(15000);
 
-    // Run dedicated serve without EULA — should fail
-    const env = { ...process.env, MCTOOLS_I_ACCEPT_EULA_AT_MINECRAFTDOTNETSLASHEULA: "" };
+    // A new data folder and no EULA environment variable, like a new user's first run.
+    const env = cliEnv({ dataDir: createTestDataDir("dedicatedserve-no-eula") });
 
-    const process2 = spawn("node", ["./toolbuild/jsn/cli/index.mjs", "dedicatedserve", "--timeout", "1"], { env });
+    const process2 = spawn("node", ["./toolbuild/jsn/cli/index.mjs", "dedicatedserve"], { env });
 
     collectLines(process2.stdout, stdoutLines);
     collectLines(process2.stderr, stderrLines);
 
+    // If the EULA check ever lets this through, stop the server it starts instead of leaking it.
+    const killer = setTimeout(() => process2.kill(), 10000);
+
     process2.on("exit", (code) => {
+      clearTimeout(killer);
       exitCode = code;
       done();
     });
   });
 
-  it("should complete without hanging", async () => {
-    assert.notEqual(exitCode, null, "Process should exit");
+  it("should exit with an error when the server cannot start", async () => {
+    assert.equal(exitCode, 1, "Failed server startup should exit with code 1");
   }).timeout(10000);
+
+  it("should say the EULA isn't accepted and how to accept it", () => {
+    const stderr = stderrLines.join("\n");
+
+    assert.include(stderr, "EULA not accepted");
+    assert.include(stderr, "mct eula --accept");
+  });
 });

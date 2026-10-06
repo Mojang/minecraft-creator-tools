@@ -32,9 +32,14 @@ export default class LocalTools {
 
   static async convertFromJavaWorld(creatorTools: creatorTools, javaWorldFile: IFile) {}
 
-  static async launchWorld(creatorTools: creatorTools, worldFolderName: string) {
+  /** CLI callers supply their logger; other hosts keep the existing launch notice. */
+  static async launchWorld(
+    creatorTools: creatorTools,
+    worldFolderName: string,
+    log: (message: string) => void = console.log
+  ): Promise<void> {
     const commandLine = "minecraft://mode/?load=" + worldFolderName;
-    console.log("Running " + commandLine);
+    log("Running " + commandLine);
     await open(commandLine);
   }
 

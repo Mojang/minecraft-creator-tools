@@ -61,6 +61,14 @@ export class ServeCommand extends CommandBase implements ICommand {
     isEditInPlace: false,
     isLongRunning: true,
     category: "Server",
+    globalOptionGroups: ["input", "projects", "editor", "server", "passcodes", "ssl"],
+    examples: [
+      { description: "Start the web server on the default port (6126)", command: "mct serve" },
+      {
+        description: "Start with an admin passcode on a custom port",
+        command: "mct serve --port 8080 --adminpc my-passcode",
+      },
+    ],
     arguments: [
       {
         name: "features",
@@ -230,8 +238,9 @@ export class ServeCommand extends CommandBase implements ICommand {
     // Start the HTTP server first (doesn't require EULA) - unless dedicatedServerOnly
     if (sm.features !== ServerManagerFeatures.dedicatedServerOnly) {
       await this.applyServerProps(localEnv);
-      // Configure MCP auth requirement
+      // serve is the only command that offers MCP over HTTP at /mcp (see HttpServer).
       const httpServer = sm.ensureHttpServer();
+      httpServer.setMcpEnabled(true);
       if (context.server.mcpRequireAuth) {
         httpServer.setMcpRequireAuth(true);
       }
@@ -244,9 +253,7 @@ export class ServeCommand extends CommandBase implements ICommand {
       try {
         await httpServer.waitForReady(30000);
       } catch (err) {
-        log.error(
-          "HTTP server failed to start listening: " + (err instanceof Error ? err.message : String(err))
-        );
+        log.error("HTTP server failed to start listening: " + (err instanceof Error ? err.message : String(err)));
         context.setExitCode(ErrorCodes.INIT_ERROR);
         return;
       }

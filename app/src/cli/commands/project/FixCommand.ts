@@ -20,9 +20,19 @@
  *
  * IMPLEMENTATION:
  * Uses existing manager classes from src/manager/ that implement IProjectUpdater:
- * - ScriptModuleManager: Handles script module version updates
- * - FormatVersionManager: Handles format_version updates
+ * - ScriptModuleManager: Handles script module version updates (saves the manifests itself)
+ * - FormatVersionManager: Handles setnewestformatversions, which only updates world template
+ *   base_game_version today
  * - MinEngineVersionManager: Handles min_engine_version updates
+ * - ProjectUtilities.randomizeAllUids: Saves the project itself
+ *
+ * SAVING:
+ * FormatVersionManager and MinEngineVersionManager only change files in memory, so this
+ * command writes the files they report (writeAndReportUpdates) and counts only files that
+ * reached disk. It asks them to keep comments and to never lower a version, because the target
+ * comes from a network lookup that falls back to an older bundled version when it fails. If an
+ * updater fails or a file can't be written, the command reports what changed, then what failed,
+ * and exits with an error. --dry-run returns before any fix runs, so nothing is written.
  */
 
 import { Command } from "commander";
@@ -33,6 +43,8 @@ import ProjectUtilities from "../../../app/ProjectUtilities";
 import ScriptModuleManager from "../../../manager/ScriptModuleManager";
 import FormatVersionManager from "../../../manager/FormatVersionManager";
 import MinEngineVersionManager from "../../../manager/MinEngineVersionManager";
+import ProjectUpdateResult from "../../../updates/ProjectUpdateResult";
+import { UpdateResultType } from "../../../updates/IUpdateResult";
 
 const AVAILABLE_FIXES = [
   "latestbetascriptversion",
@@ -95,26 +107,32 @@ export class FixCommand extends CommandBase {
         choices: AVAILABLE_FIXES,
       },
     ],
+    globalOptionGroups: ["input", "projects", "dryRun", "json"],
+    examples: [
+      {
+        description: "Re-randomize manifest UUIDs (after cloning a project)",
+        command: "mct fix randomizealluids -i ./myproj",
+      },
+      {
+        description: "Bump format_version fields to the newest supported",
+        command: "mct fix setnewestformatversions -i ./myproj",
+      },
+      {
+        description: "Dry run: report what would change, write nothing",
+        command: "mct fix randomizealluids -i ./myproj -n",
+      },
+      { description: "Discover available fixes (and which are reversible)", command: "mct fix --list" },
+    ],
+    learnMore: [
+      "Most fixes edit files in place; commit or stash before running them.",
+      "Combine with `--quiet --json` in CI to suppress chatter and parse the result.",
+    ],
   };
 
   configure(cmd: Command): void {
     // --list adds a discovery affordance for CI: prints all available fixes
     // with their descriptions, safety classifications, and reversibility hints.
     cmd.option("--list", "List all available fixes with safety/reversibility metadata, then exit.");
-
-    cmd.addHelpText(
-      "after",
-      "\nExamples:\n" +
-        "  $ mct fix randomizealluids -i ./myproj                # Re-randomize manifest UUIDs (after cloning a project)\n" +
-        "  $ mct fix setnewestformatversions -i ./myproj         # Bump format_version fields to the newest supported\n" +
-        "  $ mct fix setnewestminengineversion -i ./myproj       # Bump min_engine_version in manifests\n" +
-        "  $ mct fix latestbetascriptversion -i ./myproj         # Pin @minecraft script modules to latest beta\n" +
-        "  $ mct fix randomizealluids -i ./myproj -n             # Dry-run: report what would change, write nothing\n" +
-        "  $ mct fix randomizealluids -i ./myproj --json         # Machine-readable result for CI\n" +
-        "  $ mct fix --list                                      # Discover available fixes (and which are reversible)\n" +
-        "\nTip: combine with `--quiet --json` in CI to suppress chatter and parse the result.\n" +
-        "Tip: most fixes edit files in place — commit/stash before running them.\n"
-    );
   }
 
   async execute(context: ICommandContext): Promise<void> {
@@ -217,40 +235,28 @@ export class FixCommand extends CommandBase {
           break;
 
         case "setnewestformatversions": {
-          const formatManager = new FormatVersionManager();
-          const results = await formatManager.update(project, 1);
-          fixResults.push({ project: project.name, fix: fixCanon, updatedCount: results.length });
-          if (results.length > 0) {
-            if (!context.quiet && !context.json) {
-              for (const result of results) {
-                context.log.info(`  ${result.message}: ${result.data || ""}`);
-              }
-              context.log.success(`Updated ${results.length} format_version(s) in project: ${project.name}`);
-            }
-          } else {
-            if (!context.quiet && !context.json) {
-              context.log.info(`No format versions to update in project: ${project.name}`);
-            }
-          }
+          const results = await new FormatVersionManager().updateBaseGameVersionToLatestVersion(project, {
+            keepNewerVersions: true,
+            preserveComments: true,
+          });
+          const updatedCount = await this.writeAndReportUpdates(context, project.name, results, {
+            updatedNoun: "format_version(s)",
+            noneMessage: "No format versions to update",
+          });
+          fixResults.push({ project: project.name, fix: fixCanon, updatedCount });
           break;
         }
 
         case "setnewestminengineversion": {
-          const engineManager = new MinEngineVersionManager();
-          const results = await engineManager.update(project, 1);
-          fixResults.push({ project: project.name, fix: fixCanon, updatedCount: results.length });
-          if (results.length > 0) {
-            if (!context.quiet && !context.json) {
-              for (const result of results) {
-                context.log.info(`  ${result.message}: ${result.data || ""}`);
-              }
-              context.log.success(`Updated ${results.length} min_engine_version(s) in project: ${project.name}`);
-            }
-          } else {
-            if (!context.quiet && !context.json) {
-              context.log.info(`No min engine versions to update in project: ${project.name}`);
-            }
-          }
+          const results = await new MinEngineVersionManager().updateMinEngineVersionToLatestVersion(project, {
+            keepNewerVersions: true,
+            preserveComments: true,
+          });
+          const updatedCount = await this.writeAndReportUpdates(context, project.name, results, {
+            updatedNoun: "min_engine_version(s)",
+            noneMessage: "No min engine versions to update",
+          });
+          fixResults.push({ project: project.name, fix: fixCanon, updatedCount });
           break;
         }
       }
@@ -261,6 +267,68 @@ export class FixCommand extends CommandBase {
     }
 
     this.logComplete(context);
+  }
+
+  /**
+   * Writes the files an updater changed in memory, reports the ones that reached disk, and returns
+   * how many did. Updater errors, such as a failed version lookup, and files that can't be written
+   * are listed after the updates, followed by a count of failed writes, and set a failing exit code.
+   */
+  private async writeAndReportUpdates(
+    context: ICommandContext,
+    projectName: string,
+    results: ProjectUpdateResult[],
+    text: { updatedNoun: string; noneMessage: string }
+  ): Promise<number> {
+    const written: ProjectUpdateResult[] = [];
+    const errors: string[] = [];
+    let failedWrites = 0;
+
+    for (const result of results) {
+      if (result.resultType === UpdateResultType.internalProcessingError) {
+        errors.push(result.message);
+        continue;
+      }
+
+      const file = result.projectItem?.primaryFile;
+
+      if (result.resultType !== UpdateResultType.updatedFile || !file?.needsSave) {
+        continue;
+      }
+
+      try {
+        await file.saveContent();
+        written.push(result);
+      } catch (e: unknown) {
+        errors.push(`Could not save ${file.fullPath}: ${e instanceof Error ? e.message : String(e)}`);
+        failedWrites++;
+      }
+    }
+
+    if (!context.quiet && !context.json) {
+      if (written.length > 0) {
+        for (const result of written) {
+          context.log.info(`  ${result.message}: ${result.data || ""}`);
+        }
+        context.log.success(`Updated ${written.length} ${text.updatedNoun} in project: ${projectName}`);
+      } else if (errors.length === 0) {
+        context.log.info(`${text.noneMessage} in project: ${projectName}`);
+      }
+    }
+
+    for (const error of errors) {
+      context.log.error(error);
+    }
+
+    if (failedWrites > 0) {
+      context.log.error(`Could not update ${failedWrites} ${text.updatedNoun} in project: ${projectName}`);
+    }
+
+    if (errors.length > 0) {
+      context.setExitCode(ErrorCodes.INIT_ERROR);
+    }
+
+    return written.length;
   }
 }
 

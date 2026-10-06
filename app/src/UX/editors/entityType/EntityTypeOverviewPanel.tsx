@@ -335,7 +335,7 @@ class EntityTypeOverviewPanel extends Component<IEntityTypeOverviewPanelProps, I
                 comp.displayName
               )}
               {comp.displayName !== comp.componentId && (
-                <span className={isDark ? "etop-componentRawId-dark" : "etop-componentRawId"}> {comp.componentId}</span>
+                <span className="etop-componentRawId"> {comp.componentId}</span>
               )}
             </span>
           </div>
@@ -439,7 +439,7 @@ class EntityTypeOverviewPanel extends Component<IEntityTypeOverviewPanelProps, I
                 that focusable canvas from the accessibility tree, hiding the
                 control from assistive technology and keyboard users (WCAG 2.1.1). */}
             <div className="etop-modelViewer">{modelViewerContent}</div>
-            <div className={isDark ? "etop-modelHint-dark" : "etop-modelHint"}>
+            <div className="etop-modelHint">
               {this.props.intl.formatMessage({ id: "project_editor.entity_overview.drag_hint" })}
             </div>
           </EditorContentPanel>

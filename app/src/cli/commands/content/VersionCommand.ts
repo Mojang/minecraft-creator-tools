@@ -28,6 +28,7 @@ export class VersionCommand extends CommandBase {
     isEditInPlace: false,
     isLongRunning: false,
     category: "Information",
+    globalOptionGroups: ["json"],
   };
 
   configure(_cmd: Command): void {

@@ -39,6 +39,6 @@ When the Minecraft Creator Tools MCP server is connected, prefer its tools for w
 
 - **Never accept the Minecraft EULA for the user**, including with `eula --accept` or the `MCTOOLS_I_ACCEPT_EULA_AT_MINECRAFTDOTNETSLASHEULA` environment variable. Validation, fixes, packaging, and rendering don't need it. Creating from templates and running servers do: if a command says the EULA wasn't accepted, ask the user to run `npx -y @minecraft/creator-tools@latest eula` themselves.
 - **Don't run long-running commands as blocking steps.** `view`, `edit`, `serve`, `dedicatedserve`, and `mcp` keep running until stopped. Suggest the command to the user, or run it in the background if your environment supports that.
-- **Avoid interactive prompts.** `create`, `add`, and some other commands ask questions when arguments are missing. Pass every argument and add `-y` (`--yes`) so they don't wait for input.
+- **Avoid interactive prompts.** `create`, `add`, and some other commands ask questions when arguments are missing. Pass every argument and add `-y` (`--yes`). Without a terminal they don't ask; they stop and name the missing argument.
 - **Keep the user's project clean.** Several commands write reports to `./out` by default; pass `-o <temp-folder>` when you only need the output. Add `--json` when you'll parse the result.
 - **Commands such as `fix` edit files in place.** Suggest committing to git (or making a copy) first, and use `-n` (`--dry-run`) to preview where it's supported.

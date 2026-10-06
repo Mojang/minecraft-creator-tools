@@ -28,7 +28,16 @@
  * actually capture real validation memory, the profiler must run INSIDE the
  * worker — see TaskWorker.ts, which wraps `executeTask` with one of these
  * helpers when `task.profileMode` is set.
+ *
+ * Status lines (where each file was saved, and the memory summary) go to the
+ * `report` sink each helper takes, which defaults to stdout. In --json and mcp
+ * modes, TaskWorker passes a stderr sink, because stdout must hold only the
+ * JSON document there.
  */
+
+/** Writes one line of profiler status. */
+export type ProfilerReport = (message: string) => void;
+
 export default class ProfilerWrapper {
   /**
    * Ensure the debugoutput folder exists and return an absolute file path
@@ -56,7 +65,11 @@ export default class ProfilerWrapper {
    * Capture a CPU profile while `functionToProfile` runs.
    * Returns the path to the generated `.cpuprofile` file.
    */
-  static async generateCpuTrace(traceName: string, functionToProfile: () => void | Promise<void>): Promise<string> {
+  static async generateCpuTrace(
+    traceName: string,
+    functionToProfile: () => void | Promise<void>,
+    report: ProfilerReport = console.log
+  ): Promise<string> {
     return new Promise<string>((resolve, reject) => {
       const { Session } = require("inspector");
       const session = new Session();
@@ -81,7 +94,7 @@ export default class ProfilerWrapper {
                 const filename = ProfilerWrapper.buildOutputPath(traceName + "-profile", ".cpuprofile");
                 const fs = require("fs");
                 fs.writeFileSync(filename, JSON.stringify(result.profile));
-                console.log(`CPU profile saved to ${filename}`);
+                report(`CPU profile saved to ${filename}`);
                 resolve(filename);
               });
             } catch (error) {
@@ -109,12 +122,14 @@ export default class ProfilerWrapper {
    * @param functionToProfile work to profile
    * @param samplingIntervalBytes bytes between samples (smaller = more detail,
    *   more overhead). Default 32768 (32 KB), Chrome's default.
+   * @param report where to write the status line
    * @returns absolute path of the generated `.heapprofile`
    */
   static async generateSamplingHeapProfile(
     traceName: string,
     functionToProfile: () => void | Promise<void>,
-    samplingIntervalBytes: number = 32768
+    samplingIntervalBytes: number = 32768,
+    report: ProfilerReport = console.log
   ): Promise<string> {
     return new Promise<string>((resolve, reject) => {
       const { Session } = require("inspector");
@@ -143,7 +158,7 @@ export default class ProfilerWrapper {
                   const filename = ProfilerWrapper.buildOutputPath(traceName + "-heapsample", ".heapprofile");
                   const fs = require("fs");
                   fs.writeFileSync(filename, JSON.stringify(result.profile));
-                  console.log(`Heap sampling profile saved to ${filename}`);
+                  report(`Heap sampling profile saved to ${filename}`);
                   resolve(filename);
                 });
               } catch (error) {
@@ -166,13 +181,14 @@ export default class ProfilerWrapper {
    * (often several × current heap size).
    *
    * @param traceName name prefix for the output file
+   * @param report where to write the status line
    * @returns absolute path of the generated `.heapsnapshot`
    */
-  static generateHeapSnapshot(traceName: string): string {
+  static generateHeapSnapshot(traceName: string, report: ProfilerReport = console.log): string {
     const v8 = require("v8");
     const filename = ProfilerWrapper.buildOutputPath(traceName + "-snapshot", ".heapsnapshot");
     v8.writeHeapSnapshot(filename);
-    console.log(`Heap snapshot saved to ${filename}`);
+    report(`Heap snapshot saved to ${filename}`);
     return filename;
   }
 
@@ -181,18 +197,19 @@ export default class ProfilerWrapper {
    * sampler active, records `process.memoryUsage()` every `pollMs`, writes a
    * heap snapshot at peak RSS, and dumps a stats JSON at the end.
    *
-   * The summary printed to stdout shows peak RSS / heap, plus the top
-   * allocation sites by self bytes from the sampling profile.
+   * The summary, written to `options.report` (stdout by default), shows peak
+   * RSS / heap and where each output file was saved.
    */
   static async generateMemoryProfile(
     traceName: string,
     functionToProfile: () => void | Promise<void>,
-    options?: { snapshotAtPeak?: boolean; pollMs?: number; samplingIntervalBytes?: number }
+    options?: { snapshotAtPeak?: boolean; pollMs?: number; samplingIntervalBytes?: number; report?: ProfilerReport }
   ): Promise<{ heapProfile: string; memStats: string; peakSnapshot?: string }> {
     const fs = require("fs");
     const snapshotAtPeak = options?.snapshotAtPeak ?? true;
     const pollMs = options?.pollMs ?? 500;
     const samplingIntervalBytes = options?.samplingIntervalBytes ?? 32768;
+    const report = options?.report ?? console.log;
 
     // Record memory samples on a timer.
     const samples: Array<{ ts: number; rss: number; heapUsed: number; heapTotal: number; external: number }> = [];
@@ -213,7 +230,7 @@ export default class ProfilerWrapper {
         // RSS grew >15% since last peak snapshot AND we're past 256 MB.
         // Take a fresh peak snapshot.
         try {
-          peakSnapshotPath = ProfilerWrapper.generateHeapSnapshot(traceName + "-peak");
+          peakSnapshotPath = ProfilerWrapper.generateHeapSnapshot(traceName + "-peak", report);
         } catch (e) {
           console.warn("Failed to write peak heap snapshot:", e);
         }
@@ -235,7 +252,8 @@ export default class ProfilerWrapper {
       heapProfile = await ProfilerWrapper.generateSamplingHeapProfile(
         traceName,
         functionToProfile,
-        samplingIntervalBytes
+        samplingIntervalBytes,
+        report
       );
     } finally {
       clearInterval(timer);
@@ -260,24 +278,24 @@ export default class ProfilerWrapper {
     };
     fs.writeFileSync(memStats, JSON.stringify(summary, null, 2));
 
-    console.log("===== Memory profile summary =====");
-    console.log(`  Trace name : ${traceName}`);
-    console.log(`  Duration   : ${(summary.durationMs / 1000).toFixed(1)} s`);
-    console.log(`  Peak RSS   : ${ProfilerWrapper.fmtMb(peakRss)}`);
-    console.log(`  Final RSS  : ${ProfilerWrapper.fmtMb(finalMem.rss)}`);
-    console.log(
+    report("===== Memory profile summary =====");
+    report(`  Trace name : ${traceName}`);
+    report(`  Duration   : ${(summary.durationMs / 1000).toFixed(1)} s`);
+    report(`  Peak RSS   : ${ProfilerWrapper.fmtMb(peakRss)}`);
+    report(`  Final RSS  : ${ProfilerWrapper.fmtMb(finalMem.rss)}`);
+    report(
       `  Final heap : ${ProfilerWrapper.fmtMb(finalMem.heapUsed)} used / ${ProfilerWrapper.fmtMb(finalMem.heapTotal)} total`
     );
-    console.log(`  External   : ${ProfilerWrapper.fmtMb(finalMem.external)}`);
+    report(`  External   : ${ProfilerWrapper.fmtMb(finalMem.external)}`);
     if ((finalMem as any).arrayBuffers !== undefined) {
-      console.log(`  ArrayBuffs : ${ProfilerWrapper.fmtMb((finalMem as any).arrayBuffers)}`);
+      report(`  ArrayBuffs : ${ProfilerWrapper.fmtMb((finalMem as any).arrayBuffers)}`);
     }
-    console.log(`  Heap prof  : ${heapProfile}`);
-    console.log(`  Mem stats  : ${memStats}`);
+    report(`  Heap prof  : ${heapProfile}`);
+    report(`  Mem stats  : ${memStats}`);
     if (peakSnapshotPath) {
-      console.log(`  Peak snap  : ${peakSnapshotPath}`);
+      report(`  Peak snap  : ${peakSnapshotPath}`);
     }
-    console.log("===================================");
+    report("===================================");
 
     return { heapProfile, memStats, peakSnapshot: peakSnapshotPath };
   }

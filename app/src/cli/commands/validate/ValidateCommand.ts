@@ -63,6 +63,7 @@ interface IValidateTaskArgs {
   inputFolder?: string;
   displayInfo: boolean;
   displayVerbose: boolean;
+  logToStdError: boolean;
   force: boolean;
 }
 
@@ -80,6 +81,16 @@ export class ValidateCommand extends CommandBase {
     isEditInPlace: false,
     isLongRunning: false,
     category: "Validation",
+    globalOptionGroups: ["input", "projects", "outputFolder", "outputType", "force", "threads", "warnOnly", "json"],
+    examples: [
+      { description: "Validate the project in the current folder", command: "mct validate" },
+      { description: "Validate a specific project folder", command: "mct validate -i ./my-project" },
+      {
+        description: "Run add-on packaging checks and print JSON",
+        command: "mct validate addon -i ./my-project --json",
+      },
+      { description: "Skip specific checks", command: "mct validate main PATHLENGTH,PACKSIZE -i ./my-project" },
+    ],
     arguments: [
       {
         name: "suite",
@@ -263,6 +274,7 @@ export class ValidateCommand extends CommandBase {
       inputFolder: context.inputFolder,
       displayInfo: context.localEnv.displayInfo,
       displayVerbose: context.verbose,
+      logToStdError: context.localEnv.logToStdError,
       force: context.force,
     };
   }

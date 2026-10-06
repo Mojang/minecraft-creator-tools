@@ -31,10 +31,72 @@ For the full commit history, see [Releases](https://github.com/Mojang/minecraft-
 
 ### Fixed
 
+- **`mct fix` saves its changes**: `setnewestminengineversion` and `setnewestformatversions`
+  printed "Updated N …" but never wrote the files. They now save each manifest they update, count
+  only files that were written, keep the manifest's comments, and never lower a version that's
+  already newer than the target. In `format_version` 3 manifests, which require strings, they
+  write the version as a string (`"1.26.50"`). Manifests that can't be parsed are left untouched,
+  and `--dry-run` still writes nothing. **Exit code change:** when these fixes can't determine the
+  target version or can't save a file, `mct fix` now lists what changed and what failed and exits
+  with code 1 instead of 0.
+- **`--dry-run` safety**: commands that don't support `--dry-run` now stop before doing
+  anything and exit 1 with "`mct <command>` doesn't support --dry-run yet, so nothing was
+  changed." Previously most commands ignored it and made real changes. Without `-o`, some
+  wrote into the project folder, and the `docsgenerate*` commands deleted its contents.
+  `fix`, `setup`, `exportaddon`, and `rendervanilla` still support it. `add`, `rendermodel`,
+  and `renderbatch` supported it only in part, so they now reject it too. With `--dry-run`,
+  the output folder (`-o`) is no longer created, and passcode flags aren't saved. Without
+  `-i`, `fix --dry-run` now names the projects in `-o` (`./out` by default), which a real
+  run changes, instead of the current folder's project.
+- **No more stray `./out` folder**: commands that don't write to the output folder, such as
+  `version`, `info`, `mcp`, `eula`, `passcodes`, `setup`, `serve`, and the render commands,
+  no longer create an empty `./out` in the current folder (or in your project, when run from
+  it), and the `mct` header line no longer names an output folder for them. Neither do `add`,
+  `create`, `fix`, `view`, and `edit` given `-i` or `--if`. Commands that write reports or
+  packages there, such as `validate` and `exportaddon`, still write them to `./out` by default.
+  Without `-i`, `add`, `create`, `fix`, `view`, `edit`, and `world set` still use `./out` as
+  before.
 - **MCP EULA check**: `createProject`, `addItem`, and `createMinecraftSessionWithContent`
   now return an error asking the user to run `mct eula` when the Minecraft EULA hasn't been
   accepted. Previously `createProject` reported success without creating any files.
   Accepting in another terminal takes effect without restarting the MCP server.
+- **`mct eula` consent**: `--yes` and `--json` no longer accept the Minecraft
+  EULA. Accept it with `mct eula --accept`, by setting the
+  `MCTOOLS_I_ACCEPT_EULA_AT_MINECRAFTDOTNETSLASHEULA` environment variable to
+  `true`, or by answering yes at the prompt. Scripts that relied on
+  `mct eula --yes` or `mct eula --json` to accept it now exit 1 with
+  instructions.
+- **Commands no longer skipped**: `mct` used to do nothing and exit 0 when any argument
+  contained `jest`, `mocha`, or `vitest` (for example, `mct validate -i ./my-jest-addon`), or
+  when `NODE_ENV` was `test`, which Jest and Vitest set by default. A validation step in CI
+  could pass without checking the add-on. `mct` now always runs the command.
+- **Clean machine output**: with `--json`, and in `mct mcp`, stdout now holds only the JSON
+  document or the MCP protocol messages. `mct validate --json` no longer prints validation log
+  lines before the JSON, and no longer cuts the JSON off when stdout is a pipe and validation
+  finds problems. When the reader stops early, as `| head` does, `--json` commands now exit with
+  their own exit code instead of 1. The `--debug` notice ("Using debug mode.") and `mct mcp` log
+  messages go to stderr.
+- **MCP over HTTP checks Host and Origin**: `mct serve` now checks the `Host` and `Origin`
+  headers of requests to its MCP endpoint (`/mcp`), as the MCP specification requires for
+  local servers, so web pages open in your browser can't call MCP tools. Requests must be
+  addressed to `localhost`, `127.0.0.1`, or the server's domain, on the port it listens on.
+  When `serve` listens on every interface (`0.0.0.0`, as in Docker), remote clients can use any
+  address but must send a passcode, as before.
+  Browser requests must come from the server's own origin, or from a configured CORS origin
+  with a passcode. MCP clients that connect to `http://localhost:<port>/mcp` aren't affected.
+- **No MCP endpoint on temporary servers**: `mct view`, `mct edit`, and the render commands
+  no longer serve MCP tools at `/mcp` from the web servers they start. Use `mct mcp`, or
+  `mct serve` for MCP over HTTP.
+- **No prompts without a terminal**: `mct create`, `mct add`, and `mct eula` now prompt only
+  when stdin and stdout are both terminals. In CI, in a pipe, or under an AI agent, a prompt
+  used to write cursor-control codes into the output, take piped input as its answer, or wait
+  on a pipe that stayed open. These commands now exit 1 right away and say what's missing and
+  how to pass it, such as `mct create <name> <template> --yes` or `mct eula --accept`. Piped
+  answers no longer count: `echo y | mct eula` doesn't accept the EULA. Commands given every
+  argument, or `--yes`, work as before.
+- **Fewer color codes in pipes**: the `mct` header line and command messages such as
+  `Error: …` are colored only on a terminal that supports color, as help already was.
+  `NO_COLOR` turns color off and `FORCE_COLOR` turns it on, as they do for help.
 
 ## [0.16.1] (2026-04-03)
 

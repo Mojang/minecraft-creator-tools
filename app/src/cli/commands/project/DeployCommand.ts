@@ -15,7 +15,7 @@
  * - layout:   Flat pack layout to a custom folder (-o). Packs are placed directly as
  *             {name}_bp/ and {name}_rp/ without development_ wrappers. Suitable for
  *             dedicated servers, test automation, or custom deployment targets.
- * - server:   Dedicated server path (use --server-path to specify)
+ * - server:   Dedicated server folder (set with --server-path)
  * - folder/output: Use the -o output folder (with development_* pack folders)
  * - Custom path: Any other existing directory is treated as a direct target
  *
@@ -29,6 +29,7 @@
  *               containing the project packs (uses ProjectExporter).
  * --launch:     Launch the world in Minecraft after deployment
  *               (only meaningful with --test-world).
+ * Launch notices use context.log, keeping --json stdout reserved for deployment results.
  *
  * USAGE:
  * npx mct deploy retail -i ./my-addon
@@ -60,6 +61,16 @@ export class DeployCommand extends CommandBase {
     isEditInPlace: false,
     isLongRunning: false,
     category: "Project",
+    globalOptionGroups: ["input", "projects", "outputFolder", "launch", "json"],
+    learnMore: ["`--launch` only applies with `--test-world`: it opens the generated test world in Minecraft."],
+    examples: [
+      { description: "Deploy packs to your local Minecraft", command: "mct deploy retail -i ./my-project" },
+      {
+        description: "Deploy as a generated test world",
+        command: "mct deploy retail --test-world -i ./my-project",
+      },
+      { description: "Write a flat pack layout to a folder", command: "mct deploy layout -i ./my-project -o ./dist" },
+    ],
     arguments: [
       {
         name: "mode",
@@ -76,7 +87,7 @@ export class DeployCommand extends CommandBase {
 
   configure(cmd: Command): void {
     cmd.option("--test-world", "Deploy as a generated test world containing the project packs");
-    cmd.option("--launch", "Launch the world in Minecraft after deployment (requires --test-world)");
+    cmd.option("--server-path <path>", "Dedicated server folder to deploy to, for `deploy server`.");
     cmd.option(
       "--env-file <path>",
       "Custom .env file path for `deploy env` mode. Default: <project>/.env. Useful when the .env lives elsewhere (CI runners, monorepos)."
@@ -122,13 +133,17 @@ export class DeployCommand extends CommandBase {
 
     if (!ns) {
       context.log.error(
-        `Could not determine target storage for deployment mode '${mode}'. Verify your --mode flag or output path.`
+        `Could not determine target storage for deployment mode '${mode}'. Check the <mode> argument or the output path.`
       );
       context.setExitCode(ErrorCodes.INIT_ERROR);
       return;
     }
 
     const isLayoutMode = mode === "layout";
+
+    if (context.world.launch && !context.world.testWorld) {
+      context.log.warn("--launch only applies with --test-world, so nothing will be launched.");
+    }
 
     for (const project of context.projects) {
       try {
@@ -171,7 +186,7 @@ export class DeployCommand extends CommandBase {
         }
 
         if (context.world.launch && worldName && typeof worldName === "string") {
-          await LocalTools.launchWorld(context.creatorTools, worldName);
+          await LocalTools.launchWorld(context.creatorTools, worldName, (message) => context.log.info(message));
         }
       } else if (isLayoutMode) {
         if (!context.json) {
@@ -304,12 +319,14 @@ export class DeployCommand extends CommandBase {
         }
         return new NodeStorage(context.outputFolder, "");
 
-      case "server":
-        if (!context.server.serverPath) {
-          context.log.error("No server path specified. Use --server-path option.");
+      case "server": {
+        const serverPath = context.commandOptions?.serverPath ?? context.server.serverPath;
+        if (!serverPath) {
+          context.log.error("No server path specified. Use the --server-path option.");
           return undefined;
         }
-        return new NodeStorage(context.server.serverPath, "");
+        return new NodeStorage(serverPath, "");
+      }
 
       case "output":
       case "folder":

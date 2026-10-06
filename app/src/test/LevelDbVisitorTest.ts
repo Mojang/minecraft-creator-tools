@@ -782,6 +782,142 @@ describe("LevelDb.forEachRecord", () => {
 });
 
 describe("WorldDataMetricsReducer", () => {
+  it("resolves puts and tombstones by exact sequence rather than visitation or source order", () => {
+    const keyBytes = chunkKey(-2147483648, 2147483647, 47, undefined, 255);
+    const put = { ...record(keyBytes), sourceKind: "ldb" as const, sequenceNumber: "9007199254740992" };
+    const deleted = { ...record(keyBytes, true), sequenceNumber: "9007199254740993" };
+
+    for (const records of [
+      [put, deleted],
+      [deleted, put],
+    ]) {
+      const reducer = new WorldDataMetricsReducer();
+      records.forEach((entry) => reducer.visit(entry));
+      reducer.visit(put);
+      reducer.visit({ ...put, sequenceNumber: deleted.sequenceNumber });
+      assert.strictEqual(reducer.getMetrics().chunkCount, 0);
+      assert.deepEqual(Array.from(reducer.getMetrics().dimensionIds), []);
+
+      reducer.visit({ ...put, sequenceNumber: "72057594037927935" });
+      const metrics = reducer.getMetrics();
+      assert.strictEqual(metrics.chunkCount, 1);
+      assert.strictEqual(metrics.subchunkLessChunkCount, 0);
+      assert.strictEqual(metrics.minX, -34359738368);
+      assert.strictEqual(metrics.maxZ, 34359738368);
+    }
+  });
+
+  it("keeps equal sequences unchanged and preserves visit ordering when a sequence is absent", () => {
+    const keyBytes = chunkKey(0, 0, 44);
+    const reducer = new WorldDataMetricsReducer();
+    reducer.visit({ ...record(keyBytes), sequenceNumber: "0" });
+    reducer.visit({ ...record(keyBytes, true), sequenceNumber: "0" });
+    assert.strictEqual(reducer.getMetrics().chunkCount, 1);
+    reducer.visit(record(keyBytes, true));
+    assert.strictEqual(reducer.getMetrics().chunkCount, 0);
+    reducer.visit({ ...record(keyBytes), sequenceNumber: "0" });
+    assert.strictEqual(reducer.getMetrics().chunkCount, 1);
+  });
+
+  it("updates chunk presence, subchunk presence and bounds only when effective presence changes", () => {
+    const reducer = new WorldDataMetricsReducer();
+    const visit = (key: Uint8Array, sequence: number, deleted = false) =>
+      reducer.visit({ ...record(key, deleted), sequenceNumber: String(sequence) });
+    const version = chunkKey(2, -3, 44);
+    const lower = chunkKey(2, -3, 47, undefined, 0);
+    const upper = chunkKey(2, -3, 47, undefined, 255);
+    visit(version, 1);
+    visit(lower, 2);
+    visit(upper, 3);
+    visit(lower, 4);
+    visit(lower, 5, true);
+    assert.strictEqual(reducer.getMetrics().subchunkLessChunkCount, 0);
+    visit(upper, 6, true);
+    assert.strictEqual(reducer.getMetrics().subchunkLessChunkCount, 1);
+    visit(version, 7, true);
+    assert.strictEqual(reducer.getMetrics().chunkCount, 0);
+    assert.isUndefined(reducer.getMetrics().minX);
+    visit(version, 6);
+    assert.strictEqual(reducer.getMetrics().chunkCount, 0);
+    visit(lower, 8);
+    assert.deepEqual(normalizeMetrics(reducer.getMetrics()), {
+      chunkCount: 1,
+      customDimensionChunkCount: 0,
+      subchunkLessChunkCount: 0,
+      minX: 32,
+      maxX: 48,
+      minZ: -48,
+      maxZ: -32,
+      dimensionIds: [0],
+      hasDimensionNameIdTable: false,
+    });
+  });
+
+  it("keeps every suffix byte, key length and dimension encoding as a distinct record identity", () => {
+    for (const dimension of [undefined, 0, 1, 2, 999, 1000, 2147483647]) {
+      const reducer = new WorldDataMetricsReducer();
+      const keys: Uint8Array[] = [];
+      for (const tag of [43, 44, 47, 120]) {
+        keys.push(chunkKey(0, 0, tag, dimension));
+        for (let suffix = 0; suffix < 256; suffix++) {
+          keys.push(chunkKey(0, 0, tag, dimension, suffix));
+        }
+      }
+      for (const key of keys) {
+        reducer.visit({ ...record(key), sequenceNumber: "1" });
+      }
+      const expectedWorldChunks = dimension === undefined || dimension === 1 || dimension === 2 ? 1 : 0;
+      const expectedCustomChunks = dimension !== undefined && dimension >= 1000 ? 1 : 0;
+      assert.strictEqual(reducer.getMetrics().chunkCount, expectedWorldChunks);
+      assert.strictEqual(reducer.getMetrics().customDimensionChunkCount, expectedCustomChunks);
+      for (let index = 0; index < keys.length; index++) {
+        assert.deepEqual(Array.from(reducer.getMetrics().dimensionIds), [dimension ?? 0]);
+        reducer.visit({ ...record(keys[index], true), sequenceNumber: "2" });
+      }
+      assert.deepEqual(Array.from(reducer.getMetrics().dimensionIds), []);
+      assert.strictEqual(reducer.getMetrics().chunkCount, 0);
+      assert.strictEqual(reducer.getMetrics().customDimensionChunkCount, 0);
+      reducer.visit({ ...record(keys[0]), sequenceNumber: "1" });
+      assert.deepEqual(Array.from(reducer.getMetrics().dimensionIds), []);
+      reducer.visit({ ...record(keys[0]), sequenceNumber: "3" });
+      assert.strictEqual(reducer.getMetrics().chunkCount, expectedWorldChunks);
+      assert.strictEqual(reducer.getMetrics().customDimensionChunkCount, expectedCustomChunks);
+      assert.strictEqual(reducer.getMetrics().subchunkLessChunkCount, expectedWorldChunks);
+      assert.deepEqual(Array.from(reducer.getMetrics().dimensionIds), [dimension ?? 0]);
+    }
+  });
+
+  it("does not merge implicit overworld records with dimension-encoded overworld records", () => {
+    const reducer = new WorldDataMetricsReducer();
+    const implicit = chunkKey(1, 2, 47, undefined, 0);
+    const explicit = chunkKey(1, 2, 47, 0, 0);
+    reducer.visit({ ...record(implicit), sequenceNumber: "1" });
+    reducer.visit({ ...record(explicit, true), sequenceNumber: "2" });
+    assert.strictEqual(reducer.getMetrics().chunkCount, 1);
+    reducer.visit({ ...record(implicit, true), sequenceNumber: "3" });
+    reducer.visit({ ...record(explicit), sequenceNumber: "4" });
+    assert.strictEqual(reducer.getMetrics().chunkCount, 0);
+    assert.deepEqual(Array.from(reducer.getMetrics().dimensionIds), [0]);
+    reducer.visit({ ...record(implicit), sequenceNumber: "5" });
+    assert.strictEqual(reducer.getMetrics().subchunkLessChunkCount, 0);
+  });
+
+  it("retains only the newest DimensionNameIdTable and copies its bytes", () => {
+    const reducer = new WorldDataMetricsReducer();
+    const bytes = new Uint8Array([1, 2, 3]);
+    const table = record(new Uint8Array(bytesFromString("DimensionNameIdTable")), false, "DimensionNameIdTable", bytes);
+    reducer.visit({ ...table, sequenceNumber: "10" });
+    bytes[0] = 99;
+    reducer.visit({ ...table, isDeleted: true, sequenceNumber: "9" });
+    assert.deepEqual(Array.from(reducer.getMetrics().dimensionNameIdTableBytes ?? []), [1, 2, 3]);
+    reducer.visit({ ...table, isDeleted: true, sequenceNumber: "11" });
+    reducer.visit({ ...table, sequenceNumber: "10" });
+    assert.isFalse(reducer.getMetrics().hasDimensionNameIdTable);
+    assert.isUndefined(reducer.getMetrics().dimensionNameIdTableBytes);
+    reducer.visit({ ...table, sequenceNumber: "12" });
+    assert.isTrue(reducer.getMetrics().hasDimensionNameIdTable);
+  });
+
   it("applies duplicate puts and tombstones using last-write-wins semantics", () => {
     const subchunk = chunkKey(1, 2, 47, undefined, 0);
     const reducer = new WorldDataMetricsReducer();

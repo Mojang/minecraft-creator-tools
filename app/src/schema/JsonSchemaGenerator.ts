@@ -58,6 +58,7 @@ export type JsonObject = Record<string, unknown>;
  * - point2, point3, intPoint3, location, locationOffset -> "array" of numbers with fixed length
  * - intRange, floatRange -> anyOf: [single value, array of 2 values]
  * - numberArray -> "array" of numbers
+ * - primitiveArray -> "array" of oneOf: ["string", "number", "boolean"]
  * - stringArray, longFormStringArray, checkboxListAsStringArray -> "array" of strings
  * - molangArray -> "array" of anyOf: ["string", "number"]
  * - object -> "object" with properties
@@ -1579,6 +1580,13 @@ export default class JsonSchemaGenerator {
       case FieldDataType.numberArray:
         schema.type = "array";
         schema.items = { type: "number" };
+        break;
+
+      // Primitive array - each item keeps its own JSON type (offspring mutation
+      // values: 1, 5, 9 for an int property, "warm" for an enum, true for a bool)
+      case FieldDataType.primitiveArray:
+        schema.type = "array";
+        schema.items = { oneOf: [{ type: "string" }, { type: "number" }, { type: "boolean" }] };
         break;
 
       // 2D point (x, y) - array of 2 numbers

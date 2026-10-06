@@ -79,6 +79,14 @@ export default class NodeStorage extends StorageBase implements IStorage, IWatch
     return path.sep;
   }
 
+  /**
+   * Why to refuse changes that plain read-only storage allows, such as creating or moving folders: the
+   * readOnlyReason of read-only storage, or undefined (see IStorage.readOnlyReason).
+   */
+  get strictReadOnlyReason(): string | undefined {
+    return this.readOnly ? this.readOnlyReason : undefined;
+  }
+
   get isWatching(): boolean {
     return this._watchers.size > 0;
   }

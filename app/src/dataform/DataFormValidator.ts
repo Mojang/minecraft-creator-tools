@@ -303,6 +303,7 @@ export default class DataFormValidator {
       if (elementType === "string") {
         if (
           type === FieldDataType.stringArray ||
+          type === FieldDataType.primitiveArray ||
           type === FieldDataType.checkboxListAsStringArray ||
           type === FieldDataType.longFormStringArray
         ) {
@@ -320,6 +321,7 @@ export default class DataFormValidator {
         // Number arrays can match numberArray, floatRange, intRange, percentRange, point2, point3, intPoint3, version
         if (
           type === FieldDataType.numberArray ||
+          type === FieldDataType.primitiveArray ||
           type === FieldDataType.floatRange ||
           type === FieldDataType.intRange ||
           type === FieldDataType.percentRange ||

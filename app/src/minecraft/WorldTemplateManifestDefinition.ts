@@ -8,6 +8,7 @@ import Project from "../app/Project";
 import StorageUtilities from "../storage/StorageUtilities";
 import IWorldManifest, { IWorldManifestHeader } from "./IWorldManifest";
 import Log from "../core/Log";
+import { getManifestVersionValue } from "../core/versioning/MinecraftVersionRules";
 
 export default class WorldTemplateManifestDefinition {
   private _file?: IFile;
@@ -117,9 +118,14 @@ export default class WorldTemplateManifestDefinition {
   }
 
   setBaseGameVersion(versionArray: number[], project: Project) {
-    const header = this.ensureHeaderForProject(project);
+    // IWorldManifestHeader only models the array form, but format_version 3 manifests use strings.
+    const header = this.ensureHeaderForProject(project) as { base_game_version: number[] | string };
 
-    header.base_game_version = versionArray;
+    header.base_game_version = getManifestVersionValue(
+      this.definition?.format_version,
+      versionArray,
+      header.base_game_version
+    );
   }
 
   persist(): boolean {

@@ -90,6 +90,7 @@ export class RenderBatchCommand extends CommandBase {
     isEditInPlace: false,
     isLongRunning: true,
     category: "Render",
+    globalOptionGroups: ["input", "projects"],
     arguments: [
       {
         name: "manifestPath",
@@ -177,7 +178,13 @@ export class RenderBatchCommand extends CommandBase {
         return;
       }
       try {
-        const succeeded = await this.renderManifestForProjects(context, context.projects, manifest, batchOptions, session);
+        const succeeded = await this.renderManifestForProjects(
+          context,
+          context.projects,
+          manifest,
+          batchOptions,
+          session
+        );
         process.stdout.write(succeeded ? "RENDER_DONE\n" : "RENDER_ERROR\n");
         context.exitCode = 0;
         await this.processStdinRequests(context, batchOptions, session);
@@ -205,7 +212,8 @@ export class RenderBatchCommand extends CommandBase {
   ): Promise<boolean> {
     let allSucceeded = true;
     for (const project of projects) {
-      allSucceeded = (await this.renderBatchForProject(context, project, manifest, batchOptions, session)) && allSucceeded;
+      allSucceeded =
+        (await this.renderBatchForProject(context, project, manifest, batchOptions, session)) && allSucceeded;
     }
     return allSucceeded;
   }
@@ -253,9 +261,7 @@ export class RenderBatchCommand extends CommandBase {
       return false;
     }
 
-    const project = projectDir
-      ? this.createProjectForFolder(context, projectDir)
-      : context.projects[0];
+    const project = projectDir ? this.createProjectForFolder(context, projectDir) : context.projects[0];
     if (!project) {
       context.log.error("No project available for stdin render request.");
       return false;
@@ -480,16 +486,12 @@ export class RenderBatchCommand extends CommandBase {
         const absoluteOutputPath = path.isAbsolute(entry.outputPath)
           ? entry.outputPath
           : path.join(process.cwd(), entry.outputPath);
-        if (context.dryRun) {
-          context.log.info(`Dry run: would write rendered image to ${absoluteOutputPath}`);
-        } else {
-          const outputDir = path.dirname(absoluteOutputPath);
-          if (!fs.existsSync(outputDir)) {
-            fs.mkdirSync(outputDir, { recursive: true });
-          }
-          fs.writeFileSync(absoluteOutputPath, result.imageData);
-          context.log.verbose(`[${index + 1}/${resolved.length}] Wrote ${absoluteOutputPath}`);
+        const outputDir = path.dirname(absoluteOutputPath);
+        if (!fs.existsSync(outputDir)) {
+          fs.mkdirSync(outputDir, { recursive: true });
         }
+        fs.writeFileSync(absoluteOutputPath, result.imageData);
+        context.log.verbose(`[${index + 1}/${resolved.length}] Wrote ${absoluteOutputPath}`);
         succeeded += 1;
       } finally {
         httpServer.unregisterTempContent(geoUrl);
@@ -499,9 +501,7 @@ export class RenderBatchCommand extends CommandBase {
       }
     }
 
-    context.log.success(
-      `Batch rendering complete: ${succeeded} succeeded, ${failed} failed (of ${resolved.length}).`
-    );
+    context.log.success(`Batch rendering complete: ${succeeded} succeeded, ${failed} failed (of ${resolved.length}).`);
     if (failed > 0) {
       context.setExitCode(ErrorCodes.INIT_ERROR);
     }
@@ -620,11 +620,7 @@ export class RenderBatchCommand extends CommandBase {
     };
   }
 
-  private parseRequiredStringField(
-    context: ICommandContext,
-    value: unknown,
-    fieldName: string
-  ): string | undefined {
+  private parseRequiredStringField(context: ICommandContext, value: unknown, fieldName: string): string | undefined {
     if (typeof value === "string" && value.trim().length > 0) {
       return value.trim();
     }
@@ -675,8 +671,7 @@ export class RenderBatchCommand extends CommandBase {
     entry: Record<string, unknown>,
     index: number
   ): { cameraX: number; cameraY: number; cameraZ: number } | undefined | null {
-    const hasCameraValue =
-      entry.cameraX !== undefined || entry.cameraY !== undefined || entry.cameraZ !== undefined;
+    const hasCameraValue = entry.cameraX !== undefined || entry.cameraY !== undefined || entry.cameraZ !== undefined;
 
     if (!hasCameraValue) {
       return undefined;
@@ -734,9 +729,10 @@ export class RenderBatchCommand extends CommandBase {
     const width = this.parsePositiveIntegerOption(context, options.width, "--width");
     const height = this.parsePositiveIntegerOption(context, options.height, "--height");
     const canvasTimeoutMs = this.parsePositiveIntegerOption(context, options.canvasTimeoutMs, "--canvas-timeout-ms");
-    const renderWaitMs = options.renderWaitMs !== undefined
-      ? this.parsePositiveIntegerOption(context, options.renderWaitMs, "--render-wait-ms")
-      : undefined;
+    const renderWaitMs =
+      options.renderWaitMs !== undefined
+        ? this.parsePositiveIntegerOption(context, options.renderWaitMs, "--render-wait-ms")
+        : undefined;
     if (
       portStart === undefined ||
       portEnd === undefined ||
@@ -794,11 +790,7 @@ export class RenderBatchCommand extends CommandBase {
     };
   }
 
-  private parsePositiveIntegerOption(
-    context: ICommandContext,
-    value: unknown,
-    optionName: string
-  ): number | undefined {
+  private parsePositiveIntegerOption(context: ICommandContext, value: unknown, optionName: string): number | undefined {
     let parsed: number;
     if (typeof value === "number") {
       parsed = value;

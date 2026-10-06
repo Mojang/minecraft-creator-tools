@@ -23,6 +23,7 @@ export class EnsureWorldCommand extends CommandBase implements ICommand {
     isEditInPlace: false,
     isLongRunning: false,
     category: "World",
+    globalOptionGroups: ["input", "projects", "outputFolder"],
   };
 
   public configure(_cmd: Commander): void {

@@ -13,7 +13,7 @@ Validate the folder that contains `behavior_packs/` and/or `resource_packs/`. A 
 
 ## 2. Run validation
 
-Run the bundled summary script from this skill's folder:
+Run the bundled summary script. Here and in later commands, `<this-skill-folder>` is the folder that contains this SKILL.md:
 
 ```bash
 node "<this-skill-folder>/scripts/validate-summary.mjs" <project-folder>

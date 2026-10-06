@@ -22,6 +22,11 @@ export class SetupCommand extends CommandBase {
     isEditInPlace: true,
     isLongRunning: false,
     category: "Project",
+    globalOptionGroups: ["input", "projects", "dryRun", "json"],
+    examples: [
+      { description: "Update project configuration files", command: "mct setup -i ./my-project" },
+      { description: "Preview the changes without writing files", command: "mct setup -i ./my-project -n" },
+    ],
     arguments: [],
   };
 

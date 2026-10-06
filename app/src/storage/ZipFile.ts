@@ -110,7 +110,9 @@ export default class ZipFile extends FileBase implements IFile {
 
   async saveContent(force?: boolean): Promise<Date> {
     if (this.parentFolder.storage.readOnly) {
-      throw new Error("Can't save read-only file.");
+      const reason = this.parentFolder.storage.readOnlyReason;
+
+      throw new Error(reason ? `Can't save '${this.fullPath}': ${reason}` : "Can't save read-only file.");
     }
 
     if (this.needsSave || force === true) {

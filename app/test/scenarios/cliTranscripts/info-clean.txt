@@ -1,0 +1,96 @@
+$ mct info -i simple
+cwd: <work>
+exit code: 0
+
+stdout:
+[<timestamp>] [MESSAGE ] [##] mct v<version>  in (-i): <work>/simple
+Project name: simple
+Project description: Introductory tests for Minecraft GameTest Framework.
+Default behavior pack folder: /behavior_packs/StarterTestsTutorial/
+No default resource pack.
+=== Behavior pack folder: /behavior_packs/StarterTestsTutorial/
+=== Behavior pack manifest: /behavior_packs/StarterTestsTutorial/manifest.json
+=== Icon: /behavior_packs/StarterTestsTutorial/pack_icon.png
+=== Catalog index: /behavior_packs/StarterTestsTutorial/scripts/index.js
+=== JavaScript: /behavior_packs/StarterTestsTutorial/scripts/starttests.js
+=== Structure: /behavior_packs/StarterTestsTutorial/structures/starttests/mediumglass.mcstructure
+UNKNOWN: [BASEGAMEVER002] No applicable items found for test Base Game Version (BASEGAMEVER)
+UNKNOWN: [BLOCKSCAT002] No applicable items found for test Blocks Catalog (BLOCKSCAT)
+UNKNOWN: [CDWORLDDATA002] No applicable items found for test Custom Dimension World Data Validation (CDWORLDDATA)
+UNKNOWN: [CHECKFEATUREDEPRECATION002] No applicable items found for test Feature Deprecation (CHECKFEATUREDEPRECATION)
+UNKNOWN: [CROSSREFINDEX002] No applicable items found for test Cross-Reference Index (CROSSREFINDEX)
+FEATUREAGGREGATION: [ENTITYTYPE052] Entity Type Runtime Identifier
+FEATUREAGGREGATION: [ENTITYTYPE053] Entity Type Identifier
+FEATUREAGGREGATION: [ENTITYTYPE054] Entity Type Metadata
+UNKNOWN: [EXPFLAG002] No applicable items found for test Experimental Flags (EXPFLAG)
+UNKNOWN: [FORMATVER002] No applicable items found for test Format Version (FORMATVER)
+FEATUREAGGREGATION: [GEOMETRY101] Block Geometry
+FEATUREAGGREGATION: [GEOMETRY102] Entity Geometry
+FEATUREAGGREGATION: [GEOMETRY103] Items Geometry
+INFO: [ITEMS102] (/behavior_packs/StarterTestsTutorial/manifest.json) Behavior pack manifest found
+INFO: [ITEMS202] JavaScript item count: 1
+INFO: [ITEMS203] Catalog index item count: 1
+INFO: [ITEMS204] Structure item count: 1
+INFO: [ITEMS205] Behavior pack manifest item count: 1
+INFO: [ITEMS303] Icon item count: 1
+INFO: [ITEMS309] Behavior pack folder item count: 1
+FEATUREAGGREGATION: [ITEMTYPE053] Item Type Identifier
+FEATUREAGGREGATION: [ITEMTYPE055] Item Type Category
+FEATUREAGGREGATION: [LINESIZE102] JavaScript file lines
+FEATUREAGGREGATION: [LINESIZE103] Catalog index file lines
+FEATUREAGGREGATION: [LINESIZE104] Structure file lines
+FEATUREAGGREGATION: [LINESIZE105] Behavior pack manifest file lines
+FEATUREAGGREGATION: [LINESIZE203] Icon file size
+FEATUREAGGREGATION: [LINESIZE209] Behavior pack folder file lines
+UNKNOWN: [MCFUNCTION002] No applicable items found for test MC Function Validation (MCFUNCTION)
+RECOMMENDATION: [MINENGINEVER120] (/behavior_packs/StarterTestsTutorial/manifest.json) Behavior pack manifest (1.20.10) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version
+INFO: [MINENGINEVER605] (/behavior_packs/StarterTestsTutorial/manifest.json) Behavior pack manifest min_engine_version: 1,20,10
+INFO: [PACK104] (/behavior_packs/StarterTestsTutorial/manifest.json) Behavior Pack Name: Starter Hello World Tests
+INFO: [PACK105] (/behavior_packs/StarterTestsTutorial/manifest.json) Behavior Pack Description: Introductory tests for Minecraft GameTest Framework.
+INFO: [PACK106] (/behavior_packs/StarterTestsTutorial/manifest.json) Behavior Pack Id: afeeb2ab-0404-4518-822f-9837117e78e1|0.0.1
+INFO: [PACK107] (/behavior_packs/StarterTestsTutorial/manifest.json) Behavior Pack Min Engine Version: 2
+INFO: [PACK107] (/behavior_packs/StarterTestsTutorial/manifest.json) Behavior Pack Min Engine Version: 1,20,10
+INFO: [PACK108] (/behavior_packs/StarterTestsTutorial/manifest.json) Behavior Pack Uuid: afeeb2ab-0404-4518-822f-9837117e78e1
+INFO: [PACK109] (/behavior_packs/StarterTestsTutorial/manifest.json) Behavior Pack Manifest
+FEATUREAGGREGATION: [PACK245] Entity Geometry
+FEATUREAGGREGATION: [PACKFILECOUNT101] File Count: 5
+FEATUREAGGREGATION: [PACKSIZE101] Overall Size: 18965
+FEATUREAGGREGATION: [PACKSIZE102] File Count: 5
+FEATUREAGGREGATION: [PACKSIZE103] Folder Count: 5
+FEATUREAGGREGATION: [PACKSIZE104] Content Size: 18965
+FEATUREAGGREGATION: [PACKSIZE105] Content File Count: 5
+FEATUREAGGREGATION: [PACKSIZE106] Content Folder Count: 3
+FEATUREAGGREGATION: [RESOURCEANIMATION101] Animations
+FEATUREAGGREGATION: [RESOURCEANIMATION102] Bones
+FEATUREAGGREGATION: [SCRIPT101] APIs Used
+UNKNOWN: [SCRIPTMODULE002] No applicable items found for test Script Modules (SCRIPTMODULE)
+UNKNOWN: [SNDSDEF002] No applicable items found for test Sound Definitions (SNDSDEF)
+FEATUREAGGREGATION: [SUMMARY101] Resource Manifests
+FEATUREAGGREGATION: [SUMMARY102] Behavior Manifests
+FEATUREAGGREGATION: [TEXTURE101] Textures
+FEATUREAGGREGATION: [TEXTUREIMAGE101] Texture Images
+FEATUREAGGREGATION: [TEXTUREIMAGE200] Texture Images Tier 0
+FEATUREAGGREGATION: [TEXTUREIMAGE201] Texture Images Tier 1
+FEATUREAGGREGATION: [TEXTUREIMAGE202] Texture Images Tier 2
+FEATUREAGGREGATION: [TEXTUREIMAGE203] Texture Images Tier 3
+FEATUREAGGREGATION: [TEXTUREIMAGE204] Texture Images Tier 4
+FEATUREAGGREGATION: [TEXTUREIMAGE205] Texture Images Tier 5
+UNKNOWN: [TEXTURELIST002] No applicable items found for test Texture List Validation (TEXTURELIST)
+FEATUREAGGREGATION: [TEXTUREREF101] Texture References
+FEATUREAGGREGATION: [TYPES101] Types
+UNKNOWN: [VALFILE002] No applicable items found for test Valid files (VALFILE)
+UNKNOWN: [VSCODEFILE002] No applicable items found for test VSCode Files (VSCODEFILE)
+UNKNOWN: [WORLD002] No applicable items found for test World Validation (WORLD)
+UNKNOWN: [WORLDDATA002] No applicable items found for test World Data Validation (WORLDDATA)
+
+stderr: (empty)
+
+files under <work>: (none)
+
+files under <data-dir>:
+  created cli/
+  created server/envprefs/
+  created server/packCache/
+  created worlds/
+
+network requests: (none)

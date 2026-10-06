@@ -121,7 +121,7 @@ import {
   IProfilerCaptureNotificationBody,
   IDebugStatItem,
   DEBUG_PANEL_SUBSCRIPTION_EVENTS,
-} from "../../local/IServerNotification";
+} from "../../app/IServerNotification";
 import {
   DebuggerFailureKind,
   DebuggerRecoveryAction,

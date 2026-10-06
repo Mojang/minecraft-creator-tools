@@ -1,0 +1,24 @@
+$ mct deploy folder -i simple -o deployed
+cwd: <work>
+exit code: 0
+
+stdout:
+Deploying project 'simple' to '<work>/deployed/'...
+Deployed: simple
+
+stderr: (empty)
+
+files under <work>:
+  created deployed/development_behavior_packs/StarterTestsTutorial/manifest.json
+  created deployed/development_behavior_packs/StarterTestsTutorial/pack_icon.png
+  created deployed/development_behavior_packs/StarterTestsTutorial/scripts/index.js
+  created deployed/development_behavior_packs/StarterTestsTutorial/scripts/starttests.js
+  created deployed/development_behavior_packs/StarterTestsTutorial/structures/starttests/mediumglass.mcstructure
+
+files under <data-dir>:
+  created cli/
+  created server/envprefs/
+  created server/packCache/
+  created worlds/
+
+network requests: (none)

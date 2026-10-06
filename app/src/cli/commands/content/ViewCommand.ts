@@ -26,6 +26,8 @@ export class ViewCommand extends CommandBase implements ICommand {
     isEditInPlace: false,
     isLongRunning: true,
     category: "Content",
+    globalOptionGroups: ["input", "ssl"],
+    examples: [{ command: "mct view -i ./my-project" }],
   };
 
   public configure(_cmd: Commander): void {

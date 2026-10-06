@@ -958,6 +958,78 @@ test.describe("Entity Type Editor - Deep Tab Interaction @full", () => {
     expect(groupsPanelVisible).toBe(true);
   });
 
+  // Regression for ADO #1643464: the states list had a viewport-based height
+  // that ran past the panel's clipped bottom, so once enough groups were added
+  // the list's own scrollbar ended with the Add state row still cut off.
+  test("Add state stays reachable after adding many states", async ({ page }, testInfo) => {
+    testInfo.setTimeout(90000);
+    const projectCreated = await createFullAddOnProject(page);
+
+    if (!projectCreated) {
+      test.skip();
+      return;
+    }
+
+    const entitySelected = await selectEntityType(page, "biceson");
+    if (!entitySelected) {
+      test.skip();
+      return;
+    }
+
+    await clickEditorTab(page, "Components");
+    await page.waitForTimeout(1500);
+
+    const groupsPanel = page.locator(".ete-groupsPanel").first();
+    const panelContent = groupsPanel.locator(".editor-panel-content").first();
+    const list = groupsPanel.locator(".ete-listInterior").first();
+    const addStateButton = groupsPanel.locator(".ete-addStateRow button").first();
+    await expect(addStateButton).toBeVisible({ timeout: 5000 });
+
+    const groupList = page.locator('[aria-label="List of components"]').first();
+    const before = await groupList.locator('[role="button"]').count();
+
+    // Keep adding until the list is taller than the room it has, then some more.
+    for (let i = 0; i < 12; i++) {
+      await addStateButton.click();
+      await page.waitForTimeout(150);
+    }
+
+    const after = await groupList.locator('[role="button"]').count();
+    console.log(`Component groups: ${before} -> ${after}`);
+    expect(after).toBe(before + 12);
+
+    // Clicking scrolls the target into view even inside an overflow-hidden
+    // box, which a creator has no scrollbar for. Put the panel content back
+    // where a creator sees it and only scroll the list, the way they can.
+    await panelContent.evaluate((el) => {
+      el.scrollTop = 0;
+    });
+    await list.evaluate((el) => {
+      el.scrollTop = el.scrollHeight;
+    });
+    await page.waitForTimeout(300);
+
+    await page.screenshot({
+      path: "debugoutput/screenshots/entity-deep-components-add-state-reachable.png",
+      fullPage: true,
+    });
+
+    const overflows = await list.evaluate((el) => el.scrollHeight > el.clientHeight);
+    console.log(`States list scrolls: ${overflows}`);
+    expect(overflows).toBe(true);
+
+    // The panel content clips whatever runs past it, so nothing inside may be
+    // taller than it: the list has to end where the panel ends.
+    const hiddenOverflow = await panelContent.evaluate((el) => el.scrollHeight - el.clientHeight);
+    console.log(`Hidden overflow below the states panel: ${hiddenOverflow}px`);
+    expect(hiddenOverflow).toBeLessThanOrEqual(0);
+
+    const contentBox = (await panelContent.boundingBox())!;
+    const buttonBox = (await addStateButton.boundingBox())!;
+    expect(buttonBox.y + buttonBox.height).toBeLessThanOrEqual(contentBox.y + contentBox.height + 1);
+    await expect(addStateButton).toBeInViewport({ ratio: 1 });
+  });
+
   test("should expand and display individual component form editor", async ({ page }, testInfo) => {
     testInfo.setTimeout(60000);
     const projectCreated = await createFullAddOnProject(page);

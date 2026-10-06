@@ -212,6 +212,21 @@ export interface IDataFormProps extends IDataContainer {
   tagData?: any;
   readOnly: boolean;
   onClose?: (props: IDataFormProps) => void;
+  /**
+   * When set, the form's title is an editable text box and each edit is
+   * reported here. Used by keyed object collections so the user can name
+   * the key of an entry (e.g. the entity property an inheritance applies to).
+   */
+  onTitleChange?: (props: IDataFormProps, newTitle: string) => void;
+  /**
+   * Set on a sub form that edits one entry of a keyed collection: the id of
+   * the collection field on the parent form, and the key the entry is under.
+   * Renaming and closing the entry go by these rather than by taking
+   * `formId` apart at a period, because a key is an opaque name that can
+   * itself contain periods (an entity property such as `demo:coat.variant`).
+   */
+  collectionFieldId?: string;
+  collectionKey?: string;
   onPropertyChanged?: (props: IDataFormProps, property: IProperty, newValue: any, updatingObject?: any) => void;
   onAddItem?: (lookupId: string) => Promise<string | undefined>;
   onValueAction?: (action: string, field: IField, value: string) => void;
@@ -221,6 +236,12 @@ interface IDataFormState {
   objectIncrement: number;
   updatedDirectObject?: any;
   subFormLoadState: string | undefined;
+  /**
+   * The name each keyed-object entry was created under, by its current key;
+   * it keeps the entry's sort position while the user types the new name.
+   * It cannot serve as a React key because a later entry can be created
+   * under that same name; see `_keyIdentities` for that.
+   */
   keyAliases: { [name: string]: string };
   lookups: { [name: string]: ISimpleReference[] | undefined };
   summarizer?: ISummarizer;
@@ -285,6 +306,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     this._addKeyedStringItem = this._addKeyedStringItem.bind(this);
     this._addKeyedObjectItem = this._addKeyedObjectItem.bind(this);
     this._handleKeyedObjectCollectionSubFormClose = this._handleKeyedObjectCollectionSubFormClose.bind(this);
+    this._handleKeyedObjectKeyRename = this._handleKeyedObjectKeyRename.bind(this);
     this._handleKeyedBooleanTextChange = this._handleKeyedBooleanTextChange.bind(this);
     this._handleKeyedBooleanValueChange = this._handleKeyedBooleanValueChange.bind(this);
     this._handleKeyedBooleanValueClose = this._handleKeyedBooleanValueClose.bind(this);
@@ -411,6 +433,16 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     });
   }
 
+  private static _instanceCounter = 0;
+
+  /**
+   * Stands in for a missing object key in element keys. It has to stay the
+   * same for the life of the form: the object increment that used to serve
+   * here changes on every edit, which changed every child's React key and
+   * remounted them all, dropping focus from whatever was being typed into.
+   */
+  private readonly _instanceId = "df" + ++DataForm._instanceCounter;
+
   _getObjectId() {
     if (this.props.objectKey) {
       return this.props.objectKey;
@@ -422,7 +454,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       return fieldId;
     }
 
-    return this.state.objectIncrement.toString();
+    return this._instanceId;
   }
 
   /**
@@ -663,7 +695,6 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       return;
     }
 
-    const arrayOfDataVal = this._getProperty(keySplit[0], []);
     const field = this._getFieldById(keySplit[0]);
 
     if (field === undefined) {
@@ -671,24 +702,54 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       return;
     }
 
-    const val = arrayOfDataVal[keySplit[1]];
+    this._renameObjectKey(keySplit[0], keySplit[1], event.target.value);
 
-    const keyAliases = this.state.keyAliases;
+    this.forceUpdate();
+  }
 
-    if (Utilities.isUsableAsObjectKey(keySplit[1]) && Utilities.isUsableAsObjectKey(event.target.value)) {
-      const index = parseInt(keySplit[1], 10);
-      if (!isNaN(index) && index >= 0 && index < arrayOfDataVal.length) {
-        arrayOfDataVal.splice(index, 1);
-      } else {
-        Log.debug("Array splice index out of bounds: " + keySplit[1]);
-      }
-
-      arrayOfDataVal[event.target.value] = val;
-
-      keyAliases[event.target.value] = this.state.keyAliases[keySplit[1]]
-        ? this.state.keyAliases[keySplit[1]]
-        : keySplit[1];
+  /**
+   * Move an entry of a keyed collection from one key to another, keeping its
+   * value and its position. A rename to a key that is already taken (or to a
+   * key that cannot be used) is refused, so no entry is ever overwritten or
+   * left behind as a copy. Returns whether the rename happened.
+   */
+  _renameObjectKey(fieldId: string, oldKey: string, newKey: string): boolean {
+    if (oldKey === newKey || !Utilities.isUsableAsObjectKey(oldKey) || !Utilities.isUsableAsObjectKey(newKey)) {
+      return false;
     }
+
+    const collection = this._getProperty(fieldId, {});
+
+    if (!collection || typeof collection !== "object" || !(oldKey in collection) || newKey in collection) {
+      return false;
+    }
+
+    // Rebuild in place so the object identity the form holds stays valid.
+    const entries = Object.entries(collection);
+    for (const key of Object.keys(collection)) {
+      delete collection[key];
+    }
+    for (const [key, value] of entries) {
+      collection[key === oldKey ? newKey : key] = value;
+    }
+
+    // The row keeps the alias of the key it was created under, so its sort
+    // position stays put while the user types the new name. Its React key
+    // comes from an identity of its own instead: the alias is a name another
+    // entry can be created under later (add, rename, add again gives the
+    // second entry the first one's original name), and two sub forms sharing
+    // a key would have React reuse the wrong state between them.
+    const keyAliases = this.state.keyAliases;
+    keyAliases[newKey] = keyAliases[oldKey] ? keyAliases[oldKey] : oldKey;
+    delete keyAliases[oldKey];
+
+    // The entry keeps its identity under its new name, so its sub form (and
+    // the title input being typed into) is not remounted by the rename.
+    const oldIdentityId = DataForm._keyIdentityId(fieldId, oldKey);
+    this._keyIdentities[DataForm._keyIdentityId(fieldId, newKey)] = this._keyIdentity(fieldId, oldKey);
+    delete this._keyIdentities[oldIdentityId];
+
+    this._setPropertyValue(fieldId, collection);
 
     this.setState({
       objectIncrement: this.state.objectIncrement,
@@ -696,7 +757,64 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       keyAliases: keyAliases,
     });
 
-    this.forceUpdate();
+    return true;
+  }
+
+  private static _keyIdentityCounter = 0;
+
+  /**
+   * Identity of each keyed-object entry, by field and current key (see
+   * `_keyIdentity`). Deliberately not React state: it only feeds React
+   * keys, is filled in on the way to a render, and nothing has to re-render
+   * on account of it. Keeping one table for renders, renames, additions and
+   * deletions is what keeps an entry's key stable; an entry whose identity
+   * lived in one table and was moved in another would get a fresh one on
+   * its next render and be remounted after all.
+   */
+  private _keyIdentities: { [id: string]: string } = {};
+
+  /** An identity no keyed-object entry in any form on the page has had before. */
+  private static _nextKeyIdentity(): string {
+    DataForm._keyIdentityCounter++;
+    return "entry" + DataForm._keyIdentityCounter;
+  }
+
+  private static _keyIdentityId(fieldId: string, key: string): string {
+    return fieldId + "." + key;
+  }
+
+  /**
+   * The identity a keyed-object entry's sub form is keyed on. It is handed
+   * out the first time the entry is rendered (or created) and follows the
+   * entry through renames, so the sub form, and the title input being typed
+   * into, is never remounted: not on the first keystroke, which used to
+   * switch the entry from a name-based key to an identity-based one and
+   * drop focus mid-word, and not on any later one.
+   */
+  private _keyIdentity(fieldId: string, key: string): string {
+    const id = DataForm._keyIdentityId(fieldId, key);
+    let identity = this._keyIdentities[id];
+
+    if (!identity) {
+      identity = DataForm._nextKeyIdentity();
+      this._keyIdentities[id] = identity;
+    }
+
+    return identity;
+  }
+
+  _handleKeyedObjectKeyRename(props: IDataFormProps, newTitle: string) {
+    const fieldId = props.collectionFieldId;
+    const oldKey = props.collectionKey;
+
+    if (fieldId === undefined || oldKey === undefined) {
+      Log.unexpectedState("DFKOKR1");
+      return;
+    }
+
+    if (this._renameObjectKey(fieldId, oldKey, newTitle)) {
+      this._incrementObjectState();
+    }
   }
 
   _handleKeyedStringValueChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -993,15 +1111,20 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       if (field) {
         const val = this._getProperty(field.id, {});
 
-        let newName = "new_event";
+        const baseName = field.defaultNewKey ? field.defaultNewKey : "new_event";
+        let newName = baseName;
         let iter = 0;
 
         while (val[newName] !== undefined) {
           iter++;
-          newName = "new_event_" + String(iter);
+          newName = baseName + "_" + String(iter);
         }
 
         val[newName] = {};
+
+        // A fresh identity, not whatever an earlier entry of this name had:
+        // React must not hand the newcomer a deleted entry's sub form state.
+        this._keyIdentities[DataForm._keyIdentityId(field.id, newName)] = DataForm._nextKeyIdentity();
 
         this._setPropertyValue(field.id, val);
         this._incrementObjectState();
@@ -1010,25 +1133,11 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
   }
 
   _handleKeyedObjectCollectionSubFormClose(props: IDataFormProps) {
-    const formId = props.formId;
-
-    if (formId === undefined) {
-      Log.unexpectedState("DFKOCFC1");
-      return;
-    }
-
-    const lastPeriod = formId.lastIndexOf(".");
-
-    if (lastPeriod < 0) {
-      Log.unexpectedState("DFKOCFC2");
-      return;
-    }
-
-    const objectKey: string = formId.substring(lastPeriod + 1);
-    const fieldId = formId.substring(0, lastPeriod);
+    const fieldId = props.collectionFieldId;
+    const objectKey = props.collectionKey;
 
     if (fieldId === undefined || objectKey === undefined) {
-      Log.unexpectedUndefined("DFKOCFC3");
+      Log.unexpectedState("DFKOCFC1");
       return;
     }
 
@@ -1036,6 +1145,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
     if (val && Utilities.isUsableAsObjectKey(objectKey)) {
       delete val[objectKey];
+      delete this._keyIdentities[DataForm._keyIdentityId(fieldId, objectKey)];
       this._setPropertyValue(fieldId, val);
       this._incrementObjectState();
     }
@@ -1482,6 +1592,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
               this.addVersionComponent(effectiveField, formInterior, descriptionElements, sampleElements);
             } else if (
               effectiveField.dataType === FieldDataType.stringArray ||
+              effectiveField.dataType === FieldDataType.primitiveArray ||
               effectiveField.dataType === FieldDataType.longFormStringArray ||
               effectiveField.dataType === FieldDataType.numberArray ||
               effectiveField.dataType === FieldDataType.checkboxListAsStringArray
@@ -1687,7 +1798,20 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         title = this._getProperty(this.props.titleFieldBinding, title);
       }
 
-      if (this.props.indentLevel || this.props.defaultVisualExperience === FieldVisualExperience.deemphasized) {
+      if (this.props.onTitleChange && !this.props.readOnly) {
+        const onTitleChange = this.props.onTitleChange;
+        header.push(
+          <div key="headerEdit" className={this.getCssClassName("subHeaderTitle")}>
+            <TextField
+              id={"dftitle." + (this.props.formId || "")}
+              value={title}
+              size="small"
+              variant="outlined"
+              onChange={(e) => onTitleChange(this.props, e.target.value)}
+            />
+          </div>
+        );
+      } else if (this.props.indentLevel || this.props.defaultVisualExperience === FieldVisualExperience.deemphasized) {
         header.push(
           <div key={"header"} className={this.getCssClassName("subHeaderTitle")}>
             {title}
@@ -2456,6 +2580,12 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
         propertyId += "." + key;
 
+        // Anchor the React key to the entry's own identity, assigned before
+        // the entry is ever edited and kept through renames, so typing into
+        // the title never remounts the sub form (and never loses focus), not
+        // even on the first keystroke.
+        const anchorKey = baseKey + "#" + this._keyIdentity(field.id, key);
+
         let indentLevel = 1;
 
         if (this.props.indentLevel) {
@@ -2473,8 +2603,11 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
           <DataForm
             directObject={obj}
             objectKey={propertyId}
-            key={propertyId}
+            key={anchorKey}
             formId={field.id + "." + key}
+            collectionFieldId={field.id}
+            collectionKey={key}
+            onTitleChange={hasDynamicKeys && !this.props.readOnly ? this._handleKeyedObjectKeyRename : undefined}
             theme={this.props.theme}
             title={title}
             project={this.props.project}
@@ -2486,7 +2619,9 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
             displayTitle={true}
             indentLevel={indentLevel}
             constrainHeight={this.props.constrainHeight}
-            onClose={hasDynamicKeys ? this._handleKeyedObjectCollectionSubFormClose : this._handleIndexedArraySubFormClose}
+            onClose={
+              hasDynamicKeys ? this._handleKeyedObjectCollectionSubFormClose : this._handleIndexedArraySubFormClose
+            }
             closeButton={hasDynamicKeys && !this.props.readOnly && field.allowCreateDelete !== false}
             definition={fieldSubForm}
             readOnly={this.props.readOnly}
@@ -2854,7 +2989,6 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
                 key={objKey + ".title.text"}
                 id={field.id + "." + key + ".text"}
                 value={key as string}
-                defaultValue={key as string}
                 size="small"
                 variant="outlined"
                 onChange={this._handleKeyedStringTextChange}
@@ -3228,12 +3362,13 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       if (field) {
         const arrayOfDataVal = this._getProperty(field.id, {});
 
-        let newName = "a new value";
+        const baseName = field.defaultNewKey ? field.defaultNewKey : "a new value";
+        let newName = baseName;
         let iter = 0;
 
         while (arrayOfDataVal[newName] !== undefined) {
           iter++;
-          newName = "a new value " + String(iter);
+          newName = baseName + (field.defaultNewKey ? "_" : " ") + String(iter);
         }
 
         arrayOfDataVal[newName] = "value";

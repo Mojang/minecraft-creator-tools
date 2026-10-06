@@ -11,6 +11,7 @@ import { ProjectItemType } from "../app/IProjectItemData";
 import BehaviorManifestDefinition from "./BehaviorManifestDefinition";
 import MinecraftUtilities from "./MinecraftUtilities";
 import Log from "../core/Log";
+import { getManifestVersionValue } from "../core/versioning/MinecraftVersionRules";
 
 export default class ResourceManifestDefinition {
   private _file?: IFile;
@@ -173,7 +174,11 @@ export default class ResourceManifestDefinition {
   setMinEngineVersion(versionArray: number[], project: Project) {
     const header = this.ensureHeaderForProject(project);
 
-    header.min_engine_version = versionArray;
+    header.min_engine_version = getManifestVersionValue(
+      this.definition?.format_version,
+      versionArray,
+      header.min_engine_version
+    );
   }
 
   static async setNewResourcePackId(project: Project, newResourcePackId: string, oldResourcePackId: string) {

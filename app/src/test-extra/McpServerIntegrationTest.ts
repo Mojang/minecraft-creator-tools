@@ -156,7 +156,7 @@ describe("MCP Server Integration Tests", function () {
       }
       const version = client.getServerVersion();
       expect(version).to.not.be.undefined;
-      expect(version?.name).to.equal("minecraft-creator-tools");
+      expect(version?.name).to.equal("minecraft");
     });
   });
 

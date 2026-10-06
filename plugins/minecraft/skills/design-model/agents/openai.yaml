@@ -1,0 +1,7 @@
+interface:
+  display_name: "Design Model"
+  short_description: "Design models, textures, and icons for a Minecraft add-on"
+  icon_small: "./assets/icon-small.png"
+  icon_large: "./assets/icon.png"
+  brand_color: "#52A535"
+  default_prompt: "Use $design-model to make my goblin look like a walking mushroom."

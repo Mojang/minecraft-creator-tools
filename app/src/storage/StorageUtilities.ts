@@ -1,6 +1,13 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+/**
+ * Shared storage traversal, serialization, and container access.
+ * getFileStorageFolder returns reportable errors for embedded-container validation; Project promotes them
+ * to failures for explicit package input. Persistent hosts reuse IFile and parsed-container caches, so
+ * cached unprocessable containers must be checked just like newly loaded ones, never accepted as usable roots.
+ */
+
 import IFolder from "./IFolder";
 import IFile, { FileUpdateType } from "./IFile";
 import DifferenceSet from "./DifferenceSet";
@@ -734,6 +741,7 @@ export default class StorageUtilities {
 
   public static async getFileStorageFolder(file: IFile): Promise<IFolder | undefined | string> {
     let zipStorage: IStorage | null | undefined = file.fileContainerStorage;
+    const hadCachedStorage = !!zipStorage;
 
     if (!zipStorage) {
       // ZipStorage.loadFromUint8Array throws on unreadable archives (its
@@ -750,16 +758,19 @@ export default class StorageUtilities {
       if (!zipStorage) {
         return undefined;
       }
+    }
 
-      if (zipStorage.errorStatus === StorageErrorStatus.unprocessable) {
-        file.errorStateMessage = zipStorage.errorMessage;
-        return file.errorStateMessage;
-      }
+    if (zipStorage.errorStatus === StorageErrorStatus.unprocessable) {
+      file.errorStateMessage = zipStorage.errorMessage;
+      return file.errorStateMessage;
+    }
 
+    if (!hadCachedStorage) {
       file.fileContainerStorage = zipStorage;
       file.fileContainerStorage.storagePath = file.storageRelativePath + "#";
     }
 
+    file.errorStateMessage = undefined;
     return zipStorage.rootFolder;
   }
 
@@ -1941,6 +1952,30 @@ export default class StorageUtilities {
     }
 
     return jsonObject;
+  }
+
+  /**
+   * Writes an object from getJsonObjectWithComments() back to its file, keeping comments at every
+   * level, and returns whether the file's data changed. Unlike
+   * IFile.setObjectContentIfSemanticallyDifferent, it compares against the file's current text
+   * rather than its comment cache, so it sees edits made to the cached object itself, and it keeps
+   * comments that only appear inside nested objects.
+   */
+  public static setJsonObjectWithComments(file: IFile, value: object): boolean {
+    if (typeof file.content === "string") {
+      try {
+        if (JsonUtilities.jsonObjectsSemanticallyEqual(JsonUtilities.parseJsonWithComments(file.content), value)) {
+          return false;
+        }
+      } catch {
+        // The current text doesn't parse, so any value is a change.
+      }
+    }
+
+    file.setContent(JsonUtilities.stringifyJsonWithComments(value));
+    file.commentJsonCache = value;
+
+    return true;
   }
 
   public static async getUniqueFileName(baseName: string, extension: string, folder: IFolder) {

@@ -11,7 +11,6 @@
   --etop-bg: #262423;
   --etop-panel-bg: #2a2a2a;
   --etop-text: #e0e0e0;
-  --etop-text-dark: #262423;
   --etop-text-muted: #a39895;
   --etop-border: #4a4543;
   --etop-link: #86d562;
@@ -83,23 +82,13 @@
   object-fit: cover;
 }
 
-.etop-modelHint-dark {
-  flex: 0 0 auto;
-  text-align: center;
-  font-size: 11px;
-  opacity: 0.5;
-  padding: 2px 0;
-  letter-spacing: 0.3px;
-}
-
 .etop-modelHint {
   flex: 0 0 auto;
   text-align: center;
   font-size: 11px;
-  opacity: 1;
   padding: 2px 0;
   letter-spacing: 0.3px;
-  color: #484543;
+  color: var(--etop-text-muted);
 }
 
 /* Behaviors section - below model, scrollable */
@@ -271,18 +260,9 @@
 .etop-componentRawId {
   font-family: "Fira Code", "Consolas", "Menlo", monospace;
   font-size: 10px;
-  opacity: 1;
   margin-left: 6px;
   white-space: nowrap;
-  color: var(etop-text-dark);
-}
-
-.etop-componentRawId-dark {
-  font-family: "Fira Code", "Consolas", "Menlo", monospace;
-  font-size: 10px;
-  opacity: 0.55;
-  margin-left: 6px;
-  white-space: nowrap;
+  color: var(--etop-text-muted);
 }
 
 /* Small screens - reduce model height */

@@ -15,6 +15,11 @@
  * 4. Syncs the template from GitHub
  * 5. Applies project customizations
  *
+ * PROMPTS go through prompt() (cli/core/Prompt.ts), which asks only when stdin and stdout are
+ * both terminals. Without a terminal, create asks nothing: it fails with INIT_ERROR and names the
+ * missing detail and the arguments (or --yes) that supply it. With --yes, or with every argument
+ * supplied, create never prompts.
+ *
  * TEMPLATES are defined in the gallery (src/res/gallery.json)
  *
  * USAGE:
@@ -25,13 +30,30 @@ import { Command } from "commander";
 import { ICommandMetadata, CommandBase } from "../../core/ICommand";
 import { ICommandContext, ErrorCodes } from "../../core/ICommandContext";
 import { TaskType } from "../../ClUtils";
-import inquirer, { DistinctQuestion } from "inquirer";
+import { IPromptRequest, prompt, PromptQuestion, reportPromptUnavailable } from "../../core/Prompt";
 import IGalleryItem, { GalleryItemType } from "../../../app/IGalleryItem";
 import Project, { ProjectAutoDeploymentMode } from "../../../app/Project";
 import ProjectExporter from "../../../app/ProjectExporter";
 import ProjectUtilities from "../../../app/ProjectUtilities";
 import NodeStorage from "../../../local/NodeStorage";
 import LocalUtilities from "../../../local/LocalUtilities";
+
+/** How to create a project without prompts, shown when create can't prompt. */
+const CREATE_WITHOUT_PROMPTS =
+  "Pass the project details as arguments instead. With --yes, create uses defaults for any you leave out:\n" +
+  "  mct create <name> <template> [creator] [description] --yes";
+
+function createPromptRequest(asking: string, details?: string): IPromptRequest {
+  return { asking, instead: (details ? details + "\n" : "") + CREATE_WITHOUT_PROMPTS };
+}
+
+/** The request for the template prompt, which lists the template ids so they can be passed instead. */
+function templatePromptRequest(galleryItems: IGalleryItem[], template: string | undefined): IPromptRequest {
+  const templateIds = galleryItems.filter((item) => item.type === GalleryItemType.project).map((item) => item.id);
+  const unknownTemplate = template ? `'${template}' isn't a template. ` : "";
+
+  return createPromptRequest("which template to use", `${unknownTemplate}Templates: ${templateIds.join(", ")}.`);
+}
 
 export class CreateCommand extends CommandBase {
   readonly metadata: ICommandMetadata = {
@@ -70,20 +92,20 @@ export class CreateCommand extends CommandBase {
         contextField: "description",
       },
     ],
+    globalOptionGroups: ["input", "projects", "outputFolder", "prompts"],
+    examples: [
+      { description: "Fully interactive; asks every question", command: "mct create" },
+      { description: "Non-interactive, accepting all defaults", command: "mct create -y -o ./myproj" },
+      {
+        description: "Fully specified, no prompts",
+        command: 'mct create myproj addonStarter alice "My new addon" -o .',
+      },
+    ],
+    learnMore: ["Pass `-y` (or `--yes`) in CI to accept all defaults."],
   };
 
   configure(cmd: Command): void {
     // Arguments are configured via metadata.arguments
-
-    cmd.addHelpText(
-      "after",
-      "\nExamples:\n" +
-        "  $ mct create -y -o ./myproj                                     # Non-interactive with defaults\n" +
-        "  $ mct create myproj addonStarter alice \"My new addon\" -o .      # Fully specified, no prompts\n" +
-        "  $ mct create -y -o ./myproj alice \"Quick start\"                 # Skip the long prompt chain\n" +
-        "  $ mct create                                                    # Fully interactive (asks every question)\n" +
-        "\nTip: pass `-y` (or `--yes`) in CI to accept all defaults.\n"
-    );
   }
 
   async execute(context: ICommandContext): Promise<void> {
@@ -102,8 +124,10 @@ export class CreateCommand extends CommandBase {
       try {
         await this.createProject(context, project, isSingleFolder);
       } catch (err) {
-        context.log.error("Failed to create project: " + (err instanceof Error ? err.message : String(err)));
-        context.setExitCode(ErrorCodes.INIT_ERROR);
+        if (!reportPromptUnavailable(context, err)) {
+          context.log.error("Failed to create project: " + (err instanceof Error ? err.message : String(err)));
+          context.setExitCode(ErrorCodes.INIT_ERROR);
+        }
         return;
       }
     }
@@ -159,14 +183,14 @@ export class CreateCommand extends CommandBase {
         // to keep --yes from hanging on stdin.
         title = "MyProject";
       } else {
-        const titleQuestions: DistinctQuestion<any>[] = [];
+        const titleQuestions: PromptQuestion[] = [];
         titleQuestions.push({
           type: "input",
           name: "title",
           default: "My Project",
           message: "What's your preferred project title?",
         });
-        const titleAnswer = await inquirer.prompt(titleQuestions);
+        const titleAnswer = await prompt(titleQuestions, createPromptRequest("for the project name"));
 
         if (titleAnswer["title"]) {
           title = titleAnswer["title"];
@@ -187,7 +211,7 @@ export class CreateCommand extends CommandBase {
       applyDescription = title;
 
       if (!context.yes) {
-        const descriptionQuestions: DistinctQuestion<any>[] = [];
+        const descriptionQuestions: PromptQuestion[] = [];
         descriptionQuestions.push({
           type: "input",
           name: "description",
@@ -195,7 +219,10 @@ export class CreateCommand extends CommandBase {
           message: "What's your preferred project description?",
         });
 
-        const descriptionAnswer = await inquirer.prompt(descriptionQuestions);
+        const descriptionAnswer = await prompt(
+          descriptionQuestions,
+          createPromptRequest("for the project description")
+        );
 
         if (descriptionAnswer["description"]) {
           applyDescription = descriptionAnswer["description"];
@@ -212,14 +239,14 @@ export class CreateCommand extends CommandBase {
       if (context.yes) {
         creator = "Creator";
       } else {
-        const creatorQuestions: DistinctQuestion<any>[] = [];
+        const creatorQuestions: PromptQuestion[] = [];
         creatorQuestions.push({
           type: "input",
           name: "creator",
           default: "Creator",
           message: "What's your creator name?",
         });
-        const creatorAnswer = await inquirer.prompt(creatorQuestions);
+        const creatorAnswer = await prompt(creatorQuestions, createPromptRequest("for the creator name"));
 
         if (creatorAnswer["creator"]) {
           creator = creatorAnswer["creator"];
@@ -228,7 +255,7 @@ export class CreateCommand extends CommandBase {
     }
 
     // Get short name
-    const questions: DistinctQuestion<any>[] = [];
+    const questions: PromptQuestion[] = [];
     if (!newName) {
       newName = title?.replace(/ /gi, "-").toLowerCase();
 
@@ -250,7 +277,7 @@ export class CreateCommand extends CommandBase {
         // Non-interactive: derive from short name or title.
         folderName = newName;
       } else {
-        const folderNameQuestions: DistinctQuestion<any>[] = [];
+        const folderNameQuestions: PromptQuestion[] = [];
 
         folderNameQuestions.push({
           type: "input",
@@ -259,7 +286,7 @@ export class CreateCommand extends CommandBase {
           message: "What's your preferred folder name?",
         });
 
-        const folderNameAnswer = await inquirer.prompt(folderNameQuestions);
+        const folderNameAnswer = await prompt(folderNameQuestions, createPromptRequest("for the folder name"));
         folderName = folderNameAnswer["folderName"];
       }
 
@@ -335,7 +362,9 @@ export class CreateCommand extends CommandBase {
           }
         }
         if (!galProject) {
-          context.log.error("No template available in the gallery and no template specified. Pass a template name as the second arg.");
+          context.log.error(
+            "No template available in the gallery and no template specified. Pass a template name as the second arg."
+          );
           context.setExitCode(ErrorCodes.INIT_ERROR);
           return;
         }
@@ -362,7 +391,10 @@ export class CreateCommand extends CommandBase {
     }
 
     if ((!galProject || !newName) && !context.yes) {
-      const answers = await inquirer.prompt(questions);
+      const answers = await prompt(
+        questions,
+        galProject ? createPromptRequest("for the project short name") : templatePromptRequest(galProjects, template)
+      );
 
       if (answers) {
         if (answers["name"]) {

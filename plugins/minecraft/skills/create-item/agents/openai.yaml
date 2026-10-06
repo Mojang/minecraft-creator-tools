@@ -1,0 +1,7 @@
+interface:
+  display_name: "Create Item"
+  short_description: "Create weapons, tools, food, and armor in a Minecraft add-on"
+  icon_small: "./assets/icon-small.png"
+  icon_large: "./assets/icon.png"
+  brand_color: "#52A535"
+  default_prompt: "Use $create-item to add a magic hammer that mines like an iron pickaxe."

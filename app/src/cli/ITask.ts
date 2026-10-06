@@ -21,6 +21,11 @@ export default interface ITask {
   task: TaskType;
   displayInfo: boolean;
   displayVerbose: boolean;
+  /**
+   * The main process's `LocalEnvironment.logToStdError`, which is on in `--json` and `mcp` modes.
+   * The worker applies it as soon as it creates its own environment, so its logs stay off stdout.
+   */
+  logToStdError: boolean;
   force?: boolean;
   /** When set, wrap execution of this task in a V8 inspector profile. */
   profileMode?: ProfileMode;

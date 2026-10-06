@@ -20,7 +20,8 @@ import WorldTemplateManifestDefinition from "../minecraft/WorldTemplateManifestD
 import PersonaManifestDefinition from "../minecraft/PersonaManifestDefinition";
 import ProjectItemUtilities from "../app/ProjectItemUtilities";
 import SemanticVersion from "../core/versioning/SemanticVersion";
-import { isMinorVersionTooOld } from "../core/versioning/MinecraftVersionRules";
+import { isMinorVersionTooOld, shouldReplaceManifestVersion } from "../core/versioning/MinecraftVersionRules";
+import StorageUtilities from "../storage/StorageUtilities";
 import { IValidationRuleProvider, ValidationRuleDefinition } from "../info/tests/ValidationRuleDefinition";
 import { MinEngineVersionValidationRules } from "./MinEngineVersionManagerData";
 
@@ -495,7 +496,21 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
     return [1];
   }
 
-  async updateMinEngineVersionToLatestVersion(project: Project) {
+  /**
+   * Sets min_engine_version in behavior and resource pack manifests to the latest Minecraft
+   * version. Changes are made in memory only; callers save the files (`mct fix` writes them,
+   * editors save the project). Returns one result per manifest whose content changed.
+   *
+   * @param options.keepNewerVersions Leave manifests that are newer than the latest version
+   *   alone, so a stale target (such as the fallback used when the version lookup fails) can't
+   *   lower them.
+   * @param options.preserveComments Reparse each manifest with its comments first, so writing
+   *   it keeps them. This replaces the manifest's definition object.
+   */
+  async updateMinEngineVersionToLatestVersion(
+    project: Project,
+    options: { keepNewerVersions?: boolean; preserveComments?: boolean } = {}
+  ) {
     const results: ProjectUpdateResult[] = [];
 
     const ver = await Database.getLatestVersionInfo(project.effectiveTrack);
@@ -540,23 +555,34 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
         if (pi.primaryFile) {
           const bpManifest = await BehaviorManifestDefinition.ensureOnFile(pi.primaryFile);
 
-          if (bpManifest) {
+          if (options.preserveComments) {
+            await bpManifest?.load(true);
+          }
+
+          // Skip manifests with no header, including ones that failed to parse. Setting the version
+          // would otherwise generate a header (or a whole manifest) and overwrite the user's file.
+          if (bpManifest?.definition?.header) {
             const mev = bpManifest.minEngineVersion;
 
-            if (!mev || mev.length < 3 || mev.length > 4 || mev[0] !== major || mev[1] !== minor || mev[2] !== patch) {
+            if (shouldReplaceManifestVersion(mev, [major, minor, patch], options.keepNewerVersions)) {
               bpManifest.setMinEngineVersion([major, minor, patch], project);
-              bpManifest.persist();
 
-              results.push(
-                new ProjectUpdateResult(
-                  UpdateResultType.updatedFile,
-                  this.id,
-                  200,
-                  "Updated behavior pack min_engine_version to '" + major + "." + minor + "." + patch + "'.",
-                  pi,
-                  ver
-                )
-              );
+              const changed = options.preserveComments
+                ? StorageUtilities.setJsonObjectWithComments(pi.primaryFile, bpManifest.definition)
+                : bpManifest.persist();
+
+              if (changed) {
+                results.push(
+                  new ProjectUpdateResult(
+                    UpdateResultType.updatedFile,
+                    this.id,
+                    200,
+                    "Updated behavior pack min_engine_version to '" + major + "." + minor + "." + patch + "'.",
+                    pi,
+                    ver
+                  )
+                );
+              }
             }
           }
         }
@@ -570,23 +596,32 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
         if (pi.primaryFile) {
           const rpManifest = await ResourceManifestDefinition.ensureOnFile(pi.primaryFile);
 
-          if (rpManifest) {
+          if (options.preserveComments) {
+            await rpManifest?.load(true);
+          }
+
+          if (rpManifest?.definition?.header) {
             const mev = rpManifest.minEngineVersion;
 
-            if (!mev || mev.length < 3 || mev.length > 4 || mev[0] !== major || mev[1] !== minor || mev[2] !== patch) {
+            if (shouldReplaceManifestVersion(mev, [major, minor, patch], options.keepNewerVersions)) {
               rpManifest.setMinEngineVersion([major, minor, patch], project);
-              rpManifest.persist();
 
-              results.push(
-                new ProjectUpdateResult(
-                  UpdateResultType.updatedFile,
-                  this.id,
-                  201,
-                  "Updated resource pack min_engine_version to '" + major + "." + minor + "." + patch + "'.",
-                  pi,
-                  ver
-                )
-              );
+              const changed = options.preserveComments
+                ? StorageUtilities.setJsonObjectWithComments(pi.primaryFile, rpManifest.definition)
+                : rpManifest.persist();
+
+              if (changed) {
+                results.push(
+                  new ProjectUpdateResult(
+                    UpdateResultType.updatedFile,
+                    this.id,
+                    201,
+                    "Updated resource pack min_engine_version to '" + major + "." + minor + "." + patch + "'.",
+                    pi,
+                    ver
+                  )
+                );
+              }
             }
           }
         }

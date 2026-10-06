@@ -1,6 +1,7 @@
 {
   "name": "@minecraft/creator-tools",
   "version": "0.0.0-semantically-released",
+  "mcpName": "net.minecraft/mcp",
   "productName": "Minecraft Creator Tools",
   "description": "Minecraft Creator Tools command line and libraries.",
   "publisher": "mojang-studios",

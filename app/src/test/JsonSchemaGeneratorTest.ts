@@ -21,6 +21,8 @@
  */
 
 import { expect } from "chai";
+import * as fs from "fs";
+import * as path from "path";
 import { FieldDataType } from "../dataform/IField";
 import IFormDefinition from "../dataform/IFormDefinition";
 import JsonSchemaGenerator from "../schema/JsonSchemaGenerator";
@@ -179,6 +181,54 @@ describe("JsonSchemaGenerator", () => {
       expect((schema.properties as any).intPoint3_field.items.type).to.equal("integer");
       expect((schema.properties as any).intPoint3_field.minItems).to.equal(3);
       expect((schema.properties as any).intPoint3_field.maxItems).to.equal(3);
+    });
+  });
+
+  describe("Primitive Array Mappings", () => {
+    /** Whether a value satisfies a schema of the shape primitiveArray produces. */
+    function acceptedBy(itemsSchema: any, values: unknown[]): boolean {
+      const allowed: string[] = itemsSchema.oneOf.map((option: any) => option.type);
+      return values.every((value) => allowed.includes(typeof value));
+    }
+
+    it("should map primitiveArray to an array whose items may be strings, numbers or booleans", async () => {
+      const formDef: IFormDefinition = {
+        id: "test_primitive_array",
+        fields: [{ id: "values", dataType: FieldDataType.primitiveArray }],
+      };
+
+      const schema = await JsonSchemaGenerator.convertFormDefinitionToJsonSchema(formDef);
+
+      const prop = (schema.properties as any).values;
+      expect(prop.type).to.equal("array");
+      expect(prop.items.oneOf.map((option: any) => option.type)).to.have.members(["string", "number", "boolean"]);
+    });
+
+    // The checked-in offspring override declares mutation_values as a
+    // primitiveArray inside a keyed object collection. Without a case for it
+    // the converter fell through to its string fallback, so every valid
+    // mutation list failed the generated schema (which also backs Monaco
+    // validation of the entity file).
+    it("accepts every kind of mutation value in the schema generated from the offspring override", async () => {
+      const overridePath = path.join(
+        __dirname,
+        "../../public_supplemental/data/local_forms/entity/minecraft_offspring.form.json"
+      );
+      const formDef = JSON.parse(fs.readFileSync(overridePath, "utf8")) as IFormDefinition;
+
+      const schema = await JsonSchemaGenerator.convertFormDefinitionToJsonSchema(formDef);
+
+      const inheritance = (schema.properties as any).property_inheritance;
+      expect(inheritance.type).to.equal("object");
+
+      const mutationValues = inheritance.additionalProperties.properties.mutation_values;
+      expect(mutationValues.type).to.equal("array");
+      expect(mutationValues.items.oneOf, "items accept more than one scalar type").to.exist;
+
+      expect(acceptedBy(mutationValues.items, [1, 5, 9]), "integer values").to.equal(true);
+      expect(acceptedBy(mutationValues.items, [false]), "boolean values").to.equal(true);
+      expect(acceptedBy(mutationValues.items, ["warm", "cold"]), "enum values").to.equal(true);
+      expect(acceptedBy(mutationValues.items, [{}]), "objects are not scalar values").to.equal(false);
     });
   });
 

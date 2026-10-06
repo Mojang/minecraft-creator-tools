@@ -478,6 +478,23 @@ class ModelViewer extends Component<IModelViewerProps, IModelViewerState> {
           textureVariants = filteredKeys && filteredKeys.length > 1 ? filteredKeys : undefined;
           selectedTextureVariant = textureVariants ? textureVariants[0] : textureKeys[0];
 
+          // Bug 1643411: start on the texture drawn for THIS geometry file, not
+          // on the entity's first variant. Geometry and texture variants share
+          // keys ("cold" -> geometry.cow.cold + cow_cold), and the cold cow's
+          // horns and muzzle live in the lower half of its 64x64 texture, so the
+          // default 64x32 cow texture left them white and looking misplaced.
+          const geometryIds = modelDef?.identifiers ?? [];
+          const matchingVariant = etrd.getTextureVariantKeyForGeometries(geometryIds);
+          if (matchingVariant !== undefined) {
+            selectedTextureVariant = matchingVariant;
+
+            // Keep the picker able to show the choice even if the overlay
+            // heuristics above filtered that key out of the list.
+            if (textureVariants && !textureVariants.includes(matchingVariant)) {
+              textureVariants = [matchingVariant, ...textureVariants];
+            }
+          }
+
           // Load texture using the selected variant key
           const texturePath = etrd.getTextureByKey(selectedTextureVariant);
           if (texturePath) {

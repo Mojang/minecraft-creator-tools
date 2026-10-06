@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import SemanticVersion from "./SemanticVersion";
+
 /**
  * Minecraft version rules and special-case logic for version comparisons.
  *
@@ -10,7 +12,8 @@
  * simple arithmetic (1.26 - 1 = 1.25).
  *
  * This module provides a helper that returns the effective "previous" minor
- * version for a given current version, accounting for any skipped ranges.
+ * version for a given current version, accounting for any skipped ranges,
+ * plus helpers for reading and writing manifest versions.
  */
 
 /**
@@ -56,4 +59,71 @@ export function getEffectivePreviousMinor(major: number, minor: number): number 
 export function isMinorVersionTooOld(major: number, currentMinor: number, candidateMinor: number): boolean {
   const effectivePrev = getEffectivePreviousMinor(major, currentMinor);
   return candidateMinor < effectivePrev;
+}
+
+/**
+ * Returns a manifest version (such as min_engine_version or base_game_version) in the form the
+ * manifest's top-level format_version calls for: format_version 3 and later require a semver
+ * string ("1.26.50"), while earlier format versions use an array ([1, 26, 50]).
+ *
+ * Pass the field's current value so a new array keeps the comments inside the old one: a manifest
+ * loaded with comments stores them as symbol properties on the array, and they'd otherwise be lost
+ * when the array is replaced.
+ */
+export function getManifestVersionValue(
+  manifestFormatVersion: unknown,
+  version: number[],
+  currentValue?: unknown
+): number[] | string {
+  if (typeof manifestFormatVersion === "number" && manifestFormatVersion >= 3) {
+    return version.join(".");
+  }
+
+  const value = [...version];
+
+  if (Array.isArray(currentValue)) {
+    for (const symbol of Object.getOwnPropertySymbols(currentValue)) {
+      Reflect.set(value, symbol, Reflect.get(currentValue, symbol));
+    }
+  }
+
+  return value;
+}
+
+/**
+ * Returns true if a manifest version, written as an array ([1, 26, 50]) or a string ("1.26.50"),
+ * is newer than the given major.minor.patch version. Returns false when it can't be parsed.
+ */
+export function isManifestVersionNewer(version: unknown, than: number[]): boolean {
+  let current: SemanticVersion | undefined;
+
+  if (typeof version === "string") {
+    current = SemanticVersion.fromString(version);
+  } else if (Array.isArray(version) && version.every((part) => typeof part === "number")) {
+    current = SemanticVersion.fromArray(version.slice(0, 3));
+  }
+
+  const target = SemanticVersion.fromArray(than);
+
+  return current !== undefined && target !== undefined && current.compareTo(target) > 0;
+}
+
+/**
+ * Returns whether an updater should set a manifest version to the target major.minor.patch
+ * version: when it's missing, isn't a [major, minor, patch(, build)] array, or differs. With
+ * keepNewerVersions, a version newer than the target is kept.
+ */
+export function shouldReplaceManifestVersion(version: unknown, target: number[], keepNewerVersions = false): boolean {
+  if (keepNewerVersions && isManifestVersionNewer(version, target)) {
+    return false;
+  }
+
+  return !(
+    Array.isArray(version) &&
+    version.length >= 3 &&
+    version.length <= 4 &&
+    version[0] === target[0] &&
+    version[1] === target[1] &&
+    version[2] === target[2]
+  );
 }
