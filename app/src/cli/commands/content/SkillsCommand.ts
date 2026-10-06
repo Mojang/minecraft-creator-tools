@@ -22,6 +22,7 @@ import { ICommandContext, ErrorCodes, ILogger } from "../../core/ICommandContext
 import { TaskType } from "../../ClUtils";
 import McpSkillLibrary from "../../../local/McpSkillLibrary";
 import { constants } from "../../../core/Constants";
+import { IHelpSection } from "../../core/CommandHelpWriter";
 
 const JSON_SCHEMA_VERSION = "1.0.0";
 
@@ -90,20 +91,20 @@ export function buildSkillFileJson(library: McpSkillLibrary, name: string, file?
   };
 }
 
-/** The "Agent skills" section at the end of `mct --help`. Undefined when no skills were found. */
-export function buildSkillsHelpText(library: McpSkillLibrary): string | undefined {
+/** The AGENT SKILLS section of `mct --help`. Undefined when no skills were found. */
+export function buildSkillsHelpSection(library: McpSkillLibrary): IHelpSection | undefined {
   if (library.skills.length === 0) {
     return undefined;
   }
 
-  return [
-    "",
-    "Agent skills:",
-    "  Step-by-step guides for AI agents doing common add-on tasks with these tools:",
-    `  ${library.skillNames.join(", ")}.`,
-    "  Run `mct skills` to list them, or `mct skills <name>` to print one.",
-    `  Without a global install, use \`${npxSkillsCommand(library)}\`.`,
-  ].join("\n");
+  return {
+    title: "AGENT SKILLS",
+    paragraphs: [
+      `Step-by-step guides for AI agents doing common add-on tasks with these tools: ${library.skillNames.join(", ")}.`,
+      "Run `mct skills` to list them, or `mct skills <name>` to print one.",
+      `Without a global install, use \`${npxSkillsCommand(library)}\`.`,
+    ],
+  };
 }
 
 export interface ISkillsRequest {
@@ -167,6 +168,12 @@ export class SkillsCommand extends CommandBase {
     isEditInPlace: false,
     isLongRunning: false,
     category: "Information",
+    globalOptionGroups: ["json"],
+    examples: [
+      { description: "List the skills", command: "mct skills" },
+      { description: "Print a skill's guide", command: "mct skills debug-addon" },
+      { description: "List them as JSON", command: "mct skills --json" },
+    ],
   };
 
   configure(_cmd: Command): void {

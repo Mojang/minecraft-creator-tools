@@ -8,37 +8,31 @@ Run commands as `npx -y @minecraft/creator-tools@latest <command> [arguments] [o
 
 These work with every command, though each command only uses the ones that apply to it.
 
-- `-i, --input-folder [path to folder]`: Path to the input folder. If not specified, the current working directory is used.
-- `--if, --input-file [path to file]`: Path to the input MCWorld, MCTemplate, MCPack, MCAddon or other zip file.
-- `-o, --output-folder <path to folder>`: Path to the output project folder. If not specified, the current working directory + 'out' is used. Default: `out`.
-- `--psw, --project-starts-with <starter term>`: Only process a project if it starts with the starter term; this can be used to subdivide processing.
-- `--bp, --base-path <path to folder>`: Path, relative to the current working folder, where common data files and folders are found.
-- `--afs, --additional-files [path to file]`: Comma-separated list of additional files to add to projects.
-- `--of, --output-file [path to file]`: Path to the export file, if applicable for the command you are using.
-- `--ot, --output-type [output type]`: Type of output, if applicable for the command you are using.
-- `--updatepc, --update-passcode [update passcode]`: Sets update passcode.
-- `--adminpc, --admin-passcode [admin passcode]`: Sets admin passcode.
-- `--displaypc, --display-passcode [display passcode]`: Sets display passcode.
-- `--fullropc, --full-readonly-passcode [full read only passcode]`: Sets full read only passcode.
+- `-i, --input-folder [path]`: Path to the input folder. If not specified, the current working directory is used.
+- `--if, --input-file <path>`: Path to the input MCWorld, MCTemplate, MCPack, MCAddon or other zip file.
+- `--single`: When pointed at a folder via -i, force that folder to be processed as a single project.
+- `-o, --output-folder <path>`: Path to the output project folder. If not specified, the current working directory + 'out' is used. Default: `out`.
+- `--psw, --project-starts-with <prefix>`: Only process a project if it starts with the starter term; this can be used to subdivide processing.
+- `--afs, --additional-files [paths]`: Comma-separated list of additional files to add to projects.
+- `--bp, --base-path <path>`: Path, relative to the current working folder, where common data files and folders are found.
+- `--of, --output-file [path]`: Path to the export file, if applicable for the command you are using.
+- `--ot, --output-type [type]`: Type of output, if applicable for the command you are using.
+- `--updatepc, --update-passcode [passcode]`: Sets update passcode.
+- `--adminpc, --admin-passcode [passcode]`: Sets admin passcode.
+- `--displaypc, --display-passcode [passcode]`: Sets display passcode.
+- `--fullropc, --full-readonly-passcode [passcode]`: Sets full read only passcode.
 - `-l, --launch`: Launches the final product in Minecraft when done.
-- `--ew, --ensure-world`: Ensures that a flat GameTest world is synchronized with the project.
 - `--isolated`: Do not load vanilla Minecraft resources (e.g., textures, ground blocks) from the web.
-- `--offline`: Alias for --isolated. Skip loading vanilla Minecraft web resources (textures, ground blocks); useful for CI environments where network is unreliable. Note: some other code paths (e.g. latest-version checks) may still attempt network requests.
-- `--bpu, --behavior-pack <behavior pack uuid>`: Adds a set of behavior pack UUIDs as references for any worlds that are updated.
-- `--rpu, --resource-pack <resource pack uuid>`: Adds a set of resources pack UUIDs as references for any worlds that are updated.
+- `--offline`: Same as --isolated. Useful in CI where the network is unreliable; some checks (e.g. latest version) may still use the network.
 - `--betaapis, --beta-apis`: Ensures that the Beta APIs experiment is set for any worlds that are updated.
 - `--no-betaapis, --no-beta-apis`: Removes the Beta APIs experiment if set.
 - `-f, --force`: Force any updates.
-- `--single`: When pointed at a folder via -i, force that folder to be processed as a single project.
 - `--editor`: Ensures that the world is an Editor world.
 - `--once`: When running as a server, only process one request and then shutdown.
 - `--no-editor`: Removes the editor setting from the world.
-- `--threads [thread count]`: Targeted number of threads to use.
-- `-n, --dry-run`: Show what would be done without making changes or writing files.
+- `--threads [count]`: Targeted number of threads to use.
+- `-n, --dry-run`: Show what would be done without making changes or writing files. Commands that don't support it exit with an error before doing anything.
 - `-d, --debug`: Add debug logging, options, and even more experimental commands.
-- `--mct, --mctemplate <path to a .mctemplate or a .zip world template>`: When using a world, uses a .mctemplate file for that world.
-- `--preview-server`: Specifies whether to use a preview server.
-- `--pack, --mcpack <path to .mcpack, .mcaddon, or .zip pack>`: When using a world, uses and adds pack references for that world.
 - `--verbose`: Show verbose log messages.
 - `-q, --quiet`: Suppress non-essential output. Only show errors and final results.
 - `--warn-only`: Report validation errors as warnings without setting a failure exit code.
@@ -51,7 +45,6 @@ These work with every command, though each command only uses the ones that apply
 - `--experimental-ssl-ca <path>`: (Experimental) Path to CA certificate chain file (PEM format). Needed when using certificates from a Certificate Authority (e.g., Let's Encrypt, DigiCert) to provide the full trust chain. Not needed for self-signed certificates.
 - `--experimental-ssl-port <port>`: (Experimental) Port for HTTPS server. Defaults to 443. Use a port > 1024 to avoid requiring admin privileges.
 - `--experimental-ssl-only`: (Experimental) Only start HTTPS server, do not start HTTP. Use this for production to ensure all traffic is encrypted.
-- `--unsafe-skip-signature-validation`: UNSAFE: Skip digital signature verification of Bedrock Dedicated Server executable. Only use this if you trust the server binary and understand the security implications.
 
 ## Commands
 
@@ -162,7 +155,7 @@ Arguments:
 Options:
 
 - `--test-world`: Deploy as a generated test world containing the project packs.
-- `--launch`: Launch the world in Minecraft after deployment (requires --test-world)
+- `--server-path <path>`: Dedicated server folder to deploy to, for `deploy server`.
 - `--env-file <path>`: Custom .env file path for `deploy env` mode. Default: <project>/.env. Useful when the .env lives elsewhere (CI runners, monorepos).
 
 #### `exportaddon`
@@ -305,7 +298,7 @@ Run this command line as a local MCP server.
 
 Options:
 
-- `-i, --input <folder>`: Working folder for MCP operations (default: current directory)
+- `--input <folder>`: Same as -i/--input-folder: the working folder for MCP operations.
 
 #### `dedicatedserve`
 
@@ -394,14 +387,6 @@ Display or set world settings.
 Arguments:
 
 - `[mode]`: Use 'set' to modify world settings.
-
-Options:
-
-- `--betaApis <value>`: Set beta APIs experiment (true/false)
-- `--editor <value>`: Set is created in editor (true/false)
-- `--dataDrivenItems <value>`: Set data driven items experiment (true/false)
-- `-b, --behaviorPack <pack>`: Behavior pack to associate.
-- `-r, --resourcePack <pack>`: Resource pack to associate.
 
 #### `ensureworld`
 

@@ -14,7 +14,9 @@ import "mocha";
 import * as fs from "fs";
 import * as path from "path";
 import { getAllCommands } from "../cli/commands/index";
+import { Command } from "commander";
 import { CLI_REFERENCE_HEADER, generateCliReference } from "../cli/core/CliReferenceGenerator";
+import { configureGlobalOptions, getGlobalOptionGroup } from "../cli/core/GlobalOptions";
 import TestPaths from "./TestPaths";
 
 const REFERENCE_PATH = path.join(
@@ -53,9 +55,24 @@ describe("CLI reference for the creator-tools-cli skill", () => {
   });
 
   it("lists global options, arguments, and command options", () => {
-    expect(reference).to.include("- `-i, --input-folder [path to folder]`:");
+    expect(reference).to.include("- `-i, --input-folder [path]`:");
     expect(reference).to.include("#### `validate [suite] [exclusions] [aggregateReports]`");
     expect(reference).not.to.include("--internalOnlyRunningInTheContextOfTestCommandLines");
+  });
+
+  it("leaves out global options that nothing reads", () => {
+    const unused = configureGlobalOptions(new Command("mct"), { includeDebugOptions: true }).options.filter(
+      (option) => getGlobalOptionGroup(option) === "unused"
+    );
+
+    // Commands may define a local option with the same name (serve --source-server-path), so only
+    // the global options section is checked.
+    const globalSection = reference.slice(reference.indexOf("## Global options"), reference.indexOf("## Commands"));
+
+    expect(unused.length).to.be.greaterThan(0);
+    for (const option of unused) {
+      expect(globalSection, option.flags).not.to.include(option.long as string);
+    }
   });
 
   it("is deterministic", () => {

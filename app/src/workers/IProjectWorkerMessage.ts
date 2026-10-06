@@ -273,6 +273,8 @@ export interface IWorkerErrorMessage {
   type: ProjectWorkerMessageType.error;
   requestId: string;
   error: string;
+  /** Streaming work will still send its final thumbnail-completion message after this phase error. */
+  willContinue?: boolean;
 }
 
 /**

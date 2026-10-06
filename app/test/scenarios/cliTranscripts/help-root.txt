@@ -1,0 +1,99 @@
+$ mct --help
+cwd: <work>
+exit code: 0
+
+stdout:
+Minecraft Creator Tools (preview) v<version>
+Create, preview, validate, and ship Minecraft add-ons.
+
+GET STARTED
+  $ mct create
+
+USAGE
+  mct <command> [arguments] [flags]
+  mct help [command]
+
+PROJECT COMMANDS
+  create:            Creates a new Minecraft project
+  add:               Adds new content into this Minecraft project
+  fix:               Fixes or updates the project with a set of desired fixes
+  setup:             Ensures project configuration files are up to date and
+                     healthy
+  set:               Temporarily disabled in CLI.
+  deploy:            Deploys Minecraft project packs to a destination.
+  exportaddon:       Packages the specified project into an addon file.
+  exportworld:       Exports a flat GameTest world for the behavior packs in the
+                     project folder.
+
+VALIDATION COMMANDS
+  validate:          Validate the current project.
+  aggregatereports:  Aggregates exported metadata about projects.
+  search:            Uses a content index to perform a search.
+
+CONTENT COMMANDS
+  view:              View Minecraft content in the browser (read-only)
+  edit:              Edit Minecraft content in the browser (read-write)
+  autotest:          Run auto-tests by deploying projects to BDS
+
+WORLD COMMANDS
+  world:             Display or set world settings
+  ensureworld:       Create/ensure a flat GameTest world for a project
+
+RENDER COMMANDS
+  rendermodel:       Renders a model geometry file from the project to a PNG
+                     image.
+  renderbatch:       Renders many model geometry files in one process, reusing a
+                     headless Chromium instance for the entire batch.
+  rendervanilla:     Renders vanilla Minecraft block(s) or mob(s) to PNG
+                     image(s).
+  renderstructure:   Render a .mcstructure file to a PNG image
+  buildstructure:    Build an .mcstructure file from IBlockVolume JSON
+
+SERVER COMMANDS
+  serve:             Start web server with Bedrock Dedicated Server support
+  mcp:               Run this command line as a local MCP server.
+  dedicatedserve:    Start only the Bedrock Dedicated Server (no web UI)
+  passcodes:         Shows active pass codes for web server validation.
+  setserverprops:    Display or set server properties
+  minecrafteulaandprivacystatement:
+                     See the Minecraft End User License Agreement.
+
+INFORMATION COMMANDS
+  info:              Displays information about the current project.
+  version:           Display version information.
+  skills:            List agent skills: step-by-step guides that show AI agents
+                     how to do common add-on tasks.
+  help:              Show help for any command
+
+AGENT SKILLS
+  Step-by-step guides for AI agents doing common add-on tasks with these tools:
+  create-block, create-item, create-mob, creator-tools-cli, debug-addon,
+  design-model.
+  Run `mct skills` to list them, or `mct skills <name>` to print one.
+  Without a global install, use `npx -y @minecraft/creator-tools@latest skills`.
+
+FLAGS
+  -h, --help      Show help for the command.
+  -v, --version   Show the version number.
+  --all-commands  Show all commands, including content-production tools.
+
+EXAMPLES
+  $ mct validate -i ./my-project
+  $ mct view -i ./my-project
+  $ mct help create
+
+LEARN MORE
+  Use `mct help <command>` for more information about a command, including all
+  of its flags.
+  Use `mct --all-commands` to also list 8 content-production commands.
+  Read the documentation at
+  https://learn.microsoft.com/minecraft/creator/documents/mctoolsoverview
+  Report a problem at https://aka.ms/mctbugs
+
+stderr: (empty)
+
+files under <work>: (none)
+
+files under <data-dir>: (none)
+
+network requests: (none)

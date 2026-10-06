@@ -922,6 +922,7 @@ async function processRelationsAndGenerateInfoSetStreaming(
       type: ProjectWorkerMessageType.error,
       requestId: request.requestId,
       error: "Relations calculation failed: " + (e.message || String(e)),
+      willContinue: true,
     });
     // Don't return - try validation anyway
   }
@@ -971,6 +972,7 @@ async function processRelationsAndGenerateInfoSetStreaming(
       type: ProjectWorkerMessageType.error,
       requestId: request.requestId,
       error: "Validation failed: " + (e.message || String(e)),
+      willContinue: true,
     });
   }
 

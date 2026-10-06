@@ -1,0 +1,95 @@
+$ mct help validate
+cwd: <work>
+exit code: 0
+
+stdout:
+Validate the current project.
+
+USAGE
+  mct validate [suite] [exclusions] [aggregateReports] [flags]
+
+ALIASES
+  mct val
+
+ARGUMENTS
+  [suite]             Specifies the type of validation suite to run: 'main'
+                      (default, most common checks), 'addon' (add-on packaging
+                      and structure checks), 'currentplatform'
+                      (platform-specific compatibility checks), 'all' (every
+                      available validator), 'default' (alias for main) (default:
+                      main)
+  [exclusions]        Specifies a comma-separated list of tests to exclude,
+                      e.g., PATHLENGTH,PACKSIZE
+  [aggregateReports]  Specify 'aggregate' to aggregate reports across projects
+                      at the end of the run. (choices: aggregatenoindex,
+                      aggregate, true, false, 1, 0)
+
+INHERITED FLAGS
+  -i, --input-folder [path]   Path to the input folder. If not specified, the
+                              current working directory is used.
+  --if, --input-file <path>   Path to the input MCWorld, MCTemplate, MCPack,
+                              MCAddon or other zip file.
+  --single                    When pointed at a folder via -i, force that folder
+                              to be processed as a single project.
+  --psw, --project-starts-with <prefix>
+                              Only process a project if it starts with the
+                              starter term; this can be used to subdivide
+                              processing.
+  --afs, --additional-files [paths]
+                              Comma-separated list of additional files to add to
+                              projects.
+
+  -o, --output-folder <path>  Path to the output project folder. If not
+                              specified, the current working directory + 'out'
+                              is used. (default: out)
+  --ot, --output-type [type]  Type of output, if applicable for the command you
+                              are using.
+
+  -f, --force                 Force any updates.
+
+  --threads [count]           Targeted number of threads to use.
+  --warn-only                 Report validation errors as warnings without
+                              setting a failure exit code.
+
+  --json                      Output results in JSON format for machine parsing.
+
+  --bp, --base-path <path>    Path, relative to the current working folder,
+                              where common data files and folders are found.
+  --isolated                  Do not load vanilla Minecraft resources (e.g.,
+                              textures, ground blocks) from the web
+  --offline                   Same as --isolated. Useful in CI where the network
+                              is unreliable; some checks (e.g. latest version)
+                              may still use the network.
+  -d, --debug                 Add debug logging, options, and even more
+                              experimental commands.
+  --verbose                   Show verbose log messages.
+  -q, --quiet                 Suppress non-essential output. Only show errors
+                              and final results.
+
+  -h, --help                  Show help for the command.
+
+EXAMPLES
+  # Validate the project in the current folder
+  $ mct validate
+
+  # Validate a specific project folder
+  $ mct validate -i ./my-project
+
+  # Run add-on packaging checks and print JSON
+  $ mct validate addon -i ./my-project --json
+
+  # Skip specific checks
+  $ mct validate main PATHLENGTH,PACKSIZE -i ./my-project
+
+LEARN MORE
+  Use `mct help` to see all commands.
+  Read the documentation at
+  https://learn.microsoft.com/minecraft/creator/documents/mctoolsoverview
+
+stderr: (empty)
+
+files under <work>: (none)
+
+files under <data-dir>: (none)
+
+network requests: (none)

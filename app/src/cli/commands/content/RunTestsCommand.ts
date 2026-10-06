@@ -24,6 +24,7 @@ export class RunTestsCommand extends CommandBase implements ICommand {
     isEditInPlace: false,
     isLongRunning: false,
     category: "Content",
+    globalOptionGroups: [],
   };
 
   public configure(_cmd: Commander): void {

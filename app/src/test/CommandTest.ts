@@ -23,6 +23,7 @@ import {
   ErrorCodes,
 } from "../cli/core/ICommandContext";
 import { CommandRegistry } from "../cli/core/CommandRegistry";
+import { createCliProgram } from "../cli/core/CliProgram";
 import { getAllCommands } from "../cli/commands/index";
 import { TaskType, OutputType } from "../cli/ClUtils";
 import { CommandContextFactory } from "../cli/core/CommandContextFactory";
@@ -233,6 +234,7 @@ describe("CommandRegistry", () => {
         isEditInPlace: false,
         isLongRunning: false,
         category: "Test",
+        globalOptionGroups: [],
       },
       configure: () => {},
       execute: async () => {},
@@ -255,6 +257,7 @@ describe("CommandRegistry", () => {
         isEditInPlace: false,
         isLongRunning: false,
         category: "Test",
+        globalOptionGroups: [],
       },
       configure: () => {},
       execute: async () => {},
@@ -278,6 +281,7 @@ describe("CommandRegistry", () => {
         isEditInPlace: false,
         isLongRunning: false,
         category: "Validation",
+        globalOptionGroups: [],
       },
       configure: () => {},
       execute: async () => {},
@@ -298,6 +302,7 @@ describe("CommandRegistry", () => {
         isEditInPlace: false,
         isLongRunning: false,
         category: "Test",
+        globalOptionGroups: [],
       },
       configure: () => {},
       execute: async () => {},
@@ -313,6 +318,7 @@ describe("CommandRegistry", () => {
         isEditInPlace: false,
         isLongRunning: false,
         category: "Test",
+        globalOptionGroups: [],
       },
       configure: () => {},
       execute: async () => {},
@@ -334,6 +340,7 @@ describe("CommandRegistry", () => {
         isEditInPlace: false,
         isLongRunning: false,
         category: "Test",
+        globalOptionGroups: [],
       },
       configure: () => {},
       execute: async () => {},
@@ -350,6 +357,7 @@ describe("CommandRegistry", () => {
         isEditInPlace: false,
         isLongRunning: false,
         category: "Test",
+        globalOptionGroups: [],
       },
       configure: () => {},
       execute: async () => {},
@@ -375,6 +383,7 @@ describe("CommandRegistry", () => {
         isEditInPlace: false,
         isLongRunning: false,
         category: "Validation",
+        globalOptionGroups: [],
       },
       configure: () => {},
       execute: async () => {},
@@ -390,6 +399,7 @@ describe("CommandRegistry", () => {
         isEditInPlace: false,
         isLongRunning: false,
         category: "Information",
+        globalOptionGroups: [],
       },
       configure: () => {},
       execute: async () => {},
@@ -1017,16 +1027,16 @@ describe("CommandRegistry configureCommander", () => {
     expect(state.taskType).to.equal(TaskType.version);
   });
 
-  it("should generate category help text", () => {
+  it("should group root help by command category", () => {
     const registry = new CommandRegistry();
-    const commands = getAllCommands();
-    registry.registerAll(commands);
+    registry.registerAll(getAllCommands());
 
-    const helpText = registry.generateCategoryHelp();
-    expect(helpText).to.include("Validation:");
-    expect(helpText).to.include("Project:");
-    expect(helpText).to.include("Server:");
-    expect(helpText.length).to.be.greaterThan(100);
+    const program = createCliProgram({ registry, includeDebugOptions: false, showAllCommands: false });
+    const helpText = program.helpInformation();
+
+    expect(helpText).to.include("VALIDATION COMMANDS");
+    expect(helpText).to.include("PROJECT COMMANDS");
+    expect(helpText).to.include("SERVER COMMANDS");
   });
 });
 
@@ -1080,6 +1090,64 @@ describe("ValidateCommand Execution", () => {
       expect(mockLogger.hasMessage("warn", "No projects found")).to.be.false;
     }
   });
+});
+
+// Validation workers create their own LocalEnvironment, so each task carries the main process's
+// localEnv.logToStdError, which cli/index.ts turns on only for --json and mcp. Human-readable runs
+// must keep the workers' default log routing (their output is unchanged); --json runs route worker
+// logs off stdout so it holds only the JSON document.
+describe("Validation worker log routing", () => {
+  const cases = [
+    { command: "validate", threads: 1, logToStdError: false },
+    { command: "validate", threads: 2, logToStdError: false },
+    { command: "validate", threads: 1, logToStdError: true },
+    { command: "validate", threads: 2, logToStdError: true },
+    { command: "profileValidation", threads: 1, logToStdError: false },
+    { command: "profileValidation", threads: 1, logToStdError: true },
+  ];
+
+  for (const c of cases) {
+    const mode = c.logToStdError ? "--json" : "human-readable";
+
+    it(`${c.command} --threads ${c.threads} (${mode}) sends logToStdError=${c.logToStdError} to its worker`, async () => {
+      const sentArgs: any[] = [];
+      const capturingPool = {
+        concurrency: c.threads,
+        async execute(task: IWorkerTask<any, any>) {
+          sentArgs.push(task.args);
+          return { success: true, result: [] };
+        },
+        async executeBatch(tasks: IWorkerTask<any, any>[]) {
+          sentArgs.push(...tasks.map((task) => task.args));
+          return tasks.map(() => ({ success: true, result: [] }));
+        },
+        async shutdown() {},
+      } as unknown as IWorkerPool;
+
+      const mockProject = {
+        name: "test-project",
+        localFolderPath: "/mock/path",
+        containerName: "test-project",
+      } as unknown as Project;
+
+      const context = createMockContext({
+        workerPool: capturingPool,
+        projects: [mockProject],
+        projectCount: 1,
+        threads: c.threads,
+        json: c.logToStdError,
+        localEnv: { displayInfo: false, logToStdError: c.logToStdError } as any,
+        validation: { suite: "main", outputMci: false, aggregateReports: false, warnOnly: false },
+      });
+
+      const command = getAllCommands().find((cmd) => cmd.metadata.name === c.command);
+      expect(command, `${c.command} should be registered`).to.exist;
+      await command!.execute(context);
+
+      expect(sentArgs).to.have.lengthOf(1);
+      expect(sentArgs[0].logToStdError).to.equal(c.logToStdError);
+    });
+  }
 });
 
 // ============================================================================

@@ -560,12 +560,68 @@ export default class LocalUtilities implements ILocalUtilities {
     return pathSegment;
   }
 
+  /**
+   * A checked-in override for a form, shipped with this package under
+   * data/local_forms/ (see gulpfile.js copyJsNodeLocalForms). Overrides fix
+   * known bugs in @minecraft/bedrock-schemas forms and must win over the
+   * package copy on every target, so this is consulted before redirecting a
+   * data/forms/ path to the package. Returns undefined when there is none.
+   *
+   * Only a file counts as an override. Database loads forms by asking for
+   * the whole folder (`data/forms/entity/`), and the sparse override folder
+   * of the same name must not stand in for the package folder, or every
+   * form without an override goes missing (JSONF402 in `mct serve`).
+   */
+  getLocalFormOverridePath(subPath: string): string | undefined {
+    const fs = require("fs");
+
+    if (!subPath || subPath.includes("..")) {
+      return undefined;
+    }
+
+    const candidate = path.join(this.getContentRootPath(), "data", "local_forms", subPath);
+
+    return fs.existsSync(candidate) && fs.statSync(candidate).isFile() ? candidate : undefined;
+  }
+
+  /**
+   * The folder that data/, res/ and friends resolve under: the --base-path
+   * override when one was given, otherwise the package root (the parent of
+   * this file's folder). Always ends with a path delimiter.
+   */
+  getContentRootPath(): string {
+    if (this.#basePathAdjust) {
+      // When basePathAdjust is set (via --base-path CLI option),
+      // resolve it relative to process.cwd() (where the command was run)
+      // This allows users to specify paths relative to their working directory
+      return NodeStorage.ensureEndsWithDelimiter(path.resolve(process.cwd(), this.#basePathAdjust));
+    }
+
+    // Fall back to __dirname-based resolution for backwards compatibility
+    let fullPath = __dirname;
+
+    const lastSlash = Math.max(
+      fullPath.lastIndexOf("\\", fullPath.length - 2),
+      fullPath.lastIndexOf("/", fullPath.length - 2)
+    );
+
+    if (lastSlash >= 0) {
+      fullPath = fullPath.substring(0, lastSlash + 1);
+    }
+
+    return fullPath;
+  }
+
   getFullPath(relativePath: string) {
     // Redirect forms and schemas to @minecraft/bedrock-schemas package
     const pkgRoot = LocalUtilities.bedrockSchemasRoot;
     if (pkgRoot) {
       if (relativePath.startsWith("data/forms/") || relativePath.startsWith("data\\forms\\")) {
         const subPath = relativePath.substring("data/forms/".length);
+        const override = this.getLocalFormOverridePath(subPath);
+        if (override) {
+          return override;
+        }
         return path.join(pkgRoot, "forms", subPath);
       }
       const schemasPrefix = relativePath.startsWith("/schemas/")
@@ -581,27 +637,7 @@ export default class LocalUtilities implements ILocalUtilities {
       }
     }
 
-    let fullPath: string;
-
-    if (this.#basePathAdjust) {
-      // When basePathAdjust is set (via --base-path CLI option),
-      // resolve it relative to process.cwd() (where the command was run)
-      // This allows users to specify paths relative to their working directory
-      fullPath = path.resolve(process.cwd(), this.#basePathAdjust);
-      fullPath = NodeStorage.ensureEndsWithDelimiter(fullPath);
-    } else {
-      // Fall back to __dirname-based resolution for backwards compatibility
-      fullPath = __dirname;
-
-      const lastSlash = Math.max(
-        fullPath.lastIndexOf("\\", fullPath.length - 2),
-        fullPath.lastIndexOf("/", fullPath.length - 2)
-      );
-
-      if (lastSlash >= 0) {
-        fullPath = fullPath.substring(0, lastSlash + 1);
-      }
-    }
+    let fullPath = this.getContentRootPath();
 
     if (this.platform === Platform.windows) {
       fullPath += relativePath.replace(/\//g, "\\");
@@ -619,6 +655,14 @@ export default class LocalUtilities implements ILocalUtilities {
   }
 
   async readJsonFile(path: string): Promise<object | null> {
+    return this.readJsonFileSync(path);
+  }
+
+  /**
+   * The JSON file at a data path, resolved through `getFullPath` so a
+   * `data/forms/` file with a checked-in override reads the override.
+   */
+  readJsonFileSync(path: string): object | null {
     const fs = require("fs");
 
     const fullPath = this.getFullPath(path);

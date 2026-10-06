@@ -46,6 +46,7 @@ export class SearchCommand extends CommandBase {
     isEditInPlace: false,
     isLongRunning: false,
     category: "Validation",
+    globalOptionGroups: ["input", "outputFolder", "json"],
     arguments: [
       {
         name: "search",

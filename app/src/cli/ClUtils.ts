@@ -10,6 +10,7 @@ import Database from "../minecraft/Database";
 import IFolder from "../storage/IFolder";
 import StorageUtilities from "../storage/StorageUtilities";
 import IProjectStartInfo from "./IProjectStartInfo";
+import * as fs from "fs";
 import * as path from "path";
 
 export enum TaskType {
@@ -139,6 +140,30 @@ export default class ClUtils {
     return ls.rootFolder;
   }
 
+  /**
+   * Throws when folderPath can't be created because it, or a folder above it, is a file. A dry run creates no
+   * folders, so this is how it still fails where a real run's mkdir would. Failures that only trying shows, such as
+   * missing permissions, still happen only in a real run.
+   */
+  static checkFolderCanBeCreated(folderPath: string) {
+    const fullPath = path.resolve(folderPath);
+    let current = fullPath;
+
+    while (!fs.existsSync(current)) {
+      const parent = path.dirname(current);
+
+      if (parent === current) {
+        return;
+      }
+
+      current = parent;
+    }
+
+    if (!fs.statSync(current).isDirectory()) {
+      throw new Error(`Can't create the folder '${fullPath}', because '${current}' is a file.`);
+    }
+  }
+
   static getIsWriteCommand(taskType: TaskType) {
     return (
       taskType === TaskType.world ||
@@ -162,7 +187,12 @@ export default class ClUtils {
     );
   }
 
-  static async getMainWorkFolder(taskType: TaskType, inputFolder?: string, outputFolder?: string) {
+  /**
+   * The folder to look for projects in: -o for a write command given -o but not -i, otherwise -i or the current
+   * folder. A real run creates a missing -o. With dryRun, it's the same folder, but it isn't created: a missing -o
+   * comes back empty and unloaded, like the folder a real run creates, or fails when a real run couldn't create it.
+   */
+  static async getMainWorkFolder(taskType: TaskType, inputFolder?: string, outputFolder?: string, dryRun = false) {
     // console.log("Using local path: '" + inputFolder + "' from '" + __dirname + "'");
     let workFolder: IFolder | undefined;
 
@@ -171,7 +201,17 @@ export default class ClUtils {
       const resolvedOutput = path.isAbsolute(outputFolder) ? outputFolder : path.resolve(process.cwd(), outputFolder);
       const outputStorage = new NodeStorage(resolvedOutput, "");
       workFolder = outputStorage.rootFolder;
-      await workFolder.ensureExists();
+
+      if (!dryRun) {
+        await workFolder.ensureExists();
+      } else {
+        // Before exists(): on Windows, exists() is true for a file, because the trailing separator is dropped.
+        ClUtils.checkFolderCanBeCreated(resolvedOutput);
+
+        if (!(await workFolder.exists())) {
+          return workFolder;
+        }
+      }
     }
 
     if (!workFolder) {

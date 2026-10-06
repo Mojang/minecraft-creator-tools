@@ -68,7 +68,7 @@ The generator doesn't report everything it skipped, so open the files and compar
 
 ## 5. Give it a readable name
 
-Creator Tools doesn't create localization, so in game the mob shows as `entity.<namespace>:<id>.name`. Run the debug-addon skill's names script, passing the display name the user asked for:
+Creator Tools doesn't create localization, so in game the mob shows as `entity.<namespace>:<id>.name`. Run the debug-addon skill's names script, passing the display name the user asked for. `<debug-addon-skill-folder>` is the debug-addon skill's folder, next to this skill's folder; if it's missing, install the debug-addon skill too.
 
 ```bash
 node "<debug-addon-skill-folder>/scripts/add-missing-names.mjs" <project-folder> --name "swampy:swamp_goblin=Swamp Goblin"

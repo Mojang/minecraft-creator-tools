@@ -119,6 +119,7 @@ export default function ScalarArrayField(props: IScalarArrayFieldProps): JSX.Ele
       lookups={lookups}
       longForm={field.dataType === FieldDataType.longFormStringArray}
       isNumber={field.dataType === FieldDataType.numberArray}
+      preserveScalarTypes={field.dataType === FieldDataType.primitiveArray}
       label={title}
       allowCreateDelete={field.allowCreateDelete}
       onChange={onScalarArrayChange}

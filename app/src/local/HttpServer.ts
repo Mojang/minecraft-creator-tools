@@ -12,7 +12,7 @@
  * 2. **WebSocket Notifications**: Broadcasts real-time events to connected clients
  * 3. **Storage Watching**: Monitors NodeStorage for file changes and broadcasts updates
  * 4. **Authentication**: Manages session tokens and permission levels
- * 5. **MCP Server Integration**: Hosts Model Context Protocol server
+ * 5. **MCP Server Integration**: Hosts the Model Context Protocol server at /mcp (`mct serve` only)
  * 6. **Server Management API**: REST endpoints for controlling DedicatedServer instances
  *
  * ## API Architecture
@@ -33,7 +33,36 @@
  * /api/eulaStatus        - Check if EULA has been accepted
  * /api/commands          - List available ToolCommands
  * /api/commands/<cmd>    - Execute a ToolCommand (POST with args/flags JSON body)
+ * /mcp                   - MCP Streamable HTTP endpoint (only when enabled; see below)
  * ```
+ *
+ * ## MCP Endpoint (/mcp)
+ *
+ * Only `mct serve` offers MCP over HTTP; it calls setMcpEnabled(true). Every other server
+ * built on HttpServer (view, edit, the render commands' temporary servers, and the preview
+ * server that MinecraftMcpServer starts for rendering) leaves it off, and /mcp returns 404.
+ * The web UI never calls /mcp: the Electron agent panel runs `mct mcp` over stdio instead.
+ *
+ * Every /mcp request goes through the same checks, for every method including OPTIONS:
+ *
+ * 1. 404 unless MCP is enabled.
+ * 2. 403 unless Host and Origin are allowed (McpRequestGuard.ts). Host must be localhost,
+ *    127.0.0.1, [::1], or the configured domain, on a port this server listens on. When the
+ *    server is bound to every interface (0.0.0.0, as in Docker), only loopback connections need
+ *    a known Host: remote clients use names the server can't know, and must authenticate. Origin,
+ *    if sent, must be one of this server's origins or a configured CORS origin.
+ * 3. 401 unless authenticated. Loopback connections skip this unless --mcp-require-auth is set
+ *    or the Origin is a CORS origin rather than one of this server's own.
+ *
+ * _admitMcpRequest() runs steps 1 and 2 at the top of processRequest, before preflight handling
+ * and passcode checks, so a disallowed host or origin can't tell a valid passcode from an
+ * invalid one. _routeMcpRequest() runs step 3 and hands the request to MCP. Admitted requests
+ * get CORS headers from _getMcpCorsHeaders(), which echo the admitted Origin and allow the
+ * Streamable HTTP request headers, so browsers agree with the guard about which pages may call.
+ *
+ * Pitfall: a loopback remote address doesn't mean the request is trustworthy. A web page in
+ * the user's browser connects from 127.0.0.1 too, including after DNS rebinding, so the Host
+ * and Origin checks must run before the loopback exemption, not instead of it.
  *
  * ## Real-Time Sync Architecture
  *
@@ -119,6 +148,7 @@
  * - HttpStorage.ts: Client-side notification receiver
  * - IStorageWatcher.ts: Interface definitions for watcher system
  * - MinecraftMcpServer.ts: MCP server for AI tool integration
+ * - McpRequestGuard.ts: Host and Origin checks for /mcp
  *
  * ## Key Methods
  *
@@ -156,6 +186,7 @@ import ProjectInfoSet from "../info/ProjectInfoSet";
 import ProjectInfoUtilities from "../info/ProjectInfoUtilities";
 import IProjectMetaState from "../info/IProjectMetaState";
 import MinecraftMcpServer from "./MinecraftMcpServer";
+import McpRequestGuard, { IListeningEndpoint, IMcpRequestCheckResult } from "./McpRequestGuard";
 import HttpUtilities from "./HttpUtilities";
 import Utilities from "../core/Utilities";
 import HttpStorage from "../storage/HttpStorage";
@@ -172,7 +203,7 @@ import {
   ToolCommandScope,
 } from "../app/toolcommands";
 import { registerNodeOnlyCommands } from "../app/toolcommands/registerNodeCommands";
-import { IServerNotification, IServerNotificationBody, ServerEventName } from "./IServerNotification";
+import { IServerNotification, IServerNotificationBody, ServerEventName } from "../app/IServerNotification";
 // these definitions are duplicated for the client and should be kept in sync in CartoAuthentication.ts
 export interface CartoServerAuthenticationResponse {
   token?: string;
@@ -230,6 +261,7 @@ export default class HttpServer {
   private _distStorage: NodeStorage;
   private _schemasStorage: NodeStorage;
   private _formsStorage: NodeStorage | undefined;
+  private _localFormsStorage: NodeStorage;
   private _esbuildWasmStorage: NodeStorage | undefined;
 
   private _serverManager: ServerManager;
@@ -336,9 +368,18 @@ export default class HttpServer {
   // This enables PUT/DELETE operations on /api/content endpoints
   private _isEditMode: boolean = false;
 
+  // When true, this server offers the MCP endpoint at /mcp. Only `mct serve` turns it on. The
+  // servers that view, edit, the render commands, and the MCP server's own preview rendering
+  // start leave it off, so /mcp returns 404 there.
+  private _mcpEnabled: boolean = false;
+
   // When true, requires authentication for /mcp even from localhost.
   // Set via --mcp-require-auth CLI flag. Default: false (localhost bypasses auth for MCP).
   private _mcpRequireAuth: boolean = false;
+
+  // Request headers that MCP Streamable HTTP clients send, which CORS preflights for /mcp allow.
+  private static readonly MCP_CORS_ALLOWED_HEADERS =
+    "Content-Type, Authorization, mctpc, mcp-session-id, mcp-protocol-version, last-event-id";
 
   // Promise to guard against concurrent MCP server initialization
   private _mcpServerInitPromise: Promise<void> | undefined;
@@ -441,6 +482,10 @@ export default class HttpServer {
     } else {
       this._schemasStorage = new NodeStorage(this.getRootPath() + "schemas/", "");
     }
+
+    // Checked-in form overrides shipped with this package win over the
+    // package copy, the same way LocalUtilities.getFullPath resolves them.
+    this._localFormsStorage = new NodeStorage(this.getRootPath() + "data/local_forms/", "");
 
     // Serve esbuild-wasm from its npm package at runtime instead of shipping
     // a copy in the build output (~13 MB savings). esbuild-wasm is a declared
@@ -1381,12 +1426,158 @@ export default class HttpServer {
   }
 
   /**
+   * Set whether this server offers the MCP endpoint at /mcp. Off by default, so /mcp returns 404.
+   */
+  setMcpEnabled(enabled: boolean) {
+    this._mcpEnabled = enabled;
+  }
+
+  /**
+   * Check whether this server offers the MCP endpoint at /mcp.
+   */
+  isMcpEnabled(): boolean {
+    return this._mcpEnabled;
+  }
+
+  /**
    * Set whether MCP requires authentication even from localhost.
    * When false (default), localhost requests to /mcp bypass authentication.
    * When true, all /mcp requests must authenticate via passcode or session token.
    */
   setMcpRequireAuth(requireAuth: boolean) {
     this._mcpRequireAuth = requireAuth;
+  }
+
+  /**
+   * Whether a request URL is for the MCP endpoint: /mcp, or a path below it, in any case.
+   */
+  private static _isMcpPath(url: string | undefined): boolean {
+    return url?.toLowerCase().split("/")[1] === "mcp";
+  }
+
+  /**
+   * First stage of routing a request for /mcp. processRequest calls it before anything else
+   * looks at the request, for every method including OPTIONS:
+   *
+   * 1. 404 unless this server offers MCP (see setMcpEnabled).
+   * 2. 403 unless the Host and Origin headers are allowed (see McpRequestGuard).
+   *
+   * Running first means preflights and passcode checks never answer a request from a host or
+   * origin that isn't allowed, so their responses can't be probed from a web page. Returns the
+   * check result when the request may continue, or undefined after responding. Allowed
+   * preflights then get the usual 204, and other requests go to _routeMcpRequest.
+   */
+  private _admitMcpRequest(req: http.IncomingMessage, res: http.ServerResponse): IMcpRequestCheckResult | undefined {
+    if (!this._mcpEnabled) {
+      this.sendErrorRequest(404, "Not found", req, res);
+      return undefined;
+    }
+
+    const check = this._checkMcpRequest(req);
+    if (check.rejection) {
+      this.sendErrorRequest(403, check.rejection, req, res);
+      return undefined;
+    }
+
+    return check;
+  }
+
+  /**
+   * Second stage of routing a request for /mcp, after _admitMcpRequest and passcode checks:
+   * 401 unless the request is authenticated, then hand it to MCP.
+   *
+   * Loopback connections don't need to authenticate unless --mcp-require-auth is set, because
+   * standard MCP clients (Copilot CLI, Claude, Cursor) don't send custom auth headers. Requests
+   * from an additional origin, such as a configured CORS origin, always need to: a page in the
+   * user's browser connects over loopback wherever it was served from.
+   */
+  private _routeMcpRequest(
+    req: http.IncomingMessage,
+    res: http.ServerResponse,
+    corsHeaders: { [key: string]: string },
+    authorizedPermissionLevel: ServerPermissionLevel,
+    check: IMcpRequestCheckResult
+  ) {
+    const isLocalhostRequest = HttpServer._isLoopbackAddress(req.socket?.remoteAddress);
+    const skipsAuthentication = isLocalhostRequest && !this._mcpRequireAuth && !check.fromAdditionalOrigin;
+
+    if (!skipsAuthentication && authorizedPermissionLevel === ServerPermissionLevel.none) {
+      this.sendErrorRequest(401, "No permissions granted; 401 returned.", req, res, corsHeaders);
+      return;
+    }
+
+    this._handleMcpRequest(req, res, corsHeaders).catch((e) => {
+      Log.debug("Error handling MCP request: " + (e?.message || e));
+      if (!res.headersSent) {
+        this.sendErrorRequest(500, "Internal MCP error", req, res, corsHeaders);
+      }
+    });
+  }
+
+  /**
+   * Checks the Host and Origin headers of a request for /mcp against the ports this server is
+   * actually listening on, its configured host, and its CORS origins.
+   */
+  private _checkMcpRequest(req: http.IncomingMessage): IMcpRequestCheckResult {
+    return McpRequestGuard.check(req.headers, {
+      configuredHost: this.host,
+      endpoints: this._getListeningEndpoints(),
+      additionalOrigins: this.getAllowedCorsOrigins(),
+      remoteConnection: !HttpServer._isLoopbackAddress(req.socket?.remoteAddress),
+    });
+  }
+
+  /** Whether a connection's remote address is the local machine's loopback address. */
+  private static _isLoopbackAddress(address: string | undefined): boolean {
+    return address === "127.0.0.1" || address === "::1" || address === "::ffff:127.0.0.1";
+  }
+
+  /**
+   * CORS headers for a request that _admitMcpRequest has admitted, so that browser pages from
+   * an allowed origin can complete MCP requests:
+   *
+   * - Echo the Origin: McpRequestGuard has already accepted it. The generic CORS policy compares
+   *   configured origins without normalizing them, so it can disagree with the guard.
+   * - Allow every request header a Streamable HTTP client sends after initializing.
+   */
+  private _getMcpCorsHeaders(
+    req: http.IncomingMessage,
+    corsHeaders: { [key: string]: string }
+  ): { [key: string]: string } {
+    const origin = req.headers.origin?.trim();
+
+    return {
+      ...corsHeaders,
+      ...(origin ? { "Access-Control-Allow-Origin": origin } : {}),
+      "Access-Control-Allow-Headers": HttpServer.MCP_CORS_ALLOWED_HEADERS,
+    };
+  }
+
+  /**
+   * The protocols and ports this server is listening on. Prefers the bound address, and falls
+   * back to the configured port before the server is listening.
+   */
+  private _getListeningEndpoints(): IListeningEndpoint[] {
+    const endpoints: IListeningEndpoint[] = [];
+
+    if (this._httpServer) {
+      endpoints.push({ protocol: "http", port: HttpServer._getBoundPort(this._httpServer) ?? this.port });
+    }
+
+    if (this._httpsServer) {
+      endpoints.push({
+        protocol: "https",
+        port: HttpServer._getBoundPort(this._httpsServer) ?? this._sslConfig?.port ?? 443,
+      });
+    }
+
+    return endpoints;
+  }
+
+  private static _getBoundPort(server: http.Server | https.Server): number | undefined {
+    const address = server.address();
+
+    return address && typeof address === "object" ? address.port : undefined;
   }
 
   /**
@@ -1488,6 +1679,24 @@ export default class HttpServer {
     return true;
   }
 
+  /** Whether a /data/forms/ request maps to a checked-in override under data/local_forms/. */
+  _hasLocalFormOverride(url: string): boolean {
+    let subPath = url.substring("/data/forms/".length);
+
+    const queryIndex = subPath.indexOf("?");
+    if (queryIndex >= 0) {
+      subPath = subPath.substring(0, queryIndex);
+    }
+
+    if (subPath.length === 0 || !SecurityUtilities.validatePathTraversal("/" + subPath)) {
+      return false;
+    }
+
+    const candidate = this.getRootPath() + "data/local_forms/" + subPath;
+
+    return fs.existsSync(candidate) && fs.statSync(candidate).isFile();
+  }
+
   getRootPath() {
     let fullPath = __dirname;
 
@@ -1582,7 +1791,20 @@ export default class HttpServer {
 
   processRequest(req: http.IncomingMessage, res: http.ServerResponse) {
     // Security: Use dynamic CORS headers based on origin
-    const corsHeaders = this.getCorsHeaders(req);
+    let corsHeaders = this.getCorsHeaders(req);
+
+    // MCP endpoint, first stage: before anything else looks at the request, including preflight
+    // handling and passcode checks, check that MCP is offered and that Host and Origin are
+    // allowed. Allowed requests continue below and are authenticated by _routeMcpRequest.
+    let mcpCheck: IMcpRequestCheckResult | undefined;
+    if (HttpServer._isMcpPath(req.url)) {
+      mcpCheck = this._admitMcpRequest(req, res);
+      if (!mcpCheck) {
+        return;
+      }
+
+      corsHeaders = this._getMcpCorsHeaders(req, corsHeaders);
+    }
 
     if (req.method === "OPTIONS") {
       res.writeHead(204, corsHeaders);
@@ -1613,7 +1835,7 @@ export default class HttpServer {
       } else if (headerPasscode === this._localEnvironment.adminPasscode) {
         authorizedPermissionLevel = ServerPermissionLevel.admin;
       } else {
-        this.sendErrorRequest(401, "Invalid passcode passed in via mctpc header.", req, res);
+        this.sendErrorRequest(401, "Invalid passcode passed in via mctpc header.", req, res, corsHeaders);
         return;
       }
     }
@@ -1854,7 +2076,8 @@ export default class HttpServer {
     }
 
     if (req.url.startsWith("/data/forms/") && this._formsStorage) {
-      this.serveContent("data/forms", req.url, this._formsStorage, res);
+      const storage = this._hasLocalFormOverride(req.url) ? this._localFormsStorage : this._formsStorage;
+      this.serveContent("data/forms", req.url, storage, res);
       return;
     }
 
@@ -2035,28 +2258,11 @@ export default class HttpServer {
       return;
     }
 
-    // MCP endpoint: exempt from auth when request originates from localhost (unless --mcp-require-auth is set).
-    // Standard MCP clients (Copilot CLI, Claude, Cursor) don't support custom auth headers,
-    // so we allow unauthenticated access from localhost by default for usability.
-    const urlSegmentsPreAuth = req.url?.toLowerCase().split("/");
-    if (urlSegmentsPreAuth && urlSegmentsPreAuth.length >= 2 && urlSegmentsPreAuth[1] === "mcp") {
-      const remoteAddr = req.socket?.remoteAddress || "";
-      const isLocalhostRequest =
-        remoteAddr === "127.0.0.1" || remoteAddr === "::1" || remoteAddr === "::ffff:127.0.0.1";
-
-      if (isLocalhostRequest && !this._mcpRequireAuth) {
-        // Localhost MCP: bypass auth
-        this._handleMcpRequest(req, res, corsHeaders).catch((e) => {
-          Log.debug("Error handling MCP request: " + (e?.message || e));
-          if (!res.headersSent) {
-            this.sendErrorRequest(500, "Internal MCP error", req, res);
-          }
-        });
-        return;
-      }
-
-      // Non-localhost or auth required: fall through to normal auth check below,
-      // then MCP will be handled after auth succeeds.
+    // MCP endpoint, second stage: _admitMcpRequest has already checked this request at the top
+    // of processRequest. _routeMcpRequest authenticates it and hands it to MCP.
+    if (mcpCheck) {
+      this._routeMcpRequest(req, res, corsHeaders, authorizedPermissionLevel, mcpCheck);
+      return;
     }
 
     if (authorizedPermissionLevel === ServerPermissionLevel.none) {
@@ -2067,15 +2273,7 @@ export default class HttpServer {
     const urlSegments = req.url.toLowerCase().split("/");
 
     if (urlSegments.length >= 2) {
-      if (urlSegments[1] === "mcp") {
-        this._handleMcpRequest(req, res, corsHeaders).catch((e) => {
-          Log.debug("Error handling MCP request: " + (e?.message || e));
-          if (!res.headersSent) {
-            this.sendErrorRequest(500, "Internal MCP error", req, res);
-          }
-        });
-        return;
-      } else if (urlSegments[1] === "api") {
+      if (urlSegments[1] === "api") {
         // Handle /api/content/* endpoint for serving local content in view/edit mode
         if (urlSegments[2] === "content" && this._contentStorage && this._contentPath) {
           // Write operations (PUT, DELETE, POST) require edit mode and updateState permission
@@ -3420,10 +3618,15 @@ export default class HttpServer {
     }
   }
 
-  sendErrorRequest(statusCode: number, message: string, req: http.IncomingMessage, res: http.ServerResponse) {
+  sendErrorRequest(
+    statusCode: number,
+    message: string,
+    req: http.IncomingMessage,
+    res: http.ServerResponse,
+    corsHeaders: { [key: string]: string } = this.getCorsHeaders(req)
+  ) {
     Log.message(HttpUtilities.getShortReqDescription(req) + "Error request: " + message);
     if (!res.headersSent) {
-      const corsHeaders = this.getCorsHeaders(req);
       res.writeHead(statusCode, { ...corsHeaders, "Content-Type": "text/plain" });
     }
     res.end(message);

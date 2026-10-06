@@ -34,6 +34,7 @@ export class PasscodesCommand extends CommandBase {
     isEditInPlace: false,
     isLongRunning: false,
     category: "Server",
+    globalOptionGroups: ["passcodes", "json"],
   };
 
   configure(cmd: Command): void {

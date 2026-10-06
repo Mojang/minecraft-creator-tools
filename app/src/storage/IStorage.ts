@@ -90,6 +90,13 @@ export default interface IStorage {
   isContentUpdated: boolean;
   readOnly: boolean;
 
+  /**
+   * Why the storage is read-only, such as a command-line dry run. Write errors include it. On read-only
+   * storage it also makes the storage strict: besides refusing saves and deletes, which read-only storage
+   * always refuses, Node storage then refuses creating folders, moving files and folders, and stream writes.
+   */
+  readOnlyReason?: string;
+
   available?: boolean;
   getAvailable(): Promise<boolean>;
 

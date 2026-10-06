@@ -205,11 +205,11 @@ export interface IServerOptions {
  * World-related options for world/ensureworld commands.
  */
 export interface IWorldOptions {
-  /** Enable beta APIs in the world */
-  betaApis: boolean;
+  /** Beta APIs experiment: true (--betaapis), false (--no-betaapis), or undefined to leave it as is. */
+  betaApis?: boolean;
 
-  /** Use editor mode */
-  editor: boolean;
+  /** Editor world: true (--editor), false (--no-editor), or undefined to leave it as is. */
+  editor?: boolean;
 
   /** World difficulty */
   difficulty?: string;
@@ -334,7 +334,10 @@ export interface ICommandContext {
   /** Input work folder (loaded and ready) */
   inputWorkFolder: IFolder;
 
-  /** Output work folder (loaded and ready) */
+  /**
+   * Output work folder, loaded when it exists. It's created only for commands that need it (needsOutputFolder in
+   * CommandEffects.ts) and never under --dry-run, so for other runs it may not exist.
+   */
   outputWorkFolder: IFolder;
 
   // -------------------------------------------------------------------------
@@ -369,10 +372,18 @@ export interface ICommandContext {
    * and `mct mcp` (MCP server) use to drive commands without a TTY.
    *
    * Implies the same behaviour as `--quiet` for prompts (but does not silence output).
+   *
+   * Non-interactive isn't consent: never treat `yes` (also set by `--json`) as agreement to
+   * legal terms. Only `eula --accept`, the EULA environment variable, or an interactive yes
+   * accepts the Minecraft EULA.
    */
   yes: boolean;
 
-  /** Dry-run mode - show what would be done without making changes */
+  /**
+   * Dry-run mode - show what would be done without making changes. Only commands whose effects entry is
+   * "honored" run with it (DryRunGuard.ts). The input and output storage and every project are then
+   * read-only, so a write the command doesn't skip throws an error that names the dry run.
+   */
   dryRun: boolean;
 
   /** Output format type */

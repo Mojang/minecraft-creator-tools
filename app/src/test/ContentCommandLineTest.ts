@@ -484,12 +484,51 @@ describe("skillsCommand", () => {
     }
   }).timeout(15000);
 
-  it("is named at the end of mct --help", async () => {
+  it("is named in mct --help", async () => {
     const result = await runCli(["--help"], workingFolder);
+    // Help wraps prose to the terminal width, so compare with line breaks collapsed.
+    const help = result.stdout.replace(/\s+/g, " ");
 
     assert.equal(result.exitCode, 0, result.stderr);
-    assert(result.stdout.includes("Agent skills:"), "--help should have an Agent skills section");
-    assert(result.stdout.includes(skillNames.join(", ")), "--help should name the skills");
-    assert(result.stdout.includes("`mct skills <name>`"), "--help should say how to print a skill");
+    assert(result.stdout.includes("\nAGENT SKILLS\n"), "--help should have an AGENT SKILLS section");
+    assert(help.includes(skillNames.join(", ")), "--help should name the skills");
+    assert(help.includes("`mct skills <name>`"), "--help should say how to print a skill");
+  }).timeout(15000);
+});
+
+// `mct mcp --input` is an older spelling of `-i`. Startup loads projects from the input folder
+// before the command runs, so the alias has to take effect at parse time, not inside `mcp`.
+describe("mcpCommand --input", () => {
+  let startFolder: string;
+  let missingFolder: string;
+
+  before(() => {
+    startFolder = fs.mkdtempSync(path.join(os.tmpdir(), "mct-mcp-start-"));
+    missingFolder = path.join(os.tmpdir(), `mct-mcp-missing-${process.pid}`);
+  });
+
+  after(() => {
+    fs.rmSync(startFolder, { recursive: true, force: true });
+  });
+
+  it("loads the --input folder, not the current folder, exactly like -i", async () => {
+    const viaAlias = await runCli(["mcp", "--input", missingFolder], startFolder);
+    const viaOption = await runCli(["mcp", "-i", missingFolder], startFolder);
+    const message = (result: { stderr: string }) => result.stderr.replace(/\d{4}-\d\d-\d\dT[\d:.]+Z/g, "");
+
+    assert.equal(viaAlias.exitCode, 1, viaAlias.stderr);
+    assert.equal(viaAlias.stdout, "", "MCP must not start");
+    assert(viaAlias.stderr.includes(missingFolder), "should report the --input folder as missing: " + viaAlias.stderr);
+    assert(!viaAlias.stderr.includes(startFolder), "should not load the current folder: " + viaAlias.stderr);
+    assert.equal(message(viaAlias), message(viaOption), "--input and -i should behave the same");
+    assert.deepEqual(fs.readdirSync(startFolder), [], "should not write to the current folder");
+  }).timeout(15000);
+
+  it("rejects -i and --input naming different folders", async () => {
+    const result = await runCli(["mcp", "-i", "./a", "--input", "./b"], startFolder);
+
+    assert.equal(result.exitCode, 1);
+    assert.equal(result.stdout, "");
+    assert(result.stderr.includes("name different folders"), result.stderr);
   }).timeout(15000);
 });

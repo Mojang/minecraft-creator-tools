@@ -5,6 +5,8 @@
  * IServerNotification
  *
  * Defines the notification protocol for WebSocket messages from HttpServer to web clients.
+ * Both sides import it (local/HttpServer.ts and UX/appShell/DebugStatsPanel.tsx), so it lives
+ * here rather than in src/local/, which the web bundles exclude as Node-only code.
  * The format is designed to be similar to Minecraft's WebSocket protocol for consistency:
  *
  * {

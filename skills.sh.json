@@ -1,0 +1,21 @@
+{
+  "$schema": "https://skills.sh/schemas/skills.sh.schema.json",
+  "notGrouped": "bottom",
+  "groupings": [
+    {
+      "title": "Create add-on content",
+      "description": "Create and change mobs, items, and blocks for Minecraft: Bedrock Edition add-ons, from a plain description to working behavior and resource pack files. Works with the Minecraft Creator Tools MCP server (npx -y @minecraft/creator-tools@latest mcp).",
+      "skills": ["create-mob", "create-item", "create-block"]
+    },
+    {
+      "title": "Models and textures",
+      "description": "Design 3D models and textures for mobs, and draw pixel-art item icons and block textures, with previews to check the result.",
+      "skills": ["design-model"]
+    },
+    {
+      "title": "Validate and ship",
+      "description": "Find and fix add-on problems, explain Content Log errors, package a .mcaddon, and run any Minecraft Creator Tools (mct) command.",
+      "skills": ["debug-addon", "creator-tools-cli"]
+    }
+  ]
+}

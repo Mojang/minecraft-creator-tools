@@ -1,0 +1,7 @@
+interface:
+  display_name: "Creator Tools CLI"
+  short_description: "Run Minecraft Creator Tools (mct) commands"
+  icon_small: "./assets/icon-small.png"
+  icon_large: "./assets/icon.png"
+  brand_color: "#52A535"
+  default_prompt: "Use $creator-tools-cli to render my goblin model to a PNG."

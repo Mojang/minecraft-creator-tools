@@ -25,7 +25,8 @@ import EntityTypeResourceDefinition from "../minecraft/EntityTypeResourceDefinit
 import FogResourceDefinition from "../minecraft/FogResourceDefinition";
 import WorldTemplateManifestDefinition from "../minecraft/WorldTemplateManifestDefinition";
 import ProjectItemUtilities from "../app/ProjectItemUtilities";
-import { isMinorVersionTooOld } from "../core/versioning/MinecraftVersionRules";
+import { isMinorVersionTooOld, shouldReplaceManifestVersion } from "../core/versioning/MinecraftVersionRules";
+import StorageUtilities from "../storage/StorageUtilities";
 import { IValidationRuleProvider, ValidationRuleDefinition } from "../info/tests/ValidationRuleDefinition";
 import { FormatVersionValidationRules } from "./FormatVersionManagerData";
 
@@ -506,7 +507,21 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
     return [1];
   }
 
-  async updateBaseGameVersionToLatestVersion(project: Project) {
+  /**
+   * Sets base_game_version in world template manifests to the latest Minecraft version. Changes
+   * are made in memory only; callers save the files (`mct fix` writes them, editors save the
+   * project). Returns one result per manifest whose content changed.
+   *
+   * @param options.keepNewerVersions Leave manifests that are newer than the latest version
+   *   alone, so a stale target (such as the fallback used when the version lookup fails) can't
+   *   lower them.
+   * @param options.preserveComments Reparse each manifest with its comments first, so writing
+   *   it keeps them. This replaces the manifest's definition object.
+   */
+  async updateBaseGameVersionToLatestVersion(
+    project: Project,
+    options: { keepNewerVersions?: boolean; preserveComments?: boolean } = {}
+  ) {
     const results: ProjectUpdateResult[] = [];
 
     const ver = await Database.getLatestVersionInfo(project.effectiveTrack);
@@ -551,23 +566,34 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
         if (pi.primaryFile) {
           const wtManifest = await WorldTemplateManifestDefinition.ensureOnFile(pi.primaryFile);
 
-          if (wtManifest) {
+          if (options.preserveComments) {
+            await wtManifest?.load(true);
+          }
+
+          // Skip manifests with no header, including ones that failed to parse. Setting the version
+          // would otherwise generate a header (or a whole manifest) and overwrite the user's file.
+          if (wtManifest?.definition?.header) {
             const mev = wtManifest.baseGameVersion;
 
-            if (!mev || mev.length < 3 || mev.length > 4 || mev[0] !== major || mev[1] !== minor || mev[2] !== patch) {
+            if (shouldReplaceManifestVersion(mev, [major, minor, patch], options.keepNewerVersions)) {
               wtManifest.setBaseGameVersion([major, minor, patch], project);
-              wtManifest.persist();
 
-              results.push(
-                new ProjectUpdateResult(
-                  UpdateResultType.updatedFile,
-                  this.id,
-                  200,
-                  "Updated world template base_game_version to '" + major + "." + minor + "." + patch + "'.",
-                  pi,
-                  ver
-                )
-              );
+              const changed = options.preserveComments
+                ? StorageUtilities.setJsonObjectWithComments(pi.primaryFile, wtManifest.definition)
+                : wtManifest.persist();
+
+              if (changed) {
+                results.push(
+                  new ProjectUpdateResult(
+                    UpdateResultType.updatedFile,
+                    this.id,
+                    200,
+                    "Updated world template base_game_version to '" + major + "." + minor + "." + patch + "'.",
+                    pi,
+                    ver
+                  )
+                );
+              }
             }
           }
         }

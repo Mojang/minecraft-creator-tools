@@ -181,6 +181,8 @@ export default class DataFormZod {
         return DataFormZod.createArraySchema(z.array(z.string()), field);
       case FieldDataType.numberArray:
         return DataFormZod.createArraySchema(z.number(), field);
+      case FieldDataType.primitiveArray:
+        return DataFormZod.createArraySchema(z.union([z.string(), z.number(), z.boolean()]), field);
       case FieldDataType.point2:
         return DataFormZod.createVectorSchema(2, field);
       case FieldDataType.point3:

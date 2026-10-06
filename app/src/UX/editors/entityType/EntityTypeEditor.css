@@ -54,6 +54,11 @@
 }
 
 .ete-groupsPanel .editor-panel-content {
+  /* Stack the guidance / add rows above the list and let the list take the
+     rest; the list scrolls, the panel itself never does. */
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
   overflow: hidden !important;
 }
 
@@ -168,6 +173,12 @@
 
 /* List interior scrolling */
 .ete-listInterior {
+  /* Fill whatever the panel has left below its header and guidance text.
+     A viewport-based height set here used to run past the panel's clipped
+     bottom once the guidance wrapped, so the list's own scrollbar reached
+     the end of its content while the Add state row was still cut off. */
+  flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
   overflow-x: hidden !important;
   padding: 4px 0;

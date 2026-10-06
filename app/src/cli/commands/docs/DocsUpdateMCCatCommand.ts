@@ -21,6 +21,7 @@ export class DocsUpdateMCCatCommand extends CommandBase implements ICommand {
     isEditInPlace: false,
     isLongRunning: false,
     category: "Documentation",
+    globalOptionGroups: ["outputFolder"],
     internal: true,
   };
 

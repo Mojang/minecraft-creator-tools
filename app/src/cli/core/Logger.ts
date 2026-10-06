@@ -2,10 +2,11 @@
  * Logger - Implementation of ILogger for CLI output
  *
  * Provides:
- * - ConsoleLogger: Standard console output with ANSI colors
+ * - ConsoleLogger: Standard console output, with ANSI colors where the stream supports them
  * - SilentLogger: No output (for testing)
  *
- * Colors match the existing MCT CLI styling.
+ * Colors match the existing MCT CLI styling. streamHasColors() decides where they're written, so
+ * piped and captured output stays plain text.
  */
 
 import { ILogger } from "./ICommandContext";
@@ -20,20 +21,62 @@ const MAGENTA = "\x1b[35m";
 const CYAN = "\x1b[36m";
 const DIM = "\x1b[2m";
 
+/** The parts of an output stream that streamHasColors() reads. */
+export interface IColorStream {
+  isTTY?: boolean;
+  hasColors?(): boolean;
+}
+
 /**
- * ConsoleLogger outputs to console with ANSI colors.
+ * Whether the CLI may write ANSI color codes to `stream`. This is the policy Commander applies to
+ * help output, so help and the rest of the CLI agree: NO_COLOR, FORCE_COLOR=0, or FORCE_COLOR=false
+ * turns color off; FORCE_COLOR or CLICOLOR_FORCE turns it on; otherwise only a terminal that
+ * supports color gets it. Pipes, files, and captured output get plain text.
+ */
+export function streamHasColors(stream: IColorStream, env: NodeJS.ProcessEnv = process.env): boolean {
+  if (env.NO_COLOR || env.FORCE_COLOR === "0" || env.FORCE_COLOR === "false") {
+    return false;
+  }
+
+  if (env.FORCE_COLOR || env.CLICOLOR_FORCE !== undefined) {
+    return true;
+  }
+
+  return stream.isTTY === true && stream.hasColors?.() === true;
+}
+
+/** Returns `codes` when the CLI may color `stream` (see streamHasColors), or the same keys set to "". */
+export function colorCodesFor<T extends Record<string, string>>(stream: IColorStream, codes: T): T {
+  if (streamHasColors(stream)) {
+    return codes;
+  }
+
+  return Object.fromEntries(Object.keys(codes).map((name) => [name, ""])) as T;
+}
+
+/**
+ * ConsoleLogger outputs to the console, with ANSI colors on streams that support them.
  */
 export class ConsoleLogger implements ILogger {
   private verboseEnabled: boolean;
   private quietEnabled: boolean;
   private debugEnabled: boolean;
   private jsonMode: boolean;
+  private stdoutColors: boolean;
+  private stderrColors: boolean;
 
   constructor(verbose = false, quiet = false, debug = false, jsonMode = false) {
     this.verboseEnabled = verbose;
     this.quietEnabled = quiet;
     this.debugEnabled = debug;
     this.jsonMode = jsonMode;
+    this.stdoutColors = streamHasColors(process.stdout);
+    this.stderrColors = streamHasColors(process.stderr);
+  }
+
+  /** Wraps `message` in `color` when the stream it's written to supports color. */
+  private paint(color: string, message: string, toStderr: boolean): string {
+    return (toStderr ? this.stderrColors : this.stdoutColors) ? `${color}${message}${RESET}` : message;
   }
 
   info(message: string): void {
@@ -53,24 +96,24 @@ export class ConsoleLogger implements ILogger {
     if (this.quietEnabled) return;
     // In JSON mode, non-data output goes to stderr to keep stdout clean for JSON
     if (this.jsonMode) {
-      console.error(`${YELLOW}Warning: ${message}${RESET}`);
+      console.error(this.paint(YELLOW, `Warning: ${message}`, true));
     } else {
-      console.log(`${YELLOW}Warning: ${message}${RESET}`);
+      console.log(this.paint(YELLOW, `Warning: ${message}`, false));
     }
   }
 
   error(message: string): void {
     // Errors always show, even in quiet mode
-    console.error(`${RED}Error: ${message}${RESET}`);
+    console.error(this.paint(RED, `Error: ${message}`, true));
   }
 
   verbose(message: string): void {
     if (this.verboseEnabled) {
       // In JSON mode, non-data output goes to stderr to keep stdout clean for JSON
       if (this.jsonMode) {
-        console.error(`${DIM}${message}${RESET}`);
+        console.error(this.paint(DIM, message, true));
       } else {
-        console.log(`${DIM}${message}${RESET}`);
+        console.log(this.paint(DIM, message, false));
       }
     }
   }
@@ -79,9 +122,9 @@ export class ConsoleLogger implements ILogger {
     if (this.debugEnabled) {
       // In JSON mode, non-data output goes to stderr to keep stdout clean for JSON
       if (this.jsonMode) {
-        console.error(`${MAGENTA}[DEBUG] ${message}${RESET}`);
+        console.error(this.paint(MAGENTA, `[DEBUG] ${message}`, true));
       } else {
-        console.log(`${MAGENTA}[DEBUG] ${message}${RESET}`);
+        console.log(this.paint(MAGENTA, `[DEBUG] ${message}`, false));
       }
     }
   }
@@ -89,9 +132,9 @@ export class ConsoleLogger implements ILogger {
   success(message: string): void {
     // In JSON mode, non-data output goes to stderr to keep stdout clean for JSON
     if (this.jsonMode) {
-      console.error(`${GREEN}${message}${RESET}`);
+      console.error(this.paint(GREEN, message, true));
     } else {
-      console.log(`${GREEN}${message}${RESET}`);
+      console.log(this.paint(GREEN, message, false));
     }
   }
 
@@ -107,7 +150,7 @@ export class ConsoleLogger implements ILogger {
     const percent = Math.round((current / total) * 100);
     const bar = this.createProgressBar(percent);
     const msg = message ? ` ${message}` : "";
-    process.stdout.write(`\r${CYAN}${bar} ${current}/${total} (${percent}%)${msg}${RESET}`);
+    process.stdout.write("\r" + this.paint(CYAN, `${bar} ${current}/${total} (${percent}%)${msg}`, false));
 
     if (current === total) {
       console.log(); // New line when complete

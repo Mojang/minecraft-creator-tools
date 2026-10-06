@@ -16,6 +16,11 @@
  * - visuals: Visual assets (textures, models)
  * - singleFiles: Individual definition files
  *
+ * PROMPTS go through prompt() (cli/core/Prompt.ts), which asks only when stdin and stdout are
+ * both terminals. Without a terminal, add asks nothing: it fails with INIT_ERROR, names the
+ * missing input, and says to pass a gallery template id and a name. With --yes, or with a
+ * template id and a name, add never prompts.
+ *
  * USAGE:
  * npx mct add [type] [name] -i <project-folder>
  */
@@ -24,11 +29,21 @@ import { Command } from "commander";
 import { ICommandMetadata, CommandBase } from "../../core/ICommand";
 import { ICommandContext, ErrorCodes } from "../../core/ICommandContext";
 import { TaskType } from "../../ClUtils";
-import inquirer, { DistinctQuestion } from "inquirer";
+import { IPromptRequest, prompt, PromptQuestion, reportPromptUnavailable } from "../../core/Prompt";
 import { GalleryItemType } from "../../../app/IGalleryItem";
 import Project from "../../../app/Project";
 import ProjectItemCreateManager from "../../../app/ProjectItemCreateManager";
 import LocalUtilities from "../../../local/LocalUtilities";
+
+/** The request for a prompt that a gallery template id and a name replace. */
+function addPromptRequest(asking: string): IPromptRequest {
+  return {
+    asking,
+    instead:
+      "Pass a gallery template id and a name instead. To list the ids, run mct add --list-types.\n" +
+      "  mct add <template-id> <name>",
+  };
+}
 
 export class AddCommand extends CommandBase {
   readonly metadata: ICommandMetadata = {
@@ -56,6 +71,21 @@ export class AddCommand extends CommandBase {
         contextField: "newName",
       },
     ],
+    globalOptionGroups: ["input", "projects", "prompts", "json"],
+    examples: [
+      { description: "Interactive: pick an entity template, then name it", command: "mct add entity" },
+      { description: "Interactive: pick a block template", command: "mct add block" },
+      {
+        description: "Add the vanilla 'cow' gallery template, named 'my_cow'",
+        command: "mct add cow my_cow -i ./myproj",
+      },
+      { description: "Same, non-interactive (CI-friendly)", command: "mct add allay buddy -i ./myproj -y" },
+      { description: "Discover what `mct add` accepts (machine-readable)", command: "mct add --list-types --json" },
+    ],
+    learnMore: [
+      "With `-y`, pass a specific gallery template id (e.g. `cow`, `allay`, `basicUnitCubeBlock`); the `entity`, `block`, and `item` shorthands require interactive template selection.",
+      "Item names should be lowercase, alphanumeric or `_`, and at most 50 characters.",
+    ],
   };
 
   // Instance state for prompting
@@ -65,22 +95,6 @@ export class AddCommand extends CommandBase {
     // Pro-grade additions: --list-types prints the catalog and exits without prompting,
     // so CI scripts can discover what `mct add` accepts.
     cmd.option("--list-types", "List the available content type categories and gallery template ids, then exit.");
-
-    cmd.addHelpText(
-      "after",
-      "\nExamples:\n" +
-        "  $ mct add entity                              # Interactive — pick an entity template, then prompt for name\n" +
-        "  $ mct add block                               # Interactive — pick a block template\n" +
-        "  $ mct add item                                # Interactive — pick an item template\n" +
-        "  $ mct add cow my_cow -i ./myproj              # Add a vanilla 'cow' gallery template named 'my_cow'\n" +
-        "  $ mct add allay buddy -i ./myproj -y          # Same, non-interactive (CI-friendly)\n" +
-        "  $ mct add basicUnitCubeBlock my_block -i .    # Add a block from a specific template id\n" +
-        "  $ mct add --list-types --json                 # Discover what `mct add` accepts (machine-readable)\n" +
-        "\nTip: when using `-y`, you must pass a specific gallery template id (e.g. `cow`, `allay`,\n" +
-        "     `basicUnitCubeBlock`) — the `entity` / `block` / `item` shorthands require interactive\n" +
-        "     template selection.\n" +
-        "Tip: item names should be lowercase, alphanumeric or `_`, max 50 chars.\n"
-    );
   }
 
   async execute(context: ICommandContext): Promise<void> {
@@ -96,10 +110,7 @@ export class AddCommand extends CommandBase {
     // sentinel value `"list-types"` (or `"list"`) as the positional `type`
     // arg so callers can use either flag form (`--list-types`) or shorthand
     // (`mct add list-types --json`).
-    const wantsList =
-      type === "list-types" ||
-      type === "list" ||
-      Boolean(context.commandOptions?.listTypes);
+    const wantsList = type === "list-types" || type === "list" || Boolean(context.commandOptions?.listTypes);
     if (wantsList) {
       await context.creatorTools.loadGallery();
       const gallery = context.creatorTools.gallery;
@@ -112,9 +123,7 @@ export class AddCommand extends CommandBase {
         { value: "visuals", description: "Visual assets (textures, models)" },
         { value: "singleFiles", description: "Individual definition files" },
       ];
-      const galleryTemplates = gallery
-        ? gallery.items.map((g) => ({ id: g.id, title: g.title, type: g.type }))
-        : [];
+      const galleryTemplates = gallery ? gallery.items.map((g) => ({ id: g.id, title: g.title, type: g.type })) : [];
 
       if (context.json) {
         context.log.data(
@@ -172,7 +181,16 @@ export class AddCommand extends CommandBase {
 
     for (const project of context.projects) {
       await project.ensureProjectFolder();
-      await this.addToProject(context, project, type);
+
+      try {
+        await this.addToProject(context, project, type);
+      } catch (err) {
+        if (reportPromptUnavailable(context, err)) {
+          return;
+        }
+
+        throw err;
+      }
     }
 
     this.logComplete(context);
@@ -194,13 +212,16 @@ export class AddCommand extends CommandBase {
             // Non-interactive: derive a default item name from the type.
             this.newName = type;
           } else {
-            const newNameQuestions: DistinctQuestion<any>[] = [];
+            const newNameQuestions: PromptQuestion[] = [];
             newNameQuestions.push({
               type: "input",
               name: "name",
               message: "What's your preferred new name? (<20 chars, no spaces)",
             });
-            const answers = await inquirer.prompt(newNameQuestions);
+            const answers = await prompt(newNameQuestions, {
+              asking: "for the new item's name",
+              instead: `Pass the name as the second argument, or add --yes to name it '${type}':\n  mct add ${type} <name>`,
+            });
             this.newName = answers["name"];
           }
         }
@@ -210,10 +231,6 @@ export class AddCommand extends CommandBase {
             context.log.warn(
               `Item name '${this.newName}' contains invalid characters. Minecraft identifiers should use lowercase letters, numbers, and underscores only.`
             );
-          }
-          if (context.dryRun) {
-            context.log.info("Dry run: would add '" + this.newName + "' to project");
-            return;
           }
           context.log.info(`Adding item '${this.newName}' from template '${galleryItem.title}'`);
           await ProjectItemCreateManager.addFromGallery(project, this.newName, galleryItem);
@@ -232,7 +249,7 @@ export class AddCommand extends CommandBase {
     }
 
     // Interactive type selection
-    const typeQuestions: DistinctQuestion<any>[] = [];
+    const typeQuestions: PromptQuestion[] = [];
     const choices = [
       { name: "Entity Type (entity)", value: "entity" },
       { name: "Block Type (block)", value: "block" },
@@ -259,7 +276,7 @@ export class AddCommand extends CommandBase {
         choices,
       });
 
-      const typeAnswers = await inquirer.prompt(typeQuestions);
+      const typeAnswers = await prompt(typeQuestions, addPromptRequest("what type of content to add"));
       type = typeAnswers["type"];
     }
 
@@ -301,7 +318,7 @@ export class AddCommand extends CommandBase {
       context.setExitCode(ErrorCodes.INIT_ERROR);
       return;
     }
-    const subTypeQuestions: DistinctQuestion<any>[] = [
+    const subTypeQuestions: PromptQuestion[] = [
       {
         type: "list",
         name: "subType",
@@ -315,7 +332,7 @@ export class AddCommand extends CommandBase {
       },
     ];
 
-    const subTypeAnswers = await inquirer.prompt(subTypeQuestions);
+    const subTypeAnswers = await prompt(subTypeQuestions, addPromptRequest("what type of single file to add"));
     let subType = subTypeAnswers["subType"];
 
     if (subType) {
@@ -352,7 +369,7 @@ export class AddCommand extends CommandBase {
       return;
     }
 
-    const questions: DistinctQuestion<any>[] = [];
+    const questions: PromptQuestion[] = [];
     const templateTypeChoices: { name: string; value: string }[] = [];
 
     for (const proj of gallery.items) {
@@ -384,7 +401,7 @@ export class AddCommand extends CommandBase {
       });
     }
 
-    const answers = await inquirer.prompt(questions);
+    const answers = await prompt(questions, addPromptRequest(`which ${typeDescriptor} template to use`));
 
     if (!this.newName) {
       this.newName = answers["name"];

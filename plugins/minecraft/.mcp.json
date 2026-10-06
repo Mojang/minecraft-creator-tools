@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "minecraft": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@minecraft/creator-tools@latest", "mcp"]
+    }
+  }
+}

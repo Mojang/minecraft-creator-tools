@@ -19,6 +19,7 @@
   <a href="https://www.npmjs.com/package/@minecraft/creator-tools"><img src="https://img.shields.io/npm/v/@minecraft/creator-tools" alt="npm version"></a>
   <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/node-%3E%3D22-brightgreen" alt="Node.js 22+"></a>
   <a href="https://aka.ms/mctlicense"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT license"></a>
+  <a href="https://skills.sh/mojang/minecraft-creator-tools"><img src="https://skills.sh/b/mojang/minecraft-creator-tools" alt="skills.sh installs"></a>
 </p>
 <br/>
 
@@ -39,14 +40,26 @@ Or run without installing: `npx @minecraft/creator-tools <command>`.
 ## Quick Start
 
 ```bash
-mct eula                                               # 1. Accept the Minecraft EULA (one time)
-mct create -o ./my-addon                               # 2. Scaffold a project from a template
-mct validate -i ./my-addon                             # 3. Check it against Minecraft rules
-mct view -i ./my-addon                                 # 4. Preview it in your browser
-mct deploy retail -i ./my-addon --test-world --launch  # 5. Open it in a Minecraft test world
+# 1. Accept the Minecraft EULA (one time)
+mct eula
+
+# 2. Scaffold a project from a template
+mct create -o ./my-addon
+
+# 3. Add a mob, starting from the cow template
+mct add cow my_cow -i ./my-addon
+
+# 4. Check it against Minecraft rules
+mct validate -i ./my-addon
+
+# 5. Preview it in your browser
+mct view -i ./my-addon
+
+# 6. Open it in a Minecraft test world
+mct deploy retail -i ./my-addon --test-world --launch
 ```
 
-Deploying into Minecraft requires Windows with Minecraft installed. When `-i` is omitted, commands use the current folder or the nearest project folder above it.
+Run `mct add --list-types` to see the other mobs, blocks, and items you can start from. Deploying into Minecraft requires Windows with Minecraft installed. When `-i` is omitted, commands use the current folder or the nearest project folder above it.
 
 ## Popular Commands
 
@@ -88,7 +101,7 @@ Add `.vscode/mcp.json` to your project:
 ```json
 {
   "servers": {
-    "minecraft-creator-tools": {
+    "minecraft": {
       "type": "stdio",
       "command": "mct",
       "args": ["mcp", "-i", "${workspaceFolder}"]
@@ -107,7 +120,7 @@ Run `/mcp add` inside Copilot CLI, or add this to `~/.copilot/mcp-config.json`:
 ```json
 {
   "mcpServers": {
-    "minecraft-creator-tools": {
+    "minecraft": {
       "type": "local",
       "command": "mct",
       "args": ["mcp"],
@@ -123,7 +136,7 @@ Run `/mcp add` inside Copilot CLI, or add this to `~/.copilot/mcp-config.json`:
 <summary><strong>Claude Code</strong></summary>
 
 ```bash
-claude mcp add minecraft-creator-tools -- mct mcp
+claude mcp add minecraft -- mct mcp
 ```
 
 </details>
@@ -132,7 +145,7 @@ claude mcp add minecraft-creator-tools -- mct mcp
 <summary><strong>OpenAI Codex</strong></summary>
 
 ```bash
-codex mcp add minecraft-creator-tools -- mct mcp
+codex mcp add minecraft -- mct mcp
 ```
 
 </details>
@@ -145,7 +158,7 @@ Most clients accept an `mcpServers` entry like this. Point `-i` at your project 
 ```json
 {
   "mcpServers": {
-    "minecraft-creator-tools": {
+    "minecraft": {
       "command": "mct",
       "args": ["mcp", "-i", "/path/to/my-addon"]
     }
@@ -155,7 +168,7 @@ Most clients accept an `mcpServers` entry like this. Point `-i` at your project 
 
 </details>
 
-Then ask your assistant something like: _"Add a custom block called rainbow_ore to my project."_
+Then ask your assistant something like: _"Make a hostile swamp goblin that spawns at night, and show me what it looks like."_
 
 ## Skills for AI assistants
 
@@ -163,6 +176,7 @@ Creator Tools includes skills: step-by-step guides that show your assistant how 
 
 - **With the MCP server**, your assistant reads them with the `getSkill` tool. You don't need to set anything up.
 - **With only the command line**, `mct --help` names them, `mct skills` lists them, and `mct skills <name>` prints one. Add `--json` for machine-readable output.
+- **In your assistant's skills folder**, run `npx skills add Mojang/minecraft-creator-tools` to install them. These copies come from GitHub rather than your installed version, so refresh them with `npx skills update`. The skills for creating content still need the MCP server.
 
 Found a bug? [Report an issue](https://aka.ms/mctbugs).
 

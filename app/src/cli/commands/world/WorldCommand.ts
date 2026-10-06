@@ -1,4 +1,4 @@
-import { Command as Commander } from "commander";
+import { Command as Commander, Option } from "commander";
 import { ICommand, ICommandMetadata, CommandBase } from "../../core/ICommand";
 import { ICommandContext, ErrorCodes } from "../../core/ICommandContext";
 import { TaskType } from "../../ClUtils";
@@ -11,8 +11,32 @@ import { FolderContext } from "../../../app/Project";
 /**
  * Display or set world settings.
  *
- * Usage: mct world [set] [--betaApis] [--editor] [--dataDrivenItems] [-b <behaviorPack>] [-r <resourcePack>]
+ * Usage: mct world [set] [--betaapis | --no-betaapis] [--editor | --no-editor]
  */
+/**
+ * Applies --betaapis/--no-betaapis and --editor/--no-editor to a world's level data. Each value is
+ * tri-state: true turns the setting on, false turns it off, undefined leaves it as is. Returns a
+ * message per setting that changed; an empty list means there is nothing to save.
+ */
+export function applyWorldSettings(
+  levelData: { betaApisExperiment?: boolean; isCreatedInEditor?: boolean },
+  settings: { betaApis?: boolean; editor?: boolean }
+): string[] {
+  const changes: string[] = [];
+
+  if (settings.betaApis !== undefined && settings.betaApis !== levelData.betaApisExperiment) {
+    levelData.betaApisExperiment = settings.betaApis;
+    changes.push("Set beta APIs to " + settings.betaApis);
+  }
+
+  if (settings.editor !== undefined && settings.editor !== levelData.isCreatedInEditor) {
+    levelData.isCreatedInEditor = settings.editor;
+    changes.push("Set is editor to " + settings.editor);
+  }
+
+  return changes;
+}
+
 export class WorldCommand extends CommandBase implements ICommand {
   public readonly metadata: ICommandMetadata = {
     name: "world",
@@ -24,6 +48,11 @@ export class WorldCommand extends CommandBase implements ICommand {
     isEditInPlace: true,
     isLongRunning: false,
     category: "World",
+    globalOptionGroups: ["input", "projects", "outputFolder", "betaApis", "editor", "json"],
+    examples: [
+      { description: "Show the world's settings", command: "mct world -i ./my-world" },
+      { description: "Turn on the Beta APIs experiment", command: "mct world set --betaapis -i ./my-world" },
+    ],
     arguments: [
       {
         name: "mode",
@@ -36,12 +65,17 @@ export class WorldCommand extends CommandBase implements ICommand {
 
   public configure(cmd: Commander): void {
     // Add command-specific options (the command itself is created by CommandRegistry)
-    cmd
-      .option("--betaApis <value>", "Set beta APIs experiment (true/false)")
-      .option("--editor <value>", "Set is created in editor (true/false)")
-      .option("--dataDrivenItems <value>", "Set data driven items experiment (true/false)")
-      .option("-b, --behaviorPack <pack>", "Behavior pack to associate")
-      .option("-r, --resourcePack <pack>", "Resource pack to associate");
+    // Nothing reads these older options (use --betaapis/--no-betaapis and --editor/--no-editor);
+    // they stay registered so existing scripts still parse, but are hidden from help.
+    for (const [flags, description] of [
+      ["--betaApis <value>", "Set beta APIs experiment (true/false)"],
+      ["--editor <value>", "Set is created in editor (true/false)"],
+      ["--dataDrivenItems <value>", "Set data driven items experiment (true/false)"],
+      ["-b, --behaviorPack <pack>", "Behavior pack to associate"],
+      ["-r, --resourcePack <pack>", "Resource pack to associate"],
+    ]) {
+      cmd.addOption(new Option(flags, description).hideHelp());
+    }
   }
 
   public async execute(context: ICommandContext): Promise<void> {
@@ -145,7 +179,8 @@ export class WorldCommand extends CommandBase implements ICommand {
     await mcworld.loadMetaFiles(false);
 
     // Determine if we should apply settings
-    const shouldSet = isSettable || context.world.betaApis === true || context.world.editor === true;
+    const { betaApis, editor } = context.world;
+    const shouldSet = isSettable || betaApis !== undefined || editor !== undefined;
 
     if (shouldSet) {
       if (mcworld.name === "" && mcworld.storageFullPath) {
@@ -159,25 +194,10 @@ export class WorldCommand extends CommandBase implements ICommand {
         context.setExitCode(ErrorCodes.INIT_ERROR);
         return;
       }
-      let hasSet = false;
+      const changes = applyWorldSettings(levelDat, { betaApis, editor });
+      changes.forEach((change) => log.info(change));
 
-      if (context.world.betaApis === true) {
-        if (context.world.betaApis !== levelDat.betaApisExperiment) {
-          levelDat.betaApisExperiment = context.world.betaApis;
-          log.info("Set beta APIs to " + context.world.betaApis);
-          hasSet = true;
-        }
-      }
-
-      if (context.world.editor === true) {
-        if (context.world.editor !== levelDat.isCreatedInEditor) {
-          levelDat.isCreatedInEditor = context.world.editor;
-          log.info("Set is editor to " + context.world.editor);
-          hasSet = true;
-        }
-      }
-
-      if (hasSet) {
+      if (changes.length > 0) {
         await mcworld.save();
       }
     }

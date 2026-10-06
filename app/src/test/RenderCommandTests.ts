@@ -34,6 +34,10 @@ import {
   checkBrowserAvailable,
   filterExpectedStderrLines,
 } from "./PngTestUtilities";
+import { applyTestDataDir } from "./TestDataDir";
+
+// The spawned CLI keeps its saved state in a temporary folder, not the real profile.
+applyTestDataDir();
 
 // Initialize test folders
 before(async function () {

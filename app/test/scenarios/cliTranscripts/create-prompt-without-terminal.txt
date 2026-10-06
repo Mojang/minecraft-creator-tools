@@ -1,0 +1,23 @@
+$ mct create testerName addonStarter testerCreatorName
+cwd: <work>
+exit code: 1
+note: The test-only names skip the EULA check, and the description is missing, so create needs to ask for it.
+
+stdout:
+[<timestamp>] [MESSAGE ] [##] mct v<version>  in (-i): <work>
+
+stderr:
+Error: Can't ask for the project description, because stdin and stdout aren't terminals.
+Pass the project details as arguments instead. With --yes, create uses defaults for any you leave out:
+  mct create <name> <template> [creator] [description] --yes
+
+files under <work>:
+  created out/
+
+files under <data-dir>:
+  created cli/
+  created server/envprefs/
+  created server/packCache/
+  created worlds/
+
+network requests: (none)

@@ -9,6 +9,7 @@
 
 import { expect } from "chai";
 import "mocha";
+import * as childProcess from "child_process";
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
@@ -271,6 +272,109 @@ describe("McpSkillLibrary", () => {
         }
 
         expect(scriptCommands, "script commands found").to.equal(6);
+      });
+    }
+  });
+
+  /**
+   * `npx skills add` copies the raw skill folders without renderText(), so each skill defines its
+   * folder placeholders in prose before using them, and following that definition must reach a real
+   * script, including in a sibling skill's folder.
+   */
+  describe("raw installs (npx skills add)", () => {
+    const PLACEHOLDER = /<([a-z0-9-]+)-skill-folder>/g;
+    const SCRIPT_COMMAND = /node "<([a-z0-9-]+)-skill-folder>\/([^"]+)"/g;
+    const library = McpSkillLibrary.load("0.18.0", SKILLS_ROOT);
+    const debugAddonFolder = rendered(path.join(SKILLS_ROOT, "debug-addon"));
+
+    function definitionOf(placeholderName: string): string {
+      return placeholderName === "this"
+        ? "`<this-skill-folder>` is the folder that contains this SKILL.md"
+        : `\`<${placeholderName}-skill-folder>\` is the ${placeholderName} skill's folder, next to this skill's folder`;
+    }
+
+    it("defines each placeholder in prose before its first command", () => {
+      let filesWithPlaceholders = 0;
+
+      for (const skill of library.skills) {
+        for (const file of skill.files) {
+          const lines = fs.readFileSync(path.join(skill.folderPath, ...file.split("/")), "utf8").split("\n");
+          const seen = new Set<string>();
+          let inFence = false;
+
+          for (const line of lines) {
+            if (line.trimStart().startsWith("```")) {
+              inFence = !inFence;
+              continue;
+            }
+            for (const match of line.matchAll(PLACEHOLDER)) {
+              const placeholderName = match[1];
+              if (seen.has(placeholderName)) {
+                continue;
+              }
+              seen.add(placeholderName);
+              const where = `${skill.name}/${file}: first <${placeholderName}-skill-folder>`;
+              expect(inFence, `${where} is inside a code block`).to.equal(false);
+              expect(line, where).to.include(definitionOf(placeholderName));
+            }
+          }
+
+          if (seen.size > 0) {
+            filesWithPlaceholders++;
+          }
+        }
+      }
+
+      expect(filesWithPlaceholders, "files with placeholders").to.equal(4);
+    });
+
+    it("resolves every script command to a script that starts, in a copied skills folder", () => {
+      const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "mct-raw-skills-"));
+      const installRoot = path.join(tempRoot, "Agent Skills", ".agents", "skills");
+      let scriptCommands = 0;
+
+      try {
+        fs.cpSync(SKILLS_ROOT, installRoot, { recursive: true });
+        const installed = McpSkillLibrary.load("0.18.0", installRoot);
+        expect(installed.skillNames).to.deep.equal(EXPECTED_SKILLS);
+
+        for (const skill of installed.skills) {
+          for (const file of skill.files) {
+            const text = fs.readFileSync(path.join(skill.folderPath, ...file.split("/")), "utf8");
+            for (const match of text.matchAll(SCRIPT_COMMAND)) {
+              const [, placeholderName, scriptPath] = match;
+              const folder =
+                placeholderName === "this"
+                  ? skill.folderPath
+                  : path.join(path.dirname(skill.folderPath), placeholderName);
+              const script = path.join(folder, ...scriptPath.split("/"));
+              const where = `${skill.name}/${file}: ${match[0]}`;
+
+              expect(fs.existsSync(script), `${where} -> ${script}`).to.equal(true);
+              const check = childProcess.spawnSync(process.execPath, ["--check", script], { encoding: "utf8" });
+              expect(check.status, `${where}\n${check.stderr}`).to.equal(0);
+              scriptCommands++;
+            }
+          }
+        }
+      } finally {
+        fs.rmSync(tempRoot, { recursive: true, force: true });
+      }
+
+      expect(scriptCommands, "script commands found").to.equal(6);
+    });
+
+    const renderedDefinitions: { skill: string; expected: string }[] = [
+      { skill: "debug-addon", expected: `\`${debugAddonFolder}\` is the folder that contains this SKILL.md` },
+      ...["create-block", "create-item", "create-mob"].map((skill) => ({
+        skill,
+        expected: `\`${debugAddonFolder}\` is the debug-addon skill's folder, next to this skill's folder`,
+      })),
+    ];
+
+    for (const testCase of renderedDefinitions) {
+      it(`still reads correctly once getSkill and mct skills fill in the path for ${testCase.skill}`, () => {
+        expect(library.readFile(testCase.skill)).to.include(testCase.expected);
       });
     }
   });

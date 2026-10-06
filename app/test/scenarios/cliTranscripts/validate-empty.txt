@@ -1,0 +1,25 @@
+$ mct validate -i empty
+cwd: <work>
+exit code: 4
+note: The per-check lines that validate prints from its worker thread are left out. The CLI stops the worker as soon as it returns its results, so how many of those lines get through varies from run to run.
+
+stdout:
+[<timestamp>] [MESSAGE ] [##] mct v<version>  in (-i): <work>/empty  out (-o): <work>/out
+Processing project 1/1: empty
+
+stderr:
+Error: Test Fail: Found 1 error in Min Engine Version check
+Error: No resource/behavior/skin pack manifest or world template manifest was found.
+
+files under <work>:
+  created out/empty.csv
+  created out/empty.mcr.json
+  created out/empty.report.html
+
+files under <data-dir>:
+  created cli/
+  created server/envprefs/
+  created server/packCache/
+  created worlds/
+
+network requests: (none)

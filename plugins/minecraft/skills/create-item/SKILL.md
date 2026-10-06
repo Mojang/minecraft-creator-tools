@@ -86,7 +86,7 @@ Open `behavior_packs/<pack>/items/<id>.json` and compare it with the request. Kn
 
 ## 5. Give it a readable name
 
-Creator Tools doesn't create localization, so the item shows a raw key in game. Run the debug-addon skill's names script with the display names the user asked for; it adds a `minecraft:display_name` component to each item that lacks one:
+Creator Tools doesn't create localization, so the item shows a raw key in game. Run the debug-addon skill's names script with the display names the user asked for; it adds a `minecraft:display_name` component to each item that lacks one. `<debug-addon-skill-folder>` is the debug-addon skill's folder, next to this skill's folder; if it's missing, install the debug-addon skill too.
 
 ```bash
 node "<debug-addon-skill-folder>/scripts/add-missing-names.mjs" <project-folder> --name "fungi:magic_hammer=Magic Hammer"

@@ -12,6 +12,7 @@ import {
   WorkerProgressCallback,
   IStreamingCallbacks,
   registerProjectWorkerManager,
+  ProjectOperationCancelledError,
 } from "../app/IProjectWorkerManager";
 import {
   StorageTransferMode,
@@ -81,11 +82,23 @@ function getContentRootForWorker(): string {
  * - Worker caches the project to avoid re-hydration on subsequent requests
  * - Results are streamed back: relations -> validation -> thumbnails (low-priority)
  * - Project is disposed on switch (new project) or after idle timeout (5 min)
+ * - A worker turn owns the cached project until validation callbacks and thumbnails both finish.
+ *   Queued work rechecks project/folder identity and request validity before cache reuse or serialization.
+ * - Obsolete relations/thumbnails are ignored before application, not merely in the caller's callbacks.
+ *   Streaming phase errors can continue in the worker; their results are disabled while ownership is
+ *   retained until the final message. Terminal failure/termination releases queued ownership.
+ * - Serialization uses the project's guarded read callback where available; worker computation does not
+ *   hold the main-thread package read open or cancel another project's work.
  */
 export default class ProjectWorkerManager implements IProjectWorkerManager {
   private static _instance: ProjectWorkerManager | undefined;
   private _worker: Worker | undefined;
   private _currentProjectName: string | undefined;
+  private _currentProject: IProjectForWorker | undefined;
+  private _currentProjectFolder: IFolder | null | undefined;
+  private _currentRequestIsCurrent: (() => boolean) | undefined;
+  private _projectQueue: Promise<void> = Promise.resolve();
+  private _workerGeneration = 0;
   private _pendingRequests: Map<
     string,
     {
@@ -98,6 +111,8 @@ export default class ProjectWorkerManager implements IProjectWorkerManager {
       isStreaming?: boolean;
       // Track if validation is complete (for cleanup after thumbnails)
       validationComplete?: boolean;
+      thumbnailsComplete?: boolean;
+      onFinished?: () => void;
     }
   > = new Map();
   private _isSupported: boolean;
@@ -135,6 +150,61 @@ export default class ProjectWorkerManager implements IProjectWorkerManager {
    */
   get isSupported(): boolean {
     return this._isSupported;
+  }
+
+  private async _acquireProject(
+    project: IProjectForWorker,
+    isCurrent: () => boolean
+  ): Promise<{ release: () => void } | undefined> {
+    const previous = this._projectQueue;
+    const workerGeneration = this._workerGeneration;
+    let finish: () => void;
+    this._projectQueue = new Promise<void>((resolve) => {
+      finish = resolve;
+    });
+    let released = false;
+    const release = () => {
+      if (!released) {
+        released = true;
+        finish();
+      }
+    };
+    try {
+      await previous;
+      if (workerGeneration !== this._workerGeneration || !isCurrent()) {
+        throw new ProjectOperationCancelledError();
+      }
+      if (!this._ensureWorker()) {
+        release();
+        return undefined;
+      }
+      if (
+        this._currentProject &&
+        (this._currentProject !== project ||
+          this._currentProjectName !== project.name ||
+          this._currentProjectFolder !== project.projectFolder ||
+          this._currentRequestIsCurrent?.() === false)
+      ) {
+        // The queue is released only after validation callbacks and worker thumbnails have finished.
+        this.disposeWorkerProject();
+      }
+      this._currentProject = project;
+      this._currentProjectName = project.name;
+      this._currentProjectFolder = project.projectFolder;
+      this._currentRequestIsCurrent = isCurrent;
+      return { release };
+    } catch (error) {
+      release();
+      throw error;
+    }
+  }
+
+  private _finishStreamingRequest(requestId: string) {
+    const pending = this._pendingRequests.get(requestId);
+    if (pending?.validationComplete && pending.thumbnailsComplete) {
+      this._pendingRequests.delete(requestId);
+      pending.onFinished?.();
+    }
   }
 
   /**
@@ -217,13 +287,17 @@ export default class ProjectWorkerManager implements IProjectWorkerManager {
         if (pending?.isStreaming) {
           pending.validationComplete = true;
           pending.resolve({ validationComplete: true });
+          this._finishStreamingRequest(validationResp.requestId);
         }
       } catch (callbackError) {
         // If the callback throws, reject the promise so callers aren't stuck forever
         Log.debug("Validation callback failed: " + callbackError);
         if (pending) {
-          this._pendingRequests.delete(validationResp.requestId);
+          pending.validationComplete = true;
+          pending.streaming = undefined;
+          pending.onProgress = undefined;
           pending.reject(callbackError instanceof Error ? callbackError : new Error(String(callbackError)));
+          this._finishStreamingRequest(validationResp.requestId);
         }
       }
       return;
@@ -247,11 +321,14 @@ export default class ProjectWorkerManager implements IProjectWorkerManager {
     if (response.type === ProjectWorkerMessageType.thumbnailsFinished) {
       const finishedResp = response as IThumbnailsFinishedResponse;
       const pending = this._pendingRequests.get(finishedResp.requestId);
-      if (pending?.streaming?.onThumbnailsFinished) {
-        pending.streaming.onThumbnailsFinished(finishedResp.cancelled, finishedResp.totalGenerated);
+      try {
+        pending?.streaming?.onThumbnailsFinished?.(finishedResp.cancelled, finishedResp.totalGenerated);
+      } finally {
+        if (pending) {
+          pending.thumbnailsComplete = true;
+          this._finishStreamingRequest(finishedResp.requestId);
+        }
       }
-      // Clean up the request entry if it still exists (might already be cleaned up after validation)
-      this._pendingRequests.delete(finishedResp.requestId);
       return;
     }
 
@@ -262,16 +339,29 @@ export default class ProjectWorkerManager implements IProjectWorkerManager {
       return;
     }
 
-    this._pendingRequests.delete(response.requestId);
-
     if (response.type === ProjectWorkerMessageType.error) {
+      if (pending.isStreaming && response.willContinue) {
+        // A failed phase may still be followed by validation/thumbnails in the worker. Stop applying its
+        // results, but retain ownership until its final message before handing the cached project to a new run.
+        pending.validationComplete = true;
+        pending.streaming = undefined;
+        pending.onProgress = undefined;
+        pending.reject(new Error(response.error));
+        this._finishStreamingRequest(response.requestId);
+        return;
+      }
+      this._pendingRequests.delete(response.requestId);
+      pending.onFinished?.();
       pending.reject(new Error(response.error));
     } else {
+      this._pendingRequests.delete(response.requestId);
+      pending.onFinished?.();
       pending.resolve(response);
     }
   }
 
   private _handleWorkerError(event: ErrorEvent) {
+    this._workerGeneration++;
     // Don't use Log.debugAlert here as it might show a dialog to the user
     // Worker errors are expected in some environments and should be handled gracefully
     Log.debug(`Project worker error: ${event.message}`);
@@ -279,6 +369,7 @@ export default class ProjectWorkerManager implements IProjectWorkerManager {
     // Reject all pending requests
     for (const pending of this._pendingRequests.values()) {
       pending.reject(new Error("Worker error: " + event.message));
+      pending.onFinished?.();
     }
     this._pendingRequests.clear();
 
@@ -496,36 +587,38 @@ export default class ProjectWorkerManager implements IProjectWorkerManager {
     suite: ProjectInfoSuite,
     onProgress?: WorkerProgressCallback
   ): Promise<ProjectInfoItem[] | undefined> {
-    const worker = this._ensureWorker();
-
-    if (!worker) {
-      Log.verbose("Web Workers not supported, falling back to main thread");
-      return undefined;
-    }
-
-    const storageData = await ProjectWorkerManager.createStorageTransferData(project);
-    if (!storageData) {
-      Log.verbose("Could not create storage transfer data, falling back to main thread");
-      return undefined;
-    }
-
-    const requestId = Utilities.createUuid();
-
-    const request: IGenerateInfoSetRequest = {
-      type: ProjectWorkerMessageType.generateInfoSet,
-      requestId,
-      storageData,
-      suite,
-      contentRoot: getContentRootForWorker(),
-    };
-
+    const folder = project.projectFolder;
+    const workerGeneration = this._workerGeneration;
+    const isCurrent = () => workerGeneration === this._workerGeneration && project.projectFolder === folder;
+    const lease = await this._acquireProject(project, isCurrent);
+    if (!lease) return undefined;
     try {
-      const result = await this._sendRequest<IGenerateInfoSetResult>(request, onProgress);
-      return this._deserializeInfoItems(result.infoItems, project);
-    } catch (e) {
-      // Don't show an alert - just log and fall back to main thread processing
-      Log.debug(`Worker info set generation failed, falling back to main thread: ${e}`);
-      return undefined;
+      const serialize = () => ProjectWorkerManager.createStorageTransferData(project);
+      const storageData = project.withWorkerStorageRead
+        ? await project.withWorkerStorageRead(serialize)
+        : await serialize();
+      if (!isCurrent()) throw new ProjectOperationCancelledError();
+      if (!storageData) return undefined;
+      const request: IGenerateInfoSetRequest = {
+        type: ProjectWorkerMessageType.generateInfoSet,
+        requestId: Utilities.createUuid(),
+        storageData,
+        suite,
+        contentRoot: getContentRootForWorker(),
+      };
+      try {
+        const result = await this._sendRequest<IGenerateInfoSetResult>(request, (message, percent) => {
+          if (isCurrent()) onProgress?.(message, percent);
+        });
+        if (!isCurrent()) throw new ProjectOperationCancelledError();
+        return this._deserializeInfoItems(result.infoItems, project);
+      } catch (e) {
+        if (e instanceof ProjectOperationCancelledError) throw e;
+        Log.debug(`Worker info set generation failed, falling back to main thread: ${e}`);
+        return undefined;
+      }
+    } finally {
+      lease.release();
     }
   }
 
@@ -549,81 +642,70 @@ export default class ProjectWorkerManager implements IProjectWorkerManager {
     callbacks?: IStreamingCallbacks,
     onProgress?: WorkerProgressCallback
   ): Promise<IProcessRelationsAndInfoSetWorkerResult | undefined> {
-    const worker = this._ensureWorker();
-
-    if (!worker) {
-      Log.verbose("Web Workers not supported, falling back to main thread");
-      return undefined;
-    }
-
-    // Check if project changed - if so, cancel pending thumbnails and dispose old project
-    const projectName = project.name;
-    if (this._currentProjectName && this._currentProjectName !== projectName) {
-      Log.verbose(`Project changed from ${this._currentProjectName} to ${projectName}, cancelling pending thumbnails`);
-      this.cancelPendingThumbnails();
-      this.disposeWorkerProject();
-    }
-    this._currentProjectName = projectName;
-
-    const storageData = await ProjectWorkerManager.createStorageTransferData(project);
-    if (!storageData) {
-      Log.verbose("Could not create storage transfer data, falling back to main thread");
-      return undefined;
-    }
-
-    const requestId = Utilities.createUuid();
-
-    const request: IProcessRelationsAndGenerateInfoSetRequest = {
-      type: ProjectWorkerMessageType.processRelationsAndGenerateInfoSet,
-      requestId,
-      storageData,
-      suite,
-      contentRoot: getContentRootForWorker(),
-    };
-
-    // Create streaming callbacks that apply results to the project
-    const streamingCallbacks: IStreamingCallbacks = {
-      onRelationsComplete: (relationsData) => {
-        // Apply relations to project items immediately
-        this._applyRelationsResult(project, relationsData);
-        // Forward to caller's callback
-        callbacks?.onRelationsComplete?.(relationsData);
-      },
-      onValidationComplete: async (infoItems) => {
-        // Forward to caller's callback and await it (it may be async)
-        await callbacks?.onValidationComplete?.(infoItems);
-      },
-      onThumbnailBatch: (thumbnails, thumbnailLinks, completed, total) => {
-        // Apply thumbnails to project items
-        this._applyThumbnailsResult(project, thumbnails);
-        // Apply thumbnail links (item shows another item's thumbnail)
-        if (thumbnailLinks) {
-          this._applyThumbnailLinks(project, thumbnailLinks);
-        }
-        // Forward to caller's callback
-        callbacks?.onThumbnailBatch?.(thumbnails, thumbnailLinks, completed, total);
-      },
-      onThumbnailsFinished: (cancelled, totalGenerated) => {
-        Log.verbose(`Thumbnails finished: ${totalGenerated} generated, cancelled=${cancelled}`);
-        callbacks?.onThumbnailsFinished?.(cancelled, totalGenerated);
-      },
-    };
-
+    const folder = project.projectFolder;
+    const workerGeneration = this._workerGeneration;
+    const isCurrent = () =>
+      workerGeneration === this._workerGeneration &&
+      project.projectFolder === folder &&
+      callbacks?.isCurrent?.() !== false;
+    const lease = await this._acquireProject(project, isCurrent);
+    if (!lease) return undefined;
+    let requestId: string | undefined;
     try {
-      // Send streaming request
-      await this._sendStreamingRequest(requestId, request, streamingCallbacks, onProgress);
-
-      // Return success - relations and validation have been applied via callbacks
-      return {
-        relationsApplied: true,
-        infoItems: [], // Info items are delivered via callback, not returned
-        thumbnails: undefined, // Thumbnails are delivered via callback batches
-        thumbnailLinks: undefined,
+      const serialize = () => ProjectWorkerManager.createStorageTransferData(project);
+      const storageData = project.withWorkerStorageRead
+        ? await project.withWorkerStorageRead(serialize)
+        : await serialize();
+      if (!isCurrent()) throw new ProjectOperationCancelledError();
+      if (!storageData) return undefined;
+      requestId = Utilities.createUuid();
+      const request: IProcessRelationsAndGenerateInfoSetRequest = {
+        type: ProjectWorkerMessageType.processRelationsAndGenerateInfoSet,
+        requestId,
+        storageData,
+        suite,
+        contentRoot: getContentRootForWorker(),
       };
-    } catch (e) {
-      // Don't show an alert - just log and fall back to main thread processing
-      Log.verbose("Worker combined processing failed, falling back to main thread: " + e);
-      return undefined;
+      const streamingCallbacks: IStreamingCallbacks = {
+        isCurrent,
+        onRelationsComplete: (relationsData) => {
+          if (!isCurrent()) return;
+          this._applyRelationsResult(project, relationsData);
+          callbacks?.onRelationsComplete?.(relationsData);
+        },
+        onValidationComplete: async (infoItems) => {
+          if (!isCurrent()) return;
+          await callbacks?.onValidationComplete?.(infoItems);
+        },
+        onThumbnailBatch: (thumbnails, thumbnailLinks, completed, total) => {
+          if (!isCurrent()) return;
+          this._applyThumbnailsResult(project, thumbnails);
+          if (thumbnailLinks) this._applyThumbnailLinks(project, thumbnailLinks);
+          callbacks?.onThumbnailBatch?.(thumbnails, thumbnailLinks, completed, total);
+        },
+        onThumbnailsFinished: (cancelled, totalGenerated) => {
+          if (isCurrent()) callbacks?.onThumbnailsFinished?.(cancelled, totalGenerated);
+        },
+      };
+      try {
+        await this._sendStreamingRequest(
+          requestId,
+          request,
+          streamingCallbacks,
+          (message, percent) => {
+            if (isCurrent()) onProgress?.(message, percent);
+          },
+          lease.release
+        );
+        if (!isCurrent()) throw new ProjectOperationCancelledError();
+        return { relationsApplied: true, infoItems: [] };
+      } catch (e) {
+        if (e instanceof ProjectOperationCancelledError) throw e;
+        Log.verbose("Worker combined processing failed, falling back to main thread: " + e);
+        return undefined;
+      }
+    } finally {
+      if (!requestId || !this._pendingRequests.has(requestId)) lease.release();
     }
   }
 
@@ -700,7 +782,12 @@ export default class ProjectWorkerManager implements IProjectWorkerManager {
       }
 
       this._pendingRequests.set(request.requestId, { resolve, reject, onProgress });
-      worker.postMessage(request);
+      try {
+        worker.postMessage(request);
+      } catch (error) {
+        this._pendingRequests.delete(request.requestId);
+        reject(error);
+      }
     });
   }
 
@@ -712,7 +799,8 @@ export default class ProjectWorkerManager implements IProjectWorkerManager {
     requestId: string,
     request: any,
     streaming: IStreamingCallbacks,
-    onProgress?: (message: string, percent?: number) => void
+    onProgress?: (message: string, percent?: number) => void,
+    onFinished?: () => void
   ): Promise<void> {
     return new Promise((resolve, reject) => {
       const worker = this._worker;
@@ -727,8 +815,15 @@ export default class ProjectWorkerManager implements IProjectWorkerManager {
         onProgress,
         streaming,
         isStreaming: true,
+        onFinished,
       });
-      worker.postMessage(request);
+      try {
+        worker.postMessage(request);
+      } catch (error) {
+        this._pendingRequests.delete(requestId);
+        onFinished?.();
+        reject(error);
+      }
     });
   }
 
@@ -817,22 +912,30 @@ export default class ProjectWorkerManager implements IProjectWorkerManager {
     };
     worker.postMessage(request);
     this._currentProjectName = undefined;
+    this._currentProject = undefined;
+    this._currentProjectFolder = undefined;
+    this._currentRequestIsCurrent = undefined;
   }
 
   /**
    * Terminate the worker.
    */
   terminate(): void {
+    this._workerGeneration++;
     if (this._worker) {
       this._worker.terminate();
       this._worker = undefined;
     }
 
     this._currentProjectName = undefined;
+    this._currentProject = undefined;
+    this._currentProjectFolder = undefined;
+    this._currentRequestIsCurrent = undefined;
 
     // Reject all pending requests
     for (const [, pending] of this._pendingRequests) {
-      pending.reject(new Error("Worker terminated"));
+      pending.reject(new ProjectOperationCancelledError());
+      pending.onFinished?.();
     }
     this._pendingRequests.clear();
   }

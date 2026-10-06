@@ -32,6 +32,7 @@ export class ExportWorldCommand extends CommandBase {
     isEditInPlace: false,
     isLongRunning: false,
     category: "Project",
+    globalOptionGroups: ["input", "projects", "outputFolder", "outputFile", "json"],
   };
 
   configure(cmd: Command): void {

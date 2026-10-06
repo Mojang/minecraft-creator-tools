@@ -1,0 +1,148 @@
+$ mct info -i platform_version_errors
+cwd: <work>
+exit code: 0
+
+stdout:
+[<timestamp>] [MESSAGE ] [##] mct v<version>  in (-i): <work>/platform_version_errors
+Project name: platform_version_errors
+Project description: RP with outdated versions for testing platform version validation
+Default behavior pack folder: /behavior_packs/test_bp/
+Default resource pack folder: /resource_packs/test_rp/
+=== Behavior pack folder: /behavior_pack/
+=== Behavior pack manifest: /behavior_pack/manifest.json
+=== Behavior pack folder: /behavior_packs/test_bp/
+=== Behavior pack manifest: /behavior_packs/test_bp/manifest.json
+=== Block type: /behavior_packs/test_bp/blocks/old_block.json
+=== Entity type: /behavior_packs/test_bp/entities/old_entity.json
+=== Item type: /behavior_packs/test_bp/items/old_item.json
+=== Spawn rule: /behavior_packs/test_bp/spawn_rules/old_entity.json
+=== Resource pack folder: /resource_packs/test_rp/
+=== Resource pack manifest: /resource_packs/test_rp/manifest.json
+UNKNOWN: [BASEGAMEVER002] No applicable items found for test Base Game Version (BASEGAMEVER)
+UNKNOWN: [BLOCKSCAT002] No applicable items found for test Blocks Catalog (BLOCKSCAT)
+UNKNOWN: [CDWORLDDATA002] No applicable items found for test Custom Dimension World Data Validation (CDWORLDDATA)
+UNKNOWN: [CHECKFEATUREDEPRECATION002] No applicable items found for test Feature Deprecation (CHECKFEATUREDEPRECATION)
+ERROR: [CHKMANIF101] All new content targeting published client version must conform to format version [2].: 1
+ERROR: [CHKMANIF101] All new content targeting published client version must conform to format version [2].: 1
+ERROR: [CHKMANIF101] All new content targeting published client version must conform to format version [2].: 1
+ERROR: [CHKMANIF106] (/resource_packs/test_rp/manifest.json) [min_engine_version] is too high. To use a higher version, you need to use [format_version] [2]: 1,19,0
+WARNING: [COMJSON144] (/behavior_packs/test_bp/spawn_rules/old_entity.json) JSON structure error: (format_version) does not have a value in the enumeration 1.8.0, 1.10.0, 1.12.0
+INFO: [COMJSON1110] (/behavior_packs/test_bp/entities/old_entity.json) Entity type is not at a current format version
+INFO: [COMJSON1121] (/behavior_packs/test_bp/blocks/old_block.json) Block type is not at a current format version (is at 1.16.0)
+INFO: [COMJSON1123] (/behavior_packs/test_bp/items/old_item.json) Item type is not at a current format version (is at 1.16.0)
+ERROR: [CPACKICON101] pack_icon image file not found for behavior_pack. It must use the .png extension.
+ERROR: [CPACKICON101] pack_icon image file not found for test_bp. It must use the .png extension.
+ERROR: [CPACKICON101] pack_icon image file not found for test_rp. It must use the .png extension.
+UNKNOWN: [CROSSREFINDEX002] No applicable items found for test Cross-Reference Index (CROSSREFINDEX)
+FEATUREAGGREGATION: [ENTITYTYPE052] Entity Type Runtime Identifier
+FEATUREAGGREGATION: [ENTITYTYPE053] Entity Type Identifier
+FEATUREAGGREGATION: [ENTITYTYPE054] Entity Type Metadata
+RECOMMENDATION: [ENTITYTYPE120] (/behavior_packs/test_bp/entities/old_entity.json) Behavior pack entity type format version (1.16.0) has a lower minor version number compared to the current version or the previous current minor version
+UNKNOWN: [EXPFLAG002] No applicable items found for test Experimental Flags (EXPFLAG)
+RECOMMENDATION: [FORMATVER116] (/behavior_packs/test_bp/blocks/old_block.json) Block type version (1.16.0) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version
+RECOMMENDATION: [FORMATVER136] (/behavior_packs/test_bp/items/old_item.json) Item type version (1.16.0) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version
+WARNING: [FORMATVER258] (/behavior_packs/test_bp/spawn_rules/old_entity.json) Spawn rules version (1.16.0) has a higher minor version number compared to the expected version (1.12.0)
+INFO: [FORMATVER621] (/behavior_packs/test_bp/blocks/old_block.json) Block type format_version: 1,16,0
+INFO: [FORMATVER623] (/behavior_packs/test_bp/items/old_item.json) Item type format_version: 1,16,0
+INFO: [FORMATVER644] (/behavior_packs/test_bp/spawn_rules/old_entity.json) Spawn rule format_version: 1,16,0
+FEATUREAGGREGATION: [GEOMETRY101] Block Geometry
+FEATUREAGGREGATION: [GEOMETRY102] Entity Geometry
+FEATUREAGGREGATION: [GEOMETRY103] Items Geometry
+INFO: [ITEMS102] (/behavior_pack/manifest.json) Behavior pack manifest found
+INFO: [ITEMS102] (/behavior_packs/test_bp/manifest.json) Behavior pack manifest found
+INFO: [ITEMS103] (/resource_packs/test_rp/manifest.json) Resource pack manifest found
+INFO: [ITEMS205] Behavior pack manifest item count: 2
+INFO: [ITEMS210] Entity type item count: 1
+INFO: [ITEMS214] Resource pack manifest item count: 1
+INFO: [ITEMS221] Block type item count: 1
+INFO: [ITEMS223] Item type item count: 1
+INFO: [ITEMS244] Spawn rule item count: 1
+INFO: [ITEMS309] Behavior pack folder item count: 2
+INFO: [ITEMS310] Resource pack folder item count: 1
+FEATUREAGGREGATION: [ITEMTYPE053] Item Type Identifier
+FEATUREAGGREGATION: [ITEMTYPE055] Item Type Category
+RECOMMENDATION: [ITEMTYPE120] (/behavior_packs/test_bp/items/old_item.json) Behavior pack Item Type format version (1.16.0) has a lower minor version number compared to the current version or the previous current minor version
+INFO: [JSON1110] (/behavior_packs/test_bp/entities/old_entity.json) Entity type is not at a current format version
+INFO: [JSON1121] (/behavior_packs/test_bp/blocks/old_block.json) Block type is not at a current format version (is at 1.16.0)
+INFO: [JSON1123] (/behavior_packs/test_bp/items/old_item.json) Item type is not at a current format version (is at 1.16.0)
+INFO: [JSONTAGS101] (/behavior_packs/test_bp/entities/old_entity.json) Entity file: /behavior_packs/test_bp/entities/old_entity.json
+INFO: [JSONTAGS102] (/behavior_packs/test_bp/blocks/old_block.json) Block file: /behavior_packs/test_bp/blocks/old_block.json
+INFO: [JSONTAGS103] (/behavior_packs/test_bp/items/old_item.json) Item file: /behavior_packs/test_bp/items/old_item.json
+FEATUREAGGREGATION: [LINESIZE105] Behavior pack manifest file lines
+FEATUREAGGREGATION: [LINESIZE110] Entity type file lines
+FEATUREAGGREGATION: [LINESIZE114] Resource pack manifest file lines
+FEATUREAGGREGATION: [LINESIZE121] Block type file lines
+FEATUREAGGREGATION: [LINESIZE123] Item type file lines
+FEATUREAGGREGATION: [LINESIZE144] Spawn rule file lines
+FEATUREAGGREGATION: [LINESIZE209] Behavior pack folder file lines
+FEATUREAGGREGATION: [LINESIZE210] Resource pack folder file lines
+UNKNOWN: [MCFUNCTION002] No applicable items found for test MC Function Validation (MCFUNCTION)
+RECOMMENDATION: [MINENGINEVER120] (/behavior_pack/manifest.json) Behavior pack manifest (1.12.0) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version
+RECOMMENDATION: [MINENGINEVER120] (/behavior_packs/test_bp/manifest.json) Behavior pack manifest (1.19.0) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version
+RECOMMENDATION: [MINENGINEVER220] (/resource_packs/test_rp/manifest.json) Resource pack manifest (1.19.0) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version
+INFO: [MINENGINEVER605] (/behavior_pack/manifest.json) Behavior pack manifest min_engine_version: 1,12,0
+INFO: [MINENGINEVER605] (/behavior_packs/test_bp/manifest.json) Behavior pack manifest min_engine_version: 1,19,0
+INFO: [MINENGINEVER614] (/resource_packs/test_rp/manifest.json) Resource pack manifest format_version: 1,19,0
+INFO: [PACK104] (/behavior_pack/manifest.json) Behavior Pack Name: Platform Version Errors BP
+INFO: [PACK104] (/behavior_packs/test_bp/manifest.json) Behavior Pack Name: Platform Version Errors BP
+INFO: [PACK105] (/behavior_pack/manifest.json) Behavior Pack Description: Test behavior pack with outdated format_version and min_engine_version
+INFO: [PACK105] (/behavior_packs/test_bp/manifest.json) Behavior Pack Description: BP with outdated versions for testing platform version validation
+INFO: [PACK106] (/behavior_pack/manifest.json) Behavior Pack Id: a1b2c3d4-e5f6-7890-abcd-ef1234567890|1.0.0
+INFO: [PACK106] (/behavior_packs/test_bp/manifest.json) Behavior Pack Id: a1b2c3d4-e5f6-7890-abcd-ef1234567890|1.0.0
+INFO: [PACK107] (/behavior_pack/manifest.json) Behavior Pack Min Engine Version: 1
+INFO: [PACK107] (/behavior_pack/manifest.json) Behavior Pack Min Engine Version: 1,12,0
+INFO: [PACK107] (/behavior_packs/test_bp/manifest.json) Behavior Pack Min Engine Version: 1
+INFO: [PACK107] (/behavior_packs/test_bp/manifest.json) Behavior Pack Min Engine Version: 1,19,0
+INFO: [PACK108] (/behavior_pack/manifest.json) Behavior Pack Uuid: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+INFO: [PACK108] (/behavior_packs/test_bp/manifest.json) Behavior Pack Uuid: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+INFO: [PACK109] (/behavior_pack/manifest.json) Behavior Pack Manifest
+INFO: [PACK109] (/behavior_packs/test_bp/manifest.json) Behavior Pack Manifest
+INFO: [PACK111] (/resource_packs/test_rp/manifest.json) Resource Pack Min Engine Version: 1,19,0
+INFO: [PACK112] (/resource_packs/test_rp/manifest.json) Resource Pack Uuid: c3d4e5f6-a7b8-9012-cdef-123456789012
+INFO: [PACK113] (/resource_packs/test_rp/manifest.json) Resource Pack Manifest
+INFO: [PACK114] (/resource_packs/test_rp/manifest.json) Resource Pack Name: Platform Version Errors RP
+INFO: [PACK115] (/resource_packs/test_rp/manifest.json) Resource Pack Description: RP with outdated versions for testing platform version validation
+INFO: [PACK116] (/resource_packs/test_rp/manifest.json) Resource Pack Id: c3d4e5f6-a7b8-9012-cdef-123456789012|1.0.0
+INFO: [PACK117] (/resource_packs/test_rp/manifest.json) Resource Pack Format Version: 1
+FEATUREAGGREGATION: [PACK245] Entity Geometry
+FEATUREAGGREGATION: [PACKFILECOUNT101] File Count: 7
+FEATUREAGGREGATION: [PACKSIZE101] Overall Size: 1978
+FEATUREAGGREGATION: [PACKSIZE102] File Count: 7
+FEATUREAGGREGATION: [PACKSIZE103] Folder Count: 9
+FEATUREAGGREGATION: [PACKSIZE104] Content Size: 1978
+FEATUREAGGREGATION: [PACKSIZE105] Content File Count: 7
+FEATUREAGGREGATION: [PACKSIZE106] Content Folder Count: 4
+FEATUREAGGREGATION: [RESOURCEANIMATION101] Animations
+FEATUREAGGREGATION: [RESOURCEANIMATION102] Bones
+FEATUREAGGREGATION: [SCRIPT101] APIs Used
+UNKNOWN: [SCRIPTMODULE002] No applicable items found for test Script Modules (SCRIPTMODULE)
+UNKNOWN: [SNDSDEF002] No applicable items found for test Sound Definitions (SNDSDEF)
+FEATUREAGGREGATION: [SUMMARY101] Resource Manifests
+FEATUREAGGREGATION: [SUMMARY102] Behavior Manifests
+FEATUREAGGREGATION: [TEXTURE101] Textures
+FEATUREAGGREGATION: [TEXTUREIMAGE101] Texture Images
+FEATUREAGGREGATION: [TEXTUREIMAGE200] Texture Images Tier 0
+FEATUREAGGREGATION: [TEXTUREIMAGE201] Texture Images Tier 1
+FEATUREAGGREGATION: [TEXTUREIMAGE202] Texture Images Tier 2
+FEATUREAGGREGATION: [TEXTUREIMAGE203] Texture Images Tier 3
+FEATUREAGGREGATION: [TEXTUREIMAGE204] Texture Images Tier 4
+FEATUREAGGREGATION: [TEXTUREIMAGE205] Texture Images Tier 5
+UNKNOWN: [TEXTURELIST002] No applicable items found for test Texture List Validation (TEXTURELIST)
+FEATUREAGGREGATION: [TEXTUREREF101] Texture References
+FEATUREAGGREGATION: [TYPES101] Types
+UNKNOWN: [VALFILE002] No applicable items found for test Valid files (VALFILE)
+UNKNOWN: [VSCODEFILE002] No applicable items found for test VSCode Files (VSCODEFILE)
+UNKNOWN: [WORLD002] No applicable items found for test World Validation (WORLD)
+UNKNOWN: [WORLDDATA002] No applicable items found for test World Data Validation (WORLDDATA)
+
+stderr: (empty)
+
+files under <work>: (none)
+
+files under <data-dir>:
+  created cli/
+  created server/envprefs/
+  created server/packCache/
+  created worlds/
+
+network requests: (none)

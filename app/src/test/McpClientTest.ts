@@ -4,21 +4,123 @@
 /**
  * MCP Client Integration Tests
  *
- * These tests validate the MCP model design fixtures and schema compliance.
- * Full subprocess-based MCP protocol tests are planned for the future.
- *
- * Note: Full MCP protocol tests would spawn the MCP server as a subprocess
- * and communicate via stdio transport, but require more complex setup.
+ * These tests validate the MCP model design fixtures and schema compliance. They also start the
+ * built CLI's MCP server (`mct mcp`, from toolbuild/jsn/cli/index.mjs) as a subprocess and talk to
+ * it over stdio, to check that stdout carries only protocol messages. Run `npm run jsncorebuild`
+ * first. Tool-level protocol tests are in src/test-extra/McpServerIntegrationTest.ts.
  */
 
 import { expect } from "chai";
 import "mocha";
+import { spawn } from "child_process";
 import * as fs from "fs";
 import * as path from "path";
 import * as os from "os";
+import { JSONRPCMessageSchema, LATEST_PROTOCOL_VERSION } from "@modelcontextprotocol/sdk/types.js";
 import { McpTestFixtures } from "./McpToolsTest";
 import ModelDesignUtilities from "../minecraft/ModelDesignUtilities";
 import MinecraftMcpServer from "../local/MinecraftMcpServer";
+import { applyTestDataDir } from "./TestDataDir";
+
+// The MCP servers these tests start keep their saved state in a temporary folder, not the real profile.
+applyTestDataDir();
+
+const CLI_PATH = path.resolve("toolbuild/jsn/cli/index.mjs");
+
+/** What an MCP server process wrote, collected exactly as written. */
+interface IStdioOutput {
+  stdout: string;
+  stderr: string;
+}
+
+/** The complete stdout lines that parse as JSON. The stdout purity test reports any others. */
+function jsonLines(stdout: string): any[] {
+  const messages: any[] = [];
+
+  for (const line of stdout.split("\n").slice(0, -1)) {
+    try {
+      messages.push(JSON.parse(line));
+    } catch {
+      // Not JSON.
+    }
+  }
+
+  return messages;
+}
+
+/** Resolves true if `promise` settles within `ms` milliseconds, or false otherwise. */
+async function settlesWithin(promise: Promise<unknown>, ms: number): Promise<boolean> {
+  let timer: NodeJS.Timeout | undefined;
+  const timeout = new Promise<boolean>((resolve) => (timer = setTimeout(() => resolve(false), ms)));
+
+  try {
+    return await Promise.race([promise.then(() => true), timeout]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+/**
+ * Starts `mct <args>` in `cwd`, runs the MCP initialize exchange and a ping over stdio, and then
+ * stops the server. SIGTERM comes first, so the server's shutdown logging runs too.
+ */
+async function runInitializeExchange(args: string[], cwd: string): Promise<IStdioOutput> {
+  const proc = spawn(process.execPath, [CLI_PATH, ...args], { cwd });
+  const output: IStdioOutput = { stdout: "", stderr: "" };
+  const closed = new Promise<void>((resolve) => proc.on("close", () => resolve()));
+
+  proc.stdout.setEncoding("utf8");
+  proc.stderr.setEncoding("utf8");
+  proc.stdout.on("data", (chunk: string) => (output.stdout += chunk));
+  proc.stderr.on("data", (chunk: string) => (output.stderr += chunk));
+  // If the server exits early, writes to it fail with EPIPE; waitForResponse reports that instead.
+  proc.stdin.on("error", () => {});
+
+  const send = (message: object) => proc.stdin.write(JSON.stringify(message) + "\n");
+
+  const waitForResponse = async (id: number) => {
+    const deadline = Date.now() + 30000;
+
+    while (!jsonLines(output.stdout).some((message) => message.id === id)) {
+      if (proc.exitCode !== null || proc.signalCode !== null || Date.now() > deadline) {
+        throw new Error(`The MCP server didn't answer request ${id}. stderr:\n${output.stderr}`);
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 25));
+    }
+  };
+
+  try {
+    send({
+      jsonrpc: "2.0",
+      id: 1,
+      method: "initialize",
+      params: {
+        protocolVersion: LATEST_PROTOCOL_VERSION,
+        capabilities: {},
+        clientInfo: { name: "mct-stdio-test", version: "1.0.0" },
+      },
+    });
+    await waitForResponse(1);
+
+    send({ jsonrpc: "2.0", method: "notifications/initialized" });
+    send({ jsonrpc: "2.0", id: 2, method: "ping" });
+    await waitForResponse(2);
+  } finally {
+    proc.kill("SIGTERM");
+
+    if (!(await settlesWithin(closed, 5000))) {
+      proc.stdin.end();
+
+      if (!(await settlesWithin(closed, 5000))) {
+        proc.kill("SIGKILL");
+        await closed;
+      }
+    }
+  }
+
+  return output;
+}
 
 // These tests validate the MCP model design fixtures
 describe("MCP Client Integration Tests", function () {
@@ -231,5 +333,66 @@ describe("MCP Client Integration Tests", function () {
       fs.writeFileSync(path.join(tmpRoot, "manifest.json"), "{ not valid json");
       expect((MinecraftMcpServer as any)._isResourcePackFolder(tmpRoot)).to.equal(false);
     });
+  });
+
+  // `mct mcp` speaks MCP over stdio, so stdout must hold only JSON-RPC messages, from the first
+  // byte to the last. The CLI's debug and verbose messages, at startup and at shutdown, go to stderr.
+  describe("stdio server stdout", function () {
+    this.timeout(60000);
+
+    const launches = [
+      { name: "mct --debug mcp", args: ["--debug", "mcp"] },
+      { name: "mct --debug --verbose mcp", args: ["--debug", "--verbose", "mcp"] },
+    ];
+
+    for (const launch of launches) {
+      describe(launch.name, function () {
+        let tmpRoot: string;
+        let output: IStdioOutput;
+
+        before(async function () {
+          // Start in a subfolder of a project, so --verbose also logs the project root it finds.
+          tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), "mct-mcp-stdio-"));
+          fs.writeFileSync(path.join(tmpRoot, "package.json"), "{}");
+          fs.mkdirSync(path.join(tmpRoot, "subfolder"));
+
+          output = await runInitializeExchange(launch.args, path.join(tmpRoot, "subfolder"));
+        });
+
+        after(function () {
+          try {
+            fs.rmSync(tmpRoot, { recursive: true, force: true });
+          } catch {
+            /* best-effort */
+          }
+        });
+
+        it("should answer initialize", function () {
+          const response = jsonLines(output.stdout).find((message) => message.id === 1);
+          expect(response?.result?.serverInfo?.name, "the initialize result should name the server").to.be.a("string");
+        });
+
+        it("should write only JSON-RPC messages to stdout", function () {
+          const lines = output.stdout.split("\n");
+          expect(lines.pop(), "stdout should end with a complete line").to.equal("");
+          expect(lines.length, "stdout should hold at least the two responses").to.be.at.least(2);
+
+          for (const line of lines) {
+            let message: unknown;
+
+            try {
+              message = JSON.parse(line);
+            } catch {
+              expect.fail(`stdout line isn't JSON: ${line.slice(0, 200)}`);
+            }
+
+            expect(
+              JSONRPCMessageSchema.safeParse(message).success,
+              `stdout line isn't a JSON-RPC message: ${line.slice(0, 200)}`
+            ).to.equal(true);
+          }
+        });
+      });
+    }
   });
 });

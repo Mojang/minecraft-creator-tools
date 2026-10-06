@@ -52,6 +52,9 @@ export type ThumbnailsFinishedCallback = (cancelled: boolean, totalGenerated: nu
  * rather than waiting for all operations to finish.
  */
 export interface IStreamingCallbacks {
+  /** False when the request's project/storage generation is no longer current. */
+  isCurrent?: () => boolean;
+
   /**
    * Called when relations calculation completes.
    * This is the first callback to fire - allows UI to unblock early.
@@ -77,6 +80,13 @@ export interface IStreamingCallbacks {
   onThumbnailsFinished?: ThumbnailsFinishedCallback;
 }
 
+export class ProjectOperationCancelledError extends Error {
+  constructor() {
+    super("Project content changed while processing. Retry the operation for the current project.");
+    this.name = "ProjectOperationCancelledError";
+  }
+}
+
 /**
  * Minimal project interface for worker manager operations.
  * This avoids circular dependencies with the full Project class.
@@ -85,6 +95,8 @@ export interface IProjectForWorker {
   readonly name: string;
   readonly projectFolder: import("../storage/IFolder").default | null;
   getItemsCopy(): import("./ProjectItem").default[];
+  /** Protect main-thread serialization without holding a read during worker computation. */
+  withWorkerStorageRead?<T>(read: () => Promise<T>): Promise<T>;
 }
 
 /**

@@ -20,6 +20,7 @@ export class DedicatedServeCommand extends CommandBase implements ICommand {
     isEditInPlace: false,
     isLongRunning: true,
     category: "Server",
+    globalOptionGroups: ["input", "projects", "editor"],
   };
 
   public configure(cmd: Commander): void {

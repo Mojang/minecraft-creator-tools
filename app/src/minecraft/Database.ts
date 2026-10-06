@@ -288,6 +288,15 @@ export default class Database {
    * `toolbuild/vsc/data/forms/` for the VSC extension), so this loader does
    * not need a runtime fallback chain — there is only one place to look.
    *
+   * The Node package (`npx mct`, `mct serve`, the MCP server) is the one
+   * exception: it resolves `data/forms/` straight to the
+   * `@minecraft/bedrock-schemas` package at runtime and ships the overrides
+   * beside it as `data/local_forms/`. Enumerating the package folder never
+   * sees those, so when the host reports an override for the form being
+   * loaded (`ILocalUtilities.getLocalFormOverridePath`), the form is read by
+   * its file path, which `LocalUtilities.getFullPath` points at the
+   * override; every other form still comes out of the folder.
+   *
    * To extend or replace an upstream form, drop a same-pathed file under
    * `app/public_supplemental/data/local_forms/<sub>/<name>.form.json` and
    * rebuild. To unsticky an override (e.g. because upstream caught up), just
@@ -315,6 +324,14 @@ export default class Database {
 
     if (!Database.local) {
       return undefined;
+    }
+
+    if (Database._hasFormOverride(subFolder, name) && Database.local.readJsonFileSync) {
+      const overridden = Database.local.readJsonFileSync(path + name + ".form.json") as IFormDefinition | null;
+      if (overridden) {
+        FieldUtilities.normalizeFormFieldDataTypes(overridden);
+        return overridden;
+      }
     }
 
     const storage = Database.local.createStorage(path);
@@ -345,6 +362,18 @@ export default class Database {
       FieldUtilities.normalizeFormFieldDataTypes(res);
     }
     return res;
+  }
+
+  /** Whether the host ships a checked-in override for this form (the Node package does; see the note above). */
+  private static _hasFormOverride(subFolder: string, name: string): boolean {
+    const getOverride = Database.local?.getLocalFormOverridePath;
+    if (!getOverride) {
+      return false;
+    }
+
+    const subPath = (subFolder ? subFolder + "/" : "") + name + ".form.json";
+
+    return getOverride.call(Database.local, subPath) !== undefined;
   }
 
   static async ensureFormLoaded(subFolder: string, name: string): Promise<IFormDefinition | undefined> {
@@ -384,6 +413,14 @@ export default class Database {
     }
 
     if (Database.local) {
+      if (Database._hasFormOverride(subFolder, name)) {
+        const overridden = (await Database.local.readJsonFile(path + name + ".form.json")) as IFormDefinition | null;
+        if (overridden) {
+          FieldUtilities.normalizeFormFieldDataTypes(overridden);
+          return overridden;
+        }
+      }
+
       const storage = Database.local.createStorage(path);
 
       if (!storage) {

@@ -13,7 +13,34 @@
 // right after their imports, then installDomGlobals()/restoreDomGlobals() from
 // before()/after() hooks around the tests that actually render.
 
+/// <reference types="node" />
+
 import { JSDOM } from "jsdom";
+
+// Some components under test import their stylesheet (e.g. ScalarArray.css).
+// Node has no loader for .css modules, so register a no-op one before those
+// components are required.
+if (!require.extensions[".css"]) {
+  require.extensions[".css"] = () => {};
+}
+
+// DataForm pulls in the action editors, which import react-blockly. That
+// package only ships ES module entry points Node cannot require, and nothing
+// in these specs renders Blockly, so a stub stands in for it before anything
+// asks for it.
+try {
+  const blocklyId = require.resolve("react-blockly");
+  if (!require.cache[blocklyId]) {
+    require.cache[blocklyId] = {
+      id: blocklyId,
+      filename: blocklyId,
+      loaded: true,
+      exports: { BlocklyWorkspace: () => null, useBlocklyWorkspace: () => ({}) },
+    } as any;
+  }
+} catch {
+  // Not installed: nothing to stub.
+}
 
 const dom = new JSDOM("<!doctype html><html><body></body></html>", { pretendToBeVisual: true });
 

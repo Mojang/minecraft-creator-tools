@@ -26,6 +26,8 @@ export class EditCommand extends CommandBase implements ICommand {
     isEditInPlace: true,
     isLongRunning: true,
     category: "Content",
+    globalOptionGroups: ["input", "ssl"],
+    examples: [{ command: "mct edit -i ./my-project" }],
   };
 
   public configure(_cmd: Commander): void {

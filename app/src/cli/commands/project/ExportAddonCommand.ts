@@ -49,6 +49,12 @@ export class ExportAddonCommand extends CommandBase {
     isEditInPlace: false,
     isLongRunning: false,
     category: "Project",
+    globalOptionGroups: ["input", "projects", "outputFolder", "outputFile", "dryRun", "json"],
+    examples: [
+      { description: "Auto-detect the format", command: "mct exportaddon -i ./myproj -o ./out" },
+      { description: "Force .mcaddon", command: "mct exportaddon -i ./myproj -o ./out --format mcaddon" },
+      { description: "Explicit file name", command: "mct exportaddon -i ./myproj --of ./out/myproj.mcpack" },
+    ],
   };
 
   configure(cmd: Command): void {
@@ -56,15 +62,6 @@ export class ExportAddonCommand extends CommandBase {
       "--format <format>",
       "Output format: 'auto' (default — picks mcaddon for BP+RP, mcpack otherwise), 'mcpack', or 'mcaddon'.",
       "auto"
-    );
-
-    cmd.addHelpText(
-      "after",
-      "\nExamples:\n" +
-        "  $ mct exportaddon -i ./myproj -o ./out                       # auto-detect format\n" +
-        "  $ mct exportaddon -i ./myproj -o ./out --format mcaddon      # force .mcaddon\n" +
-        "  $ mct exportaddon -i ./myproj --of ./out/myproj.mcpack       # explicit filename\n" +
-        "  $ mct exportaddon -i ./myproj -o ./out --json                # machine-readable result\n"
     );
   }
 

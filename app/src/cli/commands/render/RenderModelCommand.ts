@@ -52,6 +52,7 @@ export class RenderModelCommand extends CommandBase {
     isEditInPlace: false,
     isLongRunning: true,
     category: "Render",
+    globalOptionGroups: ["input", "projects"],
     arguments: [
       {
         name: "geometryPath",
@@ -321,12 +322,6 @@ export class RenderModelCommand extends CommandBase {
 
       if (result.imageData) {
         const absoluteOutputPath = path.isAbsolute(outputPath) ? outputPath : path.join(process.cwd(), outputPath);
-
-        if (context.dryRun) {
-          context.log.info("Dry run: would write rendered image to " + absoluteOutputPath);
-          return;
-        }
-
         const outputDir = path.dirname(absoluteOutputPath);
 
         if (!fs.existsSync(outputDir)) {

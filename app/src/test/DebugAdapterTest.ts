@@ -32,7 +32,7 @@ import {
 import { DebuggerFailureKind, DebuggerLifecycleStage } from "../debugger/DebuggerLifecycle";
 import { deriveDebugOwnership } from "../debugger/DiagnosticsSchemaUtilities";
 import { HydrationGate, applyHydrationSnapshot } from "../debugger/DebugPanelHydration";
-import { DEBUG_PANEL_SUBSCRIPTION_EVENTS } from "../local/IServerNotification";
+import { DEBUG_PANEL_SUBSCRIPTION_EVENTS } from "../app/IServerNotification";
 import DebugPortRegistry from "../debugger/DebugPortRegistry";
 import DedicatedServer, { DedicatedServerStatus } from "../local/DedicatedServer";
 import { buildDebugSlotConfig } from "../local/HttpServer";

@@ -298,6 +298,54 @@ export default class EntityTypeResourceDefinition {
     };
   }
 
+  /**
+   * The variant key under which this entity lists the given geometry
+   * (e.g., "cold" for geometry.cow.cold), or undefined when no key does.
+   * Geometry and texture variants share keys, so this is how a geometry
+   * file finds the texture that was drawn for it: the cold cow's geometry
+   * puts its horns and muzzle in the lower half of a 64x64 texture, which
+   * the default 64x32 cow texture does not have.
+   */
+  public getVariantKeyForGeometry(geometryId: string): string | undefined {
+    if (!this._data?.geometry || !geometryId) {
+      return undefined;
+    }
+
+    const wanted = geometryId.trim().toLowerCase();
+
+    for (const key in this._data.geometry) {
+      const candidate = this._data.geometry[key];
+
+      if (typeof candidate === "string" && candidate.trim().toLowerCase() === wanted) {
+        return key;
+      }
+    }
+
+    return undefined;
+  }
+
+  /**
+   * The texture variant key that belongs with one of the given geometry
+   * identifiers: the first key that lists one of them as its geometry and
+   * also has a texture of its own. Undefined when none of the geometries is
+   * paired with a texture here.
+   */
+  public getTextureVariantKeyForGeometries(geometryIds: string[]): string | undefined {
+    if (!this._data?.textures) {
+      return undefined;
+    }
+
+    for (const geometryId of geometryIds) {
+      const key = this.getVariantKeyForGeometry(geometryId);
+
+      if (key !== undefined && this._data.textures[key]) {
+        return key;
+      }
+    }
+
+    return undefined;
+  }
+
   public ensureAnimationAndGetShortName(animationFullName: string): string | undefined {
     if (!this._data || !this._data.animations) {
       return undefined;

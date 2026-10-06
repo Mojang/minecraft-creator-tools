@@ -26,9 +26,12 @@
  * PROJECT DETECTION LOGIC:
  * The project detection supports several modes:
  *
- * 1. Single File Mode (-f, --file):
+ * 1. Single File Mode (--if):
  *    - Input is a single file (e.g., .mcaddon, .mcpack, .zip)
- *    - Creates one project from that file
+ *    - Creates one project from that file and opens it before executing the command, including dry runs.
+ *      An unreadable package fails instead of loading a same-name saved project.
+ *    - Presence is distinct from truthiness: supplied empty/non-string values are rejected before folder
+ *      selection, including direct factory calls. Valid path bytes are not trimmed or rewritten.
  *
  * 2. Multi-Level Multi-Project:
  *    - Root folder contains subfolders
@@ -45,6 +48,18 @@
  * STORAGE SETUP:
  * - inputStorage: NodeStorage pointing to input folder (read-only for non-edit commands)
  * - outputStorage: NodeStorage pointing to output folder (or same as input)
+ * - The output folder (-o, default ./out) is created only when the run needs it (needsOutputFolder in
+ *   CommandEffects.ts): for commands that write there, and for edit-in-place commands that, without -i
+ *   or --if, look for projects there. For other runs, a missing -o stays an empty, unloaded folder, so
+ *   they don't create ./out in the current folder.
+ * - Under --dry-run, both are read-only, as is every project, since projects write through their own
+ *   storage. Write errors then name the dry run (DRY_RUN_READ_ONLY_REASON), and the reason also stops
+ *   creating and moving files and folders. No folder is created, so -o may not exist, but for commands
+ *   that need -o, a dry run fails where a real run couldn't create it, as when it's a file.
+ *   --dry-run never makes the input folder the output folder, and never changes which projects a command
+ *   works on: without -i, edit-in-place commands detect projects in -o (default ./out) either way. A
+ *   missing -o then holds one empty project at that path, as the folder a real run creates there does,
+ *   never a saved project with the same name in the data folder (see Project.ensureProjectFolder).
  * - Additional storage for Minecraft paths, deployment, etc.
  *
  * WORKER POOL:
@@ -85,6 +100,11 @@ import {
 } from "./ICommandContext";
 import { createWorkerPool } from "./WorkerPool";
 import { createLogger } from "./Logger";
+import { DRY_RUN_READ_ONLY_REASON } from "./DryRunGuard";
+import { commandRegistry } from "./CommandRegistry";
+import { needsOutputFolder } from "./CommandEffects";
+import { escapeControlCharacters } from "./CommandLineHelp";
+import { hasInputFileOption, INVALID_INPUT_FILE_OPTION_MESSAGE, isValidInputFileOption } from "./InputFileOption";
 import Log from "../../core/Log";
 
 /**
@@ -96,7 +116,7 @@ export interface IRawOptions {
   inputFolder?: string;
   outputFolder?: string;
   outputFile?: string;
-  inputFile?: string;
+  inputFile?: unknown;
   additionalFiles?: string;
   basePath?: string;
 
@@ -303,6 +323,10 @@ export class CommandContextFactory {
     options: IRawOptions,
     args: ICommandArgs = {}
   ): Promise<ICommandContext> {
+    if (!isValidInputFileOption(options.inputFile)) {
+      throw new Error(INVALID_INPUT_FILE_OPTION_MESSAGE);
+    }
+
     // Parse numeric and boolean options
     const threads = CommandContextFactory.parseThreads(options.threads);
     const force = options.force ?? false;
@@ -319,8 +343,9 @@ export class CommandContextFactory {
     // Parse output type - if --json flag is set, use json output type
     const outputType = json ? OutputType.json : CommandContextFactory.parseOutputType(options.outputType);
 
-    // Create logger (quiet mode suppresses non-essential output, json mode routes non-data to stderr)
-    const log = createLogger(verbose, quiet, debug, false, json);
+    // Create logger (quiet mode suppresses non-essential output). In --json and mcp modes, stdout carries
+    // only machine output (the JSON document, or MCP protocol messages), so non-data output goes to stderr.
+    const log = createLogger(verbose, quiet, debug, false, json || taskType === TaskType.mcp);
 
     // Resolve input/output folders to absolute paths
     // When -i is not specified, auto-discover the nearest project root by
@@ -344,11 +369,18 @@ export class CommandContextFactory {
       ? rawOutputFolder
       : path.resolve(process.cwd(), rawOutputFolder);
 
-    // Create storage instances
+    // Create storage instances. Under --dry-run both are read-only, so a write that a command forgot to
+    // skip fails, with an error that names the dry run, instead of changing files.
     const inputStorage = new NodeStorage(inputFolder, "");
-    inputStorage.readOnly = !ClUtils.getIsEditInPlaceCommand(taskType);
+    inputStorage.readOnly = dryRun || !ClUtils.getIsEditInPlaceCommand(taskType);
 
     const outputStorage = new NodeStorage(outputFolder, "");
+    outputStorage.readOnly = dryRun;
+
+    if (dryRun) {
+      inputStorage.readOnlyReason = DRY_RUN_READ_ONLY_REASON;
+      outputStorage.readOnlyReason = DRY_RUN_READ_ONLY_REASON;
+    }
 
     // Get work folders
     const inputWorkFolder = await CommandContextFactory.getWorkFolder(
@@ -359,24 +391,44 @@ export class CommandContextFactory {
       false // isOutputFolder
     );
 
-    // For commands with a separate output folder, ensure the output folder exists
-    // This applies to validate, write commands, and any command with explicit -o flag
-    const shouldCreateOutputFolder = outputFolder !== inputFolder && options.outputFolder !== undefined;
+    // Create the output folder only when the run needs it (needsOutputFolder in CommandEffects.ts): commands that
+    // write there, and edit-in-place commands that, without -i or --if, look for projects there. Other runs don't
+    // leave an empty ./out behind. For a task type with no registered command, as when a test builds a context
+    // directly, it's still created as before. Under --dry-run nothing is created.
+    const command = commandRegistry.getByTaskType(taskType);
+    const commandNeedsOutputFolder = command === undefined || needsOutputFolder(command.metadata.name, options);
+    const createsOutputFolder = !dryRun && commandNeedsOutputFolder;
+    const shouldCreateOutputFolder =
+      createsOutputFolder && outputFolder !== inputFolder && options.outputFolder !== undefined;
 
-    const outputWorkFolder =
-      outputFolder === inputFolder
-        ? inputWorkFolder
-        : await CommandContextFactory.getWorkFolder(
-            outputStorage.rootFolder,
-            taskType,
-            options.inputFolder,
-            options.outputFolder,
-            shouldCreateOutputFolder // isOutputFolder - will create if needed
-          );
+    let outputWorkFolder = inputWorkFolder;
+
+    if (outputFolder !== inputFolder) {
+      // Under --dry-run nothing is created. Where a real run would create -o, the dry run still fails where the real
+      // run couldn't, as when -o is a file. That's checked before exists(), which on Windows is true for a file.
+      if (dryRun && commandNeedsOutputFolder) {
+        ClUtils.checkFolderCanBeCreated(outputFolder);
+      }
+
+      // An output folder that isn't created stays an empty, unloaded folder when it doesn't exist.
+      outputWorkFolder =
+        !createsOutputFolder && !(await outputStorage.rootFolder.exists())
+          ? outputStorage.rootFolder
+          : await CommandContextFactory.getWorkFolder(
+              outputStorage.rootFolder,
+              taskType,
+              options.inputFolder,
+              options.outputFolder,
+              shouldCreateOutputFolder // isOutputFolder - will create if needed
+            );
+    }
 
     // Detect and load projects
     // For isEditInPlace commands (like 'add') where only -o is specified (no -i),
-    // we should detect/create projects in the output folder, not the current directory
+    // we should detect/create projects in the output folder, not the current directory.
+    // A dry run detects projects in the same folder, so it previews the projects a real run changes. It doesn't
+    // create a missing -o, which then holds one empty project at that path, as the folder a real run creates there
+    // does. The project stays bound to -o, not to a saved project with the same name (Project.ensureProjectFolder).
     const isEditInPlace = ClUtils.getIsEditInPlaceCommand(taskType);
     const onlyOutputSpecified = !options.inputFolder && options.outputFolder !== undefined;
     const projectDetectionFolder = isEditInPlace && onlyOutputSpecified ? outputWorkFolder : inputWorkFolder;
@@ -395,6 +447,23 @@ export class CommandContextFactory {
 
     // Hydrate projects
     const projects = CommandContextFactory.hydrateProjects(creatorTools, projectStarts);
+
+    // Each project writes through its own storage, not inputStorage, so under --dry-run the projects are
+    // read-only too: Project.save() and file writes through the project's folder throw.
+    if (dryRun) {
+      for (const project of projects) {
+        project.readOnlyReason = DRY_RUN_READ_ONLY_REASON;
+        project.readOnlySafety = true;
+      }
+    }
+
+    // Some commands don't open their projects (notably setup under --dry-run). Explicit file input must still
+    // be loadable, and read-only protection must be in place before opening it.
+    if (hasInputFileOption(options.inputFile)) {
+      for (const project of projects) {
+        await project.ensureProjectFolder();
+      }
+    }
 
     // Create worker pool
     // Note: For now we create a placeholder pool. Commands will use the pool
@@ -558,6 +627,10 @@ export class CommandContextFactory {
     workFolder: IFolder,
     log: ILogger
   ): Promise<IProjectStartInfo[]> {
+    const inputFile = options.inputFile;
+    if (!isValidInputFileOption(inputFile)) {
+      throw new Error(INVALID_INPUT_FILE_OPTION_MESSAGE);
+    }
     const projectStarts: IProjectStartInfo[] = [];
     const psw = options.projectStartsWith?.toLowerCase();
     const additionalFiles = CommandContextFactory.parseAdditionalFiles(options.additionalFiles);
@@ -565,16 +638,16 @@ export class CommandContextFactory {
     // -------------------------------------------------------------------------
     // Single file mode
     // -------------------------------------------------------------------------
-    if (options.inputFile) {
+    if (hasInputFileOption(inputFile)) {
       if (options.inputFolder) {
         throw new Error("Cannot specify both an input file and an input folder.");
       }
 
-      const inputFolderPath = StorageUtilities.getFolderPath(options.inputFile);
-      const inputFileName = StorageUtilities.getLeafName(options.inputFile);
+      const inputFolderPath = StorageUtilities.getFolderPath(inputFile);
+      const inputFileName = StorageUtilities.getLeafName(inputFile);
 
       if (!inputFileName || inputFileName.length < 2 || !inputFolderPath || inputFolderPath.length < 2) {
-        throw new Error(`Could not process file with path: '${options.inputFile}'`);
+        throw new Error(`Could not process file with path: '${inputFile}'`);
       }
 
       if (!creatorTools.ensureLocalFolder) {
@@ -588,12 +661,14 @@ export class CommandContextFactory {
       const fileExists = await file.exists();
 
       if (!fileExists) {
-        throw new Error(`Could not find file with path: '${options.inputFile}'`);
+        throw new Error(
+          `Could not find input package '${escapeControlCharacters(inputFile)}'. Check the path supplied with --if.`
+        );
       }
 
       projectStarts.push({
         ctorProjectName: inputFileName,
-        localFilePath: options.inputFile,
+        localFilePath: inputFile,
         accessoryFiles: additionalFiles,
       });
 
@@ -958,8 +1033,9 @@ export class CommandContextFactory {
    */
   private static parseWorldOptions(options: IRawOptions): IWorldOptions {
     return {
-      betaApis: options.betaApis ?? false,
-      editor: options.editor ?? false,
+      // Kept tri-state so --no-betaapis / --no-editor can turn a setting off.
+      betaApis: options.betaApis,
+      editor: options.editor,
       difficulty: options.difficulty,
       gameMode: options.gameMode,
       name: options.worldName,

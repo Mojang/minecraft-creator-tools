@@ -1,0 +1,36 @@
+$ mct fix --list
+cwd: <work>/simple
+exit code: 0
+
+stdout:
+[<timestamp>] [MESSAGE ] [##] mct v<version>  in (-i): <work>/simple
+Available fixes:
+  latestbetascriptversion  [idempotent]
+    Update @minecraft script module dependencies to the latest beta versions
+    Reversibility: Pin a specific version in package.json to revert.
+
+  randomizealluids  [destructive]
+    Regenerate all UUIDs in manifest files (use when cloning projects to avoid conflicts)
+    Reversibility: Not reversible by another fix. Use git to recover. Will break existing world references to this pack.
+
+  setnewestformatversions  [idempotent]
+    Update format_version fields across all definition files to the newest supported version
+    Reversibility: Edit each file's format_version manually to the prior value, or revert via git.
+
+  setnewestminengineversion  [idempotent]
+    Update min_engine_version in manifests to the newest supported version
+    Reversibility: Edit manifest min_engine_version manually to the prior value, or revert via git.
+
+
+stderr: (empty)
+
+files under <work>:
+  created simple/out/
+
+files under <data-dir>:
+  created cli/
+  created server/envprefs/
+  created server/packCache/
+  created worlds/
+
+network requests: (none)

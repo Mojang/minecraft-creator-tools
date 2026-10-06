@@ -7,7 +7,9 @@
  *
  * Source: `plugins/minecraft/skills/<name>/SKILL.md` (plus `references/` and `scripts/`) at the
  * repo root. `gulp jsnbuild` copies it to `toolbuild/jsn/skills/`, so the npm package ships
- * `<package>/skills/` next to `<package>/cli/`.
+ * `<package>/skills/` next to `<package>/cli/`. Each skill also has `agents/openai.yaml` and
+ * `assets/` icons: display metadata for OpenAI clients that install skill folders directly. Only
+ * markdown files are served here, so agents never see them.
  *
  * Delivery:
  * - `getSkill` tool (registered by `register()`): returns a skill's SKILL.md or one of its
@@ -28,6 +30,10 @@
  *   inside the installed package, so the bundled scripts can be run as written. Skills quote the
  *   whole script path (`node "<this-skill-folder>/scripts/x.mjs"`) so install paths with spaces
  *   work, and the path uses forward slashes, which every shell and Node accept on Windows too.
+ *   Copies installed straight from GitHub (`npx skills add`) skip this rendering, so each skill also
+ *   defines its placeholders in prose where they first appear ("`<this-skill-folder>` is the folder
+ *   that contains this SKILL.md"). After rendering, that sentence names the absolute path instead,
+ *   which is still true. McpSkillLibraryTest checks both forms.
  * - `@minecraft/creator-tools@<tag>` becomes the running release version (for example `@0.18.0`),
  *   so CLI commands in a skill run the same version as the server or CLI. Dev builds keep the
  *   source tag.

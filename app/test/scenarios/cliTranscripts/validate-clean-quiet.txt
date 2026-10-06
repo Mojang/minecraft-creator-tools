@@ -1,0 +1,20 @@
+$ mct validate -i simple -q
+cwd: <work>
+exit code: 0
+
+stdout: (empty)
+
+stderr: (empty)
+
+files under <work>:
+  created out/simple.csv
+  created out/simple.mcr.json
+  created out/simple.report.html
+
+files under <data-dir>:
+  created cli/
+  created server/envprefs/
+  created server/packCache/
+  created worlds/
+
+network requests: (none)

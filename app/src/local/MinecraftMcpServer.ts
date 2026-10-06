@@ -153,7 +153,7 @@ export default class MinecraftMcpServer {
 
     this._server = new McpServer(
       {
-        name: "minecraft-creator-tools",
+        name: "minecraft",
         version: "1.0.0",
       },
       { instructions: this._skills.buildInstructions() }
@@ -244,6 +244,9 @@ export default class MinecraftMcpServer {
    * For POST requests, we pre-parse the body since Node's http.IncomingMessage
    * doesn't auto-parse JSON (unlike Express). The parsed body is passed to
    * transport.handleRequest() so it doesn't try to re-parse.
+   *
+   * This method doesn't check Host or Origin itself. Callers must, as HttpServer does with
+   * McpRequestGuard, so web pages can't reach the tools through the user's browser.
    */
   async handleRequest(req: http.IncomingMessage, res: http.ServerResponse<http.IncomingMessage>) {
     if (!this._httpTransport) {
@@ -5565,11 +5568,10 @@ export default class MinecraftMcpServer {
     // The transport handles session management (init, session IDs, SSE) internally.
     // This follows the MCP SDK's recommended pattern for stateful HTTP servers.
     //
-    // DNS rebinding protection is disabled here because HttpServer already restricts
-    // MCP access to localhost connections. The SDK's allowedHosts does an exact match
-    // on the Host header (e.g., "localhost:6126"), which requires knowing the port at
-    // transport creation time and listing every host:port variant. Since the HttpServer
-    // layer already validates the remote address, this is unnecessary.
+    // The SDK's own DNS rebinding protection (enableDnsRebindingProtection) stays off because
+    // HttpServer, the only caller of handleRequest(), already checks Host and Origin on every
+    // /mcp request (see McpRequestGuard). It does so before it reads the body or creates this
+    // server, and for every method, so requests it rejects never reach this transport.
     this._httpTransport = new StreamableHTTPServerTransport({
       sessionIdGenerator: () => randomUUID(),
     });

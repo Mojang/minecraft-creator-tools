@@ -65,6 +65,11 @@ export class RenderVanillaCommand extends CommandBase {
     isEditInPlace: false,
     isLongRunning: true,
     category: "Render",
+    globalOptionGroups: ["dryRun"],
+    examples: [
+      { description: "Render one block to a PNG", command: "mct rendervanilla block oak_stairs oak_stairs.png" },
+      { description: "Render several mobs into a folder", command: "mct rendervanilla mob pig,cow,sheep ./renders" },
+    ],
     arguments: [
       {
         name: "type",

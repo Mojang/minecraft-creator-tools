@@ -24,6 +24,7 @@ export class DocsGenerateMarkdownCommand extends CommandBase implements ICommand
     isEditInPlace: false,
     isLongRunning: false,
     category: "Documentation",
+    globalOptionGroups: ["input", "outputFolder"],
     internal: true,
   };
 

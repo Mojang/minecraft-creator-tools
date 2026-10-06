@@ -1,0 +1,32 @@
+$ mct validate -i platform_version_errors
+cwd: <work>
+exit code: 4
+note: The per-check lines that validate prints from its worker thread are left out. The CLI stops the worker as soon as it returns its results, so how many of those lines get through varies from run to run.
+
+stdout:
+[<timestamp>] [MESSAGE ] [##] mct v<version>  in (-i): <work>/platform_version_errors  out (-o): <work>/out
+Processing project 1/1: platform_version_errors
+
+stderr:
+Error: Test Fail: Found 4 errors in Manifest Validation check
+Error: All new content targeting published client version must conform to format version [2].: 1
+Error: All new content targeting published client version must conform to format version [2].: 1
+Error: All new content targeting published client version must conform to format version [2].: 1
+Error: [min_engine_version] is too high. To use a higher version, you need to use [format_version] [2]: 1,19,0 - /resource_packs/test_rp/manifest.json
+Error: Test Fail: Found 3 errors in Pack Icon check
+Error: pack_icon image file not found for behavior_pack. It must use the .png extension.
+Error: pack_icon image file not found for test_bp. It must use the .png extension.
+Error: pack_icon image file not found for test_rp. It must use the .png extension.
+
+files under <work>:
+  created out/platform_version_errors.csv
+  created out/platform_version_errors.mcr.json
+  created out/platform_version_errors.report.html
+
+files under <data-dir>:
+  created cli/
+  created server/envprefs/
+  created server/packCache/
+  created worlds/
+
+network requests: (none)

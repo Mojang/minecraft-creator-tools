@@ -279,6 +279,7 @@ export const RANGE_TYPES: FieldDataType[] = [FieldDataType.intRange, FieldDataTy
  */
 export const SCALAR_ARRAY_TYPES: FieldDataType[] = [
   FieldDataType.stringArray,
+  FieldDataType.primitiveArray,
   FieldDataType.longFormStringArray,
   FieldDataType.numberArray,
   FieldDataType.checkboxListAsStringArray,
@@ -339,6 +340,7 @@ export function isRangeType(dataType: FieldDataType): boolean {
 export function isScalarArrayType(dataType: FieldDataType): boolean {
   return (
     dataType === FieldDataType.stringArray ||
+    dataType === FieldDataType.primitiveArray ||
     dataType === FieldDataType.longFormStringArray ||
     dataType === FieldDataType.numberArray ||
     dataType === FieldDataType.checkboxListAsStringArray

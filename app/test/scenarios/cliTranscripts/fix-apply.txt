@@ -1,0 +1,22 @@
+$ mct fix setnewestminengineversion -i simple
+cwd: <work>
+exit code: 0
+
+stdout:
+[<timestamp>] [MESSAGE ] [##] mct v<version>  in (-i): <work>/simple
+Applying fix 'setnewestminengineversion' to project: simple
+  Updated behavior pack min_engine_version to '1.26.20'.: 1.26.20
+Updated 1 min_engine_version(s) in project: simple
+
+stderr: (empty)
+
+files under <work>:
+  changed simple/behavior_packs/StarterTestsTutorial/manifest.json
+
+files under <data-dir>:
+  created cli/
+  created server/envprefs/
+  created server/packCache/
+  created worlds/
+
+network requests: (none)

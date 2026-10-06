@@ -167,6 +167,15 @@ function serveBedrockSchemas() {
   // considerations and gulpfile.js mergeLocalSchemasIntoVsc.
   const supplementalRoot = path.resolve("public_supplemental");
 
+  // Where the checked-in overrides for each package subdirectory live. Forms
+  // use the same public_supplemental/data/local_forms/ directory that gulp
+  // overlays for the VS Code extension and the Node package, so one override
+  // file reaches every target; schemas live under public_supplemental/schemas/.
+  const overlayRoots = {
+    forms: path.join(supplementalRoot, "data", "local_forms"),
+    schemas: path.join(supplementalRoot, "schemas"),
+  };
+
   // HttpFolder.load() fetches {path}/index.json to enumerate a folder. The
   // @minecraft/bedrock-schemas package doesn't ship index.json files, so
   // synthesize them on the fly from the actual filesystem listing. Without
@@ -211,7 +220,7 @@ function serveBedrockSchemas() {
 
     // Overlay: prefer a checked-in supplemental copy if one exists for this
     // exact path. Same containment check applies.
-    const overlayRoot = path.resolve(supplementalRoot, pkgSubdir);
+    const overlayRoot = path.resolve(overlayRoots[pkgSubdir]);
     const overlayPath = path.resolve(overlayRoot, relPath);
     const overlayRel = path.relative(overlayRoot, overlayPath);
     const overlayInside = !overlayRel.startsWith("..") && !path.isAbsolute(overlayRel);
@@ -292,13 +301,14 @@ function serveBedrockSchemas() {
 
       // Overlay supplemental forms/schemas on top of the upstream copies so
       // production builds get the same bug-fix overrides that dev mode serves.
-      const overlayFormsSource = path.join(supplementalRoot, "forms");
-      if (fs.existsSync(overlayFormsSource)) copyDirSync(overlayFormsSource, formsDest);
-      const overlaySchemasSource = path.join(supplementalRoot, "schemas");
-      if (fs.existsSync(overlaySchemasSource)) copyDirSync(overlaySchemasSource, schemasDest);
+      if (fs.existsSync(overlayRoots.forms)) copyDirSync(overlayRoots.forms, formsDest);
+      if (fs.existsSync(overlayRoots.schemas)) copyDirSync(overlayRoots.schemas, schemasDest);
     },
   };
 }
+
+// Exported so the served and built form output can be covered by tests.
+export { serveBedrockSchemas };
 
 // Custom Rollup plugin to fix esbuild-wasm process.versions.node access
 // esbuild-wasm checks process.versions.node.split(".") to detect Node.js version

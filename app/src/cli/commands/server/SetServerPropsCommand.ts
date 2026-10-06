@@ -19,6 +19,7 @@ export class SetServerPropsCommand extends CommandBase implements ICommand {
     isEditInPlace: false,
     isLongRunning: false,
     category: "Server",
+    globalOptionGroups: ["json"],
   };
 
   public configure(cmd: Commander): void {

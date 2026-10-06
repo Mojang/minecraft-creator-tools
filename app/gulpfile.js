@@ -286,23 +286,12 @@ function copyCheckedInRes() {
   return gulp.src(["public_supplemental/**/*", "!public_supplemental/data/local_forms/**"]).pipe(gulp.dest("public/"));
 }
 
-// Copy forms from @minecraft/bedrock-schemas package directly to VSC toolbuild
-// (VSC extension is self-contained, so it needs its own copy)
-function copyVscBedrockSchemasForms() {
-  return gulp
-    .src(["node_modules/@minecraft/bedrock-schemas/forms/**/*"])
-    .pipe(newer("toolbuild/vsc/data/forms/"))
-    .pipe(gulp.dest("toolbuild/vsc/data/forms/"));
-}
-
-// Overlay our checked-in form OVERRIDES on top of the bedrock-schemas baseline
-// inside the VSC toolbuild output. Same files (e.g. pack/behavior_pack_header_json.form.json)
-// in `public_supplemental/data/local_forms/` REPLACE the upstream copy. This produces
-// a single canonical location (`toolbuild/vsc/data/forms/`) the VSC extension can read
-// without runtime branching.
-function mergeLocalFormsIntoVsc() {
-  return gulp.src(["public_supplemental/data/local_forms/**/*"]).pipe(gulp.dest("toolbuild/vsc/data/forms/"));
-}
+// The VSC extension's forms tree: the bedrock-schemas baseline, then our
+// checked-in overrides on top. The two stages live in tools/vscFormsStages.js
+// so LocalFormOverrides.spec.ts can run the same pair against a scratch root
+// and check the final tree; every task that fills toolbuild/vsc runs the
+// overlay after the upstream copy.
+const { copyVscBedrockSchemasForms, mergeLocalFormsIntoVsc } = require("./tools/vscFormsStages")(gulp);
 
 // Overlay our checked-in JSON schema OVERRIDES on top of the bedrock-schemas
 // baseline inside the VSC toolbuild output. Same-named files under
@@ -649,6 +638,22 @@ gulp.task(
   gulp.parallel("postclean-jsnwebbuild-node_modules", "postclean-jsnwebbuild-toolbuild", "postclean-jsnwebbuild-build")
 );
 
+// Like gulp.parallel, but when a task fails the group waits for its other tasks to finish before
+// failing. By default gulp exits on the first failure and kills copy tasks mid-write; a half-written
+// file is newer than its source, so gulp-newer skips it and later incremental builds never repair it.
+// Undertaker reads _settle when the group is composed; its only public switch is the global
+// --continue flag, which would also keep running series steps after a failure. If undertaker stops
+// reading _settle, this degrades to plain gulp.parallel.
+function settledParallel(...tasks) {
+  const previous = gulp._settle;
+  gulp._settle = true;
+  try {
+    return gulp.parallel(...tasks);
+  } finally {
+    gulp._settle = previous;
+  }
+}
+
 // jsnbuild: Incremental build - skips clean, uses gulp-newer to only copy changed files,
 // and uses webpack filesystem cache for fast recompilation.
 // Use jsnfullbuild when you need a guaranteed clean-slate build.
@@ -658,12 +663,13 @@ gulp.task(
   "jsnbuild",
   gulp.series(
     copyCheckedInRes,
-    gulp.parallel(
+    settledParallel(
       compileJsNodeBuild,
       compileElectronBuild, // Build bundled Electron main process
       compileLibBuild, // Library build (tsc with declarations for npm consumers)
       copyJsNodeAssets,
       copyJsNodeData,
+      copyJsNodeLocalForms,
       copyJsNodeDocs,
       copyJsNodeSkills,
       copyJsNodeResSchemas,
@@ -704,7 +710,18 @@ gulp.task("jsncorebuild", gulp.series(compileJsNodeBuild, compileElectronBuild))
 
 gulp.task("electronbuild", gulp.series(compileElectronBuild));
 
-gulp.task("copyjsnodedata", gulp.series(copyJsNodeData));
+// Ship the checked-in form overrides with the Node package. `npx mct` and
+// `mct serve` resolve forms straight from @minecraft/bedrock-schemas at
+// runtime, so the overrides must travel alongside as data/local_forms/ where
+// LocalUtilities.getLocalFormOverridePath and HttpServer look first.
+function copyJsNodeLocalForms() {
+  return gulp
+    .src(["public_supplemental/data/local_forms/**/*"])
+    .pipe(newer("toolbuild/jsn/data/local_forms/"))
+    .pipe(gulp.dest("toolbuild/jsn/data/local_forms/"));
+}
+
+gulp.task("copyjsnodedata", gulp.series(copyJsNodeData, copyJsNodeLocalForms));
 
 gulp.task(
   "copybedrockschemas",
@@ -784,6 +801,10 @@ gulp.task(
       copyVscResSamples,
       copyVscMc
     ),
+    // The upstream copies above are the baseline; the checked-in overrides
+    // go on last, after every upstream copy, so the packaged extension gets
+    // the corrected forms and schemas rather than the upstream ones again.
+    gulp.parallel(mergeLocalFormsIntoVsc, mergeLocalSchemasIntoVsc),
     packageVsix
   )
 );
@@ -815,7 +836,8 @@ gulp.task(
       copyVscResSnapshots,
       copyVscResSamples,
       copyVscMc
-    )
+    ),
+    gulp.parallel(mergeLocalFormsIntoVsc, mergeLocalSchemasIntoVsc)
   )
 );
 

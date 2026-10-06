@@ -1,0 +1,23 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "minecraft",
+  "version": "1.0.0",
+  "description": "Make your own Minecraft mobs, items, and blocks by describing them. Design models and textures, fix errors, and package an add-on ready to play (Bedrock Edition).",
+  "author": {
+    "name": "Mojang Studios",
+    "url": "https://github.com/Mojang"
+  },
+  "homepage": "https://github.com/Mojang/minecraft-creator-tools/tree/main/plugins/minecraft",
+  "repository": "https://github.com/Mojang/minecraft-creator-tools",
+  "license": "MIT",
+  "keywords": [
+    "minecraft",
+    "minecraft-bedrock",
+    "add-ons",
+    "behavior-packs",
+    "resource-packs",
+    "game-development",
+    "mcp",
+    "skills"
+  ]
+}

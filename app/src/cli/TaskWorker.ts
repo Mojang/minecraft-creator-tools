@@ -35,6 +35,9 @@ export async function executeTask(task: ITask) {
     localEnv = new LocalEnvironment(true);
   }
 
+  // Match the main process before anything below logs. In --json mode, stdout must hold only
+  // the JSON document the main process writes, so worker logs go to stderr or are dropped.
+  localEnv.logToStdError = task.logToStdError;
   localEnv.displayInfo = task.displayInfo;
   localEnv.displayVerbose = task.displayVerbose;
 
@@ -120,25 +123,41 @@ async function runTaskWithOptionalProfile(task: ITask) {
       : "task");
   const traceBase = `worker-${TaskType[task.task] ?? task.task}-${profileName}`;
 
+  // Profiler status follows the task's output mode, like the worker's logs: in --json and mcp modes
+  // it goes to stderr, so stdout holds only the JSON document the main process writes.
+  const report = task.logToStdError ? console.error : console.log;
+
   let result: unknown;
   if (mode === "cpu") {
-    await ProfilerWrapper.generateCpuTrace(traceBase, async () => {
-      result = await executeTask(task);
-    });
+    await ProfilerWrapper.generateCpuTrace(
+      traceBase,
+      async () => {
+        result = await executeTask(task);
+      },
+      report
+    );
   } else if (mode === "memory") {
-    await ProfilerWrapper.generateMemoryProfile(traceBase, async () => {
-      result = await executeTask(task);
-    });
+    await ProfilerWrapper.generateMemoryProfile(
+      traceBase,
+      async () => {
+        result = await executeTask(task);
+      },
+      { report }
+    );
   } else if (mode === "all") {
     // Run the work once under the heap sampler (which also collects mem stats),
     // then write a final heap snapshot for retention analysis. We can't run two
     // inspector samplers concurrently reliably, so we don't also start a CPU
     // trace here — for combined CPU+memory analysis use a second `cpu` run.
-    await ProfilerWrapper.generateMemoryProfile(traceBase, async () => {
-      result = await executeTask(task);
-    });
+    await ProfilerWrapper.generateMemoryProfile(
+      traceBase,
+      async () => {
+        result = await executeTask(task);
+      },
+      { report }
+    );
     try {
-      ProfilerWrapper.generateHeapSnapshot(traceBase + "-final");
+      ProfilerWrapper.generateHeapSnapshot(traceBase + "-final", report);
     } catch (e) {
       console.warn("Failed to write final heap snapshot:", e);
     }

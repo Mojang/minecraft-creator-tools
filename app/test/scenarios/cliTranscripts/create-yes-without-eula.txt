@@ -1,0 +1,22 @@
+$ mct create my-addon --yes
+cwd: <work>
+exit code: 1
+
+stdout:
+[<timestamp>] [MESSAGE ] [##] mct v<version>  in (-i): <work>
+
+stderr:
+Error: EULA not accepted. Accept it via:
+  Interactive:    mct eula
+  Non-interactive: mct eula --accept   (or set MCTOOLS_I_ACCEPT_EULA_AT_MINECRAFTDOTNETSLASHEULA=true)
+
+files under <work>:
+  created out/
+
+files under <data-dir>:
+  created cli/
+  created server/envprefs/
+  created server/packCache/
+  created worlds/
+
+network requests: (none)

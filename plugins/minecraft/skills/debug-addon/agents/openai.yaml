@@ -1,0 +1,7 @@
+interface:
+  display_name: "Debug Add-on"
+  short_description: "Validate, fix, and package a Minecraft add-on"
+  icon_small: "./assets/icon-small.png"
+  icon_large: "./assets/icon.png"
+  brand_color: "#52A535"
+  default_prompt: "Use $debug-addon to find out why my add-on won't load and fix it."

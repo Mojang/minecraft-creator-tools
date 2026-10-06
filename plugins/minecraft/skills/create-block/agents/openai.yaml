@@ -1,0 +1,7 @@
+interface:
+  display_name: "Create Block"
+  short_description: "Create blocks, ores, and light sources in a Minecraft add-on"
+  icon_small: "./assets/icon-small.png"
+  icon_large: "./assets/icon.png"
+  brand_color: "#52A535"
+  default_prompt: "Use $create-block to add a ruby ore that generates underground."

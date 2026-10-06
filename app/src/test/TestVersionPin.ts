@@ -41,7 +41,8 @@
  * "test pin" obvious in baseline output), update {@link TEST_PINNED_MC_VERSION}
  * here and re-run the affected scenarios with `MCT_REFRESH_BASELINES=1` (or
  * manually copy from `app/test/results/<scenario>/` to
- * `app/test/scenarios/<scenario>/`).
+ * `app/test/scenarios/<scenario>/`). The CLI transcripts pin the same version,
+ * so also run `npm run update-cli-transcripts` (see docs/CliTranscripts.md).
  *
  * The volatile-pattern regexes in {@link TestUtilities.volatilePatterns} remain
  * a safety net for any message wording the pin doesn't fully cover.

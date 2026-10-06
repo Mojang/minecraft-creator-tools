@@ -28,6 +28,8 @@ export class InfoCommand extends CommandBase {
     isEditInPlace: false,
     isLongRunning: false,
     category: "Information",
+    globalOptionGroups: ["input", "projects", "json"],
+    examples: [{ command: "mct info -i ./my-project" }, { command: "mct info -i ./my-project --json" }],
   };
 
   configure(_cmd: Command): void {
@@ -64,8 +66,7 @@ export class InfoCommand extends CommandBase {
         // Stable schema for CI consumers. Bump the schemaVersion when changing
         // the shape of this object so downstream scripts can branch safely.
         const errorOnlyCount = pis.items.filter(
-          (item) =>
-            item.itemType === InfoItemType.error || item.itemType === InfoItemType.internalProcessingError
+          (item) => item.itemType === InfoItemType.error || item.itemType === InfoItemType.internalProcessingError
         ).length;
         const warningOnlyCount = pis.items.filter((item) => item.itemType === InfoItemType.warning).length;
         const recommendationCount = pis.items.filter((item) => item.itemType === InfoItemType.recommendation).length;

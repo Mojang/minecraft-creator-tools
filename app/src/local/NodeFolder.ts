@@ -112,7 +112,11 @@ export default class NodeFolder extends FolderBase implements IFolder {
 
   async deleteThisFolder(): Promise<boolean> {
     if (this.storage.readOnly) {
-      throw new Error("Deletion of this folder " + this.fullPath + " is not supported in read only mode.");
+      throw new Error(
+        this.storage.readOnlyReason
+          ? `Can't delete '${this.fullPath}': ${this.storage.readOnlyReason}`
+          : "Deletion of this folder " + this.fullPath + " is not supported in read only mode."
+      );
     }
 
     let absPath = path.resolve(this.fullPath);
@@ -139,7 +143,11 @@ export default class NodeFolder extends FolderBase implements IFolder {
 
   async deleteAllFolderContents(): Promise<boolean> {
     if (this.storage.readOnly) {
-      throw new Error("Deletion of folder contents at " + this.fullPath + " is not supported in read only mode.");
+      throw new Error(
+        this.storage.readOnlyReason
+          ? `Can't delete the contents of '${this.fullPath}': ${this.storage.readOnlyReason}`
+          : "Deletion of folder contents at " + this.fullPath + " is not supported in read only mode."
+      );
     }
 
     return await this.recursiveDeleteContentsOfThisFolder();
@@ -169,6 +177,11 @@ export default class NodeFolder extends FolderBase implements IFolder {
 
   async moveTo(newStorageRelativePath: string): Promise<boolean> {
     const oldFullPath = this.fullPath;
+    const readOnlyReason = this.storage.strictReadOnlyReason;
+
+    if (readOnlyReason) {
+      throw new Error(`Can't move '${oldFullPath}': ${readOnlyReason}`);
+    }
 
     const newFolderPath = StorageUtilities.getFolderPath(newStorageRelativePath);
     const newFolderName = StorageUtilities.getLeafName(newStorageRelativePath);
@@ -224,6 +237,11 @@ export default class NodeFolder extends FolderBase implements IFolder {
 
     if (!exists) {
       // Log.message("Creating folder '" + this.fullPath + "'");
+      const readOnlyReason = this.storage.strictReadOnlyReason;
+
+      if (readOnlyReason) {
+        throw new Error(`Can't create '${this.fullPath}': ${readOnlyReason}`);
+      }
 
       fs.mkdirSync(this.fullPath, { recursive: true });
     }
@@ -464,8 +482,14 @@ export default class NodeFolder extends FolderBase implements IFolder {
 
   async saveFilesList(pathDescriptor: string, inclusionList: IFilePathAndSize[]) {
     const obj: IListingsFile = { path: pathDescriptor, files: inclusionList };
+    const filePath = NodeStorage.ensureEndsWithDelimiter(this.fullPath) + "files.json";
+    const readOnlyReason = this.storage.strictReadOnlyReason;
 
-    fs.writeFileSync(NodeStorage.ensureEndsWithDelimiter(this.fullPath) + "files.json", JSON.stringify(obj, null, 2), {
+    if (readOnlyReason) {
+      throw new Error(`Can't save '${filePath}': ${readOnlyReason}`);
+    }
+
+    fs.writeFileSync(filePath, JSON.stringify(obj, null, 2), {
       encoding: "utf8",
     });
   }
