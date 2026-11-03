@@ -21,6 +21,7 @@ export function useDirectoryPicker(window: typeof globalThis, config: PickerConf
   const [error, setError] = useState<{ message: string } | null>();
   const { onDirectoryPicked, ...validation } = config;
   const prevDirectory = useRef<Directory>();
+  const isPicking = useRef(false);
 
   const getError = useCallback(
     async (directoryHandle: FileSystemStorage) => {
@@ -53,7 +54,13 @@ export function useDirectoryPicker(window: typeof globalThis, config: PickerConf
       return;
     }
 
+    //browsers only allow one picker at a time; ignore repeat clicks while one is open
+    if (isPicking.current) {
+      return;
+    }
+
     let handle;
+    isPicking.current = true;
     try {
       //show file dialog
       handle = await window.showDirectoryPicker({ mode: "readwrite" });
@@ -63,8 +70,11 @@ export function useDirectoryPicker(window: typeof globalThis, config: PickerConf
         return;
       }
 
-      //pass through errors we don't explictly handle
-      throw err;
+      //this runs from a click handler, so surface the error rather than throwing it
+      setError({ message: err instanceof Error ? err.message : String(err) });
+      return;
+    } finally {
+      isPicking.current = false;
     }
 
     // Even with mode: "readwrite", the browser may only grant prompt-level
