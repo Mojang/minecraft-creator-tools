@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Block Sound Block Component",
+  "description": "Defines a sound type for the block.",
+  "properties": {
+    "sound": {
+      "title": "Sound",
+      "type": "string",
+      "maxLength": 256,
+      "default": ""
+    }
+  }
+}

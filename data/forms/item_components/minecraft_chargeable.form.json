@@ -1,0 +1,32 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "isDeprecated": true,
+  "title": "Chargeable",
+  "description": "Event trigger for when the item has completed its use duration.",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can be charged"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "on_complete",
+      "title": "on_complete",
+      "description": "Event trigger for when the item has completed its use duration.",
+      "dataType": "object"
+    },
+    {
+      "id": "movement_modifier",
+      "title": "movement_modifier",
+      "description": "Modifier value to scale the players movement speed when item is in use.",
+      "dataType": "float"
+    }
+  ]
+}

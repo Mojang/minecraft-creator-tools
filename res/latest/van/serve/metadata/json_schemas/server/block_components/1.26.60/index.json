@@ -1,0 +1,13 @@
+{
+  "files": [
+    "Block Components.json",
+    "Bounding Box Data.json",
+    "Collision Box.json",
+    "Enchantment Power Transmitter.json",
+    "Neighbor Change Direction.json",
+    "Neighbor Change.json",
+    "Vibration Properties.json",
+    "block_entity.json"
+  ],
+  "folders": []
+}

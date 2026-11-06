@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Store Asset: Shopping/marketplace icon -->
+  <path d="M2 3H14L13 7H3L2 3Z" fill-opacity="0.3"/>
+  <rect x="3" y="7" width="10" height="6" fill-opacity="0.2"/>
+  <circle cx="5" cy="14" r="1"/>
+  <circle cx="11" cy="14" r="1"/>
+  <rect x="5" y="9" width="3" height="3" fill-opacity="0.5"/>
+  <rect x="9" y="9" width="3" height="3" fill-opacity="0.4"/>
+</svg>

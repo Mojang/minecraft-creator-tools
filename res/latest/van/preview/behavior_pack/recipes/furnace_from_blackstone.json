@@ -1,0 +1,28 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "minecraft:furnace_from_blackstone"
+    },
+    "tags": [ "crafting_table" ],
+    "pattern": [
+      "###",
+      "# #",
+      "###"
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:blackstone"
+      }
+    },
+    "unlock": [
+      {
+        "item": "minecraft:blackstone"
+      }
+    ],
+    "result": {
+      "item": "minecraft:furnace"
+    },
+    "priority": 2
+  }
+}

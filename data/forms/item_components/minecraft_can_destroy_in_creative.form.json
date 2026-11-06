@@ -1,0 +1,27 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can break blocks in creative mode"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "value",
+      "title": "value",
+      "description": "Determines whether the item can be used to destroy blocks while in creative mode.",
+      "dataType": "boolean"
+    }
+  ],
+  "scalarFieldUpgradeName": "value",
+  "description": "The can_destroy_in_creative component determines if the item can be used by a player to break blocks when in creative mode.",
+  "title": "Can Destroy In Creative",
+  "id": "minecraft:can_destroy_in_creative"
+}

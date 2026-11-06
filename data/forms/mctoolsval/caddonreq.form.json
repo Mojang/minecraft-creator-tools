@@ -1,0 +1,658 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "validates cooperative add-on project requirements"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "caddonreq",
+  "title": "Coop Add-On Requirements",
+  "description": "A set of requirements for cooperative Add-On projects. See https://learn.microsoft.com/minecraft/creator/documents/practices/guidelinesforbuildingcooperativeaddons for more info.",
+  "fields": [
+    {
+      "id": "101",
+      "title": "No Loose Files",
+      "messageType": "error",
+      "dataType": "string",
+      "description": "In a cooperative Add-On, there should not be any 'loose files' - e.g., <pack>/entities/this_is_a_loose_file.json - inside of a folder.",
+      "howToUse": "Move loose files into a creator-namespaced subfolder. For example, move entities/my_mob.json to entities/creatorname_gamename/my_mob.json to avoid conflicts with other add-ons.",
+      "technicalDescription": "Data contains the path of the loose file found"
+    },
+    {
+      "id": "102",
+      "title": "No Common Folder Names",
+      "messageType": "error",
+      "dataType": "string",
+      "description": "Creator folders - e.g., <pack>/entities/<custom folder name> - should not be a 'common' name. It should probably be in the form <creator_short_name>_<game_shortName>. See attached list of creator names.",
+      "howToUse": "Rename the folder to use a unique prefix like 'creatorname_gamename'. For example, rename 'entities/mobs' to 'entities/myname_mygame'. This prevents conflicts when multiple add-ons are installed together.",
+      "technicalDescription": "Data contains the forbidden common folder name used",
+      "choices": [
+        {
+          "id": "abilities"
+        },
+        {
+          "id": "actions"
+        },
+        {
+          "id": "adventure"
+        },
+        {
+          "id": "animals"
+        },
+        {
+          "id": "anims"
+        },
+        {
+          "id": "armor"
+        },
+        {
+          "id": "assets"
+        },
+        {
+          "id": "attachables"
+        },
+        {
+          "id": "banners"
+        },
+        {
+          "id": "base"
+        },
+        {
+          "id": "blocks"
+        },
+        {
+          "id": "book"
+        },
+        {
+          "id": "boss"
+        },
+        {
+          "id": "bosses"
+        },
+        {
+          "id": "bridge"
+        },
+        {
+          "id": "camping"
+        },
+        {
+          "id": "cars"
+        },
+        {
+          "id": "characters"
+        },
+        {
+          "id": "chests"
+        },
+        {
+          "id": "cinema"
+        },
+        {
+          "id": "cinematics"
+        },
+        {
+          "id": "cloud"
+        },
+        {
+          "id": "collectables"
+        },
+        {
+          "id": "collectibles"
+        },
+        {
+          "id": "custom_ui"
+        },
+        {
+          "id": "cut_scene"
+        },
+        {
+          "id": "cutscene"
+        },
+        {
+          "id": "deco"
+        },
+        {
+          "id": "decor"
+        },
+        {
+          "id": "dev"
+        },
+        {
+          "id": "dialogue"
+        },
+        {
+          "id": "dinos"
+        },
+        {
+          "id": "dinosaurs"
+        },
+        {
+          "id": "doors"
+        },
+        {
+          "id": "dragon"
+        },
+        {
+          "id": "dragons"
+        },
+        {
+          "id": "dummy"
+        },
+        {
+          "id": "effects"
+        },
+        {
+          "id": "enemies"
+        },
+        {
+          "id": "enemy"
+        },
+        {
+          "id": "entities"
+        },
+        {
+          "id": "entity"
+        },
+        {
+          "id": "env"
+        },
+        {
+          "id": "equipment"
+        },
+        {
+          "id": "events"
+        },
+        {
+          "id": "food"
+        },
+        {
+          "id": "furniture"
+        },
+        {
+          "id": "furnitures"
+        },
+        {
+          "id": "fx"
+        },
+        {
+          "id": "game_menu"
+        },
+        {
+          "id": "gameplay"
+        },
+        {
+          "id": "general"
+        },
+        {
+          "id": "glow"
+        },
+        {
+          "id": "guide"
+        },
+        {
+          "id": "guidebook"
+        },
+        {
+          "id": "inanimate"
+        },
+        {
+          "id": "interface"
+        },
+        {
+          "id": "internal"
+        },
+        {
+          "id": "intro"
+        },
+        {
+          "id": "item"
+        },
+        {
+          "id": "items"
+        },
+        {
+          "id": "launchers"
+        },
+        {
+          "id": "machines"
+        },
+        {
+          "id": "magic"
+        },
+        {
+          "id": "markers"
+        },
+        {
+          "id": "market"
+        },
+        {
+          "id": "marketing_banners"
+        },
+        {
+          "id": "mastermind"
+        },
+        {
+          "id": "mechanics"
+        },
+        {
+          "id": "menu"
+        },
+        {
+          "id": "menus"
+        },
+        {
+          "id": "minigames"
+        },
+        {
+          "id": "misc"
+        },
+        {
+          "id": "miscellaneous"
+        },
+        {
+          "id": "mob"
+        },
+        {
+          "id": "mobs"
+        },
+        {
+          "id": "monsters"
+        },
+        {
+          "id": "morphs"
+        },
+        {
+          "id": "mutant"
+        },
+        {
+          "id": "neutral"
+        },
+        {
+          "id": "npc"
+        },
+        {
+          "id": "npcs"
+        },
+        {
+          "id": "objectives"
+        },
+        {
+          "id": "particles"
+        },
+        {
+          "id": "passive"
+        },
+        {
+          "id": "passive_mobs"
+        },
+        {
+          "id": "pets"
+        },
+        {
+          "id": "platform"
+        },
+        {
+          "id": "player"
+        },
+        {
+          "id": "players"
+        },
+        {
+          "id": "portal"
+        },
+        {
+          "id": "portals"
+        },
+        {
+          "id": "preset"
+        },
+        {
+          "id": "projectile"
+        },
+        {
+          "id": "projectiles"
+        },
+        {
+          "id": "properties"
+        },
+        {
+          "id": "props"
+        },
+        {
+          "id": "recipe_models"
+        },
+        {
+          "id": "scanner"
+        },
+        {
+          "id": "script"
+        },
+        {
+          "id": "security"
+        },
+        {
+          "id": "sequences"
+        },
+        {
+          "id": "sfx"
+        },
+        {
+          "id": "shop"
+        },
+        {
+          "id": "skills"
+        },
+        {
+          "id": "sounds"
+        },
+        {
+          "id": "static_entity"
+        },
+        {
+          "id": "store"
+        },
+        {
+          "id": "structure"
+        },
+        {
+          "id": "structures"
+        },
+        {
+          "id": "systems"
+        },
+        {
+          "id": "tasks"
+        },
+        {
+          "id": "teams"
+        },
+        {
+          "id": "teleporter"
+        },
+        {
+          "id": "tnt"
+        },
+        {
+          "id": "tools"
+        },
+        {
+          "id": "towers"
+        },
+        {
+          "id": "trinkets"
+        },
+        {
+          "id": "tutorial"
+        },
+        {
+          "id": "ui"
+        },
+        {
+          "id": "user_interface"
+        },
+        {
+          "id": "util"
+        },
+        {
+          "id": "utilities"
+        },
+        {
+          "id": "vanilla"
+        },
+        {
+          "id": "vanilla_mob"
+        },
+        {
+          "id": "vehicle"
+        },
+        {
+          "id": "vehicles"
+        },
+        {
+          "id": "vr"
+        },
+        {
+          "id": "weapon"
+        },
+        {
+          "id": "weapons"
+        },
+        {
+          "id": "wrench"
+        },
+        {
+          "id": "opaque"
+        },
+        {
+          "id": "map"
+        },
+        {
+          "id": "on"
+        },
+        {
+          "id": "item"
+        },
+        {
+          "id": "player"
+        },
+        {
+          "id": "map"
+        },
+        {
+          "id": "charged"
+        },
+        {
+          "id": "beacon"
+        },
+        {
+          "id": "conduit"
+        },
+        {
+          "id": "moving"
+        },
+        {
+          "id": "banner"
+        },
+        {
+          "id": "bed"
+        },
+        {
+          "id": "cow"
+        },
+        {
+          "id": "chicken"
+        },
+        {
+          "id": "dragon"
+        },
+        {
+          "id": "ender"
+        },
+        {
+          "id": "enderman"
+        },
+        {
+          "id": "fang"
+        },
+        {
+          "id": "fireball"
+        },
+        {
+          "id": "mob"
+        },
+        {
+          "id": "warden"
+        },
+        {
+          "id": "village"
+        },
+        {
+          "id": "pattern"
+        },
+        {
+          "id": "wandering"
+        },
+        {
+          "id": "trial"
+        },
+        {
+          "id": "stray"
+        },
+        {
+          "id": "spider"
+        },
+        {
+          "id": "slime"
+        },
+        {
+          "id": "chest"
+        },
+        {
+          "id": "silverfish"
+        },
+        {
+          "id": "polar"
+        },
+        {
+          "id": "shield"
+        },
+        {
+          "id": "husk"
+        },
+        {
+          "id": "blaze"
+        },
+        {
+          "id": "axolotl"
+        }
+      ]
+    },
+    {
+      "id": "104",
+      "title": "Loose Creator File",
+      "messageType": "error",
+      "dataType": "string",
+      "description": "Cooperative Add-Ons should not have loose files directly in creator folders.",
+      "technicalDescription": "Data contains the path of the loose file found"
+    },
+    {
+      "id": "108",
+      "title": "Multiple Creator Folders",
+      "messageType": "warning",
+      "dataType": "string",
+      "description": "Found more than one folder in creator folder besides common shared folders.",
+      "technicalDescription": "Data contains the folder names found"
+    },
+    {
+      "id": "109",
+      "title": "Unsupported Folder Name",
+      "messageType": "error",
+      "dataType": "string",
+      "description": "Type folder contains unsupported subfolder names that don't follow cooperative Add-On conventions.",
+      "technicalDescription": "Data contains the unsupported folder name"
+    },
+    {
+      "id": "110",
+      "title": "Multiple Type Folders",
+      "messageType": "warning",
+      "dataType": "string",
+      "description": "Found more than one folder in the type folder, which may indicate naming convention issues.",
+      "technicalDescription": "Data contains the folder names found"
+    },
+    {
+      "id": "111",
+      "title": "Loose Type Files",
+      "messageType": "error",
+      "dataType": "string",
+      "description": "Type folders should not contain loose files in cooperative Add-Ons.",
+      "technicalDescription": "Data contains the path of the loose file found"
+    },
+    {
+      "id": "131",
+      "title": "No Dimension Elements",
+      "messageType": "error",
+      "dataType": "string",
+      "description": "Cooperative Add-Ons should not contain dimension-related elements.",
+      "technicalDescription": "Data contains the dimension element path found"
+    },
+    {
+      "id": "133",
+      "title": "No UI Elements",
+      "messageType": "error",
+      "dataType": "string",
+      "description": "Cooperative Add-Ons should not contain custom UI elements.",
+      "technicalDescription": "Data contains the UI element path found"
+    },
+    {
+      "id": "160",
+      "title": "BP Manifest Missing",
+      "messageType": "error",
+      "dataType": "string",
+      "description": "Expected exactly one behavior pack manifest.json but found none or multiple.",
+      "technicalDescription": "Data contains the count of manifests found"
+    },
+    {
+      "id": "161",
+      "title": "RP Manifest Missing",
+      "messageType": "error",
+      "dataType": "string",
+      "description": "Expected exactly one resource pack manifest.json but found none or multiple.",
+      "technicalDescription": "Data contains the count of manifests found"
+    },
+    {
+      "id": "163",
+      "title": "RP Manifest Count",
+      "messageType": "error",
+      "dataType": "string",
+      "description": "Expected exactly one resource pack manifest.json but found incorrect count.",
+      "technicalDescription": "Data contains the count of manifests found"
+    },
+    {
+      "id": "164",
+      "title": "BP Manifest Invalid",
+      "messageType": "error",
+      "dataType": "string",
+      "description": "The behavior pack manifest.json file is not valid or cannot be parsed.",
+      "technicalDescription": "Data contains the validation error message"
+    },
+    {
+      "id": "165",
+      "title": "BP-RP Dependency Missing",
+      "messageType": "error",
+      "dataType": "string",
+      "description": "Expected exactly one dependency from behavior pack to resource pack but found none or multiple.",
+      "technicalDescription": "Data contains the dependency count found"
+    },
+    {
+      "id": "166",
+      "title": "BP-RP Dependency Invalid",
+      "messageType": "error",
+      "dataType": "string",
+      "description": "The dependency from behavior pack to resource pack is not valid.",
+      "technicalDescription": "Data contains the validation error message"
+    },
+    {
+      "id": "168",
+      "title": "RP-BP Dependency Missing",
+      "messageType": "error",
+      "dataType": "string",
+      "description": "Expected exactly one dependency from resource pack to behavior pack but found none or multiple.",
+      "technicalDescription": "Data contains the dependency count found"
+    },
+    {
+      "id": "169",
+      "title": "RP-BP Dependency Invalid",
+      "messageType": "error",
+      "dataType": "string",
+      "description": "The dependency from resource pack to behavior pack is not valid.",
+      "technicalDescription": "Data contains the validation error message"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "files": [
+    "README.md",
+    "manifest.json",
+    "pack_icon.png"
+  ],
+  "folders": [
+    "entities"
+  ]
+}

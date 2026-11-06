@@ -1,0 +1,109 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "minecraft:use_modifiers",
+  "versionIntroduced": "1.20.50",
+  "note": "Renamed from `chargeable` in 1.20.50 and available without an experimental toggle.",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "modifies use behavior"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "start_using",
+      "title": "Start Using",
+      "description": "When the player begins using the item. Use `always` to start as soon as the use action is triggered (default), or `on_attack` to start using only when an attack input is received while the item is selected.",
+      "defaultValue": "always",
+      "dataType": "string",
+      "versionIntroduced": "1.26.30",
+      "samples": {
+        "/vanilla/behavior_pack/items/apple.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:use_modifiers/",
+            "content": "always"
+          }
+        ]
+      },
+      "choices": [
+        {
+          "id": "always",
+          "title": "Always"
+        },
+        {
+          "id": "if_first",
+          "title": "If first"
+        }
+      ]
+    },
+    {
+      "id": "emit_vibrations",
+      "title": "Emit Vibrations",
+      "description": "Whether vibrations are emitted when the item starts or stops being used.",
+      "dataType": "boolean",
+      "defaultValue": true
+    },
+    {
+      "id": "movement_modifier",
+      "title": "Movement Modifier",
+      "description": "Multiplier applied to the player's movement speed while the item is in use.",
+      "dataType": "float",
+      "validity": [
+        {
+          "comparison": "<=",
+          "value": 1
+        }
+      ],
+      "samples": {
+        "/vanilla/behavior_pack/items/apple.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:use_modifiers/",
+            "content": 0.35
+          }
+        ]
+      }
+    },
+    {
+      "id": "start_sound",
+      "title": "Start Sound",
+      "description": "Sound played when the item starts being used. Accepts the name of any sound event defined in `sound_definitions.json`, including the built-in vanilla sound events.",
+      "dataType": "string"
+    },
+    {
+      "id": "use_duration",
+      "title": "Use Duration",
+      "description": "Time, in seconds, that the item takes to use.",
+      "dataType": "float",
+      "defaultValue": 0,
+      "samples": {
+        "/vanilla/behavior_pack/items/apple.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:use_modifiers/",
+            "content": 1.6
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Determines how long an item takes to use in combination with components such as Shooter, Throwable, or Food.",
+  "title": "Item Use Modifiers",
+  "samples": {
+    "/vanilla/behavior_pack/items/apple.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:use_modifiers/",
+        "content": {
+          "start_using": "always",
+          "use_duration": 1.6,
+          "movement_modifier": 0.35
+        }
+      }
+    ]
+  },
+  "dataVersion": "1.26.50"
+}

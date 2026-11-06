@@ -1,0 +1,23 @@
+{
+  "$id": "/client_server/structure/1.21.50/Jigsaw%20Structure%20Metadata.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "format_version": {
+      "description": "Format version of the contained metadata registry.",
+      "type": "string",
+      "x-ordinal-index": 0
+    },
+    "minecraft:jigsaw_structure_metadata": {
+      "$ref": "./JigsawStructureMetadataRegistry.json",
+      "description": "The Jigsaw metadata registry.",
+      "x-ordinal-index": 1
+    }
+  },
+  "required": [
+    "format_version",
+    "minecraft:jigsaw_structure_metadata"
+  ],
+  "title": "minecraft:jigsaw_structure_metadata",
+  "type": "object",
+  "x-format-version": "1.21.50"
+}

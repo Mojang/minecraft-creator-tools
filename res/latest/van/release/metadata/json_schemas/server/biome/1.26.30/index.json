@@ -1,0 +1,12 @@
+{
+  "files": [
+    "Biome Components.json",
+    "Biome Definition.json",
+    "Biome Document.json",
+    "NoiseBlockSpecifier.json",
+    "NoiseDescriptor.json",
+    "minecraft_noise_gradient.json",
+    "minecraft_surface_builder.json"
+  ],
+  "folders": []
+}

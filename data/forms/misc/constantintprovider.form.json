@@ -1,0 +1,34 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "specifies a constant integer"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "type",
+      "title": "IntProviderType",
+      "dataType": "string",
+      "isRequired": true,
+      "description": "enum SharedTypes_v1_21_20_IntProviderType"
+    },
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "Constant value",
+      "dataType": "int",
+      "isRequired": true
+    }
+  ],
+  "description": "Specifies a constant integer",
+  "title": "ConstantIntProvider Misc",
+  "id": "ConstantIntProvider"
+}

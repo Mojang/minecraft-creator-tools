@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Feature Rule: Terrain with rule/pattern -->
+  <path d="M1 14L4 8L7 11L10 6L15 14H1Z" fill-opacity="0.2"/>
+  <path d="M2 14L4 10L6 12L10 7L14 14H2Z" fill-opacity="0.4"/>
+  <rect x="1" y="2" width="4" height="1" fill-opacity="0.6"/>
+  <rect x="1" y="4" width="3" height="1" fill-opacity="0.4"/>
+  <path d="M6 2L7 3L6 4L7 5" fill="none" stroke="currentColor" stroke-width="0.6"/>
+  <circle cx="9" cy="3" r="1.5" fill-opacity="0.5"/>
+  <path d="M11 2H14V5H11V2Z" fill="none" stroke="currentColor" stroke-width="0.6"/>
+</svg>

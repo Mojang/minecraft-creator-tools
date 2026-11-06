@@ -1,0 +1,23 @@
+{
+  "files": [
+    "butcher.png",
+    "butcher.texture_set.json",
+    "butcher_mers.tga",
+    "farmer.png",
+    "farmer.texture_set.json",
+    "farmer_mers.tga",
+    "librarian.png",
+    "librarian.texture_set.json",
+    "librarian_mers.tga",
+    "priest.png",
+    "priest.texture_set.json",
+    "priest_mers.tga",
+    "smith.png",
+    "smith.texture_set.json",
+    "smith_mers.tga",
+    "villager.png",
+    "villager.texture_set.json",
+    "villager_mers.tga"
+  ],
+  "folders": []
+}

@@ -1,0 +1,11 @@
+{
+  "files": [
+    "ActorDocument.json",
+    "Entity component definitions.json",
+    "EntityRotationAlwaysFollowsHeadComponentDefinition.json",
+    "SphericalLookControlComponentDefinition.json",
+    "minecraft_time_marker_sensor.json",
+    "time_marker_sensor_entry.json"
+  ],
+  "folders": []
+}

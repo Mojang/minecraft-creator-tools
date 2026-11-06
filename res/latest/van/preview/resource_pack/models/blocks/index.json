@@ -1,0 +1,10 @@
+{
+  "files": [
+    "icicle_base.geo.json",
+    "shelf_mushroom_large.geo.json",
+    "shelf_mushroom_small.geo.json",
+    "straw_bed_foot.geo.json",
+    "straw_bed_head.geo.json"
+  ],
+  "folders": []
+}

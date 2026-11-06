@@ -1,0 +1,80 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "RandomSpreadPlacement",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines random spread placement parameters for structure generation"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "salt",
+      "title": "Salt",
+      "description": "Seed used for the random generator to provide a unique scatter pattern. This is used to prevent overlap in the case where multiple structure sets use the same placement values.",
+      "dataType": "int",
+      "isRequired": true
+    },
+    {
+      "id": "separation",
+      "title": "Separation",
+      "description": "Padding (in chunks) within each grid cell. Structures will not generate within the padded area.",
+      "dataType": "int",
+      "isRequired": true
+    },
+    {
+      "id": "spacing",
+      "title": "Spacing",
+      "description": "Grid cell size (in chunks) to use when generating the structure. Structures will attempt to generate at a random position within each cell.",
+      "dataType": "int",
+      "validity": [
+        {
+          "comparison": ">=",
+          "value": 1
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "spread_type",
+      "title": "Spread Type",
+      "description": "Randomness algorithm used when placing structures.",
+      "dataType": "stringEnum",
+      "defaultValue": "linear",
+      "choices": [
+        {
+          "id": "linear",
+          "title": "Linear"
+        },
+        {
+          "id": "triangular",
+          "title": "Triangular"
+        }
+      ],
+      "mustMatchChoices": true
+    },
+    {
+      "id": "type",
+      "title": "Type",
+      "description": "Type of placement for the Jigsaw Structure Set.",
+      "dataType": "stringEnum",
+      "choices": [
+        {
+          "id": "minecraft:random_spread",
+          "title": "Minecraft:random spread"
+        }
+      ],
+      "mustMatchChoices": true,
+      "isRequired": true
+    }
+  ],
+  "description": "Defines random spread placement parameters for structure generation.",
+  "title": "World RandomSpreadPlacement",
+  "dataVersion": "1.21.20"
+}

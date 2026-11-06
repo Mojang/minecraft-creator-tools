@@ -1,0 +1,9 @@
+{
+  "files": [
+    "ActorDocument.json",
+    "Entity component definitions.json",
+    "minecraft_apply_knockback_rules.json",
+    "minecraft_apply_knockback_rules_instance.json"
+  ],
+  "folders": []
+}

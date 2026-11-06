@@ -1,0 +1,26 @@
+{
+  "files": [
+    "warden.png",
+    "warden.texture_set.json",
+    "warden_bioluminescent_layer.png",
+    "warden_bioluminescent_layer.texture_set.json",
+    "warden_bioluminescent_layer_mers.tga",
+    "warden_ears.png",
+    "warden_ears.texture_set.json",
+    "warden_ears_mers.tga",
+    "warden_heart.png",
+    "warden_heart.texture_set.json",
+    "warden_heart_mers.tga",
+    "warden_mers.tga",
+    "warden_pulsating_spots_1.png",
+    "warden_pulsating_spots_1.texture_set.json",
+    "warden_pulsating_spots_1_mers.tga",
+    "warden_pulsating_spots_2.png",
+    "warden_pulsating_spots_2.texture_set.json",
+    "warden_pulsating_spots_2_mers.tga",
+    "warden_tendrils.png",
+    "warden_tendrils.texture_set.json",
+    "warden_tendrils_mers.tga"
+  ],
+  "folders": []
+}

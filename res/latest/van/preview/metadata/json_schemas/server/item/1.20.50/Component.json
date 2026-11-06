@@ -1,0 +1,159 @@
+{
+  "$id": "/server/item/1.20.50/Component.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "List of all components used in this item.",
+  "properties": {
+    "minecraft:allow_off_hand": {
+      "$ref": "./minecraft_allow_off_hand.json",
+      "description": "The allow_off_hand component determines whether the item can be placed in the off hand slot of the inventory.",
+      "x-ordinal-index": 0
+    },
+    "minecraft:block_placer": {
+      "$ref": "./minecraft_block_placer.json",
+      "description": "Items with the block_placer component will place a block when used.",
+      "x-ordinal-index": 18
+    },
+    "minecraft:can_destroy_in_creative": {
+      "$ref": "./minecraft_can_destroy_in_creative.json",
+      "description": "The can_destroy_in_creative component determines if the item can be used by a player to break blocks when in creative mode.",
+      "x-ordinal-index": 1
+    },
+    "minecraft:cooldown": {
+      "$ref": "./minecraft_cooldown.json",
+      "description": "Adds a cooldown to the item so that, after performing an action of the specified \"type\", all items with a \"minecraft:cooldown\" component in the same \"category\" become unable to perform that same type of action for the number of seconds defined in \"duration\".",
+      "x-ordinal-index": 2
+    },
+    "minecraft:damage": {
+      "$ref": "./minecraft_damage.json",
+      "description": "The damage component determines how much extra damage the item does on attack.",
+      "x-ordinal-index": 3
+    },
+    "minecraft:digger": {
+      "$ref": "./minecraft_digger.json",
+      "description": "Digger item component specifies how quickly this item can dig specific blocks.",
+      "x-ordinal-index": 4
+    },
+    "minecraft:display_name": {
+      "$ref": "./minecraft_display_name.json",
+      "description": "The display_name item component specifies the text shown whenever an item's name is displayed, like in hover text.",
+      "x-ordinal-index": 5
+    },
+    "minecraft:durability": {
+      "$ref": "./minecraft_durability.json",
+      "description": "The durability item component specifies how much damage the item takes before breaking, and allows the item to be combined to repair or augment them.",
+      "x-ordinal-index": 6
+    },
+    "minecraft:enchantable": {
+      "$ref": "./minecraft_enchantable.json",
+      "description": "The enchantable component specifies what enchantments can be applied to the item. Not all enchantments will have an effect on all item components.",
+      "x-ordinal-index": 7
+    },
+    "minecraft:entity_placer": {
+      "$ref": "./minecraft_entity_placer.json",
+      "description": "The entity_placer item component specifies the blocks that the item can be placed on.",
+      "x-ordinal-index": 8
+    },
+    "minecraft:food": {
+      "$ref": "./minecraft_food.json",
+      "description": "When an item has a food component, it becomes edible to the player. Must have the 'minecraft:use_duration' component in order to function properly.",
+      "x-ordinal-index": 9
+    },
+    "minecraft:fuel": {
+      "$ref": "./minecraft_fuel.json",
+      "description": "Fuel item component allows this item to be used as fuel in a furnace to 'cook' other items.",
+      "x-ordinal-index": 10
+    },
+    "minecraft:glint": {
+      "$ref": "./minecraft_glint.json",
+      "description": "The glint component determines whether the item has the enchanted glint render effect on it.",
+      "x-ordinal-index": 11
+    },
+    "minecraft:hand_equipped": {
+      "$ref": "./minecraft_hand_equipped.json",
+      "description": "The hand_equipped component determines if an item is rendered like a tool while it is in a player's hand.",
+      "x-ordinal-index": 12
+    },
+    "minecraft:hover_text_color": {
+      "$ref": "./minecraft_hover_text_color.json",
+      "description": "The hover_text_color component specifies the color of the item name when the players hovers the cursor over the item.",
+      "x-ordinal-index": 13
+    },
+    "minecraft:icon": {
+      "$ref": "./minecraft_icon.json",
+      "x-ordinal-index": 14
+    },
+    "minecraft:interact_button": {
+      "$ref": "./minecraft_interact_button.json",
+      "description": "This component is a boolean or string that determines if the interact button is shown in touch controls and what text is displayed on the button. When set as true, default \"Use Item\" text will be displayed.",
+      "x-ordinal-index": 15
+    },
+    "minecraft:liquid_clipped": {
+      "$ref": "./minecraft_liquid_clipped.json",
+      "description": "The liquid_clipped component determines whether the item interacts with liquid blocks on use.",
+      "x-ordinal-index": 16
+    },
+    "minecraft:max_stack_size": {
+      "$ref": "./minecraft_max_stack_size.json",
+      "description": "The max_stack_size component specifies how many of the item can be stacked together.",
+      "x-ordinal-index": 17
+    },
+    "minecraft:projectile": {
+      "$ref": "./minecraft_projectile.json",
+      "description": "Projectile items shoot out, like an arrow.",
+      "x-ordinal-index": 19
+    },
+    "minecraft:record": {
+      "$ref": "./minecraft_record.json",
+      "description": "Record Item Component. Used by record items to play music.",
+      "x-ordinal-index": 20
+    },
+    "minecraft:repairable": {
+      "$ref": "./minecraft_repairable.json",
+      "description": "The repairable item component specifies which items can be used to repair this item, along with how much durability is gained.",
+      "x-ordinal-index": 21
+    },
+    "minecraft:shooter": {
+      "$ref": "./minecraft_shooter.json",
+      "description": "Shooter Item Component.",
+      "x-ordinal-index": 22
+    },
+    "minecraft:should_despawn": {
+      "$ref": "./minecraft_should_despawn.json",
+      "description": "Should_despawn component determines if the item should eventually despawn while floating in the world",
+      "x-ordinal-index": 23
+    },
+    "minecraft:stacked_by_data": {
+      "$ref": "./minecraft_stacked_by_data.json",
+      "description": "The stacked_by_data component determines whether the same items with different aux values can stack. Also defines whether the item entities can merge while floating in the world.",
+      "x-ordinal-index": 24
+    },
+    "minecraft:tags": {
+      "$ref": "./minecraft_tags.json",
+      "description": "The tags component specifies which tags an item has on it.",
+      "x-ordinal-index": 25
+    },
+    "minecraft:throwable": {
+      "$ref": "./minecraft_throwable.json",
+      "description": "Throwable items can be thrown by the player, such as a snowball.",
+      "x-ordinal-index": 26
+    },
+    "minecraft:use_animation": {
+      "$ref": "./minecraft_use_animation.json",
+      "description": "Use_animation specifies which animation is played when the player uses the item.",
+      "x-ordinal-index": 27
+    },
+    "minecraft:use_modifiers": {
+      "$ref": "./minecraft_use_modifiers.json",
+      "description": "Modifies use behavior, including how long the item takes to use and the player's movement speed.",
+      "x-ordinal-index": 28
+    },
+    "minecraft:wearable": {
+      "$ref": "./minecraft_wearable.json",
+      "description": "Wearable items can be worn by a player in the head, chest, legs, feet, or off-hand slots.",
+      "x-ordinal-index": 29
+    }
+  },
+  "title": "components",
+  "type": "object",
+  "x-format-version": "1.20.50"
+}

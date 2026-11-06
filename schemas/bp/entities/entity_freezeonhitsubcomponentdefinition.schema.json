@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity FreezeOnHitSubcomponentDefinition",
+  "description": "Freezes nearby water blocks to ice in a configurable volume around the impact (Education Edition chemistry feature).",
+  "properties": {
+    "shape": {
+      "title": "Shape",
+      "description": "Shape of the freezing volume. Allowed values: `cube`, `sphere`.",
+      "type": "string",
+      "enum": [
+        "cube",
+        "sphere"
+      ],
+      "default": "cube"
+    },
+    "size": {
+      "title": "Size",
+      "description": "Half-extent of the freezing volume (in blocks).",
+      "type": "number",
+      "default": 1
+    },
+    "snap_to_block": {
+      "title": "Snap To Block",
+      "description": "If `true`, the freezing volume is centered on the hit block's center instead of the precise impact point.",
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

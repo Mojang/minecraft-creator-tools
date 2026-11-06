@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Horizontal Tree Decoration Feature",
+  "description": "\n\nProperties:\n• description ({ identifier })\n• allow_adjacent (boolean)\n• bark_side_only (boolean)",
+  "type": "object",
+  "properties": {
+    "description": {
+      "title": "Description",
+      "description": "\n\nProperties:\n• identifier (string)",
+      "type": "object",
+      "properties": {
+        "identifier": {
+          "title": "Identifier",
+          "description": "The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
+          "type": "string"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Description",
+          "description": "Create a Description",
+          "body": {
+            "identifier": ""
+          }
+        }
+      ]
+    },
+    "allow_adjacent": {
+      "title": "Allow Adjacent",
+      "description": "Whether neighbors of the same block type are allowed. Will result in blocks being placed with at least one block gap when set to false",
+      "type": "boolean"
+    },
+    "bark_side_only": {
+      "title": "Bark Side Only",
+      "description": "If true, will never place the block on the 'open' side of a block (imagine the block is a fallen tree trunk).",
+      "type": "boolean"
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "Horizontal Tree Decoration Feature",
+      "description": "Create a Horizontal Tree Decoration Feature",
+      "body": {
+        "description": "",
+        "allow_adjacent": true,
+        "bark_side_only": true
+      }
+    }
+  ]
+}

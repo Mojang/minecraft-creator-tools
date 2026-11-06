@@ -1,0 +1,13 @@
+{
+  "files": [
+    "pack_icon.png"
+  ],
+  "folders": [
+    "animations",
+    "attachables",
+    "models",
+    "texts",
+    "textures",
+    "ui"
+  ]
+}

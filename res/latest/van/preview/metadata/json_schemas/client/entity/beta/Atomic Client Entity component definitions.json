@@ -1,0 +1,22 @@
+{
+  "$id": "/client/entity/beta/Atomic%20Client%20Entity%20component%20definitions.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Component definitions for Atomic Client Entity. Flat component storage with no groups or events.",
+  "properties": {
+    "minecraft:aabb_dimensions": {
+      "$ref": "./minecraft_aabb_dimensions.json",
+      "description": "AABB dimensions for Atomic Client Entities."
+    },
+    "minecraft:companion_block_avoidance": {
+      "$ref": "./CompanionBlockAvoidanceComponentDefinition.json",
+      "description": "Defines fallback anchor offsets used when the primary companion follow target clips into blocks."
+    },
+    "minecraft:companion_block_clipping": {
+      "$ref": "./CompanionBlockClippingComponentDefinition.json",
+      "description": "Defines companion block clipping behavior, transition effects, and hysteresis controls."
+    }
+  },
+  "title": "Atomic Client Entity component definitions",
+  "type": "object",
+  "x-format-version": "beta"
+}

@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Block Movement Slowdown Immunity",
+  "description": "Prevents specified blocks from contributing to this entity's block movement slowdown. It does not cause other blocks to apply slowdown.",
+  "properties": {
+    "blocks": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "title": "Name",
+                "type": "string",
+                "default": ""
+              },
+              "states": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "boolean"
+                  }
+                ],
+                "title": "States"
+              },
+              "tags": {
+                "title": "Tags",
+                "type": "string",
+                "default": ""
+              }
+            }
+          }
+        },
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "object"
+        }
+      ],
+      "description": "List of block descriptors whose existing movement slowdown contribution should be ignored. If omitted or empty, no contributions are ignored.\n\nSample values:\n• cave_spider: [\"minecraft:web\"]"
+    }
+  }
+}

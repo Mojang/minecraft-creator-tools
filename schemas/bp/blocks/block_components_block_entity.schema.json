@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Block Components Block Entity",
+  "description": "Adds per-instance metadata for this block.",
+  "properties": {
+    "dynamic_properties": {
+      "title": "Dynamic Properties",
+      "description": "Sets dynamic-properties capabilities on the block-entity.",
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "id": "HurtOwnerSubcomponentDefinition",
+  "fields": [
+    {
+      "id": "ignite",
+      "title": "Ignite",
+      "description": "If `true`, the damage sets the owner on fire.",
+      "dataType": "boolean",
+      "defaultValue": false
+    },
+    {
+      "id": "knockback",
+      "title": "Knockback",
+      "description": "If `true`, the damage applies knockback to the owner.",
+      "dataType": "boolean",
+      "defaultValue": false
+    },
+    {
+      "id": "owner_damage",
+      "title": "Owner Damage",
+      "description": "Amount of damage to deal to the owner.",
+      "dataType": "float",
+      "defaultValue": 0
+    }
+  ],
+  "description": "Damages the projectile's owner when the projectile lands.",
+  "title": "Entity HurtOwnerSubcomponentDefinition",
+  "dataVersion": "1.26.50"
+}

@@ -1,0 +1,269 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity OnHitCommandsStorage",
+  "properties": {
+    "arrow_effect": {
+      "title": "Arrow Effect",
+      "description": "Variant of `mob_effect` that derives the effects from the arrow's tipped-potion data and splits durations across the standard eight-arrow stack.",
+      "$ref": "./entity_arroweffectsubcomponentdefinition.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Entity ArrowEffectSubcomponentDefinition",
+          "description": "Variant of `mob_effect` that derives the effects from the arrow's tipped-potion data and splits durations across the standard eight-arrow stack.",
+          "body": {
+            "apply_effect_to_blocking_targets": true
+          }
+        }
+      ]
+    },
+    "catch_fire": {
+      "title": "Catch Fire",
+      "description": "Causes the projectile to embed itself in the block it hits.",
+      "$ref": "./entity_catchfiresubcomponentdefinition.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Entity CatchFireSubcomponentDefinition",
+          "description": "Causes the projectile to embed itself in the block it hits.",
+          "body": {
+            "fire_affected_by_griefing": false,
+            "on_fire_time": 0
+          }
+        }
+      ]
+    },
+    "definition_event": {
+      "title": "Definition Event",
+      "description": "Fires an entity event on the shooter, the projectile, the entity hit, and/or all entities in a splash radius.",
+      "$ref": "./entity_actordefinitioneventsubcomponentdefinition.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Entity ActorDefinitionEventSubcomponentDefinition",
+          "description": "Fires an entity event on the shooter, the projectile, the entity hit, and/or all entities in a splash radius.",
+          "body": {
+            "affect_projectile": false,
+            "affect_shooter": false,
+            "affect_splash_area": false,
+            "affect_target": false,
+            "event_trigger": {
+              "event": "",
+              "filters": {
+                "AND": null,
+                "NOT": null,
+                "OR": null,
+                "all": null,
+                "all_of": null,
+                "any": null,
+                "any_of": null,
+                "none_of": null
+              },
+              "target": "self"
+            },
+            "splash_area": 0
+          }
+        }
+      ]
+    },
+    "douse_fire": {
+      "title": "Douse Fire",
+      "description": "When the projectile is a water-effect potion, extinguishes fires and campfires at and around the hit block.",
+      "type": "object"
+    },
+    "freeze_on_hit": {
+      "title": "Freeze On Hit",
+      "description": "Freezes nearby water blocks to ice in a configurable volume around the impact (Education Edition chemistry feature).",
+      "$ref": "./entity_freezeonhitsubcomponentdefinition.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Entity FreezeOnHitSubcomponentDefinition",
+          "description": "Freezes nearby water blocks to ice in a configurable volume around the impact (Education Edition chemistry feature).",
+          "body": {
+            "shape": "cube",
+            "size": 1,
+            "snap_to_block": false
+          }
+        }
+      ]
+    },
+    "grant_xp": {
+      "title": "Grant Xp",
+      "description": "Drops experience orbs at the impact location.",
+      "$ref": "./entity_grantxpsubcomponentdefinition.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Entity GrantXPSubcomponentDefinition",
+          "description": "Drops experience orbs at the impact location.",
+          "body": {
+            "maxXP": 0,
+            "minXP": 0
+          }
+        }
+      ]
+    },
+    "hurt_owner": {
+      "title": "Hurt Owner",
+      "description": "Damages the projectile's owner when the projectile lands.",
+      "$ref": "./entity_hurtownersubcomponentdefinition.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Entity HurtOwnerSubcomponentDefinition",
+          "description": "Damages the projectile's owner when the projectile lands.",
+          "body": {
+            "ignite": false,
+            "knockback": false,
+            "owner_damage": 0
+          }
+        }
+      ]
+    },
+    "ignite": {
+      "title": "Ignite",
+      "description": "Triggers the entity's `on_ignite` definition when the projectile hits.",
+      "type": "object"
+    },
+    "impact_damage": {
+      "title": "Impact Damage",
+      "description": "Deals damage to the entity that was hit and optionally applies knockback, fire, channeling, and critical-hit scaling.",
+      "$ref": "./entity_impactdamagesubcomponentdefinition.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Entity ImpactDamageSubcomponentDefinition",
+          "description": "Deals damage to the entity that was hit and optionally applies knockback, fire, channeling, and critical-hit scaling.",
+          "body": {
+            "apply_knockback_to_blocking_targets": false,
+            "catch_fire": false,
+            "ceil_pre_critical_damage": false,
+            "channeling": false,
+            "damage": {
+              "max": 0,
+              "min": 0
+            },
+            "destroy_on_hit": false,
+            "destroy_on_hit_requires_damage": true,
+            "difficulty_randomization": "none",
+            "filter": "",
+            "knockback": false,
+            "max_critical_damage": 2147483647,
+            "min_critical_damage": 0,
+            "power_multiplier": 0,
+            "set_last_hurt_requires_damage": true
+          }
+        }
+      ]
+    },
+    "mob_effect": {
+      "title": "Mob Effect",
+      "description": "Applies one or more mob effects to the entity hit. Effects are described with an `effects` array of effect objects.",
+      "$ref": "./entity_mobeffectsubcomponentdefinition.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Entity MobEffectSubcomponentDefinition",
+          "description": "Applies one or more mob effects to the entity hit. Effects are described with an `effects` array of effect objects.",
+          "body": {
+            "effects": []
+          }
+        }
+      ]
+    },
+    "particle_on_hit": {
+      "title": "Particle On Hit",
+      "description": "Emits a particle effect at the impact location, optionally only for entity hits or only for non-entity hits.",
+      "$ref": "./entity_particleonhitsubcomponentdefinition.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Entity ParticleOnHitSubcomponentDefinition",
+          "description": "Emits a particle effect at the impact location, optionally only for entity hits or only for non-entity hits.",
+          "body": {
+            "num_particles": 1,
+            "on_entity_hit": false,
+            "on_other_hit": false,
+            "particle_type": "none"
+          }
+        }
+      ]
+    },
+    "remove_on_hit": {
+      "title": "Remove On Hit",
+      "description": "Removes the projectile from the world when it hits a block, entity, or (if `hit_water` is set) water.",
+      "type": "object"
+    },
+    "spawn_aoe_cloud": {
+      "title": "Spawn Aoe Cloud",
+      "description": "Spawns an area effect cloud at the impact point that applies potion effects to entities inside it over time",
+      "$ref": "./entity_spawnaoecloudsubcomponentdefinition.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Entity SpawnAoECloudSubcomponentDefinition",
+          "description": "Spawns an area effect cloud at the impact point that applies potion effects to entities inside it over time",
+          "body": {
+            "affect_owner": true,
+            "duration": 0,
+            "particle": "mobspellambient",
+            "potion": -1,
+            "radius": 0,
+            "radius_on_use": -1,
+            "reapplication_delay": 0
+          }
+        }
+      ]
+    },
+    "spawn_chance": {
+      "title": "Spawn Chance",
+      "description": "Conditionally spawns one or two groups of entities at the impact location and optionally fires events on each spawned entity.",
+      "$ref": "./entity_spawnchancesubcomponentdefinition.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Entity SpawnChanceSubcomponentDefinition",
+          "description": "Conditionally spawns one or two groups of entities at the impact location and optionally fires events on each spawned entity.",
+          "body": {
+            "first_spawn_chance": 0,
+            "first_spawn_count": 0,
+            "on_spawn": [],
+            "second_spawn_chance": 0,
+            "second_spawn_count": 0,
+            "spawn_baby": false,
+            "spawn_definition": ""
+          }
+        }
+      ]
+    },
+    "stick_in_ground": {
+      "title": "Stick In Ground",
+      "description": "Causes the projectile to embed itself in the block it hits.",
+      "$ref": "./entity_stickingroundsubcomponentdefinition.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Entity StickInGroundSubcomponentDefinition",
+          "description": "Causes the projectile to embed itself in the block it hits.",
+          "body": {
+            "shake_time": 0
+          }
+        }
+      ]
+    },
+    "teleport_owner": {
+      "title": "Teleport Owner",
+      "description": "Teleports the projectile's owner to the impact location.",
+      "type": "object"
+    },
+    "thrown_potion_effect": {
+      "title": "Thrown Potion Effect",
+      "description": "Applies the splash-potion effects of a thrown potion to nearby entities at the impact point.",
+      "$ref": "./entity_thrownpotioneffectsubcomponentdefinition.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Entity ThrownPotionEffectSubcomponentDefinition",
+          "description": "Applies the splash-potion effects of a thrown potion to nearby entities at the impact point.",
+          "body": {
+            "effect": -1
+          }
+        }
+      ]
+    },
+    "wind_burst_on_hit": {
+      "title": "Wind Burst On Hit",
+      "description": "Releases an outward wind burst at the impact point that pushes nearby entities away.",
+      "type": "object"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "$id": "/server/voxel_shapes/1.21.110/VoxelShapeFile.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "description": {
+      "$ref": "./Description.json",
+      "x-ordinal-index": 0
+    },
+    "shape": {
+      "$ref": "./Shape.json",
+      "x-ordinal-index": 1
+    }
+  },
+  "required": [
+    "description",
+    "shape"
+  ],
+  "title": "VoxelShapeFile",
+  "type": "object",
+  "x-format-version": "1.21.110"
+}

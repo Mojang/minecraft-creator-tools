@@ -1,0 +1,33 @@
+{
+  "files": [
+    "BlockEvent.ts",
+    "Blocks.ts",
+    "Containers.ts",
+    "CreateExplosion.ts",
+    "CreateItemStacks.ts",
+    "CreateMobs.ts",
+    "DynamicProperties.ts",
+    "Effects.ts",
+    "Entities.ts",
+    "EntityQuery.ts",
+    "EntitySpawnEvent.ts",
+    "Equipment.ts",
+    "Items.ts",
+    "MusicAndSound.ts",
+    "Particles.ts",
+    "PistonActivateEvent.ts",
+    "Players.ts",
+    "SampleManager.ts",
+    "Scoreboard.ts",
+    "ScreenDisplay.ts",
+    "SendMessage.ts",
+    "Server-UISampleLibrary.ts",
+    "ServerSampleLibrary.ts",
+    "ServerUserInterface.ts",
+    "Signs.ts",
+    "SpawnItem.ts",
+    "SystemRun.ts",
+    "main.ts"
+  ],
+  "folders": []
+}

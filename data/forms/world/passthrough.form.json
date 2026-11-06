@@ -1,0 +1,39 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "Passthrough",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines a modifier that leaves the block state unchanged"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "type",
+      "title": "Type",
+      "dataType": "stringEnum",
+      "choices": [
+        {
+          "id": "minecraft:append_loot",
+          "title": "Minecraft:append loot"
+        },
+        {
+          "id": "minecraft:passthrough",
+          "title": "Minecraft:passthrough"
+        }
+      ],
+      "mustMatchChoices": true,
+      "defaultValue": "minecraft:passthrough",
+      "isRequired": true
+    }
+  ],
+  "description": "Modifier that leaves the state unchanged. This is the default block modifier if no other block modifier is specified.",
+  "title": "World Passthrough",
+  "dataVersion": "1.21.20"
+}

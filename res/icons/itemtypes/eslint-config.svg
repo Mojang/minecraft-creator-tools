@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- ESLint Config: Code quality shield -->
+  <path d="M8 1L2 4V8C2 11.3 4.5 14.2 8 15C11.5 14.2 14 11.3 14 8V4L8 1Z" fill-opacity="0.2"/>
+  <path d="M8 2L3 4.5V8C3 10.8 5.1 13.3 8 14C10.9 13.3 13 10.8 13 8V4.5L8 2Z" fill="none" stroke="currentColor" stroke-width="0.8"/>
+  <path d="M5 7L7 9L11 5" stroke="currentColor" stroke-width="1.5" fill="none"/>
+</svg>

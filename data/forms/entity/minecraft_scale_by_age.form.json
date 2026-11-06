@@ -1,0 +1,35 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "scales its size based on age"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "end_scale",
+      "title": "End Scale",
+      "description": "Ending scale of the entity when it's fully grown.",
+      "dataType": "float",
+      "defaultValue": 1
+    },
+    {
+      "id": "start_scale",
+      "title": "Start Scale",
+      "description": "Initial scale of the newborn entity.",
+      "dataType": "float",
+      "defaultValue": 1
+    }
+  ],
+  "description": "Defines the entity's size interpolation based on the entity's age.",
+  "title": "Entity Scale By Age",
+  "id": "minecraft:scale_by_age",
+  "dataVersion": "1.26.60"
+}

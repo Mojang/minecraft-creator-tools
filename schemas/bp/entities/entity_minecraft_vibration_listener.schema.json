@@ -1,0 +1,7 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Vibration Listener",
+  "description": "Allows the entity to listen to vibration events. This is a largely-internal component, that is only supported on the Warden and Allay mobs.",
+  "properties": {}
+}

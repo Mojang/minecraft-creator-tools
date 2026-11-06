@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Game Test: Controller with checkmark -->
+  <rect x="1" y="4" width="10" height="7" rx="2" fill-opacity="0.3"/>
+  <circle cx="3.5" cy="7.5" r="1.5" fill-opacity="0.5"/>
+  <rect x="6" y="6" width="1" height="3" fill-opacity="0.4"/>
+  <rect x="5" y="7" width="3" height="1" fill-opacity="0.4"/>
+  <circle cx="8.5" cy="7.5" r="0.6"/>
+  <path d="M10 10L12 13L15 7" stroke="currentColor" stroke-width="1.5" fill="none"/>
+</svg>

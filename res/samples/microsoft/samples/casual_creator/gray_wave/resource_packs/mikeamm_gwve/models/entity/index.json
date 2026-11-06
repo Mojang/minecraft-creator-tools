@@ -1,0 +1,15 @@
+{
+  "files": [
+    "axe_turret.geo.json",
+    "bow_turret.geo.json",
+    "crossbow_turret.geo.json",
+    "gray_wave.geo.json",
+    "gray_wave_generator.geo.json",
+    "gray_zombie_leader.geo.json",
+    "shbullet_turret.geo.json",
+    "smfireball_turret.geo.json"
+  ],
+  "folders": [
+    "attachable"
+  ]
+}

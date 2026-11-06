@@ -1,0 +1,36 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:activator_rail"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "pattern": [
+      "XSX",
+      "X#X",
+      "XSX"
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:redstone_torch"
+      },
+      "S": {
+        "item": "minecraft:stick"
+      },
+      "X": {
+        "item": "minecraft:iron_ingot"
+      }
+    },
+	"unlock": [
+      {
+        "item": "minecraft:rail"
+      }
+    ],
+    "result": {
+      "item": "minecraft:activator_rail",
+      "count": 6
+    }
+  }
+}

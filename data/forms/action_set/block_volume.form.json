@@ -1,0 +1,57 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "block_volume",
+  "title": "Block volume",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines a volume of blocks in the world"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "southWestBottom",
+      "title": "South West Bottom of the volume",
+      "dataType": "object",
+      "subFormId": "action_set/vector3",
+      "required": true
+    },
+    {
+      "id": "size",
+      "title": "Size of the volume",
+      "dataType": "object",
+      "subFormId": "action_set/vector3",
+      "required": true
+    },
+    {
+      "id": "blockPlanes",
+      "title": "Block planes",
+      "description": "A 2D array representing planes of blocks within the volume, where each character represents a lookup into the key.",
+      "dataType": "twoDStringArray"
+    },
+    {
+      "id": "key",
+      "title": "key",
+      "dataType": "keyedObjectCollection",
+      "subForm": {
+        "id": "key",
+        "title": "Key",
+        "fields": [
+          {
+            "id": "typeId",
+            "title": "Block Type Id",
+            "dataType": "string",
+            "defaultValue": ""
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Defines a 3D volume of blocks in the world using a layered ASCII-art style format. Each character in the pattern maps to a block type through a key lookup, enabling efficient representation of structures like buildings, obstacles, or test arenas."
+}

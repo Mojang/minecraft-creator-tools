@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity HealableComponentEffect",
+  "properties": {
+    "amplifier": {
+      "title": "Amplifier",
+      "description": "The amplifier of the effect.",
+      "type": "integer",
+      "default": 1
+    },
+    "chance": {
+      "title": "Chance",
+      "description": "The chance that the effect is applied.",
+      "type": "number",
+      "default": 1
+    },
+    "duration": {
+      "title": "Duration",
+      "description": "The duration of the effect in seconds, or \"infinite\".",
+      "type": "object",
+      "default": 0
+    },
+    "name": {
+      "title": "Name",
+      "description": "The name of the effect to apply.",
+      "type": "string",
+      "default": ""
+    }
+  }
+}

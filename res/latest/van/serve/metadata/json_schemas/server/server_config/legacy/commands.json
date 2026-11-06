@@ -1,0 +1,25 @@
+{
+  "$id": "/server/server_config/legacy/commands.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "default_permission_level": {
+      "$ref": "./command_permission_level.json",
+      "description": "Default permission level for all unspecified commands.  If not set then commands will default to their normal permission level.",
+      "x-ordinal-index": 0,
+      "x-underlying-type": "uint8"
+    },
+    "permission_levels": {
+      "additionalProperties": {
+        "$ref": "./command_permission_level.json",
+        "x-underlying-type": "uint8"
+      },
+      "default": {
+      },
+      "type": "object",
+      "x-ordinal-index": 1
+    }
+  },
+  "title": "commands",
+  "type": "object",
+  "x-format-version": "legacy"
+}

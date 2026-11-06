@@ -1,0 +1,378 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Projectile",
+  "description": "Turns the entity into a projectile: a thrown or shot entity that flies along a ballistic arc and reacts when it impacts a block, a fluid, or another entity.",
+  "properties": {
+    "catch_fire": {
+      "title": "Catch Fire",
+      "description": "Determines whether the entity hit will be set on fire. Note: the presence of this field in the component definition causes targets to catch fire regardless of the value set. To prevent fire, remove this field entirely from the component.",
+      "type": "boolean",
+      "default": false
+    },
+    "reflect_on_hurt": {
+      "title": "Reflect On Hurt",
+      "description": "If true, this projectile will be reflected back when hit by another projectile or by taking damage.",
+      "type": "boolean",
+      "default": false
+    },
+    "isolated_physics": {
+      "title": "Isolated Physics",
+      "description": "If true, this projectile is not affected by outside forces such as friction and drag.\n\n*Introduced in version 1.26.20*",
+      "type": "boolean",
+      "default": true
+    },
+    "anchor": {
+      "title": "Anchor",
+      "description": "Reference point on the shooter used to position the projectile at spawn: `0` = origin (feet), `1` = eye height, `2` = middle of the bounding box.",
+      "type": "string",
+      "enum": [
+        "eye_height",
+        "middle",
+        "origin"
+      ],
+      "default": "origin"
+    },
+    "angle_offset": {
+      "title": "Angle Offset",
+      "description": "Additional upwards pitch (in degrees) applied to the shooter's aim direction at launch. Negative values aim downward.",
+      "type": "number",
+      "default": 0
+    },
+    "crit_particle_on_hurt": {
+      "title": "Crit Particle On Hurt",
+      "description": "If `true`, critical-hit particles are spawned on the projectile when it is struck.",
+      "type": "boolean",
+      "default": false
+    },
+    "destroy_on_hurt": {
+      "title": "Destroy On Hurt",
+      "description": "If `true`, the projectile is removed from the world when struck.",
+      "type": "boolean",
+      "default": false
+    },
+    "gravity": {
+      "title": "Gravity",
+      "description": "Downward acceleration (blocks per tick squared) applied each tick while in flight. Higher values make the projectile fall faster.",
+      "type": "number",
+      "default": 0.05000000074505806
+    },
+    "hit_ground_sound": {
+      "title": "Hit Ground Sound",
+      "description": "Identifier of the sound to play when the projectile hits a block. Defaults to `hit_sound` when empty.",
+      "type": "string",
+      "default": ""
+    },
+    "hit_nearest_passenger": {
+      "title": "Hit Nearest Passenger",
+      "description": "If `true`, when the projectile hits a vehicle with at least one passenger, the on-hit behavior is applied to the passenger closest to the impact point instead of the vehicle itself.",
+      "type": "boolean",
+      "default": false
+    },
+    "hit_sound": {
+      "title": "Hit Sound",
+      "description": "Identifier of the sound to play when the projectile hits an entity. Also used for block hits when `hit_ground_sound` is not specified.",
+      "type": "string",
+      "default": ""
+    },
+    "hit_water": {
+      "title": "Hit Water",
+      "description": "If `true`, the projectile treats water as a hit surface and stops on contact. (Education Edition chemistry feature)",
+      "type": "boolean",
+      "default": false
+    },
+    "homing": {
+      "title": "Homing",
+      "description": "If `true`, the projectile steers towards an active target while in flight.",
+      "type": "boolean",
+      "default": false
+    },
+    "ignored_entities": {
+      "title": "Ignored Entities",
+      "description": "Array of entity identifiers that the projectile will pass through without registering a hit.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "inertia": {
+      "title": "Inertia",
+      "description": "Fraction of the projectile's velocity preserved each tick while traveling through air. Values below `1.0` cause it to slow down over time.",
+      "type": "number",
+      "default": 0.9900000095367432
+    },
+    "is_dangerous": {
+      "title": "Is Dangerous",
+      "description": "If `true`, the projectile is flagged as dangerous, affecting AI reactions and certain client-side behaviors.",
+      "type": "boolean",
+      "default": false
+    },
+    "lightning": {
+      "title": "Lightning",
+      "description": "If `true`, the projectile can channel a lightning bolt when it hits an entity during a thunderstorm.",
+      "type": "boolean",
+      "default": false
+    },
+    "liquid_inertia": {
+      "title": "Liquid Inertia",
+      "description": "Fraction of the projectile's velocity preserved each tick while traveling through a fluid.",
+      "type": "number",
+      "default": 0.6000000238418579
+    },
+    "multiple_targets": {
+      "title": "Multiple Targets",
+      "description": "If `true`, the projectile can hit more than one entity over the course of its flight; if `false`, it stops at the first entity it hits. Projectiles launched with the Piercing enchantment have this value set to `true`.",
+      "type": "boolean",
+      "default": false
+    },
+    "offset": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        {
+          "description": "\n\nProperties:\n• x (float) = 0\n• y (float) = 0\n• z (float) = 0",
+          "type": "object",
+          "properties": {
+            "x": {
+              "title": "X",
+              "type": "number",
+              "default": 0
+            },
+            "y": {
+              "title": "Y",
+              "type": "number",
+              "default": 0
+            },
+            "z": {
+              "title": "Z",
+              "type": "number",
+              "default": 0
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Offset (object)",
+              "description": "Use Offset as an object",
+              "body": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              }
+            }
+          ]
+        }
+      ],
+      "title": "Offset",
+      "description": "Offset, relative to the `anchor`, at which the projectile is spawned when fired by the shooter.",
+      "defaultSnippets": [
+        {
+          "label": "Offset (object)",
+          "description": "Use Offset as an object",
+          "body": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    },
+    "on_fire_time": {
+      "title": "Fire Time",
+      "description": "Duration in seconds for which an entity set on fire by this projectile remains burning. Applied both by the legacy top-level `catch_fire` flag and by the `catch_fire` on-hit subcomponent.",
+      "type": "number",
+      "default": 5
+    },
+    "on_hit": {
+      "title": "Hit",
+      "description": "Map of on-hit subcomponents that drive what happens when the projectile impacts a block, fluid, or entity. Each key is a subcomponent name and its value is that subcomponent's configuration.",
+      "$ref": "./entity_onhitcommandsstorage.schema.json"
+    },
+    "particle": {
+      "title": "Particle",
+      "description": "Particle effect emitted at the impact location when the projectile hits something.",
+      "type": "string",
+      "enum": [
+        "balloongas",
+        "bleach",
+        "blockforcefield",
+        "blueflame",
+        "breezewindexplosion",
+        "bubble",
+        "bubblecolumndown",
+        "bubblecolumnup",
+        "bubblemanual",
+        "campfiresmoke",
+        "campfiresmoketall",
+        "candleflame",
+        "carrotboost",
+        "coloredflame",
+        "conduit",
+        "creakingcrumble",
+        "crit",
+        "dragonbreath",
+        "dragonbreathfire",
+        "dragonbreathtrail",
+        "dragondestroyblock",
+        "driphoney",
+        "driplava",
+        "dripwater",
+        "dustplume",
+        "electricspark",
+        "enchantingtable",
+        "endrod",
+        "evaporation",
+        "explode",
+        "eyeblossomclose",
+        "eyeblossomopen",
+        "fallingborderdust",
+        "fallingdust",
+        "fireworks",
+        "fireworksoverlay",
+        "fireworksstarter",
+        "flame",
+        "food",
+        "greenflame",
+        "heart",
+        "hugeexplosion",
+        "iceballbreak",
+        "iconcrack",
+        "ink",
+        "largeexplode",
+        "largesmoke",
+        "lava",
+        "mobappearance",
+        "mobflame",
+        "mobspell",
+        "mobspellambient",
+        "mobspellinstantaneous",
+        "myceliumdust",
+        "none",
+        "note",
+        "obsidiantear",
+        "orangepoplarleaves",
+        "paleoakleaves",
+        "pausemobgrowth",
+        "portal",
+        "portalreverse",
+        "rainsplash",
+        "reddust",
+        "redpoplarleaves",
+        "resetmobgrowth",
+        "risingborderdust",
+        "sculksoul",
+        "shriek",
+        "shulkerbullet",
+        "slime",
+        "smoke",
+        "sneeze",
+        "snowballpoof",
+        "snowflake",
+        "sonicexplosion",
+        "soul",
+        "sparkler",
+        "spit",
+        "stalactitedriplava",
+        "stalactitedripwater",
+        "sulfurcube",
+        "terrain",
+        "totem",
+        "townaura",
+        "trackingemitter",
+        "vaultconnection",
+        "villagerangry",
+        "villagerhappy",
+        "watersplash",
+        "watersplashmanual",
+        "waterwake",
+        "wax",
+        "whitesmoke",
+        "windexplosion",
+        "witchspell",
+        "wolfarmorcrack",
+        "yellowpoplarleaves"
+      ],
+      "default": "iconcrack"
+    },
+    "potion_effect": {
+      "title": "Potion Effect",
+      "description": "Default potion aux value associated with the projectile. Normally set programmatically by potion items; rarely useful at authoring time. A value matching the water potion is required for the `douse_fire` on-hit subcomponent to extinguish fires.",
+      "type": "integer",
+      "default": -1
+    },
+    "power": {
+      "title": "Power",
+      "description": "Initial speed (in blocks per tick) at which the projectile is launched.",
+      "type": "number",
+      "default": 1.2999999523162842
+    },
+    "reflect_immunity": {
+      "title": "Reflect Immunity",
+      "description": "Duration in seconds after launch during which the projectile cannot be reflected by being struck.",
+      "type": "number",
+      "default": 0
+    },
+    "shoot_sound": {
+      "title": "Shoot Sound",
+      "description": "Identifier of the sound to play when the projectile is fired.",
+      "type": "string",
+      "default": ""
+    },
+    "shoot_target": {
+      "title": "Shoot Target",
+      "description": "If `true`, the projectile is aimed at the shooter's current target (when one exists) rather than straight ahead.",
+      "type": "boolean",
+      "default": true
+    },
+    "should_bounce": {
+      "title": "Should Bounce",
+      "description": "Controls whether the projectile bounces off entities on impact. `no` disables bouncing, `if_invulnerable` bounces only off invulnerable entities, and `if_no_damage_dealt` bounces whenever no damage is dealt to the target.",
+      "type": "string",
+      "enum": [
+        "if_invulnerable",
+        "if_no_damage_dealt",
+        "no"
+      ],
+      "default": "no"
+    },
+    "splash_range": {
+      "title": "Splash Range",
+      "description": "Splash radius (in blocks) used when applying potion effects via the splash/lingering potion code path.",
+      "type": "number",
+      "default": 4
+    },
+    "spread_fire": {
+      "title": "Spread Fire",
+      "description": "If `true`, when hitting an entity and the projectile is on fire, spread the fire to the entity.",
+      "type": "boolean",
+      "default": true
+    },
+    "stop_on_hurt": {
+      "title": "Stop On Hurt",
+      "description": "If `true`, the projectile has its velocity zeroed out when struck.",
+      "type": "boolean",
+      "default": false
+    },
+    "uncertainty_base": {
+      "title": "Uncertainty Base",
+      "description": "Base inaccuracy added to the launch direction. The total inaccuracy is `uncertainty_base - difficultyLevel * uncertainty_multiplier`.",
+      "type": "number",
+      "default": 0
+    },
+    "uncertainty_multiplier": {
+      "title": "Uncertainty Multiplier",
+      "description": "Per-difficulty-level reduction in inaccuracy. See `uncertainty_base` for the full formula.",
+      "type": "number",
+      "default": 0
+    },
+    "owner_launch_immunity_ticks": {
+      "title": "Owner Launch Immunity Ticks",
+      "description": "Number of ticks immediately after launch during which the projectile cannot hit its own shooter.",
+      "type": "integer",
+      "default": 5
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "files": [
+    "Block Descriptor.json",
+    "BlockDescriptorProxy.json",
+    "EquipmentSlot.json",
+    "IntRange.json",
+    "Item Descriptor.json",
+    "LevelSoundEvent.json",
+    "compound_proxy.json"
+  ],
+  "folders": []
+}

@@ -1,0 +1,36 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can grow crops while moving"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "chance",
+      "title": "Chance",
+      "description": "Value between 0-1. Chance of success per tick",
+      "dataType": "float",
+      "defaultValue": 0
+    },
+    {
+      "id": "charges",
+      "title": "Charges",
+      "description": "Number of charges",
+      "dataType": "int",
+      "defaultValue": 10
+    }
+  ],
+  "description": "Could increase crop growth when entity walks over crop",
+  "title": "Entity Grows Crop",
+  "samples": {},
+  "id": "minecraft:grows_crop",
+  "dataVersion": "1.26.50"
+}

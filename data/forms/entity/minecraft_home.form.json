@@ -1,0 +1,58 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "description": "Saves a home position for when the entity is spawned. This component allows entities like bees to remember and return to a specific location such as a hive or nest.",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has a home location to return to"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "restriction_type",
+      "versionIntroduced": "1.21.40",
+      "description": "Defines how the entity will be restricted to its home position. Valid values are: 'none' (no restriction), 'random_movement' (restricts random wandering to be near home), and 'all_movement' (restricts all movement to be near home, though entities can always move closer to home if they are too far away).",
+      "defaultValue": "none",
+      "dataType": "stringEnum",
+      "title": "Restriction Type",
+      "choices": [
+        {
+          "id": "all_movement",
+          "title": "All movement"
+        },
+        {
+          "id": "none",
+          "title": "None"
+        },
+        {
+          "id": "random_movement",
+          "title": "Random movement"
+        }
+      ]
+    },
+    {
+      "id": "home_block_list",
+      "title": "Home Block List",
+      "description": "Optional list of blocks that can be considered a valid home. If no such block longer exists at that position, the home restriction is removed. Example syntax: minecraft:sand. Not supported: minecraft:sand:1.",
+      "dataType": "stringArray",
+      "defaultValue": []
+    },
+    {
+      "id": "restriction_radius",
+      "title": "Restriction Radius",
+      "description": "Optional radius that the entity will be restricted to in relation to its home.",
+      "dataType": "int",
+      "defaultValue": 0
+    }
+  ],
+  "title": "Entity Home",
+  "samples": {},
+  "id": "minecraft:home",
+  "dataVersion": "1.26.50"
+}

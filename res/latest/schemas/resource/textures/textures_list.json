@@ -1,0 +1,1 @@
+{"$schema":"http://json-schema.org/draft-07/schema","title":"Textures List","description":"List texture files included in this pack to reduce loading times.","type":"array","items":{"title":"Filepath","type":"string","pattern":"^textures/","examples":["textures/blocks/"]},"definitions":{}}

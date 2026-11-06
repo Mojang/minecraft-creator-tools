@@ -1,0 +1,6 @@
+{
+  "id": "query.has_all_biome_tags",
+  "fields": [],
+  "description": "Returns 1.0 if the biome at the current placement position has all of the specified tags, else 0.0. Takes (tag1, tag2, ...).",
+  "title": "Has All Biome Tags"
+}

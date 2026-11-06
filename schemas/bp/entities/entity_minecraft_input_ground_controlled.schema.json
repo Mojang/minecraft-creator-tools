@@ -1,0 +1,7 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Input Ground Controlled",
+  "description": "When configured as a rideable entity, the entity will be controlled using WASD controls. Beginning with 1.19.50 the default auto step height for rideable entities is half a block. Consider adding the \"minecraft:variable_max_auto_step\" component to increase it.",
+  "properties": {}
+}

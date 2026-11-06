@@ -1,0 +1,9 @@
+{
+  "files": [
+    "mobs.json"
+  ],
+  "folders": [
+    "blocks",
+    "entity"
+  ]
+}

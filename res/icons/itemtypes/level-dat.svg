@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Level Dat: World data with settings -->
+  <circle cx="8" cy="8" r="6" fill-opacity="0.2"/>
+  <circle cx="8" cy="8" r="4" fill-opacity="0.3"/>
+  <path d="M4 8 Q4 4, 8 4 Q12 4, 12 8 Q12 12, 8 12 Q4 12, 4 8" fill="none" stroke="currentColor" stroke-width="0.8"/>
+  <line x1="8" y1="2" x2="8" y2="5" stroke="currentColor" stroke-width="1"/>
+  <line x1="14" y1="8" x2="11" y2="8" stroke="currentColor" stroke-width="1"/>
+  <line x1="8" y1="14" x2="8" y2="11" stroke="currentColor" stroke-width="1"/>
+  <line x1="2" y1="8" x2="5" y2="8" stroke="currentColor" stroke-width="1"/>
+  <circle cx="8" cy="8" r="1.5"/>
+</svg>

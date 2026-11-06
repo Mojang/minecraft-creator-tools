@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Trunk Decoration",
+  "description": "Configuration object for the trunk decoration.",
+  "type": "object",
+  "properties": {
+    "decoration_blocks_sequence": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {}
+          }
+        },
+        {
+          "title": "Decoration Blocks Sequence",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "num_steps": {
+      "title": "Num Steps",
+      "description": "Number of decoration blocks to place. (Will not be used if \"decoration_blocks_sequence\" given)",
+      "type": "integer"
+    },
+    "step_direction": {
+      "title": "Step Direction\"<\"down\", \"up\", \"out\", \"away\"",
+      "description": "Directions to spread decoration blocks.",
+      "type": "string"
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "Trunk Decoration",
+      "description": "Configuration object for the trunk decoration.",
+      "body": {
+        "num_steps": 0,
+        "step_direction\"<\"down\", \"up\", \"out\", \"away\"": ""
+      }
+    }
+  ]
+}

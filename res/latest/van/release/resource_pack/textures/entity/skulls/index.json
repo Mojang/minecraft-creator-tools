@@ -1,0 +1,17 @@
+{
+  "files": [
+    "creeper.png",
+    "creeper.texture_set.json",
+    "creeper_mers.tga",
+    "skeleton.png",
+    "skeleton.texture_set.json",
+    "skeleton_mers.tga",
+    "wither_skeleton.png",
+    "wither_skeleton.texture_set.json",
+    "wither_skeleton_mers.tga",
+    "zombie.png",
+    "zombie.texture_set.json",
+    "zombie_mers.tga"
+  ],
+  "folders": []
+}

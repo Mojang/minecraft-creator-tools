@@ -1,0 +1,17 @@
+{
+  "$id": "/server/entity/1.21.120/EntityTypes.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "oneOf": [
+    {
+      "items": {
+        "$ref": "./MobDescriptor.json"
+      },
+      "type": "array"
+    },
+    {
+      "$ref": "./MobDescriptor.json"
+    }
+  ],
+  "title": "EntityTypes",
+  "x-format-version": "1.21.120"
+}

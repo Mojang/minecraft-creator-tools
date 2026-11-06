@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Fog Distance Settings",
+  "description": "Distance fog settings for a specific environment type (air, water, lava, etc.).",
+  "properties": {
+    "fog_start": {
+      "title": "Fog Start",
+      "description": "The distance at which fog begins. For render distance type, this is a percentage (0.0-1.0). For fixed type, this is in blocks.",
+      "type": "number"
+    },
+    "fog_end": {
+      "title": "Fog End",
+      "description": "The distance at which fog is fully opaque. For render distance type, this is a percentage (0.0-1.0). For fixed type, this is in blocks.",
+      "type": "number"
+    },
+    "fog_color": {
+      "title": "Fog Color",
+      "description": "The color of the fog as a hex string (e.g., '#ABD2FF') or RGB array.",
+      "type": "string"
+    },
+    "render_distance_type": {
+      "title": "Render Distance Type",
+      "description": "How fog distances are calculated. 'fixed' uses block distances, 'render' uses percentage of render distance.",
+      "type": "string",
+      "enum": [
+        "fixed",
+        "render"
+      ]
+    }
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity SendEventChoice",
+  "properties": {
+    "cast_duration": {
+      "title": "Cast Duration",
+      "description": "Time in seconds for the entire event sending process",
+      "type": "number",
+      "default": 0
+    },
+    "cooldown_time": {
+      "title": "Cooldown Time",
+      "description": "Time in seconds the mob has to wait before using this spell again",
+      "type": "number",
+      "default": 0
+    },
+    "do_casting": {
+      "title": "Do Casting",
+      "description": "If true, the mob will show a casting animation while sending the event",
+      "type": "boolean",
+      "default": true
+    },
+    "filters": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "title": "Domain",
+              "description": "The domain the test should be performed in.",
+              "type": "object"
+            },
+            "operator": {
+              "title": "Operator",
+              "description": "The comparison to apply with 'value'.",
+              "type": "object"
+            },
+            "subject": {
+              "title": "Subject",
+              "description": "The subject of this filter test.",
+              "type": "object"
+            },
+            "test": {
+              "title": "Test",
+              "description": "The name of the test to apply.",
+              "type": "string"
+            },
+            "value": {
+              "title": "Value",
+              "description": "The value being compared with the test.",
+              "type": "object"
+            }
+          }
+        },
+        {
+          "type": "object"
+        }
+      ],
+      "description": "Conditions that the target must meet to be eligible for receiving the event"
+    },
+    "look_at_target": {
+      "title": "Look At Target",
+      "description": "If true, the mob will face the entity it sends an event to",
+      "type": "boolean",
+      "default": true
+    },
+    "max_activation_range": {
+      "title": "Max Activation Range",
+      "description": "Maximum distance in blocks the target can be for this spell to activate",
+      "type": "number",
+      "default": 32
+    },
+    "min_activation_range": {
+      "title": "Min Activation Range",
+      "description": "Minimum distance in blocks the target must be for this spell to activate",
+      "type": "number",
+      "default": 1
+    },
+    "particle_color": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minLength": 4,
+          "maxLength": 4
+        }
+      ],
+      "title": "Particle Color",
+      "description": "The color of the particles spawned while casting this spell",
+      "defaultSnippets": [
+        {
+          "label": "Particle Color (default)",
+          "description": "Use default value: 255,255,255,255",
+          "body": [
+            255,
+            255,
+            255,
+            255
+          ]
+        }
+      ]
+    },
+    "sequence": {
+      "title": "Sequence",
+      "description": "List of events to send",
+      "type": "array",
+      "items": {
+        "$ref": "./entity_sendeventstage.schema.json"
+      }
+    },
+    "start_sound_event": {
+      "title": "Start Sound Event",
+      "description": "The sound event to play when this spell starts",
+      "type": "string",
+      "default": ""
+    },
+    "weight": {
+      "title": "Weight",
+      "description": "Relative weight of this spell choice when randomly selected from valid choices",
+      "type": "number",
+      "default": 0
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "files": [
+    "ActorDocument.json",
+    "Entity component definitions.json",
+    "minecraft_behavior.roar.json",
+    "minecraft_behavior.slime_attack.json",
+    "minecraft_behavior.slime_float.json",
+    "minecraft_behavior.slime_keep_on_jumping.json",
+    "minecraft_behavior.slime_random_direction.json",
+    "minecraft_behavior.sniff.json",
+    "minecraft_behavior.sonic_boom.json",
+    "minecraft_behavior.stay_near_noteblock.json",
+    "minecraft_behavior.swim_idle.json",
+    "minecraft_behavior.swim_up_for_breath.json",
+    "minecraft_behavior.swim_wander.json",
+    "minecraft_behavior.swoop_attack.json",
+    "minecraft_experience_reward.json"
+  ],
+  "folders": []
+}

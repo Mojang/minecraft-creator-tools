@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Script Main: Main entry point with arrow -->
+  <path d="M3 1H10L13 4V15H3V1Z" fill-opacity="0.15"/>
+  <path d="M10 1V4H13" fill="none" stroke="currentColor" stroke-width="0.8"/>
+  <polygon points="5,7 9,10 5,13" fill-opacity="0.7"/>
+  <rect x="9" y="9" width="2" height="2" fill-opacity="0.5"/>
+</svg>

@@ -1,0 +1,16 @@
+{
+  "files": [
+    "empty.json"
+  ],
+  "folders": [
+    "barrels",
+    "blocks",
+    "chests",
+    "dispensers",
+    "entities",
+    "equipment",
+    "gameplay",
+    "pots",
+    "spawners"
+  ]
+}

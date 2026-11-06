@@ -1,0 +1,29 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:mossy_stone_brick_wall"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "pattern": [
+      "###",
+      "###"
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:mossy_stone_bricks"
+      }
+    },
+    "unlock": [
+      {
+        "item": "minecraft:mossy_stone_bricks"
+      }
+    ],
+    "result": {
+      "item": "minecraft:mossy_stone_brick_wall",
+      "count": 6
+    }
+  }
+}

@@ -1,0 +1,234 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines behavior.transport items configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "minecraft:behavior.transport_items",
+  "fields": [
+    {
+      "id": "allow_simultaneous_interaction",
+      "title": "Allow Simultaneous Interaction",
+      "description": "When true the mob will wait until a container is not used by other entities before starting to interact with it. Default value: false.",
+      "dataType": "boolean"
+    },
+    {
+      "id": "allowed_items",
+      "title": "Allowed Items",
+      "description": "A list of item descriptors that are the only items the mob is allowed to transport. If this and \"disallowed_items\" are both empty, then all items are allowed. If non-empty \"disallowed_items\" must be empty. Default value: empty.",
+      "dataType": "string",
+      "alternates": [
+        {
+          "id": "allowed_items",
+          "dataType": "keyedStringCollection"
+        }
+      ]
+    },
+    {
+      "id": "control_flags",
+      "title": "Control Flags",
+      "dataType": "stringArray"
+    },
+    {
+      "id": "destination_container_types",
+      "title": "Destination Container Types",
+      "description": "A list of block descriptors that should be a container type to put items in. Default value: empty.",
+      "dataType": "objectArray",
+      "subForm": {
+        "id": "destination_container_types",
+        "title": "Destination Container Types",
+        "fields": [
+          {
+            "id": "name",
+            "title": "Name",
+            "dataType": "string"
+          },
+          {
+            "id": "states",
+            "title": "States",
+            "dataType": "int",
+            "alternates": [
+              {
+                "id": "states",
+                "dataType": "string"
+              },
+              {
+                "id": "states",
+                "dataType": "boolean"
+              }
+            ]
+          },
+          {
+            "id": "tags",
+            "title": "Tags",
+            "dataType": "string"
+          }
+        ]
+      },
+      "alternates": [
+        {
+          "id": "destination_container_types",
+          "dataType": "string"
+        },
+        {
+          "id": "destination_container_types",
+          "dataType": "object"
+        }
+      ]
+    },
+    {
+      "id": "disallowed_items",
+      "title": "Disallowed Items",
+      "description": "A list of item descriptors that are the mob is not allowed to transport. If non-empty \"allowed_items\" must be empty. Default value: emtpy.",
+      "dataType": "string",
+      "alternates": [
+        {
+          "id": "disallowed_items",
+          "dataType": "keyedStringCollection"
+        }
+      ]
+    },
+    {
+      "id": "idle_cooldown",
+      "title": "Idle Cooldown",
+      "description": "When the mob cannot find a container in which to get or put items, the goal will stop being active for this amount of time in seconds. Default value: 20.",
+      "dataType": "int"
+    },
+    {
+      "id": "initial_cooldown",
+      "title": "Initial Cooldown",
+      "description": "How long the mob will wait after spawning or getting the goal added before the goal can start. Default value: 0.",
+      "dataType": "int"
+    },
+    {
+      "id": "interaction_time",
+      "title": "Interaction Time",
+      "description": "The amount of time in seconds spent interacting with the containers. Default value: 3.",
+      "dataType": "float"
+    },
+    {
+      "id": "max_stack_size",
+      "title": "Max Stack Size",
+      "description": "The maximum stack size that the mob will try to take from a container. Default value: 64.",
+      "dataType": "int",
+      "validity": [
+        {
+          "comparison": ">=",
+          "value": 1
+        },
+        {
+          "comparison": "<=",
+          "value": 64
+        }
+      ]
+    },
+    {
+      "id": "max_visited_containers",
+      "title": "Max Visited Containers",
+      "description": "The maximum number of containers that the mob will try to take/place items from before going on cooldown and starting over. Default value: 16.",
+      "dataType": "int"
+    },
+    {
+      "id": "place_strategy",
+      "title": "Place Strategy",
+      "description": "The strategy to use for placing the transported item. Any - always place if there is room, With matching - place if there is a matching item in the container, With matching or empty - like With matching but will also place in empty containers Default value: any.",
+      "dataType": "string"
+    },
+    {
+      "id": "priority",
+      "title": "Priority",
+      "dataType": "int"
+    },
+    {
+      "id": "search_distance",
+      "title": "Search Distance",
+      "description": "The maximum search distance horizontally and vertically at which to find containers for taking or placing items. Default value: Vec2(64,32).",
+      "dataType": "numberArray",
+      "alternates": [
+        {
+          "id": "search_distance",
+          "dataType": "object",
+          "subForm": {
+            "id": "search_distance",
+            "title": "Search Distance",
+            "fields": [
+              {
+                "id": "x",
+                "title": "X",
+                "dataType": "float"
+              },
+              {
+                "id": "y",
+                "title": "Y",
+                "dataType": "float"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "search_strategy",
+      "title": "Search Strategy",
+      "description": "The strategy to use for finding source or destination containers. The nearest valid container or a random valid container in range. Default value: random.",
+      "dataType": "string"
+    },
+    {
+      "id": "source_container_types",
+      "title": "Source Container Types",
+      "description": "A list of block descriptors that should be a container type to get items from. Default value: empty.",
+      "dataType": "objectArray",
+      "subForm": {
+        "id": "source_container_types",
+        "title": "Source Container Types",
+        "fields": [
+          {
+            "id": "name",
+            "title": "Name",
+            "dataType": "string"
+          },
+          {
+            "id": "states",
+            "title": "States",
+            "dataType": "int",
+            "alternates": [
+              {
+                "id": "states",
+                "dataType": "string"
+              },
+              {
+                "id": "states",
+                "dataType": "boolean"
+              }
+            ]
+          },
+          {
+            "id": "tags",
+            "title": "Tags",
+            "dataType": "string"
+          }
+        ]
+      },
+      "alternates": [
+        {
+          "id": "source_container_types",
+          "dataType": "string"
+        },
+        {
+          "id": "source_container_types",
+          "dataType": "object"
+        }
+      ]
+    }
+  ],
+  "description": "A behavior that enables a mob to transport items from and to containers.",
+  "title": "Minecraft Behavior.transport Items Misc"
+}

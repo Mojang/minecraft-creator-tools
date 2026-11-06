@@ -1,0 +1,99 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "recipe_furnace",
+  "title": "Furnace Recipe",
+  "description": "A smelting/cooking recipe for Minecraft Bedrock Edition. Furnace recipes define input items that can be smelted in furnaces, smokers, blast furnaces, or campfires.",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "smelts an input item into an output item using a furnace, smoker, blast furnace, or campfire"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "dataType": "version",
+      "id": "format_version",
+      "title": "Format Version",
+      "description": "The format version of this recipe file.",
+      "isRequired": true
+    },
+    {
+      "dataType": "object",
+      "id": "minecraft:recipe_furnace",
+      "title": "Furnace Recipe Definition",
+      "description": "The furnace recipe definition container.",
+      "isRequired": true,
+      "subForm": {
+        "fields": [
+          {
+            "dataType": "object",
+            "id": "description",
+            "title": "Description",
+            "description": "The recipe description containing identifier.",
+            "isRequired": true,
+            "subForm": {
+              "fields": [
+                {
+                  "dataType": "string",
+                  "id": "identifier",
+                  "title": "Identifier",
+                  "description": "The unique identifier for this recipe.",
+                  "isRequired": true
+                }
+              ]
+            }
+          },
+          {
+            "dataType": "stringArray",
+            "id": "tags",
+            "title": "Tags",
+            "description": "Tags that specify which smelting stations can use this recipe (e.g., 'furnace', 'smoker', 'blast_furnace', 'campfire').",
+            "isRequired": true
+          },
+          {
+            "dataType": "string",
+            "id": "input",
+            "title": "Input",
+            "description": "The input item. Can be a simple identifier or include data value (e.g., 'minecraft:wood:4').",
+            "isRequired": true
+          },
+          {
+            "dataType": "string",
+            "id": "output",
+            "title": "Output",
+            "description": "The output item identifier.",
+            "isRequired": true
+          }
+        ]
+      }
+    }
+  ],
+  "samples": {
+    "beef": [
+      {
+        "path": "Cooked beef recipe example",
+        "content": {
+          "format_version": "1.12",
+          "minecraft:recipe_furnace": {
+            "description": {
+              "identifier": "minecraft:furnace_beef"
+            },
+            "tags": [
+              "furnace",
+              "smoker",
+              "campfire"
+            ],
+            "input": "minecraft:beef",
+            "output": "minecraft:cooked_beef"
+          }
+        }
+      }
+    ]
+  }
+}

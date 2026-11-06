@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Block Components NWayVisualRotation",
+  "properties": {
+    "x": {
+      "title": "X",
+      "description": "Block state name that controls visual rotation around the x axis.",
+      "type": "string",
+      "default": ""
+    },
+    "y": {
+      "title": "Y",
+      "description": "Block state name that controls visual rotation around the y axis.",
+      "type": "string",
+      "default": ""
+    },
+    "z": {
+      "title": "Z",
+      "description": "Block state name that controls visual rotation around the z axis.",
+      "type": "string",
+      "default": ""
+    }
+  }
+}

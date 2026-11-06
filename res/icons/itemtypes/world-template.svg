@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- World Template: Globe with grid/template -->
+  <circle cx="8" cy="8" r="6" fill-opacity="0.15"/>
+  <ellipse cx="8" cy="8" rx="6" ry="2.5" fill="none" stroke="currentColor" stroke-width="0.6"/>
+  <ellipse cx="8" cy="8" rx="2.5" ry="6" fill="none" stroke="currentColor" stroke-width="0.6"/>
+  <line x1="2" y1="8" x2="14" y2="8" stroke="currentColor" stroke-width="0.5"/>
+  <line x1="8" y1="2" x2="8" y2="14" stroke="currentColor" stroke-width="0.5"/>
+  <rect x="5" y="5" width="6" height="6" fill="none" stroke="currentColor" stroke-width="0.8" stroke-dasharray="1.5"/>
+</svg>

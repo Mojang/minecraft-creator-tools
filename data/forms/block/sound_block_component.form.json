@@ -1,0 +1,15 @@
+{
+  "id": "Sound Block Component",
+  "fields": [
+    {
+      "id": "sound",
+      "title": "Sound",
+      "dataType": "string",
+      "defaultValue": "",
+      "maxLength": 256
+    }
+  ],
+  "description": "Defines a sound type for the block.",
+  "title": "Block Sound Block Component",
+  "dataVersion": "1.26.20"
+}

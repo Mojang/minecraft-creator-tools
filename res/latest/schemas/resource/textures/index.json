@@ -1,0 +1,11 @@
+{
+  "files": [
+    "flipbook_textures.json",
+    "item_texture.json",
+    "terrain_texture.json",
+    "texture_set.json",
+    "textures_list.json",
+    "ui_texture_definition.json"
+  ],
+  "folders": []
+}

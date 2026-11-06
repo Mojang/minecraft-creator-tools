@@ -1,0 +1,51 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can climb ladders"
+          }
+        ]
+      }
+    ]
+  },
+  "title": "Can climb",
+  "description": "Allows an entity to climb ladders.",
+  "fields": [],
+  "samples": {
+    "/vanilla/behavior_pack/entities/blaze.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:can_climb/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/bogged.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:can_climb/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/breeze.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:can_climb/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/cave_spider.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:can_climb/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/chicken.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:can_climb/",
+        "content": {}
+      }
+    ]
+  },
+  "id": "minecraft:can_climb"
+}

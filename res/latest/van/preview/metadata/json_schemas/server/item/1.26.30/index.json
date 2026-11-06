@@ -1,0 +1,31 @@
+{
+  "files": [
+    "Item Components.json",
+    "ItemDocument.json",
+    "StartUsing.json",
+    "description.json",
+    "menu_category.json",
+    "minecraft_block_placer.json",
+    "minecraft_bundle_interaction.json",
+    "minecraft_compostable.json",
+    "minecraft_damage.json",
+    "minecraft_damage_absorption.json",
+    "minecraft_durability_sensor durability_threshold.json",
+    "minecraft_durability_sensor.json",
+    "minecraft_dyeable.json",
+    "minecraft_fire_resistant.json",
+    "minecraft_icon v1.21.80.json",
+    "minecraft_kinetic_weapon kinetic_effect_conditions.json",
+    "minecraft_kinetic_weapon.json",
+    "minecraft_piercing_weapon.json",
+    "minecraft_rarity.json",
+    "minecraft_storage_item.json",
+    "minecraft_storage_weight_limit.json",
+    "minecraft_storage_weight_modifier.json",
+    "minecraft_swing_duration.json",
+    "minecraft_swing_sounds.json",
+    "minecraft_use_modifiers.json",
+    "minecraft_wearable.json"
+  ],
+  "folders": []
+}

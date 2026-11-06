@@ -1,0 +1,11 @@
+{
+  "files": [
+    "BiomeConditions.json",
+    "Herd.json",
+    "PermuteType.json",
+    "Placement.json",
+    "Spawn Description.json",
+    "Spawn Rules.json"
+  ],
+  "folders": []
+}

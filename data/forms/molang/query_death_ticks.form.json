@@ -1,0 +1,19 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "returns elapsed ticks since the mob started dying"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "query.death_ticks",
+  "fields": [],
+  "description": "Returns the elapsed ticks since the mob started dying.",
+  "title": "Death Ticks"
+}

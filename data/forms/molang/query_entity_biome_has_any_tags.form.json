@@ -1,0 +1,21 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "returns entity biome has any tags information"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "query.entity_biome_has_any_tags",
+  "versionIntroduced": "1.21.130",
+  "note": "Available without an experimental toggle in 1.21.130. Only supported in resource packs (client-side).",
+  "fields": [],
+  "description": "Compares the biome the entity is standing in with one or more tag names, and returns either 0 or 1 based on if any of the tag names match. Only supported in resource packs (client-side).",
+  "title": "Entity Biome Has Any Tags"
+}

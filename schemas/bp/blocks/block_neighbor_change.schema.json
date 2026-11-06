@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Block Neighbor Change",
+  "description": "Configures which neighboring block changes can trigger a block custom component event.",
+  "properties": {
+    "neighbor_directions": {
+      "title": "Neighbor Directions",
+      "description": "The directions to observe: all, up, down, north, south, west, or east. The all value must be used alone.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "all",
+          "down",
+          "east",
+          "north",
+          "south",
+          "up",
+          "west"
+        ]
+      },
+      "minLength": 1,
+      "maxLength": 6
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines bounds configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Bounds",
+  "fields": [
+    {
+      "id": "max",
+      "title": "Max",
+      "dataType": "int",
+      "validity": [
+        {
+          "comparison": ">=",
+          "value": -512
+        },
+        {
+          "comparison": "<=",
+          "value": 512
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "min",
+      "title": "Min",
+      "dataType": "int",
+      "validity": [
+        {
+          "comparison": ">=",
+          "value": -512
+        },
+        {
+          "comparison": "<=",
+          "value": 512
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "description": "Defines bounds configuration.",
+  "title": "Bounds Misc"
+}

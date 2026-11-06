@@ -1,0 +1,102 @@
+{
+  "items": [
+    {
+      "definition": {
+        "type": "action_group",
+        "tooltip": "A group of actions",
+        "message0": "%1 %2",
+        "args0": [
+          {
+            "type": "input_value",
+            "name": "filters",
+            "align": "CENTRE",
+            "check": "Boolean"
+          },
+          {
+            "type": "input_statement",
+            "name": "actions"
+          }
+        ],
+        "previousStatement": null,
+        "nextStatement": null,
+        "style": "logic_style"
+      },
+      "targetType": 1
+    },
+    {
+      "definition": {
+        "type": "action_group_nonrecursive",
+        "tooltip": "A group of actions",
+        "message0": "%1 %2",
+        "args0": [
+          {
+            "type": "input_value",
+            "name": "filters",
+            "align": "CENTRE",
+            "check": "Boolean"
+          },
+          {
+            "type": "input_statement",
+            "name": "actions"
+          }
+        ],
+        "style": "logic_style"
+      },
+      "targetType": 4
+    },
+    {
+      "definition": {
+        "type": "randomize",
+        "tooltip": "A group of actions; one of which is randomly selected to execute.",
+        "message0": "Randomize  Weight %1 %2 %3",
+        "args0": [
+          {
+            "type": "field_number",
+            "name": "weight",
+            "value": 1,
+            "min": 0
+          },
+          {
+            "type": "input_value",
+            "name": "filters",
+            "align": "CENTRE",
+            "check": "Boolean"
+          },
+          {
+            "type": "input_statement",
+            "name": "actions"
+          }
+        ],
+        "style": "logic_style"
+      },
+      "targetType": 4
+    },
+    {
+      "definition": {
+        "type": "sequence",
+        "tooltip": "A group of actions that are sequentially executed.",
+        "message0": "Sequence  Weight %1 %2 %3",
+        "args0": [
+          {
+            "type": "field_number",
+            "name": "weight",
+            "value": 1,
+            "min": 0
+          },
+          {
+            "type": "input_value",
+            "name": "filters",
+            "align": "CENTRE",
+            "check": "Boolean"
+          },
+          {
+            "type": "input_statement",
+            "name": "actions"
+          }
+        ],
+        "style": "logic_style"
+      },
+      "targetType": 4
+    }
+  ]
+}

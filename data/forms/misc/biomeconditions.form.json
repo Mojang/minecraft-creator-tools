@@ -1,0 +1,96 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines biomeconditions configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "BiomeConditions",
+  "fields": [
+    {
+      "id": "biome_filter",
+      "title": "Biome Filter",
+      "description": "Filter to limit spawns to specific biomes.",
+      "dataType": "object",
+      "subForm": {
+        "id": "biome_filter",
+        "title": "Biome Filter",
+        "fields": [
+          {
+            "id": "domain",
+            "title": "Domain",
+            "description": "The domain the test should be performed in.",
+            "dataType": "object"
+          },
+          {
+            "id": "operator",
+            "title": "Operator",
+            "description": "The comparison to apply with 'value'.",
+            "dataType": "object"
+          },
+          {
+            "id": "subject",
+            "title": "Subject",
+            "description": "The subject of this filter test.",
+            "dataType": "object"
+          },
+          {
+            "id": "test",
+            "title": "Test",
+            "description": "The name of the test to apply.",
+            "dataType": "string",
+            "isRequired": true
+          },
+          {
+            "id": "value",
+            "title": "Value",
+            "description": "The value being compared with the test.",
+            "dataType": "object"
+          }
+        ]
+      },
+      "alternates": [
+        {
+          "id": "biome_filter",
+          "dataType": "object"
+        }
+      ]
+    },
+    {
+      "id": "herds",
+      "title": "Herds",
+      "description": "Configurations for size and events when spawning groups of entities",
+      "dataType": "object",
+      "subFormId": "misc/herd"
+    },
+    {
+      "id": "mob_event_filter",
+      "title": "Mob Event Filter",
+      "description": "Filter to exclude entities if the event is disabled.",
+      "dataType": "string"
+    },
+    {
+      "id": "permute_types",
+      "title": "Permute Types",
+      "description": "List of randomly choosable permutations of the entity",
+      "dataType": "object",
+      "subFormId": "misc/permutetype"
+    },
+    {
+      "id": "weight",
+      "title": "Weight",
+      "description": "The weight used when comparing other entities that can  spawn within a biome",
+      "dataType": "int",
+      "isRequired": true
+    }
+  ],
+  "description": "Biome specific rules for spawning",
+  "title": "BiomeConditions Misc"
+}

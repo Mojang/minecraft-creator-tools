@@ -1,0 +1,483 @@
+{
+  "tiers": [
+    {
+      "total_exp_required": 0,
+      "groups": [
+        {
+          "num_to_select": 1,
+          "trades": [
+            {
+              "wants": [
+                {
+                  "choice": [
+                    {
+                      "item": "minecraft:white_wool",
+                      "quantity": 18,
+                      "price_multiplier": 0.05
+                    },
+                    {
+                      "item": "minecraft:gray_wool",
+                      "quantity": 18,
+                      "price_multiplier": 0.05
+                    },
+                    {
+                      "item": "minecraft:brown_wool",
+                      "quantity": 18,
+                      "price_multiplier": 0.05
+                    },
+                    {
+                      "item": "minecraft:black_wool",
+                      "quantity": 18,
+                      "price_multiplier": 0.05
+                    }
+                  ]
+                }
+              ],
+              "gives": [
+                {
+                  "item": "minecraft:emerald",
+                  "quantity": 1
+                }
+              ],
+              "trader_exp": 2,
+              "max_uses": 16,
+              "reward_exp": true
+            }
+          ]
+        },
+        {
+          "num_to_select": 1,
+          "trades": [
+            {
+              "wants": [
+                {
+                  "item": "minecraft:emerald",
+                  "quantity": 2,
+                  "price_multiplier": 0.05
+                }
+              ],
+              "gives": [
+                {
+                  "item": "minecraft:shears",
+                  "quantity": 1
+                }
+              ],
+              "trader_exp": 1,
+              "max_uses": 12,
+              "reward_exp": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "total_exp_required": 10,
+      "groups": [
+        {
+          "num_to_select": 1,
+          "trades": [
+            {
+              "wants": [
+                {
+                  "choice": [
+                    {
+                      "item": "minecraft:black_dye",
+                      "quantity": 12,
+                      "price_multiplier": 0.05
+                    },
+                    {
+                      "item": "minecraft:gray_dye",
+                      "quantity": 12,
+                      "price_multiplier": 0.05
+                    },
+                    {
+                      "item": "minecraft:lime_dye",
+                      "quantity": 12,
+                      "price_multiplier": 0.05
+                    },
+                    {
+                      "item": "minecraft:light_blue_dye",
+                      "quantity": 12,
+                      "price_multiplier": 0.05
+                    },
+                    {
+                      "item": "minecraft:white_dye",
+                      "quantity": 12,
+                      "price_multiplier": 0.05
+                    }
+                  ]
+                }
+              ],
+              "gives": [
+                {
+                  "item": "minecraft:emerald",
+                  "quantity": 1
+                }
+              ],
+              "trader_exp": 10,
+              "max_uses": 16,
+              "reward_exp": true
+            }
+          ]
+        },
+        {
+          "num_to_select": 1,
+          "trades": [
+            {
+              "wants": [
+                {
+                  "item": "minecraft:emerald",
+                  "quantity": 1,
+                  "price_multiplier": 0.05
+                }
+              ],
+              "gives": [
+                {
+                  "choice": [
+                    {
+                      "item": "minecraft:white_wool"
+                    },
+                    {
+                      "item": "minecraft:orange_wool"
+                    },
+                    {
+                      "item": "minecraft:magenta_wool"
+                    },
+                    {
+                      "item": "minecraft:light_blue_wool"
+                    },
+                    {
+                      "item": "minecraft:yellow_wool"
+                    },
+                    {
+                      "item": "minecraft:lime_wool"
+                    },
+                    {
+                      "item": "minecraft:pink_wool"
+                    },
+                    {
+                      "item": "minecraft:gray_wool"
+                    },
+                    {
+                      "item": "minecraft:light_gray_wool"
+                    },
+                    {
+                      "item": "minecraft:cyan_wool"
+                    },
+                    {
+                      "item": "minecraft:purple_wool"
+                    },
+                    {
+                      "item": "minecraft:blue_wool"
+                    },
+                    {
+                      "item": "minecraft:brown_wool"
+                    },
+                    {
+                      "item": "minecraft:green_wool"
+                    },
+                    {
+                      "item": "minecraft:red_wool"
+                    },
+                    {
+                      "item": "minecraft:black_wool"
+                    }
+                  ]
+                }
+              ],
+              "trader_exp": 5,
+              "max_uses": 16,
+              "reward_exp": true
+            },
+            {
+              "wants": [
+                {
+                  "item": "minecraft:emerald",
+                  "quantity": 1,
+                  "price_multiplier": 0.05
+                }
+              ],
+              "gives": [
+                {
+                  "choice": [
+                    {
+                      "item": "minecraft:white_carpet",
+                      "quantity": 4
+                    },
+                    {
+                      "item": "minecraft:orange_carpet",
+                      "quantity": 4
+                    },
+                    {
+                      "item": "minecraft:magenta_carpet",
+                      "quantity": 4
+                    },
+                    {
+                      "item": "minecraft:light_blue_carpet",
+                      "quantity": 4
+                    },
+                    {
+                      "item": "minecraft:yellow_carpet",
+                      "quantity": 4
+                    },
+                    {
+                      "item": "minecraft:lime_carpet",
+                      "quantity": 4
+                    },
+                    {
+                      "item": "minecraft:pink_carpet",
+                      "quantity": 4
+                    },
+                    {
+                      "item": "minecraft:gray_carpet",
+                      "quantity": 4
+                    },
+                    {
+                      "item": "minecraft:light_gray_carpet",
+                      "quantity": 4
+                    },
+                    {
+                      "item": "minecraft:cyan_carpet",
+                      "quantity": 4
+                    },
+                    {
+                      "item": "minecraft:purple_carpet",
+                      "quantity": 4
+                    },
+                    {
+                      "item": "minecraft:blue_carpet",
+                      "quantity": 4
+                    },
+                    {
+                      "item": "minecraft:brown_carpet",
+                      "quantity": 4
+                    },
+                    {
+                      "item": "minecraft:green_carpet",
+                      "quantity": 4
+                    },
+                    {
+                      "item": "minecraft:red_carpet",
+                      "quantity": 4
+                    },
+                    {
+                      "item": "minecraft:black_carpet",
+                      "quantity": 4
+                    }
+                  ]
+                }
+              ],
+              "trader_exp": 5,
+              "max_uses": 16,
+              "reward_exp": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "total_exp_required": 70,
+      "groups": [
+        {
+          "num_to_select": 1,
+          "trades": [
+            {
+              "wants": [
+                {
+                  "choice": [
+                    {
+                      "item": "minecraft:red_dye",
+                      "quantity": 12,
+                      "price_multiplier": 0.05
+                    },
+                    {
+                      "item": "minecraft:light_gray_dye",
+                      "quantity": 12,
+                      "price_multiplier": 0.05
+                    },
+                    {
+                      "item": "minecraft:pink_dye",
+                      "quantity": 12,
+                      "price_multiplier": 0.05
+                    },
+                    {
+                      "item": "minecraft:yellow_dye",
+                      "quantity": 12,
+                      "price_multiplier": 0.05
+                    },
+                    {
+                      "item": "minecraft:orange_dye",
+                      "quantity": 12,
+                      "price_multiplier": 0.05
+                    }
+                  ]
+                }
+              ],
+              "gives": [
+                {
+                  "item": "minecraft:emerald",
+                  "quantity": 1
+                }
+              ],
+              "trader_exp": 20,
+              "max_uses": 16,
+              "reward_exp": true
+            }
+          ]
+        },
+        {
+          "num_to_select": 1,
+          "trades": [
+            {
+              "wants": [
+                {
+                  "item": "minecraft:emerald",
+                  "quantity": 3,
+                  "price_multiplier": 0.05
+                }
+              ],
+              "gives": [
+                {
+                  "choice": [
+                    {
+                      "item": "minecraft:bed",
+                      "functions": [
+                        {
+                          "function": "random_aux_value",
+                          "values": {
+                            "min": 0,
+                            "max": 15
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "trader_exp": 10,
+              "max_uses": 12,
+              "reward_exp": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "total_exp_required": 150,
+      "groups": [
+        {
+          "num_to_select": 1,
+          "trades": [
+            {
+              "wants": [
+                {
+                  "choice": [
+                    {
+                      "item": "minecraft:green_dye",
+                      "quantity": 12,
+                      "price_multiplier": 0.05
+                    },
+                    {
+                      "item": "minecraft:brown_dye",
+                      "quantity": 12,
+                      "price_multiplier": 0.05
+                    },
+                    {
+                      "item": "minecraft:blue_dye",
+                      "quantity": 12,
+                      "price_multiplier": 0.05
+                    },
+                    {
+                      "item": "minecraft:purple_dye",
+                      "quantity": 12,
+                      "price_multiplier": 0.05
+                    },
+                    {
+                      "item": "minecraft:cyan_dye",
+                      "quantity": 12,
+                      "price_multiplier": 0.05
+                    },
+                    {
+                      "item": "minecraft:magenta_dye",
+                      "quantity": 12,
+                      "price_multiplier": 0.05
+                    }
+                  ]
+                }
+              ],
+              "gives": [
+                {
+                  "item": "minecraft:emerald",
+                  "quantity": 1
+                }
+              ],
+              "trader_exp": 30,
+              "max_uses": 16,
+              "reward_exp": true
+            }
+          ]
+        },
+        {
+          "num_to_select": 1,
+          "trades": [
+            {
+              "wants": [
+                {
+                  "item": "minecraft:emerald",
+                  "quantity": 3,
+                  "price_multiplier": 0.05
+                }
+              ],
+              "gives": [
+                {
+                  "item": "minecraft:banner",
+                  "quantity": 1,
+                  "functions": [
+                    {
+                      "function": "random_aux_value",
+                      "values": {
+                        "min": 0,
+                        "max": 15
+                      }
+                    }
+                  ]
+                }
+              ],
+              "trader_exp": 15,
+              "max_uses": 12,
+              "reward_exp": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "total_exp_required": 250,
+      "groups": [
+        {
+          "num_to_select": 1,
+          "trades": [
+            {
+              "wants": [
+                {
+                  "item": "minecraft:emerald",
+                  "quantity": 2,
+                  "price_multiplier": 0.05
+                }
+              ],
+              "gives": [
+                {
+                  "item": "minecraft:painting",
+                  "quantity": 3
+                }
+              ],
+              "trader_exp": 30,
+              "max_uses": 12,
+              "reward_exp": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

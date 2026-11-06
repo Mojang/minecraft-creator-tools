@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Entity Type Resource: Mob head with paint brush -->
+  <path d="M4 2H12V9H11V11H10V12H6V11H5V9H4V2Z" fill-opacity="0.15"/>
+  <rect x="5" y="4" width="2" height="2"/>
+  <rect x="9" y="4" width="2" height="2"/>
+  <rect x="6" y="7" width="4" height="1"/>
+  <path d="M12 10L14 8L15 9L13 11L12 14L11 13L12 10Z" fill-opacity="0.8"/>
+</svg>

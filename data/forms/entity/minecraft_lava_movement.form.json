@@ -1,0 +1,54 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "value",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has lava movement speed of "
+          },
+          {
+            "type": "value",
+            "field": "value"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "minecraft:lava_movement",
+  "title": "Lava Movement",
+  "description": "Allows a custom movement speed across lava blocks.",
+  "fields": [
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "The speed the mob moves over a lava block.",
+      "dataType": "float",
+      "samples": {
+        "/vanilla/behavior_pack/entities/strider.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:lava_movement/",
+            "content": 0.32
+          }
+        ]
+      }
+    }
+  ],
+  "samples": {
+    "/vanilla/behavior_pack/entities/strider.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:lava_movement/",
+        "content": {
+          "value": 0.32
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines protected block configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Protected Block",
+  "fields": [
+    {
+      "id": "processor_type",
+      "title": "Jigsaw Processor Type",
+      "dataType": "string",
+      "isRequired": true
+    },
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "Block tag for the blocks that will be protected",
+      "dataType": "string",
+      "isRequired": true
+    }
+  ],
+  "description": "Protect blocks from this structure's placement in the world. Ensuring that it does not replace matching blocks in the world",
+  "title": "Protected Block Misc"
+}

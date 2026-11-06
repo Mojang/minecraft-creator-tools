@@ -1,0 +1,32 @@
+{
+  "files": [
+    "ActorDocument.json",
+    "DragonBaseGoalDefinition.json",
+    "Entity component definitions.json",
+    "LookAtActorBaseGoalDefinition.json",
+    "TargetGoalDefinition.json",
+    "TimerActorFlagBaseGoalDefinition.json",
+    "minecraft_behavior.aquatic_charge_attack.json",
+    "minecraft_behavior.defend_village_target.json",
+    "minecraft_behavior.delayed_attack.json",
+    "minecraft_behavior.dragonchargeplayer.json",
+    "minecraft_behavior.dragonstrafeplayer.json",
+    "minecraft_behavior.guardian_attack.json",
+    "minecraft_behavior.look_at_entity.json",
+    "minecraft_behavior.look_at_player.json",
+    "minecraft_behavior.look_at_target.json",
+    "minecraft_behavior.look_at_trading_player.json",
+    "minecraft_behavior.melee_attack.json",
+    "minecraft_behavior.melee_box_attack.json",
+    "minecraft_behavior.move_towards_dwelling_restriction.json",
+    "minecraft_behavior.move_towards_home_restriction.json",
+    "minecraft_behavior.move_towards_restriction.json",
+    "minecraft_behavior.nearest_attackable_target.json",
+    "minecraft_behavior.stomp_attack.json",
+    "minecraft_behavior.timer_flag_1.json",
+    "minecraft_behavior.timer_flag_2.json",
+    "minecraft_behavior.timer_flag_3.json",
+    "minecraft_experience_reward.json"
+  ],
+  "folders": []
+}

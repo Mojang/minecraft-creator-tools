@@ -1,0 +1,109 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "minecraft:rect_layout",
+  "isInternal": true,
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "arranges features in a rectangular grid pattern"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "feature_areas",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines "
+          },
+          {
+            "type": "value",
+            "field": "feature_areas.length"
+          },
+          {
+            "type": "literal",
+            "text": " feature areas in the layout"
+          }
+        ]
+      },
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "useful for repeating patterns like orchards or fields"
+          }
+        ],
+        "priority": 3
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "format_version",
+      "title": "Format Version",
+      "dataType": "string"
+    },
+    {
+      "dataType": "object",
+      "id": "description",
+      "title": "Description",
+      "isRequired": true,
+      "subForm": {
+        "fields": [
+          {
+            "dataType": "string",
+            "id": "identifier",
+            "title": "Identifier",
+            "description": "The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
+            "isRequired": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "feature_areas",
+      "dataType": "objectArray",
+      "subForm": {
+        "fields": [
+          {
+            "dataType": "stringArray",
+            "id": "area_dimensions",
+            "title": "Area Dimensions",
+            "description": "Dimensions (size) of the associated Feature.",
+            "isRequired": true
+          },
+          {
+            "dataType": "int",
+            "id": "[0..0]",
+            "title": "",
+            "isRequired": true
+          },
+          {
+            "dataType": "int",
+            "id": "[1..1]",
+            "title": "",
+            "isRequired": true
+          }
+        ]
+      },
+      "alternates": [
+        {
+          "dataType": "stringArray",
+          "id": "feature_areas",
+          "title": "Feature Areas",
+          "isRequired": true
+        }
+      ]
+    }
+  ],
+  "description": "Arranges features in a rectangular grid pattern during world generation. Configure the grid dimensions, spacing, and which features to place at each position. Useful for orderly structures like crop fields, orchard trees, gravestones, or any repeating pattern that should fill a defined area.",
+  "title": "Rect Layout"
+}

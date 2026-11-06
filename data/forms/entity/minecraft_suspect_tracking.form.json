@@ -1,0 +1,27 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can remember suspicious locations"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [],
+  "description": "Allows this entity to remember suspicious locations.",
+  "title": "Suspect Tracking",
+  "samples": {
+    "/vanilla/behavior_pack/entities/warden.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:suspect_tracking/",
+        "content": {}
+      }
+    ]
+  },
+  "id": "minecraft:suspect_tracking"
+}

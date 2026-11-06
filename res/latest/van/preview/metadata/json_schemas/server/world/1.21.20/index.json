@@ -1,0 +1,13 @@
+{
+  "files": [
+    "ElementType.json",
+    "EmptyPoolElement.json",
+    "FeaturePoolElement.json",
+    "Jigsaw Template Pool Description.json",
+    "Projection.json",
+    "SinglePoolElement.json",
+    "Template Pool.json",
+    "TemplatePoolElement.json"
+  ],
+  "folders": []
+}

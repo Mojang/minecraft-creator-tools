@@ -1,0 +1,28 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:flower_pot"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "pattern": [
+      "# #",
+      " # "
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:brick"
+      }
+    },
+	"unlock": [
+      {
+        "item": "minecraft:brick"
+      }
+    ],
+    "result": {
+      "item": "minecraft:flower_pot"
+    }
+  }
+}

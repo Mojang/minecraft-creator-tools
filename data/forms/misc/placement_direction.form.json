@@ -1,0 +1,31 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines placement direction configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Placement Direction",
+  "fields": [
+    {
+      "id": "enabled_states",
+      "title": "Enabled States",
+      "dataType": "stringArray",
+      "isRequired": true
+    },
+    {
+      "id": "y_rotation_offset",
+      "title": "y Rotation Offset",
+      "dataType": "float"
+    }
+  ],
+  "description": "Defines placement direction configuration.",
+  "title": "Placement Direction Misc"
+}

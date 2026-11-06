@@ -1,0 +1,65 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Multipart Block Column Feature",
+  "description": "\n\nProperties:\n• description ({ identifier })\n• weighted_heights (string[])\n• direction (string)\n• may_place_on (string[])\n• may_replace (string[])",
+  "type": "object",
+  "properties": {
+    "description": {
+      "title": "Description",
+      "description": "\n\nProperties:\n• identifier (string)",
+      "type": "object",
+      "properties": {
+        "identifier": {
+          "title": "Identifier",
+          "description": "The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
+          "type": "string"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Description",
+          "description": "Create a Description",
+          "body": {
+            "identifier": ""
+          }
+        }
+      ]
+    },
+    "weighted_heights": {
+      "title": "Weighted Heights",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "direction": {
+      "title": "Direction",
+      "description": "The direction of the column. If omitted then it will default to 'UP'",
+      "type": "string"
+    },
+    "may_place_on": {
+      "title": "May Place On",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "may_replace": {
+      "title": "May Replace",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "Multipart Block Column Feature",
+      "description": "Create a Multipart Block Column Feature",
+      "body": {
+        "description": "",
+        "direction": ""
+      }
+    }
+  ]
+}

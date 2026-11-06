@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Block Permutation",
+  "description": "Defines conditional component overrides based on block state values using Molang conditions. When the condition evaluates true, the permutation's components replace or merge with base components. Enables blocks that change appearance or behavior based on direction, power state, age, or custom properties.",
+  "properties": {
+    "components": {
+      "title": "Components",
+      "description": "\n\nProperties:\n• minecraft:light_dampening (int)\n• minecraft:light_emission (int)\n• minecraft:map_color (string)\n• minecraft:block_entity (object)\n• minecraft:breathability (object)\n• minecraft:chest_obstruction (object)\n• minecraft:collision_box (boolean)\n• minecraft:connection_rule (object)\n• ... and 45 more properties",
+      "$ref": "./block_components.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Block Components",
+          "description": "Container for all components that define custom block behavior and properties. Components control collision, selection boxes, destruction time, light emission, flammability, placement rules, crafting table functionality, and more. Combine components to create unique blocks with specific gameplay characteristics.",
+          "body": {
+            "minecraft:light_dampening": 0,
+            "minecraft:light_emission": 0,
+            "minecraft:map_color": "",
+            "minecraft:collision_box": true,
+            "minecraft:destructible_by_explosion": true,
+            "minecraft:destructible_by_mining": true,
+            "minecraft:display_name": "",
+            "minecraft:enchantment_power_transmitter": true,
+            "minecraft:flammable": true,
+            "minecraft:friction": 0,
+            "minecraft:geometry": "",
+            "minecraft:selection_box": true
+          }
+        }
+      ],
+      "x-runtime-constraint-description": "The \"random_offset\" must not push the \"collision_box\" outside the unit block limit. Block with \"geometry\" set at \"minecraft:geometry.full_block\" cannot have a \"random_offset\". Blocks with precipitation interactions \"snowlogging\" must have collision box disabled."
+    },
+    "condition": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        {
+          "type": "string"
+        },
+        {
+          "description": "\n\nProperties:\n• expression (string)\n• version (int)",
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "../../common/expression.schema.json"
+          }
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "title": "Condition"
+    }
+  },
+  "required": [
+    "components",
+    "condition"
+  ]
+}

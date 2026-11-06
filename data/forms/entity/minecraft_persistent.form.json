@@ -1,0 +1,51 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "persists when far from players"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [],
+  "description": "Defines whether an entity should be persistent in the game world.",
+  "title": "Persistent",
+  "samples": {
+    "/vanilla/behavior_pack/entities/armor_stand.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:persistent/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/breeze.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:persistent/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/ender_dragon.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:persistent/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/iron_golem.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:persistent/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/npc.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:persistent/",
+        "content": {}
+      }
+    ]
+  },
+  "id": "minecraft:persistent"
+}

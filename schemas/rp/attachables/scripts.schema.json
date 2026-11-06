@@ -1,0 +1,91 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Scripts",
+  "description": "Script definitions for the attachable, including initialization and animation triggers.",
+  "type": "object",
+  "properties": {
+    "parent_setup": {
+      "title": "Parent Setup",
+      "description": "Molang script executed when the attachable is set up on the parent entity. Used to set variables like 'variable.chest_layer_visible = 0.0;'.",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        }
+      ]
+    },
+    "pre_animation": {
+      "title": "Pre-Animation",
+      "description": "Molang script executed before animations are processed.",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        }
+      ]
+    },
+    "scale": {
+      "title": "Scale",
+      "description": "Molang expression for the scale of the attachable.",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        }
+      ]
+    },
+    "animate": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "animation_name": {
+                "title": "Animation Name",
+                "description": "Short name of an animation defined in the animations section.",
+                "type": "string"
+              }
+            }
+          }
+        },
+        {
+          "title": "Animate (Array)",
+          "description": "Array of animation names to play.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ],
+      "title": "Animate",
+      "description": "List of animations to play. Can be animation short names or objects with conditional playback."
+    },
+    "should_update_bones_and_effects_offscreen": {
+      "title": "Should Update Bones And Effects Offscreen",
+      "description": "Whether bones and effects should be updated when the entity is offscreen.",
+      "type": "boolean"
+    },
+    "should_update_effects_offscreen": {
+      "title": "Should Update Effects Offscreen",
+      "description": "Whether effects should be updated when the entity is offscreen.",
+      "type": "boolean"
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "Scripts",
+      "description": "Script definitions for the attachable, including initialization and animation triggers.",
+      "body": {
+        "should_update_bones_and_effects_offscreen": true,
+        "should_update_effects_offscreen": true
+      }
+    }
+  ]
+}

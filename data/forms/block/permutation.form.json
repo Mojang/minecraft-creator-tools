@@ -1,0 +1,46 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has conditional component permutation"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Permutation",
+  "fields": [
+    {
+      "id": "components",
+      "title": "Components",
+      "dataType": "object",
+      "technicalDescription": "The \"random_offset\" must not push the \"collision_box\" outside the unit block limit. Block with \"geometry\" set at \"minecraft:geometry.full_block\" cannot have a \"random_offset\". Blocks with precipitation interactions \"snowlogging\" must have collision box disabled.",
+      "subFormId": "block/components",
+      "isRequired": true
+    },
+    {
+      "id": "condition",
+      "title": "Condition",
+      "dataType": "keyedStringCollection",
+      "alternates": [
+        {
+          "id": "condition",
+          "dataType": "keyedObjectCollection",
+          "subFormId": "legacy/molang_expression"
+        },
+        {
+          "id": "condition",
+          "dataType": "float"
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "description": "Defines conditional component overrides based on block state values using Molang conditions. When the condition evaluates true, the permutation's components replace or merge with base components. Enables blocks that change appearance or behavior based on direction, power state, age, or custom properties.",
+  "title": "Block Permutation",
+  "dataVersion": "1.26.60"
+}

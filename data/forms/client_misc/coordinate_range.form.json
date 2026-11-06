@@ -1,0 +1,48 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines scatter distribution over a coordinate axis"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "distribution",
+      "title": "Random Distribution Type",
+      "description": "Type of distribution. Supported distributions are defined by \"Random Distribution Type\".",
+      "dataType": "string"
+    },
+    {
+      "id": "extent",
+      "title": "extent",
+      "description": "Lower and upper bound (inclusive) of the scatter range, as an offset from the input point to scatter around.",
+      "dataType": "objectArray",
+      "subForm": {
+        "title": "Extent",
+        "description": "Extent",
+        "fields": []
+      }
+    },
+    {
+      "id": "grid_offset",
+      "title": "grid_offset",
+      "description": "When the distribution type is grid, defines the offset along this axis.",
+      "dataType": "int"
+    },
+    {
+      "id": "step_size",
+      "title": "step_size",
+      "description": "When the distribution type is grid, defines the distance between steps along this axis.",
+      "dataType": "int"
+    }
+  ],
+  "description": "Represents the scatter distrubution over a coordinate (x/y/z), can also be built by an expression.",
+  "title": "Coordinate Range"
+}

@@ -1,0 +1,44 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines structure configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Structure",
+  "fields": [
+    {
+      "id": "structure",
+      "title": "Structure",
+      "description": "Identifier of the Jigsaw Structure.",
+      "dataType": "object",
+      "isRequired": true
+    },
+    {
+      "id": "weight",
+      "title": "Weight",
+      "description": "Weight of the Jigsaw Structure in the set. Higher weights are more likely to be selected.",
+      "dataType": "int",
+      "validity": [
+        {
+          "comparison": ">=",
+          "value": 1
+        },
+        {
+          "comparison": "<=",
+          "value": 200
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "description": "Defines structure configuration.",
+  "title": "Structure Misc"
+}

@@ -1,0 +1,36 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "fields": [
+    {
+      "id": "component_groups",
+      "description": "List of component groups to remove from the entity.",
+      "dataType": "string"
+    }
+  ],
+  "tags": [
+    "entityevent"
+  ],
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "removes component groups from the entity"
+          }
+        ]
+      }
+    ]
+  },
+  "samples": {
+    "samples": [
+      {
+        "path": "Example:",
+        "content": "\t\t\"sequence\": [\n\t\t\t{\n\t\t\t\t\"remove\": { \"component_groups\": [ \"one\" ] }\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"remove\": { \"component_groups\": [ \"two\", \"five\", \"etc..\" ] }\n\t\t\t}\n\t\t]\n\t"
+      }
+    ]
+  },
+  "id": "remove_component_group",
+  "description": "Removes component groups from the current entity. This can be any group you have defined in the 'component_groups' section of the file.",
+  "title": "Remove Component Group"
+}

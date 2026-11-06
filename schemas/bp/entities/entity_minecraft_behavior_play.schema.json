@@ -1,0 +1,299 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Play Behavior",
+  "description": "Allows the mob to offer a flower to another mob with the minecraft:take_flower behavior.",
+  "properties": {
+    "chance_to_start": {
+      "title": "Chance To Start",
+      "description": "Percent chance that the mob will start this goal, from 0 to 1.",
+      "type": "number",
+      "maximum": 1,
+      "default": 0.0024999999441206455
+    },
+    "control_flags": {
+      "title": "Control Flags",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "jump",
+          "look",
+          "move"
+        ]
+      }
+    },
+    "follow_distance": {
+      "title": "Follow Distance",
+      "description": "The distance (in blocks) that the mob tries to be in range of the friend it's following.",
+      "type": "integer",
+      "default": 2
+    },
+    "friend_search_area": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        {
+          "description": "\n\nProperties:\n• x (float) = 0\n• y (float) = 0\n• z (float) = 0",
+          "type": "object",
+          "properties": {
+            "x": {
+              "title": "X",
+              "type": "number",
+              "default": 0
+            },
+            "y": {
+              "title": "Y",
+              "type": "number",
+              "default": 0
+            },
+            "z": {
+              "title": "Z",
+              "type": "number",
+              "default": 0
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Friend Search Area (object)",
+              "description": "Use Friend Search Area as an object",
+              "body": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              }
+            }
+          ]
+        }
+      ],
+      "title": "Friend Search Area",
+      "description": "The dimensions of the AABB used to search for a potential friend to play with.",
+      "defaultSnippets": [
+        {
+          "label": "Friend Search Area (object)",
+          "description": "Use Friend Search Area as an object",
+          "body": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    },
+    "friend_types": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        {
+          "description": "\n\nProperties:\n• check_if_outnumbered (boolean) = false\n• cooldown (int) = 0\n• filters ({ domain, operator, subject, ... }) = {\"AND\":null,\"NOT\":nu\n• max_dist (float) = 16\n• max_flee (float) = 10\n• max_height (float) = -1\n• must_see (boolean)\n• must_see_forget_duration (int) = 3\n• ... and 4 more properties",
+          "type": "object",
+          "properties": {
+            "check_if_outnumbered": {
+              "title": "Check If Outnumbered",
+              "description": "If true, the mob will check if its outnumbered",
+              "type": "boolean",
+              "default": false
+            },
+            "cooldown": {
+              "title": "Cooldown",
+              "description": "The amount of time in seconds that the mob has to wait before selecting a target of the same type again",
+              "type": "integer",
+              "default": 0
+            },
+            "filters": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "domain": {
+                      "title": "Domain",
+                      "description": "The domain the test should be performed in.",
+                      "type": "object"
+                    },
+                    "operator": {
+                      "title": "Operator",
+                      "description": "The comparison to apply with 'value'.",
+                      "type": "object"
+                    },
+                    "subject": {
+                      "title": "Subject",
+                      "description": "The subject of this filter test.",
+                      "type": "object"
+                    },
+                    "test": {
+                      "title": "Test",
+                      "description": "The name of the test to apply.",
+                      "type": "string"
+                    },
+                    "value": {
+                      "title": "Value",
+                      "description": "The value being compared with the test.",
+                      "type": "object"
+                    }
+                  }
+                },
+                {
+                  "type": "object"
+                }
+              ],
+              "description": "Conditions that make this entry in the list valid"
+            },
+            "max_dist": {
+              "title": "Max Dist",
+              "description": "Maximum distance this mob can be away to be a valid choice",
+              "type": "number",
+              "default": 16
+            },
+            "max_flee": {
+              "title": "Max Flee",
+              "description": "Maximum distance this mob can be from the target to stop fleeing",
+              "type": "number",
+              "default": 10
+            },
+            "max_height": {
+              "title": "Max Height",
+              "description": "Maximum height this mob can be away to be a valid choice",
+              "type": "number",
+              "default": -1
+            },
+            "must_see": {
+              "title": "Must See",
+              "description": "If true, the mob has to be visible to be a valid choice",
+              "type": "boolean"
+            },
+            "must_see_forget_duration": {
+              "title": "Must See Forget Duration",
+              "description": "Determines the amount of time in seconds that this mob will look for a target before forgetting about it and looking for a new one when the target isn't visible any more",
+              "type": "integer",
+              "default": 3
+            },
+            "priority": {
+              "title": "Priority",
+              "description": "Priority for this mob type",
+              "type": "integer",
+              "default": 0
+            },
+            "reevaluate_description": {
+              "title": "Reevaluate Description",
+              "description": "If true, the mob will stop being targeted if it stops meeting any conditions.",
+              "type": "boolean",
+              "default": false
+            },
+            "sprint_speed_multiplier": {
+              "title": "Sprint Speed Multiplier",
+              "description": "Multiplier for the sprinting speed. A value of 1.0 means the speed is unchanged",
+              "type": "number",
+              "default": 1
+            },
+            "walk_speed_multiplier": {
+              "title": "Walk Speed Multiplier",
+              "description": "Multiplier for the walking speed. A value of 1.0 means the speed is unchanged",
+              "type": "number",
+              "default": 1
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Friend Types (object)",
+              "description": "Use Friend Types as an object",
+              "body": {
+                "check_if_outnumbered": false,
+                "cooldown": 0,
+                "filters": {
+                  "AND": null,
+                  "NOT": null,
+                  "OR": null,
+                  "all": null,
+                  "all_of": null,
+                  "any": null,
+                  "any_of": null,
+                  "none_of": null
+                },
+                "max_dist": 16,
+                "max_flee": 10,
+                "max_height": -1,
+                "must_see": true,
+                "must_see_forget_duration": 3,
+                "priority": 0,
+                "reevaluate_description": false,
+                "sprint_speed_multiplier": 1,
+                "walk_speed_multiplier": 1
+              }
+            }
+          ]
+        }
+      ],
+      "title": "Friend Types",
+      "description": "The entity type(s) to consider when searching for a potential friend to play with.",
+      "defaultSnippets": [
+        {
+          "label": "Friend Types (object)",
+          "description": "Use Friend Types as an object",
+          "body": {
+            "check_if_outnumbered": false,
+            "cooldown": 0,
+            "filters": {
+              "AND": null,
+              "NOT": null,
+              "OR": null,
+              "all": null,
+              "all_of": null,
+              "any": null,
+              "any_of": null,
+              "none_of": null
+            },
+            "max_dist": 16,
+            "max_flee": 10,
+            "max_height": -1,
+            "must_see": true,
+            "must_see_forget_duration": 3,
+            "priority": 0,
+            "reevaluate_description": false,
+            "sprint_speed_multiplier": 1,
+            "walk_speed_multiplier": 1
+          }
+        }
+      ]
+    },
+    "max_play_duration_seconds": {
+      "title": "Max Play Duration Seconds",
+      "description": "The max amount of seconds that the mob will play for before exiting the Goal.",
+      "type": "number",
+      "default": 50
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "type": "integer",
+      "default": 0
+    },
+    "random_pos_search_height": {
+      "title": "Random Pos Search Height",
+      "description": "The height (in blocks) that the mob will search within to find a random position position to move to. Must be at least 1.",
+      "type": "integer",
+      "minimum": 1,
+      "default": 3
+    },
+    "random_pos_search_range": {
+      "title": "Random Pos Search Range",
+      "description": "The distance (in blocks) on ground that the mob will search within to find a random position to move to. Must be at least 1.",
+      "type": "integer",
+      "minimum": 1,
+      "default": 16
+    },
+    "speed_multiplier": {
+      "title": "Speed Multiplier",
+      "description": "Movement speed multiplier of the mob when using this AI Goal.",
+      "type": "number",
+      "default": 1
+    }
+  }
+}

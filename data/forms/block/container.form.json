@@ -1,0 +1,39 @@
+{
+  "id": "container",
+  "fields": [
+    {
+      "id": "show_ui_on_interaction",
+      "title": "Show Ui On Interaction",
+      "description": "Determines whether interacting with this block opens its container UI. Defaults to true. When false, normal block interaction events can run instead.",
+      "dataType": "boolean",
+      "defaultValue": true
+    },
+    {
+      "id": "slot_count",
+      "title": "Slot Count",
+      "description": "Sets the number of slots in the container.",
+      "dataType": "int",
+      "validity": [
+        {
+          "comparison": ">=",
+          "value": 1
+        },
+        {
+          "comparison": "<=",
+          "value": 54
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "title",
+      "title": "Title",
+      "description": "Optional container title, stored as a language file key or raw text. Must be nonempty and at most 256 characters.",
+      "dataType": "string",
+      "minLength": 1,
+      "maxLength": 256
+    }
+  ],
+  "title": "Block Container",
+  "dataVersion": "1.26.20"
+}

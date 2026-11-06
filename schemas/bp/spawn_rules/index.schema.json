@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "spawn/spawn_rules_document",
+  "title": "Spawn Rules Document",
+  "description": "A spawn rules definition document for Minecraft Bedrock Edition. This describes the complete JSON file structure including format_version and the minecraft:spawn_rules wrapper.",
+  "type": "object",
+  "properties": {
+    "format_version": {
+      "title": "Format Version",
+      "description": "The format version of this spawn rules file.",
+      "type": "string"
+    },
+    "minecraft:spawn_rules": {
+      "title": "Spawn Rules Definition",
+      "description": "The spawn rules definition container.",
+      "$ref": "./spawn_spawn_rules.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Spawn Rules",
+          "description": "Defines the complete spawn rules for an entity type, including population control group, spawn conditions (biome, light, difficulty, etc.), and herd configuration. This is the root structure of a spawn_rules JSON file in behavior packs.",
+          "body": {
+            "conditions": [],
+            "description": ""
+          }
+        }
+      ]
+    }
+  },
+  "required": [
+    "format_version",
+    "minecraft:spawn_rules"
+  ]
+}

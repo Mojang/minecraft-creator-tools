@@ -1,0 +1,28 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "moves vertically when the rider uses the jump action"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "minecraft:vertical_movement_action",
+  "fields": [
+    {
+      "id": "vertical_velocity",
+      "title": "Vertical Velocity",
+      "description": "Vertical velocity to apply when jump action is issued.",
+      "defaultValue": 0.5,
+      "dataType": "float"
+    }
+  ],
+  "description": "When configured as a rideable entity, the entity will move upwards or downwards when the player uses the jump action.",
+  "title": "Vertical Movement Action",
+  "samples": {}
+}

@@ -1,0 +1,53 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "UniformHeightProviderType",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "provides a uniform distribution of height anchor points"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "max",
+      "title": "Max",
+      "description": "Max value of the uniform distribution",
+      "dataType": "object",
+      "isRequired": true
+    },
+    {
+      "id": "min",
+      "title": "Min",
+      "description": "Min value of the uniform distribution",
+      "dataType": "object",
+      "isRequired": true
+    },
+    {
+      "id": "type",
+      "title": "Type",
+      "dataType": "stringEnum",
+      "choices": [
+        {
+          "id": "constant",
+          "title": "Constant"
+        },
+        {
+          "id": "uniform",
+          "title": "Uniform"
+        }
+      ],
+      "mustMatchChoices": true,
+      "defaultValue": "uniform",
+      "isRequired": true
+    }
+  ],
+  "description": "Uniform distribution of possible anchor points",
+  "title": "World UniformHeightProviderType",
+  "dataVersion": "1.21.20"
+}

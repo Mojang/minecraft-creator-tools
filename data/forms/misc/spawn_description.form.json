@@ -1,0 +1,31 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines spawn description settings"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Spawn Description",
+  "fields": [
+    {
+      "id": "identifier",
+      "title": "Identifier",
+      "dataType": "string",
+      "isRequired": true
+    },
+    {
+      "id": "population_control",
+      "title": "Population Control",
+      "dataType": "string"
+    }
+  ],
+  "description": "Defines spawn description settings.",
+  "title": "Spawn Description Misc"
+}

@@ -1,0 +1,10 @@
+{
+  "files": [
+    "fishing.json",
+    "jungle_fishing.json"
+  ],
+  "folders": [
+    "entities",
+    "fishing"
+  ]
+}

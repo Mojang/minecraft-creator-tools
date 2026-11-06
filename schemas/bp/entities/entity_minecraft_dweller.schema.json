@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Dweller",
+  "description": "Compels an entity to join and migrate between villages and other dwellings.",
+  "properties": {
+    "dwelling_type": {
+      "title": "Dwelling Type",
+      "description": "The type of dwelling the entity wishes to join. Current Types: village.\n\nSample values:\n• iron_golem: village",
+      "type": "string"
+    },
+    "dwelling_role": {
+      "title": "Dwelling Role",
+      "description": "The role of which the entity plays in the dwelling. Current Roles: inhabitant, defender, hostile, passive.",
+      "type": "string"
+    },
+    "update_interval_base": {
+      "title": "Update Interval Base",
+      "description": "How often the entity checks on their dwelling status in ticks. Positive values only.\n\nSample values:\n• iron_golem: 60",
+      "type": "number"
+    },
+    "update_interval_variant": {
+      "title": "Update Interval Variant",
+      "description": "The variant value in ticks that will be added to the update_interval_base.\n\nSample values:\n• iron_golem: 40",
+      "type": "number"
+    },
+    "can_find_poi": {
+      "title": "Can find POI",
+      "description": "Whether or not the entity can find and add POIs to the dwelling.",
+      "type": "boolean"
+    },
+    "first_founding_reward": {
+      "title": "First Founding Reward",
+      "description": "Determines how much reputation players are rewarded on first founding.",
+      "type": "integer"
+    },
+    "can_migrate": {
+      "title": "Can Migrate",
+      "description": "Determines whether the entity can migrate between dwellings, or only have its initial dwelling.\n\nSample values:\n• iron_golem: true",
+      "type": "boolean"
+    },
+    "dwelling_bounds_tolerance": {
+      "title": "Dwelling Bounds Tolerance",
+      "description": "A padding distance for checking if the entity is within the dwelling.",
+      "type": "number"
+    },
+    "preferred_profession": {
+      "title": "Preferred Profession",
+      "description": "Allows the user to define a starting profession for this particular Dweller, instead of letting them choose organically. (They still need to gain experience from trading before this takes effect.)",
+      "type": "string"
+    },
+    "dweller_role": {
+      "title": "Dweller Role",
+      "description": "\n\nSample values:\n• iron_golem: defender",
+      "type": "string"
+    }
+  }
+}

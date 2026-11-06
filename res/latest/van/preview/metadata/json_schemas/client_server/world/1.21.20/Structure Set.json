@@ -1,0 +1,31 @@
+{
+  "$id": "/client_server/world/1.21.20/Structure%20Set.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "description": {
+      "$ref": "./Jigsaw%20Structure%20Set%20Description.json",
+      "x-ordinal-index": 0
+    },
+    "placement": {
+      "$ref": "./RandomSpreadPlacement.json",
+      "description": "Describes where structures in the set spawn relative to one another. Currently, the only placement type supported is random_spread, which scatters structures randomly with a given separation and spacing.",
+      "x-ordinal-index": 1
+    },
+    "structures": {
+      "description": "Weighted list of Jigsaw Structures in the set.",
+      "items": {
+        "$ref": "./Structure.json"
+      },
+      "type": "array",
+      "x-ordinal-index": 2
+    }
+  },
+  "required": [
+    "description",
+    "placement",
+    "structures"
+  ],
+  "title": "A Jigsaw Structure Set is a collection of Jigsaw Structures that are placed according to a set of rules.",
+  "type": "object",
+  "x-format-version": "1.21.20"
+}

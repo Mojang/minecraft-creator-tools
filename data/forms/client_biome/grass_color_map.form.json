@@ -1,0 +1,39 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "Grass Color Map",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "specifies a color map for grass rendering"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "color_map",
+      "title": "Color Map",
+      "description": "Color map from textures/colormap to determine color of grass.",
+      "dataType": "stringEnum",
+      "choices": [
+        {
+          "id": "grass",
+          "title": "Grass"
+        },
+        {
+          "id": "swamp_grass",
+          "title": "Swamp grass"
+        }
+      ],
+      "mustMatchChoices": true,
+      "isRequired": true
+    }
+  ],
+  "description": "Object specifying a color map for grass instead of a specific color.",
+  "title": "Client Biome Grass Color Map",
+  "dataVersion": "1.21.40"
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "checks if entity is using sonic boom"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "query.is_sonic_boom",
+  "fields": [],
+  "description": "Returns 1.0 if the entity is using sonic boom, else it returns 0.0.",
+  "title": "Is Sonic Boom"
+}

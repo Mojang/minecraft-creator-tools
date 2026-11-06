@@ -1,0 +1,14 @@
+{
+  "id": "Jigsaw Structure Set Description",
+  "fields": [
+    {
+      "id": "identifier",
+      "title": "Identifier",
+      "description": "Identifier of the Jigsaw Structure Set.",
+      "dataType": "string",
+      "isRequired": true
+    }
+  ],
+  "title": "World Jigsaw Structure Set Description",
+  "dataVersion": "1.21.20"
+}

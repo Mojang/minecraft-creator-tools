@@ -1,0 +1,42 @@
+{
+  "format_version": 2,
+  "header": {
+    "description": "Basic gametests that represent various challenging conditions.",
+    "name": "JavaScript GameTests",
+    "uuid": "142a42aa-98d4-420d-8e3f-e34ab8a0c05e",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      0
+    ]
+  },
+  "modules": [
+    {
+      "description": "Test logic and provisioning",
+      "type": "script",
+      "language": "javascript",
+      "uuid": "ab1b53fc-1253-4a75-91b7-4cdf027674ae",
+      "version": [
+        1,
+        0,
+        0
+      ],
+      "entry": "scripts/main.js"
+    }
+  ],
+  "dependencies": [
+    {
+      "module_name": "@minecraft/server",
+      "version": "1.13.0-beta"
+    },
+    {
+      "module_name": "@minecraft/server-gametest",
+      "version": "1.0.0-beta"
+    }
+  ]
+}

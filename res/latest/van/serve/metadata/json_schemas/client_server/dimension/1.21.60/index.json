@@ -1,0 +1,11 @@
+{
+  "files": [
+    "Bounds.json",
+    "Components.json",
+    "Description.json",
+    "Dimension.json",
+    "Dimensions.json",
+    "Generation.json"
+  ],
+  "folders": []
+}

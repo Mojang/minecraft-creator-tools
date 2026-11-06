@@ -1,0 +1,30 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines spawn heightfilter settings"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Spawn HeightFilter",
+  "fields": [
+    {
+      "id": "max",
+      "title": "Max",
+      "dataType": "int"
+    },
+    {
+      "id": "min",
+      "title": "Min",
+      "dataType": "int"
+    }
+  ],
+  "description": "Defines spawn heightfilter settings.",
+  "title": "Spawn HeightFilter Misc"
+}

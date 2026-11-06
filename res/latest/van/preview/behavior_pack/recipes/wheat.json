@@ -1,0 +1,28 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:wheat"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "pattern": [
+      "#"
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:hay_block"
+      }
+    },
+	"unlock": [
+      {
+        "item": "minecraft:hay_block"
+      }
+    ],
+    "result": {
+      "item": "minecraft:wheat",
+      "count": 9
+    }
+  }
+}

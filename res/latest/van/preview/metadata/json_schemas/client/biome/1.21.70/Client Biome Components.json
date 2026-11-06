@@ -1,0 +1,71 @@
+{
+  "$id": "/client/biome/1.21.70/Client%20Biome%20Components.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Any components that this Client Biome uses",
+  "properties": {
+    "minecraft:ambient_sounds": {
+      "$ref": "../1.21.40/minecraft_ambient_sounds.json",
+      "description": "Set the ambient sounds for the biome. These sounds must be in the 'individual_named_sounds' in a 'sounds.json' file.",
+      "x-ordinal-index": 0
+    },
+    "minecraft:atmosphere_identifier": {
+      "$ref": "./minecraft_atmosphere_identifier.json",
+      "description": "Set the identifier used for atmospherics in Vibrant Visuals mode. Identifiers must resolve to identifiers in valid Atmospheric Scattering JSON schemas under the \"atmospherics\" directory. Biomes without this component will have default atmosphere settings.",
+      "x-ordinal-index": 7
+    },
+    "minecraft:biome_music": {
+      "$ref": "./minecraft_biome_music.json",
+      "description": "Affect how music plays within the biome",
+      "x-ordinal-index": 11
+    },
+    "minecraft:color_grading_identifier": {
+      "$ref": "./minecraft_color_grading_identifier.json",
+      "description": "Set the identifier used for color grading in Vibrant Visuals mode. Identifiers must resolve to identifiers in valid Color Grading JSON schemas under the \"color_grading\" directory. Biomes without this component will have default color_grading settings.",
+      "x-ordinal-index": 8
+    },
+    "minecraft:dry_foliage_color": {
+      "$ref": "./minecraft_dry_foliage_color.json",
+      "description": "Set the dry foliage color used during rendering. Biomes without this component will have default dry foliage color behavior.",
+      "x-ordinal-index": 6
+    },
+    "minecraft:fog_appearance": {
+      "$ref": "../1.21.40/minecraft_fog_appearance.json",
+      "description": "Set the fog settings used during rendering. Biomes without this component will have default fog settings.",
+      "x-ordinal-index": 1
+    },
+    "minecraft:foliage_appearance": {
+      "$ref": "./minecraft_foliage_appearance.json",
+      "description": "Set the foliage color or color map used during rendering. Biomes without this component will have default foliage appearance.",
+      "x-ordinal-index": 2
+    },
+    "minecraft:grass_appearance": {
+      "$ref": "../1.21.40/minecraft_grass_appearance.json",
+      "description": "Set the grass color or color map used during rendering. Biomes without this component will have default grass appearance.",
+      "x-ordinal-index": 3
+    },
+    "minecraft:lighting_identifier": {
+      "$ref": "./minecraft_lighting_identifier.json",
+      "description": "Set the identifier used for lighting in Vibrant Visuals mode. Identifiers must resolve to identifiers in valid Lighting JSON schemas under the \"lighting\" directory. Biomes without this component will have default lighting settings.",
+      "x-ordinal-index": 9
+    },
+    "minecraft:sky_color": {
+      "$ref": "../1.21.40/minecraft_sky_color.json",
+      "description": "Set the sky color used during rendering. Biomes without this component will have default sky color behavior.",
+      "x-ordinal-index": 4
+    },
+    "minecraft:water_appearance": {
+      "$ref": "../1.21.40/minecraft_water_appearance.json",
+      "description": "Set the water surface color used during rendering. Biomes without this component will have default water surface color behavior.",
+      "x-ordinal-index": 5,
+      "x-runtime-constraint-description": "Make sure that at least either the surface color or the opacity is specified"
+    },
+    "minecraft:water_identifier": {
+      "$ref": "./minecraft_water_identifier.json",
+      "description": "Set the identifier used for rendering water in Vibrant Visuals mode. Identifiers must resolve to identifiers in valid Water JSON schemas under the \"water\" directory. Biomes without this component will have default water settings.",
+      "x-ordinal-index": 10
+    }
+  },
+  "title": "Client Biome Components",
+  "type": "object",
+  "x-format-version": "1.21.70"
+}

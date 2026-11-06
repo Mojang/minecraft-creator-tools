@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity DrinkPotionGoalDefinition PotionData",
+  "properties": {
+    "chance": {
+      "title": "Chance",
+      "description": "The percent chance (from 0.0 to 1.0) of this potion being selected when searching for a potion to use.",
+      "type": "number",
+      "default": 1
+    },
+    "filters": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "title": "Domain",
+              "description": "The domain the test should be performed in.",
+              "type": "object"
+            },
+            "operator": {
+              "title": "Operator",
+              "description": "The comparison to apply with 'value'.",
+              "type": "object"
+            },
+            "subject": {
+              "title": "Subject",
+              "description": "The subject of this filter test.",
+              "type": "object"
+            },
+            "test": {
+              "title": "Test",
+              "description": "The name of the test to apply.",
+              "type": "string"
+            },
+            "value": {
+              "title": "Value",
+              "description": "The value being compared with the test.",
+              "type": "object"
+            }
+          }
+        },
+        {
+          "type": "object"
+        }
+      ],
+      "description": "The filters to use when determining if this potion can be selected."
+    },
+    "id": {
+      "title": "Id",
+      "description": "The registry ID of the potion to use",
+      "type": "integer",
+      "default": -1
+    }
+  }
+}

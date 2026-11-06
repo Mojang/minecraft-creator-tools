@@ -1,0 +1,19 @@
+{
+  "id": "Vibration Properties",
+  "fields": [
+    {
+      "id": "dampen_vibrations",
+      "title": "Dampen Vibrations",
+      "dataType": "boolean",
+      "defaultValue": false
+    },
+    {
+      "id": "occlude_vibrations",
+      "title": "Occlude Vibrations",
+      "dataType": "boolean",
+      "defaultValue": false
+    }
+  ],
+  "title": "Block Vibration Properties",
+  "dataVersion": "1.26.60"
+}

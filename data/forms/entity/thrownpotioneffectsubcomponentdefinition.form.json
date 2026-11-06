@@ -1,0 +1,15 @@
+{
+  "id": "ThrownPotionEffectSubcomponentDefinition",
+  "fields": [
+    {
+      "id": "effect",
+      "title": "Effect",
+      "description": "Aux value of the potion to apply.",
+      "dataType": "int",
+      "defaultValue": -1
+    }
+  ],
+  "description": "Applies the splash-potion effects of a thrown potion to nearby entities at the impact point.",
+  "title": "Entity ThrownPotionEffectSubcomponentDefinition",
+  "dataVersion": "1.26.50"
+}

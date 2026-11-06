@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Loot Table Entry",
+  "description": "Defines an entry in a loot table pool that can be selected when the pool rolls.",
+  "properties": {
+    "type": {
+      "title": "Type",
+      "description": "The type of entry. Valid values: 'item' (drops an item), 'loot_table' (references another loot table), 'empty' (drops nothing).",
+      "type": "string"
+    },
+    "name": {
+      "title": "Name",
+      "description": "The item identifier (for type 'item') or loot table path (for type 'loot_table').",
+      "type": "string"
+    },
+    "weight": {
+      "title": "Weight",
+      "description": "The relative weight of this entry being selected. Higher weights are more likely. Default is 1.",
+      "type": "integer",
+      "minimum": 1,
+      "default": 1
+    },
+    "functions": {
+      "title": "Functions",
+      "description": "Array of functions to apply to the item when selected.",
+      "type": "array",
+      "items": {
+        "$ref": "./loot_loot_function.schema.json"
+      }
+    },
+    "conditions": {
+      "title": "Conditions",
+      "description": "Array of conditions that must be met for this entry to be considered.",
+      "type": "array",
+      "items": {
+        "$ref": "./loot_loot_condition.schema.json"
+      }
+    },
+    "pools": {
+      "title": "Pools",
+      "description": "Nested pools for type 'loot_table'. Allows inline loot table definition.",
+      "type": "array",
+      "items": {
+        "$ref": "./loot_loot_pool.schema.json"
+      }
+    }
+  },
+  "required": [
+    "type"
+  ]
+}

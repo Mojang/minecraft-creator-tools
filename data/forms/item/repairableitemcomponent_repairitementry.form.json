@@ -1,0 +1,41 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can be repaired by specified items"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "items",
+      "title": "items",
+      "description": "Items that may be used to repair an item.",
+      "dataType": "objectArray",
+      "subForm": {
+        "title": "Items",
+        "description": "Items",
+        "fields": []
+      }
+    },
+    {
+      "id": "repair_amount",
+      "title": "repair_amount",
+      "description": "How much the item is repaired.",
+      "dataType": "object",
+      "subForm": {
+        "title": "Repair Amount",
+        "description": "Repair Amount",
+        "fields": []
+      }
+    }
+  ],
+  "description": ":RepairItemEntry",
+  "title": ":RepairItemEntry"
+}

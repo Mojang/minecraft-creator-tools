@@ -1,0 +1,27 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines emptypoolelement configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "EmptyPoolElement",
+  "fields": [
+    {
+      "id": "element_type",
+      "title": "ElementType",
+      "description": "The type of element",
+      "dataType": "string",
+      "isRequired": true
+    }
+  ],
+  "description": "Defines emptypoolelement configuration.",
+  "title": "EmptyPoolElement Misc"
+}

@@ -1,0 +1,12 @@
+{
+  "files": [
+    "ActorDocument.json",
+    "Entity component definitions.json",
+    "Rider Data.json",
+    "minecraft_addrider.json",
+    "minecraft_behavior.explore_outskirts.json",
+    "minecraft_behavior.investigate_suspicious_location.json",
+    "minecraft_burns_in_daylight.json"
+  ],
+  "folders": []
+}

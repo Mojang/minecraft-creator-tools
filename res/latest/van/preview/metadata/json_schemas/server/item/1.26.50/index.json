@@ -1,0 +1,12 @@
+{
+  "files": [
+    "Item Components.json",
+    "ItemDocument.json",
+    "SoundEventName.json",
+    "minecraft_durability_sensor durability_threshold.json",
+    "minecraft_durability_sensor.json",
+    "minecraft_swing_sounds.json",
+    "minecraft_use_modifiers.json"
+  ],
+  "folders": []
+}

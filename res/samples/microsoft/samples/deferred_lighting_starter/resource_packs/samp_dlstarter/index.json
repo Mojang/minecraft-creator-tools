@@ -1,0 +1,16 @@
+{
+  "files": [
+    "manifest.json",
+    "pack_icon.png"
+  ],
+  "folders": [
+    "atmospherics",
+    "biomes",
+    "color_grading",
+    "lighting",
+    "pbr",
+    "point_lights",
+    "shadows",
+    "water"
+  ]
+}

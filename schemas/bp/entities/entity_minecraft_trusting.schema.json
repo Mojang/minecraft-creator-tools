@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Trusting",
+  "description": "Defines the rules for a mob to trust players.",
+  "properties": {
+    "trust_event": {
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "title": "Trust Event",
+      "description": "Event to run when this entity becomes trusting. Can be an object with event and target properties, or a simple event string."
+    },
+    "trust_items": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "title": "Trust Items",
+      "description": "The list of items that can be used to get the entity to trust players. Can be an array or a single item string."
+    },
+    "probability": {
+      "title": "Probability",
+      "description": "The chance of the entity trusting with each item use between 0.0 and 1.0, where 1.0 is 100%.",
+      "type": "number",
+      "default": 1
+    }
+  }
+}

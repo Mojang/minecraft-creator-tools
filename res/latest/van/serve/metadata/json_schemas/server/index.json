@@ -1,0 +1,17 @@
+{
+  "files": [],
+  "folders": [
+    "biome",
+    "block",
+    "block_components",
+    "common",
+    "crafting_catalog",
+    "entity",
+    "item",
+    "server_config",
+    "sound",
+    "spawn",
+    "voxel_shapes",
+    "world"
+  ]
+}

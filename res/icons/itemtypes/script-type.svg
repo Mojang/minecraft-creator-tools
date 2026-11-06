@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Script Type: Declaration/type definition file -->
+  <path d="M3 1H10L13 4V15H3V1Z" fill-opacity="0.15"/>
+  <path d="M10 1V4H13" fill="none" stroke="currentColor" stroke-width="0.8"/>
+  <text x="5" y="11" font-family="monospace" font-size="5" font-weight="bold">d.ts</text>
+</svg>

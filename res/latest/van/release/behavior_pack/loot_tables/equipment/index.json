@@ -1,0 +1,12 @@
+{
+  "files": [
+    "low_tier_items.json",
+    "trial_chamber.json",
+    "trial_chamber_chainmail.json",
+    "trial_chamber_diamond.json",
+    "trial_chamber_iron.json",
+    "trial_chamber_melee.json",
+    "trial_chamber_ranged.json"
+  ],
+  "folders": []
+}

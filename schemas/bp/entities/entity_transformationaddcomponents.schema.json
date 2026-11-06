@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity TransformationAddComponents",
+  "description": "List of components to add to the entity after the transformation",
+  "properties": {
+    "component_groups": {
+      "title": "Component Groups",
+      "description": "Names of component groups to add",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

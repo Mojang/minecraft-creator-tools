@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Spawn BrightnessFilter",
+  "description": "Restricts mob spawning based on light level at the spawn location. Hostile mobs typically spawn in darkness (light level 0-7), while passive mobs spawn in brighter areas. Allows setting min/max brightness thresholds and whether to adjust for spawning on a block surface.",
+  "properties": {
+    "adjust_for_weather": {
+      "title": "Adjust For Weather",
+      "description": "When true, brightness is adjusted for the current weather (rain/thunder reduce light levels).",
+      "type": "boolean",
+      "default": false
+    },
+    "max": {
+      "title": "Max Light Level",
+      "description": "Maximum light level (0-15) at which this entity can spawn.",
+      "type": "integer",
+      "maximum": 15,
+      "default": 15
+    },
+    "min": {
+      "title": "Min Light Level",
+      "description": "Minimum light level (0-15) at which this entity can spawn.",
+      "type": "integer",
+      "maximum": 15,
+      "default": 0
+    }
+  }
+}

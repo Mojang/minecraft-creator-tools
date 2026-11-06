@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity CatchFireSubcomponentDefinition",
+  "description": "Causes the projectile to embed itself in the block it hits.",
+  "properties": {
+    "fire_affected_by_griefing": {
+      "title": "Fire Affected By Griefing",
+      "description": "If `true`, the block-ignition behavior is suppressed when the shooter is a mob and the `mobGriefing` game rule is off.",
+      "type": "boolean",
+      "default": false
+    },
+    "on_fire_time": {
+      "title": "Fire Time",
+      "description": "Duration in seconds for which entity remains on fire",
+      "type": "number",
+      "default": 0
+    }
+  }
+}

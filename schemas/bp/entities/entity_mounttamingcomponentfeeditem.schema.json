@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity MountTamingComponentFeedItem",
+  "properties": {
+    "item": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      ],
+      "title": "Item",
+      "description": "Name of the item this entity likes and can be used to increase this entity's temper.",
+      "defaultSnippets": [
+        {
+          "label": "Item (default)",
+          "description": "Use default value: [object Object]",
+          "body": {}
+        }
+      ]
+    },
+    "temper_mod": {
+      "title": "Temper Mod",
+      "description": "The amount of temper this entity gains when fed this item.",
+      "type": "integer",
+      "default": 0
+    }
+  }
+}

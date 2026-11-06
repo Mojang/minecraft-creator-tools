@@ -1,0 +1,166 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Trail",
+  "description": "Causes an entity to leave a trail of blocks as it moves about the world. Obeys Mob Griefing rules.",
+  "properties": {
+    "block_type": {
+      "title": "Block Type",
+      "description": "The type of block that is spawned as a trail behind the entity. Solid blocks cannot be spawned at an offset of (0, 0, 0).",
+      "type": "string",
+      "default": "air"
+    },
+    "force_replace_matched_blocks": {
+      "title": "Force Replace Matched Blocks",
+      "description": "When true, the trail will replace blocks that match the replaceable blocks list even if normal placement rules prevent it.",
+      "type": "boolean",
+      "default": false
+    },
+    "radius": {
+      "title": "Radius",
+      "description": "When provided, the trail spawns blocks across a (2 * radius + 1) by (2 * radius + 1) horizontal area centered on the spawn offset. Uses the legacy four-corner sampling when omitted.",
+      "type": "integer",
+      "minimum": -1,
+      "maximum": 16,
+      "default": -1
+    },
+    "replaceable_blocks": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "title": "Name",
+                "type": "string",
+                "default": ""
+              },
+              "states": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "boolean"
+                  }
+                ],
+                "title": "States"
+              },
+              "tags": {
+                "title": "Tags",
+                "type": "string",
+                "default": ""
+              }
+            }
+          }
+        },
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "object"
+        }
+      ],
+      "description": "A list of blocks that can be replaced by the trail block. If the block at the spawn offset is not in this list, the trail block will not spawn. If omitted it will default to only air blocks."
+    },
+    "spawn_filter": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "title": "Domain",
+              "description": "The domain the test should be performed in.",
+              "type": "object"
+            },
+            "operator": {
+              "title": "Operator",
+              "description": "The comparison to apply with 'value'.",
+              "type": "object"
+            },
+            "subject": {
+              "title": "Subject",
+              "description": "The subject of this filter test.",
+              "type": "object"
+            },
+            "test": {
+              "title": "Test",
+              "description": "The name of the test to apply.",
+              "type": "string"
+            },
+            "value": {
+              "title": "Value",
+              "description": "The value being compared with the test.",
+              "type": "object"
+            }
+          }
+        },
+        {
+          "type": "object"
+        }
+      ],
+      "title": "Spawn Filter",
+      "description": "One or more conditions that must be met in order to cause the chosen block type to spawn."
+    },
+    "spawn_offset": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        {
+          "description": "\n\nProperties:\n• x (float) = 0\n• y (float) = 0\n• z (float) = 0",
+          "type": "object",
+          "properties": {
+            "x": {
+              "title": "X",
+              "type": "number",
+              "default": 0
+            },
+            "y": {
+              "title": "Y",
+              "type": "number",
+              "default": 0
+            },
+            "z": {
+              "title": "Z",
+              "type": "number",
+              "default": 0
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Spawn Offset (object)",
+              "description": "Use Spawn Offset as an object",
+              "body": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              }
+            }
+          ]
+        }
+      ],
+      "title": "Spawn Offset",
+      "description": "The offset from the entity's current position at which to spawn the block, capped at 16 blocks away.",
+      "defaultSnippets": [
+        {
+          "label": "Spawn Offset (object)",
+          "description": "Use Spawn Offset as an object",
+          "body": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    }
+  }
+}

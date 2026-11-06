@@ -1,0 +1,36 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "uses generic movement"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "max_turn",
+      "title": "Max Turn",
+      "description": "The maximum number in degrees the mob can turn per tick.",
+      "dataType": "float",
+      "defaultValue": 30
+    }
+  ],
+  "description": "This move control allows a mob to fly, swim, climb, etc.",
+  "title": "Entity Generic Movement",
+  "samples": {
+    "/vanilla/behavior_pack/entities/drowned.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:movement.generic/",
+        "content": {}
+      }
+    ]
+  },
+  "id": "minecraft:movement.generic",
+  "dataVersion": "1.26.60"
+}

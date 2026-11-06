@@ -1,0 +1,36 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines behavior.roar configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "minecraft:behavior.roar",
+  "fields": [
+    {
+      "id": "control_flags",
+      "title": "Control Flags",
+      "dataType": "stringArray"
+    },
+    {
+      "id": "duration",
+      "title": "Duration",
+      "description": "The amount of time to roar for. Default value: 0.",
+      "dataType": "float"
+    },
+    {
+      "id": "priority",
+      "title": "Priority",
+      "dataType": "int"
+    }
+  ],
+  "description": "Allows this entity to roar at another entity based on data in minecraft:anger_level. Once the anger threshold specified in minecraft:anger_level has been reached, this entity will roar for the specified amount of time, look at the other entity, apply anger boost towards it, and finally target it.",
+  "title": "Minecraft Behavior.roar Misc"
+}

@@ -1,0 +1,63 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity ActorDefinitionEventSubcomponentDefinition",
+  "description": "Fires an entity event on the shooter, the projectile, the entity hit, and/or all entities in a splash radius.",
+  "properties": {
+    "affect_projectile": {
+      "title": "Affect Projectile",
+      "description": "If `true`, the event is fired on the projectile entity itself.",
+      "type": "boolean",
+      "default": false
+    },
+    "affect_shooter": {
+      "title": "Affect Shooter",
+      "description": "If `true`, the event is fired on the projectile's shooter.",
+      "type": "boolean",
+      "default": false
+    },
+    "affect_splash_area": {
+      "title": "Affect Splash Area",
+      "description": "If `true`, the event is fired on every entity within `splash_area` blocks of the impact.",
+      "type": "boolean",
+      "default": false
+    },
+    "affect_target": {
+      "title": "Affect Target",
+      "description": "If `true`, the event is fired on the entity hit by the projectile.",
+      "type": "boolean",
+      "default": false
+    },
+    "event_trigger": {
+      "title": "Event Trigger",
+      "description": "Event trigger (with optional filters) to fire on the selected target(s).",
+      "$ref": "./entity_actordefinitiontrigger.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Entity ActorDefinitionTrigger",
+          "description": "Triggers an entity event when specified conditions are met. Events activate component groups that change entity behavior—transforming villagers into zombie villagers, switching mobs to aggressive mode, or triggering growth stages. Combine with filters to create conditional state machines that respond to gameplay.",
+          "body": {
+            "event": "",
+            "filters": {
+              "AND": null,
+              "NOT": null,
+              "OR": null,
+              "all": null,
+              "all_of": null,
+              "any": null,
+              "any_of": null,
+              "none_of": null
+            },
+            "target": "self"
+          }
+        }
+      ]
+    },
+    "splash_area": {
+      "title": "Splash Area",
+      "description": "Radius (in blocks) used by `affect_splash_area`.",
+      "type": "number",
+      "default": 0
+    }
+  }
+}

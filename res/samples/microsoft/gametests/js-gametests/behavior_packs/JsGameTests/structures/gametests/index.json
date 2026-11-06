@@ -1,0 +1,12 @@
+{
+  "files": [
+    "LlamaCommands.mcstructure",
+    "clone_command.mcstructure",
+    "collapsing_space.mcstructure",
+    "glass_cells.mcstructure",
+    "glass_pit.mcstructure",
+    "mediumglass.mcstructure",
+    "minibiomes.mcstructure"
+  ],
+  "folders": []
+}

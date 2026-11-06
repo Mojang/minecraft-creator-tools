@@ -1,0 +1,17 @@
+{
+  "files": [
+    "Client Biome Components.json",
+    "Client Biome Definition.json",
+    "Client Biome Document.json",
+    "Foliage Color Map.json",
+    "Foliage Colormap.json",
+    "minecraft_atmosphere_identifier.json",
+    "minecraft_biome_music.json",
+    "minecraft_color_grading_identifier.json",
+    "minecraft_dry_foliage_color.json",
+    "minecraft_foliage_appearance.json",
+    "minecraft_lighting_identifier.json",
+    "minecraft_water_identifier.json"
+  ],
+  "folders": []
+}

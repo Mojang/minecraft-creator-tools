@@ -1,0 +1,22 @@
+{
+  "$id": "/server/biome/1.26.0/VillageType.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "enum": [
+    "desert",
+    "ice",
+    "savanna",
+    "taiga",
+    "default"
+  ],
+  "title": "VillageType",
+  "type": "string",
+  "x-enum-binary-value": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "x-format-version": "1.26.0",
+  "x-underlying-type": "uint8"
+}

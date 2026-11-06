@@ -1,0 +1,36 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "title": "Render Controller Set",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "controls part visibility for entity rendering"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "render_controllers",
+      "displayTitle": false,
+      "allowCreateDelete": false,
+      "dataType": "keyedObjectCollection",
+      "subForm": {
+        "fields": [
+          {
+            "id": "part_visibility",
+            "title": "Part Visibility",
+            "description": "Lists of available textures, materials, and geometries that can be selected",
+            "objectArrayTitleFieldKey": "name",
+            "dataType": "keyedStringCollection"
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Controls part visibility for entity rendering."
+}

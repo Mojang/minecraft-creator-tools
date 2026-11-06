@@ -1,0 +1,64 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Vegetation Patch Feature",
+  "description": "\n\nProperties:\n• description ({ identifier })\n• replaceable_blocks (string[])\n• surface (string)\n• vertical_range (int)\n• waterlogged (boolean)",
+  "type": "object",
+  "properties": {
+    "description": {
+      "title": "Description",
+      "description": "\n\nProperties:\n• identifier (string)",
+      "type": "object",
+      "properties": {
+        "identifier": {
+          "title": "Identifier",
+          "description": "The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
+          "type": "string"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Description",
+          "description": "Create a Description",
+          "body": {
+            "identifier": ""
+          }
+        }
+      ]
+    },
+    "replaceable_blocks": {
+      "title": "Replaceable Blocks",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "surface": {
+      "title": "Surface",
+      "description": "Determines if a vegetation patch will grow from the ceiling or the floor.",
+      "type": "string"
+    },
+    "vertical_range": {
+      "title": "Vertical Range",
+      "description": "Vertical range used to determine a suitable surface position for the patch.",
+      "type": "integer"
+    },
+    "waterlogged": {
+      "title": "Waterlogged",
+      "description": "If true, waterlogs the positions occupied by the ground blocks.",
+      "type": "boolean"
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "Vegetation Patch Feature",
+      "description": "Create a Vegetation Patch Feature",
+      "body": {
+        "description": "",
+        "replaceable_blocks": "",
+        "surface": "",
+        "vertical_range": 0,
+        "waterlogged": true
+      }
+    }
+  ]
+}

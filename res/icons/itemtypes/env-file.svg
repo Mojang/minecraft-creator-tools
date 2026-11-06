@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Env File: Environment variables -->
+  <rect x="2" y="2" width="12" height="12" rx="1" fill-opacity="0.15"/>
+  <rect x="3" y="4" width="3" height="1.5" fill-opacity="0.6"/>
+  <rect x="7" y="4" width="5" height="1.5" fill-opacity="0.4"/>
+  <rect x="3" y="7" width="4" height="1.5" fill-opacity="0.5"/>
+  <rect x="8" y="7" width="4" height="1.5" fill-opacity="0.4"/>
+  <rect x="3" y="10" width="2" height="1.5" fill-opacity="0.5"/>
+  <rect x="6" y="10" width="6" height="1.5" fill-opacity="0.4"/>
+  <text x="4.5" y="5.2" font-family="monospace" font-size="2">=</text>
+  <text x="7.3" y="8.2" font-family="monospace" font-size="2">=</text>
+  <text x="5.3" y="11.2" font-family="monospace" font-size="2">=</text>
+</svg>

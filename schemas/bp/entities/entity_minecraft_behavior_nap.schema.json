@@ -1,0 +1,396 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Nap Behavior",
+  "description": "Allows mobs to occassionally stop and take a nap under certain conditions.",
+  "properties": {
+    "can_nap_filters": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "title": "Domain",
+              "description": "The domain the test should be performed in.",
+              "type": "object"
+            },
+            "operator": {
+              "title": "Operator",
+              "description": "The comparison to apply with 'value'.",
+              "type": "object"
+            },
+            "subject": {
+              "title": "Subject",
+              "description": "The subject of this filter test.",
+              "type": "object"
+            },
+            "test": {
+              "title": "Test",
+              "description": "The name of the test to apply.",
+              "type": "string"
+            },
+            "value": {
+              "title": "Value",
+              "description": "The value being compared with the test.",
+              "type": "object"
+            }
+          }
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "domain": {
+                "title": "Domain",
+                "description": "The domain the test should be performed in.",
+                "type": "object"
+              },
+              "operator": {
+                "title": "Operator",
+                "description": "The comparison to apply with 'value'.",
+                "type": "object"
+              },
+              "subject": {
+                "title": "Subject",
+                "description": "The subject of this filter test.",
+                "type": "object"
+              },
+              "test": {
+                "title": "Test",
+                "description": "The name of the test to apply.",
+                "type": "string"
+              },
+              "value": {
+                "title": "Value",
+                "description": "The value being compared with the test.",
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "all_of": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "domain": {
+                    "title": "Domain",
+                    "description": "The domain the test should be performed in.",
+                    "type": "object"
+                  },
+                  "operator": {
+                    "title": "Operator",
+                    "description": "The comparison to apply with 'value'.",
+                    "type": "object"
+                  },
+                  "subject": {
+                    "title": "Subject",
+                    "description": "The subject of this filter test.",
+                    "type": "object"
+                  },
+                  "test": {
+                    "title": "Test",
+                    "description": "The name of the test to apply.",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "The value being compared with the test.",
+                    "type": "object"
+                  }
+                }
+              }
+            },
+            "any_of": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "domain": {
+                    "title": "Domain",
+                    "description": "The domain the test should be performed in.",
+                    "type": "object"
+                  },
+                  "operator": {
+                    "title": "Operator",
+                    "description": "The comparison to apply with 'value'.",
+                    "type": "object"
+                  },
+                  "subject": {
+                    "title": "Subject",
+                    "description": "The subject of this filter test.",
+                    "type": "object"
+                  },
+                  "test": {
+                    "title": "Test",
+                    "description": "The name of the test to apply.",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "The value being compared with the test.",
+                    "type": "object"
+                  }
+                }
+              }
+            },
+            "none_of": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "domain": {
+                    "title": "Domain",
+                    "description": "The domain the test should be performed in.",
+                    "type": "object"
+                  },
+                  "operator": {
+                    "title": "Operator",
+                    "description": "The comparison to apply with 'value'.",
+                    "type": "object"
+                  },
+                  "subject": {
+                    "title": "Subject",
+                    "description": "The subject of this filter test.",
+                    "type": "object"
+                  },
+                  "test": {
+                    "title": "Test",
+                    "description": "The name of the test to apply.",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "The value being compared with the test.",
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": "Can Nap Filters",
+      "description": "Conditions that need to be met for the entity to nap."
+    },
+    "wake_mob_exceptions": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "title": "Domain",
+              "description": "The domain the test should be performed in.",
+              "type": "object"
+            },
+            "operator": {
+              "title": "Operator",
+              "description": "The comparison to apply with 'value'.",
+              "type": "object"
+            },
+            "subject": {
+              "title": "Subject",
+              "description": "The subject of this filter test.",
+              "type": "object"
+            },
+            "test": {
+              "title": "Test",
+              "description": "The name of the test to apply.",
+              "type": "string"
+            },
+            "value": {
+              "title": "Value",
+              "description": "The value being compared with the test.",
+              "type": "object"
+            }
+          }
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "domain": {
+                "title": "Domain",
+                "description": "The domain the test should be performed in.",
+                "type": "object"
+              },
+              "operator": {
+                "title": "Operator",
+                "description": "The comparison to apply with 'value'.",
+                "type": "object"
+              },
+              "subject": {
+                "title": "Subject",
+                "description": "The subject of this filter test.",
+                "type": "object"
+              },
+              "test": {
+                "title": "Test",
+                "description": "The name of the test to apply.",
+                "type": "string"
+              },
+              "value": {
+                "title": "Value",
+                "description": "The value being compared with the test.",
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "all_of": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "domain": {
+                    "title": "Domain",
+                    "description": "The domain the test should be performed in.",
+                    "type": "object"
+                  },
+                  "operator": {
+                    "title": "Operator",
+                    "description": "The comparison to apply with 'value'.",
+                    "type": "object"
+                  },
+                  "subject": {
+                    "title": "Subject",
+                    "description": "The subject of this filter test.",
+                    "type": "object"
+                  },
+                  "test": {
+                    "title": "Test",
+                    "description": "The name of the test to apply.",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "The value being compared with the test.",
+                    "type": "object"
+                  }
+                }
+              }
+            },
+            "any_of": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "domain": {
+                    "title": "Domain",
+                    "description": "The domain the test should be performed in.",
+                    "type": "object"
+                  },
+                  "operator": {
+                    "title": "Operator",
+                    "description": "The comparison to apply with 'value'.",
+                    "type": "object"
+                  },
+                  "subject": {
+                    "title": "Subject",
+                    "description": "The subject of this filter test.",
+                    "type": "object"
+                  },
+                  "test": {
+                    "title": "Test",
+                    "description": "The name of the test to apply.",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "The value being compared with the test.",
+                    "type": "object"
+                  }
+                }
+              }
+            },
+            "none_of": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "domain": {
+                    "title": "Domain",
+                    "description": "The domain the test should be performed in.",
+                    "type": "object"
+                  },
+                  "operator": {
+                    "title": "Operator",
+                    "description": "The comparison to apply with 'value'.",
+                    "type": "object"
+                  },
+                  "subject": {
+                    "title": "Subject",
+                    "description": "The subject of this filter test.",
+                    "type": "object"
+                  },
+                  "test": {
+                    "title": "Test",
+                    "description": "The name of the test to apply.",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "The value being compared with the test.",
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": "Wake Mob Exceptions",
+      "description": "Filters for mobs that will not wake this entity from napping."
+    },
+    "control_flags": {
+      "title": "Control Flags",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "jump",
+          "look",
+          "move"
+        ]
+      }
+    },
+    "cooldown_max": {
+      "title": "Cooldown Max",
+      "description": "Maximum time in seconds the mob has to wait before using the goal again",
+      "type": "number",
+      "default": 0
+    },
+    "cooldown_min": {
+      "title": "Cooldown Min",
+      "description": "Minimum time in seconds the mob has to wait before using the goal again",
+      "type": "number",
+      "default": 0
+    },
+    "mob_detect_dist": {
+      "title": "Mob Detect Dist",
+      "description": "The block distance in x and z that will be checked for mobs that this mob detects",
+      "type": "number",
+      "default": 6
+    },
+    "mob_detect_height": {
+      "title": "Mob Detect Height",
+      "description": "The block distance in y that will be checked for mobs that this mob detects",
+      "type": "number",
+      "default": 6
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "type": "integer",
+      "default": 0
+    }
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "UniformIntProvider",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "provides a uniformly distributed integer value within a range"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "max_inclusive",
+      "title": "Max Inclusive",
+      "description": "Maximum value (inclusive)",
+      "dataType": "int",
+      "isRequired": true
+    },
+    {
+      "id": "min_inclusive",
+      "title": "Min Inclusive",
+      "description": "Minimum value (inclusive)",
+      "dataType": "int",
+      "isRequired": true
+    },
+    {
+      "id": "type",
+      "title": "Type",
+      "dataType": "stringEnum",
+      "choices": [
+        {
+          "id": "constant",
+          "title": "Constant"
+        },
+        {
+          "id": "uniform",
+          "title": "Uniform"
+        }
+      ],
+      "mustMatchChoices": true,
+      "defaultValue": "uniform",
+      "isRequired": true
+    }
+  ],
+  "description": "Specifies a uniformly distributed integer",
+  "title": "World UniformIntProvider",
+  "dataVersion": "1.21.20"
+}

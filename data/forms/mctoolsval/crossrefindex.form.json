@@ -1,0 +1,20 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "indexes cross-file references for autocomplete"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "crossrefindex",
+  "title": "Cross-Reference Index",
+  "description": "Populates the project ContentIndex with annotated entries for content that can be referenced across files: geometry, animation, animation controller, render controller, particle, fog, sound, loot table, recipe, biome, spawn rule, dialogue, function, and structure identifiers. This data powers autocomplete suggestions in Monaco and VS Code. The generator does not emit validation findings.",
+  "technicalDescription": "This generator emits no topic IDs; it only populates the shared ContentIndex trie consumed by the autocomplete sources. Entity, block, item, feature, and texture IDs are indexed by TypesInfoGenerator and TextureInfoGenerator and are not duplicated here.",
+  "fields": []
+}

@@ -1,0 +1,7 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Managed Wandering Trader",
+  "description": "Manages the entity's ability to trade.",
+  "properties": {}
+}

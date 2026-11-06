@@ -1,0 +1,118 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity SeatDescription",
+  "properties": {
+    "camera_relax_distance_smoothing": {
+      "title": "Camera Relax Distance Smoothing",
+      "description": "When the camera relaxes to the full distance after being pushed by an obstacle, this value can override the default movement. This value describes the stiffness of the spring that pushes the camera back out. Negative values are ignored.",
+      "type": "number",
+      "minimum": 1,
+      "maximum": 32
+    },
+    "lock_rider_rotation": {
+      "title": "Lock Rider Rotation",
+      "description": "Angle in degrees that a rider is allowed to rotate while riding this entity. Omit this property for no limit.",
+      "type": "number",
+      "default": 181
+    },
+    "max_rider_count": {
+      "title": "Max Rider Count",
+      "description": "Defines the maximum number of riders that can be riding this entity for this seat to be valid.",
+      "type": "integer"
+    },
+    "min_rider_count": {
+      "title": "Min Rider Count",
+      "description": "Defines the minimum number of riders that need to be riding this entity before this seat can be used.",
+      "type": "integer",
+      "default": 0
+    },
+    "position": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        {
+          "description": "\n\nProperties:\n• x (float) = 0\n• y (float) = 0\n• z (float) = 0",
+          "type": "object",
+          "properties": {
+            "x": {
+              "title": "X",
+              "type": "number",
+              "default": 0
+            },
+            "y": {
+              "title": "Y",
+              "type": "number",
+              "default": 0
+            },
+            "z": {
+              "title": "Z",
+              "type": "number",
+              "default": 0
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Position (object)",
+              "description": "Use Position as an object",
+              "body": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              }
+            }
+          ]
+        }
+      ],
+      "title": "Position",
+      "description": "Position of this seat relative to this entity's position.",
+      "defaultSnippets": [
+        {
+          "label": "Position (object)",
+          "description": "Use Position as an object",
+          "body": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    },
+    "rotate_rider_by": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        {
+          "type": "string"
+        },
+        {
+          "description": "\n\nProperties:\n• expression (string)\n• version (int)",
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "../../common/expression.schema.json"
+          }
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "title": "Rotate Rider By",
+      "description": "Offset to rotate riders by."
+    },
+    "third_person_camera_radius": {
+      "title": "Third Person Camera Radius",
+      "description": "A different radius that the third_person and third_person_front cameras should use for the player is in this seat. Negative values are ignored.",
+      "type": "number",
+      "minimum": 1,
+      "maximum": 64
+    }
+  }
+}

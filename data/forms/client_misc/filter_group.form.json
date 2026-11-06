@@ -1,0 +1,25 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines a group of filter tests"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "4150989894",
+      "title": "Filter Test",
+      "description": "Filter Test",
+      "dataType": "object"
+    }
+  ],
+  "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects.",
+  "title": "Filter Group"
+}

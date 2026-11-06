@@ -1,0 +1,31 @@
+{
+  "format_version": "1.26.50",
+  "minecraft:recipe_shapeless": {
+    "description": {
+      "identifier": "minecraft:mushroom_stew"
+    },
+    "tags": ["crafting_table"],
+    "ingredients": [
+      {
+        "tag": "minecraft:mushrooms_for_stew"
+      },
+      {
+        "tag": "minecraft:mushrooms_for_stew"
+      },
+      {
+        "item": "minecraft:bowl"
+      }
+    ],
+    "unlock": [
+      {
+        "tag": "minecraft:mushrooms_for_stew"
+      },
+      {
+        "item": "minecraft:bowl"
+      }
+    ],
+    "result": {
+      "item": "minecraft:mushroom_stew"
+    }
+  }
+}

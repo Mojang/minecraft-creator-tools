@@ -1,0 +1,24 @@
+{
+  "$id": "/client_server/world/1.21.20/BlockType.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "enum": [
+    "minecraft:always_true",
+    "minecraft:block_match",
+    "minecraft:random_block_match",
+    "minecraft:tag_match",
+    "minecraft:blockstate_match",
+    "minecraft:random_blockstate_match"
+  ],
+  "title": "BlockType",
+  "type": "string",
+  "x-enum-binary-value": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "x-format-version": "1.21.20",
+  "x-underlying-type": "uint8"
+}

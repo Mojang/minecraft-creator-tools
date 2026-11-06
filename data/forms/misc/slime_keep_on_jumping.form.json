@@ -1,0 +1,36 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines behavior.slime keep on jumping configuration"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "minecraft:behavior.slime_keep_on_jumping",
+  "fields": [
+    {
+      "id": "control_flags",
+      "title": "Control Flags",
+      "dataType": "stringArray"
+    },
+    {
+      "id": "priority",
+      "title": "Priority",
+      "dataType": "int"
+    },
+    {
+      "id": "speed_multiplier",
+      "title": "Speed Multiplier",
+      "description": "Determines the multiplier this entity's speed is modified by when jumping around. Default value: 1.",
+      "dataType": "float"
+    }
+  ],
+  "description": "Allows the entity to continuously jump around like a slime.",
+  "title": "Minecraft Behavior.slime Keep On Jumping Misc"
+}

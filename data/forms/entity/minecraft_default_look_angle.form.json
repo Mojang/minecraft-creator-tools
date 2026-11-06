@@ -1,0 +1,41 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "value",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has a default head angle of "
+          },
+          {
+            "type": "value",
+            "field": "value"
+          },
+          {
+            "type": "literal",
+            "text": " degrees"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "Angle in degrees.",
+      "defaultValue": 0,
+      "dataType": "float"
+    }
+  ],
+  "description": "Sets this entity's default head rotation angle.",
+  "title": "Default Look Angle",
+  "id": "minecraft:default_look_angle"
+}

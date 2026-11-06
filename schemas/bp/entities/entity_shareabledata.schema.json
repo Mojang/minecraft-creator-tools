@@ -1,0 +1,95 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity ShareableData",
+  "properties": {
+    "admire": {
+      "title": "Admire",
+      "description": "Mob will admire the item after picking up by looking at it. For this to happen the mob needs to have an Admire component and an Admire goal.",
+      "type": "boolean",
+      "default": false
+    },
+    "barter": {
+      "title": "Barter",
+      "description": "Mob will barter for the item after picking it up. For this to work the mob needs to have a Barter component and a Barter goal.",
+      "type": "boolean",
+      "default": false
+    },
+    "consume_item": {
+      "title": "Consume Item",
+      "description": "Determines whether the mob will consume the item or not.",
+      "type": "boolean",
+      "default": false
+    },
+    "craft_into": {
+      "title": "Craft Into",
+      "description": "Defines the item this entity wants to craft with the item defined by \"item\". Should be an item name.",
+      "type": "string",
+      "default": ""
+    },
+    "item": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      ],
+      "title": "Item",
+      "description": "The name of the item. Aux value can be specified, for instance 'minecraft:skull:1'. Alternatively, a tag can be specified to match all items with that tag.",
+      "defaultSnippets": [
+        {
+          "label": "Item (default)",
+          "description": "Use default value: [object Object]",
+          "body": {}
+        }
+      ]
+    },
+    "max_amount": {
+      "title": "Max Amount",
+      "description": "Maximum number of this item the mob will hold.",
+      "type": "integer",
+      "default": -1
+    },
+    "pickup_limit": {
+      "title": "Pickup Limit",
+      "description": "Maximum number items the mob will pick up during a single goal tick.",
+      "type": "integer",
+      "default": -1
+    },
+    "pickup_only": {
+      "title": "Pickup Only",
+      "description": "Determines whether the mob can only pickup the item and not drop it.",
+      "type": "boolean",
+      "default": false
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "Prioritizes which items the entity prefers. 0 is the highest priority.",
+      "type": "integer",
+      "default": 0
+    },
+    "stored_in_inventory": {
+      "title": "Stored In Inventory",
+      "description": "Determines whether the mob will try to put the item in its inventory if it has the inventory component and if it can't be equipped.",
+      "type": "boolean",
+      "default": false
+    },
+    "surplus_amount": {
+      "title": "Surplus Amount",
+      "description": "Number of this item considered extra that the entity wants to share.",
+      "type": "integer",
+      "default": -1
+    },
+    "want_amount": {
+      "title": "Want Amount",
+      "description": "Number of this item this entity wants to share.",
+      "type": "integer",
+      "default": -1
+    }
+  }
+}

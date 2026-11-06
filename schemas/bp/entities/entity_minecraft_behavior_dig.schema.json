@@ -1,0 +1,87 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Dig Behavior",
+  "description": "Allows this entity to dig into the ground before despawning.",
+  "properties": {
+    "allow_dig_when_named": {
+      "title": "Allow Dig When Named",
+      "description": "If true, this behavior can run when this entity is named. Otherwise not.",
+      "type": "boolean",
+      "default": false
+    },
+    "control_flags": {
+      "title": "Control Flags",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "jump",
+          "look",
+          "move"
+        ]
+      }
+    },
+    "digs_in_daylight": {
+      "title": "Digs In Daylight",
+      "description": "Indicates that the actor should start digging when it sees daylight",
+      "type": "boolean",
+      "default": false
+    },
+    "duration": {
+      "title": "Duration",
+      "description": "Goal duration in seconds\n\nSample values:\n• warden: 5.5",
+      "type": "number",
+      "default": 0
+    },
+    "idle_time": {
+      "title": "Idle Time",
+      "description": "The minimum idle time in seconds between the last detected disturbance to the start of digging.\n\nSample values:\n• warden: 60",
+      "type": "number",
+      "default": 0
+    },
+    "on_start": {
+      "title": "Start",
+      "description": "Event(s) to run when the goal starts.\n\nSample values:\n• warden: {\"event\":\"on_digging_event\"}",
+      "$ref": "./entity_actordefinitiontrigger.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Entity ActorDefinitionTrigger",
+          "description": "Triggers an entity event when specified conditions are met. Events activate component groups that change entity behavior—transforming villagers into zombie villagers, switching mobs to aggressive mode, or triggering growth stages. Combine with filters to create conditional state machines that respond to gameplay.",
+          "body": {
+            "event": "",
+            "filters": {
+              "AND": null,
+              "NOT": null,
+              "OR": null,
+              "all": null,
+              "all_of": null,
+              "any": null,
+              "any_of": null,
+              "none_of": null
+            },
+            "target": "self"
+          }
+        }
+      ]
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.\n\nSample values:\n• warden: 1",
+      "type": "integer",
+      "default": 0
+    },
+    "suspicion_is_disturbance": {
+      "title": "Suspicion Is Disturbance",
+      "description": "If true, finding new suspicious locations count as disturbances that may delay the start of this goal.\n\nSample values:\n• warden: true",
+      "type": "boolean",
+      "default": false
+    },
+    "vibration_is_disturbance": {
+      "title": "Vibration Is Disturbance",
+      "description": "If true, vibrations count as disturbances that may delay the start of this goal.\n\nSample values:\n• warden: true",
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

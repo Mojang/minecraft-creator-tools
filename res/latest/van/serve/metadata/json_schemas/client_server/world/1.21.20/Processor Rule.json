@@ -1,0 +1,116 @@
+{
+  "$id": "/client_server/world/1.21.20/Processor%20Rule.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "A block rule that is evaluated on all blocks of a Structure Template. All predicates must evaluate to true in order for a block to be replaced by the output_state.",
+  "properties": {
+    "block_entity_modifier": {
+      "description": "A block state modifier for block entities when all predicate match.",
+      "oneOf": [
+        {
+          "$ref": "./Passthrough.json",
+          "description": "Modifier that leaves the state unchanged. This is the default block modifier if no other block modifier is specified."
+        },
+        {
+          "$ref": "./AppendLoot.json",
+          "description": "Modifier will attempt to add loot to a block entity."
+        }
+      ],
+      "x-control-value-type": "uint32",
+      "x-ordinal-index": 3
+    },
+    "input_predicate": {
+      "default": {
+        "predicate_type": "minecraft:always_true"
+      },
+      "description": "A predicate evaluated on the Structure Template block.",
+      "oneOf": [
+        {
+          "$ref": "./AlwaysTrueBlock.json",
+          "description": "Predicate that always evaluates to true. This is the default predicate if no other predicate is specified."
+        },
+        {
+          "$ref": "./BlockMatch.json",
+          "description": "Predicate that evaluates to true if the block at the specified location matches the specified block."
+        },
+        {
+          "$ref": "./RandomBlockMatch.json",
+          "description": "Predicate that evaluates to true with a given probability if the block at the specified location matches the specified block."
+        },
+        {
+          "$ref": "./TagMatch.json",
+          "description": "Predicate that evaluates to true if the block at the specified location constains the tag."
+        },
+        {
+          "$ref": "./BlockStateMatch.json",
+          "description": "Predicate that evaluates to true if the block at the specified location matches the specified block."
+        },
+        {
+          "$ref": "./RandomBlockStateMatch.json",
+          "description": "Predicate that evaluates to true with a given probability if the block at the specified location matches the specified block."
+        }
+      ],
+      "x-control-value-type": "uint32",
+      "x-ordinal-index": 0
+    },
+    "location_predicate": {
+      "default": {
+        "predicate_type": "minecraft:always_true"
+      },
+      "description": "A predicate evaluated on the world block.",
+      "oneOf": [
+        {
+          "$ref": "./AlwaysTrueBlock.json",
+          "description": "Predicate that always evaluates to true. This is the default predicate if no other predicate is specified."
+        },
+        {
+          "$ref": "./BlockMatch.json",
+          "description": "Predicate that evaluates to true if the block at the specified location matches the specified block."
+        },
+        {
+          "$ref": "./RandomBlockMatch.json",
+          "description": "Predicate that evaluates to true with a given probability if the block at the specified location matches the specified block."
+        },
+        {
+          "$ref": "./TagMatch.json",
+          "description": "Predicate that evaluates to true if the block at the specified location constains the tag."
+        },
+        {
+          "$ref": "./BlockStateMatch.json",
+          "description": "Predicate that evaluates to true if the block at the specified location matches the specified block."
+        },
+        {
+          "$ref": "./RandomBlockStateMatch.json",
+          "description": "Predicate that evaluates to true with a given probability if the block at the specified location matches the specified block."
+        }
+      ],
+      "x-control-value-type": "uint32",
+      "x-ordinal-index": 1
+    },
+    "output_state": {
+      "$ref": "../../common/1.21.20/Block%20Specifier.json",
+      "description": "Block to replace the world block with if all predicates evaluate to true.",
+      "x-ordinal-index": 4
+    },
+    "position_predicate": {
+      "description": "A predicate evaluated on the distance between the structure's world origin and the world block.",
+      "oneOf": [
+        {
+          "$ref": "./AlwaysTruePos.json",
+          "description": "Predicate that always evaluates to true. This is the default predicate if no other predicate is specified."
+        },
+        {
+          "$ref": "./AxisAlignedLinear.json",
+          "description": "Predicate that evalutes to true if the block is within the distance range along the provided axis and and random number is generated between chance range"
+        }
+      ],
+      "x-control-value-type": "uint32",
+      "x-ordinal-index": 2
+    }
+  },
+  "required": [
+    "output_state"
+  ],
+  "title": "Processor Rule",
+  "type": "object",
+  "x-format-version": "1.21.20"
+}

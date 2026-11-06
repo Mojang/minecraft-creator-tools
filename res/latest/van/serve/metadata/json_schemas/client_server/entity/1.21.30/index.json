@@ -1,0 +1,12 @@
+{
+  "files": [
+    "Trade Quantity.json",
+    "Trade Table.json",
+    "Trade.json",
+    "TradeGroup.json",
+    "TradeItem.json",
+    "TradeItemList.json",
+    "TradeTier.json"
+  ],
+  "folders": []
+}

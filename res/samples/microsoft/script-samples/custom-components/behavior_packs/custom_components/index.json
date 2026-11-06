@@ -1,0 +1,11 @@
+{
+  "files": [
+    "manifest.json",
+    "pack_icon.png"
+  ],
+  "folders": [
+    "blocks",
+    "items",
+    "loot_tables"
+  ]
+}

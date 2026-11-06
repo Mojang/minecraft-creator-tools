@@ -1,0 +1,20 @@
+{
+  "$id": "/server/entity/1.26.50/CopperEventType.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "enum": [
+    "none",
+    "wax_on",
+    "wax_off",
+    "scrape"
+  ],
+  "title": "CopperEventType",
+  "type": "string",
+  "x-enum-binary-value": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "x-format-version": "1.26.50",
+  "x-underlying-type": "uint32"
+}

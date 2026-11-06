@@ -1,0 +1,20 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "aligns its rotation to the nearest cardinal direction"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "minecraft:rotation_axis_aligned",
+  "fields": [],
+  "description": "Causes the entity to automatically rotate to align with the nearest cardinal direction based on its current facing direction.\nCombining this with the \"minecraft:body_rotation_blocked\" component will cause the entity's body to align with the nearest cardinal direction and remain fixed in that orientation, regardless of changes in its facing direction.",
+  "title": "Rotation Axis Aligned",
+  "samples": {}
+}

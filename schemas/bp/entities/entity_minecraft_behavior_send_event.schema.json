@@ -1,0 +1,101 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Send Event Behavior",
+  "description": "Allows the mob to send an event to another mob.",
+  "properties": {
+    "event_choices": {
+      "title": "Event Choices",
+      "description": "List of possible events to send with conditions, weights, and targeting parameters.",
+      "type": "array",
+      "items": {
+        "$ref": "./entity_sendeventchoice.schema.json"
+      }
+    },
+    "control_flags": {
+      "title": "Control Flags",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "jump",
+          "look",
+          "move"
+        ]
+      }
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "type": "integer",
+      "default": 0
+    },
+    "cast_duration": {
+      "title": "Cast Duration",
+      "description": "Time in seconds for the entire event sending process",
+      "type": "number"
+    },
+    "look_at_target": {
+      "title": "Look At Target",
+      "description": "If true, the mob will face the entity it sends an event to",
+      "type": "boolean",
+      "default": true
+    },
+    "sequence": {
+      "title": "Sequence",
+      "description": "List of events to send",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "base_delay": {
+            "title": "Base Delay",
+            "description": "Amount of time in seconds before starting this step",
+            "type": "number",
+            "default": 0
+          },
+          "event": {
+            "title": "Event",
+            "description": "The event to send to the entity",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "event": {
+                    "type": "string"
+                  },
+                  "target": {
+                    "type": "string"
+                  }
+                }
+              }
+            ]
+          },
+          "sound_event": {
+            "title": "Sound Event",
+            "description": "The sound event to play when this step happens",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "event": {
+                    "type": "string"
+                  },
+                  "target": {
+                    "type": "string"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

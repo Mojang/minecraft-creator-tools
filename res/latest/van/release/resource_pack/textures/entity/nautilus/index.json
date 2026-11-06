@@ -1,0 +1,22 @@
+{
+  "files": [
+    "nautilus.png",
+    "nautilus.texture_set.json",
+    "nautilus_baby.png",
+    "nautilus_baby.texture_set.json",
+    "nautilus_baby_mers.tga",
+    "nautilus_mers.tga",
+    "nautilus_saddle.png",
+    "nautilus_saddle.texture_set.json",
+    "nautilus_saddle_mers.tga",
+    "zombie_nautilus.png",
+    "zombie_nautilus.texture_set.json",
+    "zombie_nautilus_coral.png",
+    "zombie_nautilus_coral.texture_set.json",
+    "zombie_nautilus_coral_mers.tga",
+    "zombie_nautilus_mers.tga"
+  ],
+  "folders": [
+    "armor"
+  ]
+}

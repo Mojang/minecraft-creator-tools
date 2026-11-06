@@ -1,0 +1,28 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "versionIntroduced": "1.20.30",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "interacts with liquids when used"
+          }
+        ]
+      }
+    ]
+  },
+  "description": "The liquid_clipped component determines whether the item interacts with liquid blocks on use. To allow placement of blocks on liquids, see the 'placement_filter' block component.",
+  "fields": [
+    {
+      "id": "value",
+      "title": "value",
+      "description": "Deterines whether the item interacts with liquid blocks on use.",
+      "dataType": "boolean"
+    }
+  ],
+  "scalarFieldUpgradeName": "value",
+  "title": "Liquid Clipped",
+  "id": "minecraft:liquid_clipped"
+}

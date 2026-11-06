@@ -1,0 +1,95 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Follow Target Leader Behavior",
+  "description": "Allows mob to move towards its target leader.",
+  "properties": {
+    "always_look_for_leader": {
+      "title": "Always Look For Leader",
+      "description": "If true, the mob will always search for a valid leader to follow if none is found or current leader is not valid anymore",
+      "type": "boolean",
+      "default": false
+    },
+    "control_flags": {
+      "title": "Control Flags",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "jump",
+          "look",
+          "move"
+        ]
+      }
+    },
+    "follow_distance": {
+      "title": "Follow Distance",
+      "description": "Defines the distance in blocks the mob will stay from its target while following.",
+      "type": "number",
+      "default": 0
+    },
+    "leader_filters": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "title": "Domain",
+              "description": "The domain the test should be performed in.",
+              "type": "object"
+            },
+            "operator": {
+              "title": "Operator",
+              "description": "The comparison to apply with 'value'.",
+              "type": "object"
+            },
+            "subject": {
+              "title": "Subject",
+              "description": "The subject of this filter test.",
+              "type": "object"
+            },
+            "test": {
+              "title": "Test",
+              "description": "The name of the test to apply.",
+              "type": "string"
+            },
+            "value": {
+              "title": "Value",
+              "description": "The value being compared with the test.",
+              "type": "object"
+            }
+          }
+        },
+        {
+          "type": "object"
+        }
+      ],
+      "title": "Leader Filters",
+      "description": "The filters to use when determining if a mob is a suitable leader or not."
+    },
+    "priority": {
+      "title": "Priority",
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "type": "integer",
+      "default": 0
+    },
+    "search_cooldown": {
+      "title": "Search Cooldown",
+      "description": "Number of ticks that must pass before a new search is initiated after a target is not found, lost, or becomes invalid.",
+      "type": "integer",
+      "default": 20
+    },
+    "speed_multiplier": {
+      "title": "Speed Multiplier",
+      "description": "Movement speed multiplier of the mob when using this AI Goal",
+      "type": "number",
+      "default": 1
+    },
+    "within_radius": {
+      "title": "Within Radius",
+      "description": "Defines the maximum distance in blocks a mob can get from its target leader before giving up trying to follow it.",
+      "type": "number",
+      "default": 0
+    }
+  }
+}

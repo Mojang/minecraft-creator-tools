@@ -1,0 +1,29 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "uses skipping movement"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "max_turn",
+      "title": "Max Turn",
+      "description": "The maximum number in degrees the mob can turn per tick.",
+      "dataType": "float",
+      "defaultValue": 30
+    }
+  ],
+  "description": "This move control causes the mob to hop as it moves.",
+  "title": "Entity Skip Movement",
+  "samples": {},
+  "id": "minecraft:movement.skip",
+  "dataVersion": "1.26.60"
+}

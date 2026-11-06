@@ -1,0 +1,7 @@
+{
+  "$id": "/server/entity/1.26.20/UsesUniformAirDragDefinition.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "UsesUniformAirDragDefinition",
+  "type": "object",
+  "x-format-version": "1.26.20"
+}

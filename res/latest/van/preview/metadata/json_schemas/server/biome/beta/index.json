@@ -1,0 +1,16 @@
+{
+  "files": [
+    "Biome Components.json",
+    "Biome Definition.json",
+    "Biome Document.json",
+    "Bool Attribute Operation.json",
+    "Bool Environment Attribute.json",
+    "Color Attribute Operation.json",
+    "Color Environment Attribute.json",
+    "Environment Attributes.json",
+    "Float Attribute Operation.json",
+    "Float Environment Attribute.json",
+    "minecraft_surface_builder.json"
+  ],
+  "folders": []
+}

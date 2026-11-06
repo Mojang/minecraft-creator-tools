@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Custom Hit Test",
+  "description": "List of hitboxes for melee and ranged hits against the entity.",
+  "properties": {
+    "hitboxes": {
+      "title": "Hitboxes",
+      "description": "List of hitboxes for melee and ranged hits against the entity.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "width": {
+            "title": "Width",
+            "description": "Width of the hitbox.",
+            "type": "number"
+          },
+          "height": {
+            "title": "Height",
+            "description": "Height of the hitbox.",
+            "type": "number"
+          },
+          "pivot": {
+            "title": "Pivot",
+            "description": "Pivot point of the hitbox.",
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 3,
+            "maxItems": 3
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "JigsawTemplatePool",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines a weighted random item for Jigsaw template pools"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "data",
+      "title": "Data",
+      "description": "Item's data",
+      "dataType": "string",
+      "isRequired": true
+    },
+    {
+      "id": "weight",
+      "title": "Weight",
+      "description": "Weight of item",
+      "dataType": "int",
+      "isRequired": true
+    }
+  ],
+  "description": "Weighted Random Item",
+  "title": "World JigsawTemplatePool",
+  "dataVersion": "1.21.20"
+}

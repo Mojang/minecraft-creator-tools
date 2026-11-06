@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity MobEffectChangeComponentEffect",
+  "properties": {
+    "ambient": {
+      "title": "Ambient",
+      "description": "Whether the effect is ambient.",
+      "type": "boolean",
+      "default": false
+    },
+    "amplifier": {
+      "title": "Amplifier",
+      "description": "The amplifier of the effect.",
+      "type": "integer",
+      "default": 0
+    },
+    "display_on_screen_animation": {
+      "title": "Display On Screen Animation",
+      "description": "Whether the effect displays an on-screen animation.",
+      "type": "boolean",
+      "default": false
+    },
+    "duration": {
+      "title": "Duration",
+      "description": "The duration of the effect in seconds, or \"infinite\".",
+      "type": "object",
+      "default": 0
+    },
+    "effect": {
+      "title": "Effect",
+      "description": "The name of the effect to apply.",
+      "type": "string",
+      "default": ""
+    },
+    "visible": {
+      "title": "Visible",
+      "description": "Whether the effect is visible.",
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

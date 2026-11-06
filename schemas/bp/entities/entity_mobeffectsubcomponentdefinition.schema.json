@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity MobEffectSubcomponentDefinition",
+  "description": "Applies one or more mob effects to the entity hit. Effects are described with an `effects` array of effect objects.",
+  "properties": {
+    "effects": {
+      "title": "Effects",
+      "description": "Array of effect objects. Each element may specify `effect` (name), `amplifier`, and per-difficulty durations `durationeasy`, `durationnormal`, `durationhard`.",
+      "type": "array",
+      "items": {
+        "$ref": "./entity_mobeffectinstance.schema.json"
+      }
+    }
+  }
+}

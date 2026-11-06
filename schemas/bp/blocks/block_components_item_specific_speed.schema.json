@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Block Components Item Specific Speed",
+  "description": "Defines mining speed for a specific item.",
+  "properties": {
+    "destroy_speed": {
+      "title": "Destroy Speed",
+      "description": "Mining speed for that specific item. A negative number means the block can't be mined with that item.",
+      "type": "number"
+    },
+    "item": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      ],
+      "title": "Item",
+      "description": "The item with a specific mining speed."
+    }
+  },
+  "required": [
+    "destroy_speed",
+    "item"
+  ]
+}

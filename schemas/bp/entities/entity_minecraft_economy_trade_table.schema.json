@@ -1,0 +1,108 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Economy Trade Table",
+  "description": "Defines this entity's ability to trade with players.",
+  "properties": {
+    "convert_trades_economy": {
+      "title": "Convert Trades Economy",
+      "description": "Whether legacy trade data is converted into economy trade data.",
+      "type": "boolean",
+      "default": false
+    },
+    "cured_discount": {
+      "title": "Cured Discount",
+      "description": "Range of cured villager discounts applied to trade prices.",
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        {
+          "$ref": "../../common/intrange.schema.json"
+        }
+      ]
+    },
+    "display_name": {
+      "title": "Display Name",
+      "description": "The entity localization key used for the trading UI display name.",
+      "type": "string",
+      "default": ""
+    },
+    "hero_demand_discount": {
+      "title": "Hero Demand Discount",
+      "description": "Additional demand discount applied while the player has Hero of the Village.",
+      "type": "integer",
+      "default": -4
+    },
+    "max_cured_discount": {
+      "title": "Max Cured Discount",
+      "description": "Maximum allowed range for cured villager discounts.",
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        {
+          "$ref": "../../common/intrange.schema.json"
+        }
+      ]
+    },
+    "max_nearby_cured_discount": {
+      "title": "Max Nearby Cured Discount",
+      "description": "Most negative nearby cured villager discount allowed by legacy pricing.",
+      "type": "integer",
+      "default": -200
+    },
+    "nearby_cured_discount": {
+      "title": "Nearby Cured Discount",
+      "description": "Nearby cured villager discount step applied by legacy pricing.",
+      "type": "integer",
+      "default": -20
+    },
+    "new_screen": {
+      "title": "New Screen",
+      "description": "Whether this trader uses the newer trade screen implementation.",
+      "type": "boolean",
+      "default": false
+    },
+    "persist_trades": {
+      "title": "Persist Trades",
+      "description": "Whether generated offers are persisted with the actor save data.",
+      "type": "boolean",
+      "default": false
+    },
+    "show_trade_screen": {
+      "title": "Show Trade Screen",
+      "description": "Whether interacting with this trader opens the trade screen.",
+      "type": "boolean",
+      "default": true
+    },
+    "table": {
+      "title": "Table",
+      "description": "Path to the trade table JSON that defines available offers.",
+      "type": "string",
+      "default": ""
+    },
+    "use_legacy_price_formula": {
+      "title": "Use Legacy Price Formula",
+      "description": "Whether legacy price calculations are used instead of the newer pricing formula.",
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

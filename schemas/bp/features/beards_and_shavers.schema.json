@@ -1,0 +1,56 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Beards And Shavers",
+  "description": "\n\nProperties:\n• description ({ identifier })\n• bounding_box_min (string[])\n• bounding_box_max (string[])",
+  "type": "object",
+  "properties": {
+    "description": {
+      "title": "Description",
+      "description": "\n\nProperties:\n• identifier (string)",
+      "type": "object",
+      "properties": {
+        "identifier": {
+          "title": "Identifier",
+          "description": "The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
+          "type": "string"
+        }
+      },
+      "defaultSnippets": [
+        {
+          "label": "Description",
+          "description": "Create a Description",
+          "body": {
+            "identifier": ""
+          }
+        }
+      ]
+    },
+    "bounding_box_min": {
+      "title": "Bounding Box Min",
+      "description": "Dimensions of the Bounding Box",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "bounding_box_max": {
+      "title": "Bounding Box Max",
+      "description": "Dimensions of the Bounding Box",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "defaultSnippets": [
+    {
+      "label": "Beards And Shavers",
+      "description": "Create a Beards And Shavers",
+      "body": {
+        "description": "",
+        "bounding_box_min": "",
+        "bounding_box_max": ""
+      }
+    }
+  ]
+}

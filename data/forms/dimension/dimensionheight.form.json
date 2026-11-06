@@ -1,0 +1,41 @@
+{
+  "id": "DimensionHeight",
+  "fields": [
+    {
+      "id": "height_range",
+      "title": "Height Range",
+      "description": "The total vertical height of the custom dimension. Defaults to 384 if this component is omitted.",
+      "dataType": "int",
+      "validity": [
+        {
+          "comparison": ">=",
+          "value": 16
+        },
+        {
+          "comparison": "<=",
+          "value": 1024
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "min_y",
+      "title": "Min Y",
+      "description": "The minimum Y coordinate of the custom dimension. Defaults to -64 if this component is omitted.",
+      "dataType": "int",
+      "validity": [
+        {
+          "comparison": ">=",
+          "value": -512
+        },
+        {
+          "comparison": "<=",
+          "value": 512
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "title": "DimensionHeight",
+  "dataVersion": "1.26.50"
+}

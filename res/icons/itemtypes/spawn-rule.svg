@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Spawn Rule: Egg -->
+  <ellipse cx="8" cy="9" rx="5" ry="6" fill-opacity="0.15"/>
+  <ellipse cx="8" cy="9" rx="4" ry="5" fill-opacity="0.3"/>
+  <ellipse cx="6" cy="7" rx="1" ry="1.5" fill-opacity="0.5"/>
+  <ellipse cx="10" cy="8" rx="0.8" ry="1.2" fill-opacity="0.4"/>
+  <ellipse cx="7" cy="11" rx="1.2" ry="1" fill-opacity="0.5"/>
+</svg>

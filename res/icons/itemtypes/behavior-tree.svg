@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Behavior Tree: Tree structure -->
+  <circle cx="8" cy="2" r="1.5"/>
+  <path d="M8 3.5V5" stroke="currentColor" stroke-width="0.8"/>
+  <path d="M4 6H12" stroke="currentColor" stroke-width="0.8"/>
+  <path d="M4 6V7M8 5V7M12 6V7" stroke="currentColor" stroke-width="0.8"/>
+  <rect x="2" y="7" width="4" height="3" rx="0.5" fill-opacity="0.5"/>
+  <rect x="6" y="7" width="4" height="3" rx="0.5"/>
+  <rect x="10" y="7" width="4" height="3" rx="0.5" fill-opacity="0.5"/>
+  <path d="M4 10V11M8 10V11M12 10V11" stroke="currentColor" stroke-width="0.6"/>
+  <circle cx="4" cy="12" r="1" fill-opacity="0.6"/>
+  <circle cx="8" cy="12" r="1" fill-opacity="0.6"/>
+  <circle cx="12" cy="12" r="1" fill-opacity="0.6"/>
+</svg>

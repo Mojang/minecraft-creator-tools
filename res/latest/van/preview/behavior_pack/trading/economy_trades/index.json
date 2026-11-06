@@ -1,0 +1,19 @@
+{
+  "files": [
+    "armorer_trades.json",
+    "butcher_trades.json",
+    "cartographer_trades.json",
+    "cleric_trades.json",
+    "farmer_trades.json",
+    "fisherman_trades.json",
+    "fletcher_trades.json",
+    "leather_worker_trades.json",
+    "librarian_trades.json",
+    "shepherd_trades.json",
+    "stone_mason_trades.json",
+    "tool_smith_trades.json",
+    "wandering_trader_trades.json",
+    "weapon_smith_trades.json"
+  ],
+  "folders": []
+}

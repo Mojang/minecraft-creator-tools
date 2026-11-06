@@ -1,0 +1,144 @@
+{
+  "resource_pack_name": "vanilla",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "spawn_egg_frostbite": {
+      "textures": "textures/items/spawn_eggs/spawn_egg_frostbite"
+    },
+    "icicle": {
+      "textures": "textures/items/icicle"
+    },
+    "ice_ball": {
+      "textures": "textures/items/ice_ball"
+    },
+    "ice_crystal": {
+      "textures": "textures/items/ice_crystal"
+    },
+    "potion_bottle_drinkable": {
+      "textures": [
+        "textures/items/potion_bottle_drinkable",
+        "textures/items/potion_bottle_moveSpeed",
+        "textures/items/potion_bottle_moveSlowdown",
+        "textures/items/potion_bottle_digSpeed",
+        "textures/items/potion_bottle_digSlowdown",
+        "textures/items/potion_bottle_damageBoost",
+        "textures/items/potion_bottle_heal",
+        "textures/items/potion_bottle_harm",
+        "textures/items/potion_bottle_jump",
+        "textures/items/potion_bottle_confusion",
+        "textures/items/potion_bottle_regeneration",
+        "textures/items/potion_bottle_resistance",
+        "textures/items/potion_bottle_fireResistance",
+        "textures/items/potion_bottle_waterBreathing",
+        "textures/items/potion_bottle_invisibility",
+        "textures/items/potion_bottle_blindness",
+        "textures/items/potion_bottle_nightVision",
+        "textures/items/potion_bottle_hunger",
+        "textures/items/potion_bottle_weakness",
+        "textures/items/potion_bottle_poison",
+        "textures/items/potion_bottle_wither",
+        "textures/items/potion_bottle_healthBoost",
+        "textures/items/potion_bottle_absorption",
+        "textures/items/potion_bottle_saturation",
+        "textures/items/potion_bottle_levitation",
+        "textures/items/potion_bottle_turtleMaster",
+        "textures/items/potion_bottle_slowFall",
+        "textures/items/potion_bottle_windCharged",
+        "textures/items/potion_bottle_weaving",
+        "textures/items/potion_bottle_oozing",
+        "textures/items/potion_bottle_infested",
+        "textures/items/potion_bottle_freezing"
+      ]
+    },
+    "potion_bottle_splash": {
+      "textures": [
+        "textures/items/potion_bottle_splash",
+        "textures/items/potion_bottle_splash_moveSpeed",
+        "textures/items/potion_bottle_splash_moveSlowdown",
+        "textures/items/potion_bottle_splash_digSpeed",
+        "textures/items/potion_bottle_splash_digSlowdown",
+        "textures/items/potion_bottle_splash_damageBoost",
+        "textures/items/potion_bottle_splash_heal",
+        "textures/items/potion_bottle_splash_harm",
+        "textures/items/potion_bottle_splash_jump",
+        "textures/items/potion_bottle_splash_confusion",
+        "textures/items/potion_bottle_splash_regeneration",
+        "textures/items/potion_bottle_splash_resistance",
+        "textures/items/potion_bottle_splash_fireResistance",
+        "textures/items/potion_bottle_splash_waterBreathing",
+        "textures/items/potion_bottle_splash_invisibility",
+        "textures/items/potion_bottle_splash_blindness",
+        "textures/items/potion_bottle_splash_nightVision",
+        "textures/items/potion_bottle_splash_hunger",
+        "textures/items/potion_bottle_splash_weakness",
+        "textures/items/potion_bottle_splash_poison",
+        "textures/items/potion_bottle_splash_wither",
+        "textures/items/potion_bottle_splash_healthBoost",
+        "textures/items/potion_bottle_splash_absorption",
+        "textures/items/potion_bottle_splash_saturation",
+        "textures/items/potion_bottle_splash_turtleMaster",
+        "textures/items/potion_bottle_splash_slowFall",
+        "textures/items/potion_bottle_splash_windCharged",
+        "textures/items/potion_bottle_splash_weaving",
+        "textures/items/potion_bottle_splash_oozing",
+        "textures/items/potion_bottle_splash_infested",
+        "textures/items/potion_bottle_splash_freezing"
+      ]
+    },
+    "potion_bottle_lingering": {
+      "textures": [
+        "textures/items/potion_bottle_lingering",
+        "textures/items/potion_bottle_lingering_moveSpeed",
+        "textures/items/potion_bottle_lingering_moveSlowdown",
+        "textures/items/potion_bottle_lingering_damageBoost",
+        "textures/items/potion_bottle_lingering_heal",
+        "textures/items/potion_bottle_lingering_harm",
+        "textures/items/potion_bottle_lingering_jump",
+        "textures/items/potion_bottle_lingering_regeneration",
+        "textures/items/potion_bottle_lingering_fireResistance",
+        "textures/items/potion_bottle_lingering_waterBreathing",
+        "textures/items/potion_bottle_lingering_invisibility",
+        "textures/items/potion_bottle_lingering_nightVision",
+        "textures/items/potion_bottle_lingering_weakness",
+        "textures/items/potion_bottle_lingering_poison",
+        "textures/items/potion_bottle_lingering_wither",
+        "textures/items/potion_bottle_lingering_turtleMaster",
+        "textures/items/potion_bottle_lingering_slowFall",
+        "textures/items/potion_bottle_lingering_windCharged",
+        "textures/items/potion_bottle_lingering_weaving",
+        "textures/items/potion_bottle_lingering_oozing",
+        "textures/items/potion_bottle_lingering_infested",
+        "textures/items/potion_bottle_lingering_freezing"
+      ]
+    },
+    "tipped_arrow": {
+      "textures": [
+        "textures/items/tipped_arrow",
+        "textures/items/tipped_arrow_swift",
+        "textures/items/tipped_arrow_slow",
+        "textures/items/tipped_arrow_strength",
+        "textures/items/tipped_arrow_healing",
+        "textures/items/tipped_arrow_harm",
+        "textures/items/tipped_arrow_leaping",
+        "textures/items/tipped_arrow_regen",
+        "textures/items/tipped_arrow_fireres",
+        "textures/items/tipped_arrow_waterbreathing",
+        "textures/items/tipped_arrow_invisibility",
+        "textures/items/tipped_arrow_nightvision",
+        "textures/items/tipped_arrow_weakness",
+        "textures/items/tipped_arrow_poison",
+        "textures/items/tipped_arrow_wither",
+        "textures/items/tipped_arrow_turtlemaster",
+        "textures/items/tipped_arrow_slowfalling",
+        "textures/items/tipped_arrow_windCharged",
+        "textures/items/tipped_arrow_weaving",
+        "textures/items/tipped_arrow_oozing",
+        "textures/items/tipped_arrow_infested",
+        "textures/items/tipped_arrow_freezing"
+      ]
+    },
+    "record_flurry": {
+      "textures": "textures/items/music_disc_flurry"
+    }
+  }
+}

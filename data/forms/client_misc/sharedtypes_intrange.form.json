@@ -1,0 +1,31 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines a range with min and max integer values"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "min",
+      "title": "min",
+      "description": "min",
+      "dataType": "int"
+    },
+    {
+      "id": "max",
+      "title": "max",
+      "description": "max",
+      "dataType": "int"
+    }
+  ],
+  "description": "SharedTypes IntRange",
+  "title": "SharedTypes IntRange"
+}

@@ -1,0 +1,69 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "value",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has a flying speed of "
+          },
+          {
+            "type": "value",
+            "field": "value"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "Flying speed in blocks per tick.",
+      "defaultValue": 0.02,
+      "dataType": "float",
+      "samples": {
+        "/vanilla/behavior_pack/entities/allay.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:flying_speed/",
+            "content": 0.1
+          }
+        ],
+        "/vanilla/behavior_pack/entities/ender_dragon.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:flying_speed/",
+            "content": 0.6
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Speed in Blocks that this entity flies at.",
+  "title": "Flying Speed",
+  "samples": {
+    "/vanilla/behavior_pack/entities/allay.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:flying_speed/",
+        "content": {
+          "value": 0.1
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/ender_dragon.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:flying_speed/",
+        "content": {
+          "value": 0.6
+        }
+      }
+    ]
+  },
+  "id": "minecraft:flying_speed"
+}

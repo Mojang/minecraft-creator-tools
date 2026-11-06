@@ -1,0 +1,19 @@
+{
+  "$id": "/server/biome/1.21.110/Biome%20Description.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Contains non-component settings for a Biome.",
+  "properties": {
+    "identifier": {
+      "$ref": "../../../client_server/common/legacy/Identifier%203.json",
+      "description": "The name of the Biome, used by other features like the '/locate biome' command. Identifiers should only be lowercase.",
+      "pattern": "^[a-z0-9._%+-]+:[a-z0-9._%+-]+$",
+      "x-ordinal-index": 0
+    }
+  },
+  "required": [
+    "identifier"
+  ],
+  "title": "Biome Description",
+  "type": "object",
+  "x-format-version": "1.21.110"
+}

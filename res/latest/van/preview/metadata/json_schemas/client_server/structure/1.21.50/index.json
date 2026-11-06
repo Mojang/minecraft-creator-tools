@@ -1,0 +1,11 @@
+{
+  "files": [
+    "Jigsaw Joint Type.json",
+    "Jigsaw Structure Metadata.json",
+    "JigsawBlockMetadata.json",
+    "JigsawStructureMetadata.json",
+    "JigsawStructureMetadataRegistry.json",
+    "block_pos.json"
+  ],
+  "folders": []
+}

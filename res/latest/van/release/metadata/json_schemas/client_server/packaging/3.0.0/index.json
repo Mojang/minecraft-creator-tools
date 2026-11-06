@@ -1,0 +1,24 @@
+{
+  "files": [
+    "DropdownOption.json",
+    "DropdownSetting.json",
+    "Header.json",
+    "LabelSetting.json",
+    "Manifest.json",
+    "Metadata.json",
+    "Module.json",
+    "MultiSelectSetting.json",
+    "NativeModuleDependency.json",
+    "PackDependency.json",
+    "RelaxedSemVersion.json",
+    "SemVersion.json",
+    "SemVersionProxy.json",
+    "SettingType.json",
+    "SliderSetting.json",
+    "Subpack.json",
+    "ToggleSetting.json",
+    "UUID.json",
+    "VersionSelectType.json"
+  ],
+  "folders": []
+}

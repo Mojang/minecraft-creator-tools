@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Sound Volume",
+  "description": "Sets the entity's base volume for sound effects.",
+  "properties": {
+    "value": {
+      "title": "Value",
+      "description": "The value of the volume the entity uses for sound effects.",
+      "type": "number",
+      "default": 1
+    }
+  }
+}

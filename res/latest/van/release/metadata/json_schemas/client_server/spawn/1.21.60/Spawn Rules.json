@@ -1,0 +1,31 @@
+{
+  "$id": "/client_server/spawn/1.21.60/Spawn%20Rules.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "conditions": {
+      "default": [
+      ],
+      "items": {
+        "$ref": "./BiomeConditions.json",
+        "description": "Biome specific rules for spawning"
+      },
+      "type": "array",
+      "x-ordinal-index": 2
+    },
+    "description": {
+      "$ref": "./Spawn%20Description.json",
+      "x-ordinal-index": 0
+    },
+    "placement": {
+      "$ref": "./Placement.json",
+      "description": "Placement rule defintions",
+      "x-ordinal-index": 1
+    }
+  },
+  "required": [
+    "description"
+  ],
+  "title": "Spawn Rules",
+  "type": "object",
+  "x-format-version": "1.21.60"
+}

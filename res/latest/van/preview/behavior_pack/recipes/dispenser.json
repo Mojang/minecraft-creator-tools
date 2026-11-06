@@ -1,0 +1,36 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:dispenser"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "pattern": [
+      "###",
+      "#X#",
+      "#R#"
+    ],
+    "key": {
+      "R": {
+        "item": "minecraft:redstone"
+      },
+      "#": {
+        "item": "minecraft:cobblestone"
+      },
+      "X": {
+        "item": "minecraft:bow"
+      }
+    },
+    "unlock": [
+      {
+        "item": "minecraft:bow"
+      }
+    ],
+    "result": {
+      "item": "minecraft:dispenser",
+      "data": 3
+    }
+  }
+}

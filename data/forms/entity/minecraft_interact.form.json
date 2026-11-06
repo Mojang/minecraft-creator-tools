@@ -1,0 +1,170 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "note": "In 1.26.0, the `swing` field on each interaction entry defaults to `true` (it previously defaulted to `false`). Set it explicitly to `false` to opt out of the player's swing animation.",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "can be interacted with by players"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "interactions.cooldown",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has a "
+          },
+          {
+            "type": "value",
+            "field": "interactions.cooldown"
+          },
+          {
+            "type": "literal",
+            "text": " second interaction cooldown"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "interactions.use_item",
+            "comparison": "=",
+            "value": true
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "consumes the held item when interacted with"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "interactions.spawn_entities",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "spawns entities on interaction"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "interactions.transform_to_item",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "transforms the used item on interaction"
+          }
+        ]
+      },
+      {
+        "visibility": [
+          {
+            "field": "interactions.play_sounds",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "plays sounds during interaction"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "interactions",
+      "dataType": "objectArray",
+      "description": "The list of interactions for this entity.",
+      "alternates": [
+        {
+          "id": "interactions",
+          "dataType": "object",
+          "subFormId": "interactions"
+        }
+      ],
+      "defaultValue": [],
+      "subFormId": "entity/interactiondata",
+      "title": "Interactions"
+    },
+    {
+      "id": "cooldown",
+      "title": "Cooldown",
+      "description": "Time in seconds before this entity can be interacted with again.",
+      "defaultValue": 0,
+      "dataType": "float"
+    },
+    {
+      "id": "cooldown_after_being_attacked",
+      "title": "Cooldown After Being Attacked",
+      "description": "Time in seconds before this entity can be interacted with after being attacked.",
+      "defaultValue": 0,
+      "dataType": "float"
+    },
+    {
+      "id": "drop_item_slot",
+      "title": "Drop Item Slot",
+      "description": "The entity's slot to remove and drop the item from, if any, upon successful interaction. Inventory slots are denoted by positive numbers. Equipment slots are denoted by 'slot.weapon.mainhand', 'slot.weapon.offhand', 'slot.armor.head', 'slot.armor.chest', 'slot.armor.legs', 'slot.armor.feet' and 'slot.armor.body'.",
+      "dataType": "string"
+    },
+    {
+      "id": "drop_item_y_offset",
+      "title": "Drop Item y Offset",
+      "description": "Will offset the item drop position this amount in the y direction. Requires \"drop_item_slot\" to be specified.",
+      "defaultValue": 0,
+      "dataType": "float"
+    },
+    {
+      "id": "equip_item_slot",
+      "title": "Equip Item Slot",
+      "description": "The entity's slot to equip the item to, if any, upon successful interaction. Inventory slots are denoted by positive numbers. Equipment slots are denoted by 'slot.weapon.mainhand', 'slot.weapon.offhand', 'slot.armor.head', 'slot.armor.chest', 'slot.armor.legs', 'slot.armor.feet' and 'slot.armor.body'.",
+      "dataType": "string"
+    },
+    {
+      "id": "health_amount",
+      "title": "Health Amount",
+      "description": "The amount of health this entity will recover or lose when interacting with this item. Negative values will harm the entity.",
+      "defaultValue": 0,
+      "dataType": "int"
+    },
+    {
+      "id": "hurt_item",
+      "title": "Hurt Item",
+      "description": "The amount of damage the item will take when used to interact with this entity. A value of 0 means the item won't lose durability.",
+      "defaultValue": 0,
+      "dataType": "int"
+    },
+    {
+      "id": "interact_text",
+      "title": "Interact Text",
+      "description": "Text to show when the player is able to interact in this way with this entity when playing with touch-screen controls.",
+      "dataType": "string"
+    }
+  ],
+  "description": "Defines interactions with this entity.",
+  "title": "Entity Interact",
+  "samples": {},
+  "id": "minecraft:interact",
+  "dataVersion": "1.26.50"
+}

@@ -1,0 +1,108 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "UV Proxy",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "controls UV texture mapping and flipbook animation"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "flipbook",
+      "title": "Flipbook",
+      "dataType": "object",
+      "subFormId": "client_misc/particle_appearance_billboard_flipbook_data"
+    },
+    {
+      "id": "texture_height",
+      "title": "Texture Height",
+      "dataType": "int"
+    },
+    {
+      "id": "texture_width",
+      "title": "Texture Width",
+      "dataType": "int"
+    },
+    {
+      "id": "uv",
+      "title": "Uv",
+      "dataType": "keyedStringCollection",
+      "minLength": 2,
+      "maxLength": 2,
+      "alternates": [
+        {
+          "id": "uv",
+          "dataType": "keyedObjectCollection",
+          "readOnly": true,
+          "subForm": {
+            "id": "uv",
+            "title": "Uv",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "Expression",
+                "dataType": "string",
+                "isRequired": true
+              },
+              {
+                "id": "version",
+                "title": "Version",
+                "dataType": "int",
+                "isRequired": true
+              }
+            ]
+          }
+        },
+        {
+          "id": "uv",
+          "dataType": "float"
+        }
+      ]
+    },
+    {
+      "id": "uv_size",
+      "title": "Uv Size",
+      "dataType": "keyedStringCollection",
+      "minLength": 2,
+      "maxLength": 2,
+      "alternates": [
+        {
+          "id": "uv_size",
+          "dataType": "keyedObjectCollection",
+          "readOnly": true,
+          "subForm": {
+            "id": "uv_size",
+            "title": "Uv Size",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "Expression",
+                "dataType": "string",
+                "isRequired": true
+              },
+              {
+                "id": "version",
+                "title": "Version",
+                "dataType": "int",
+                "isRequired": true
+              }
+            ]
+          }
+        },
+        {
+          "id": "uv_size",
+          "dataType": "float"
+        }
+      ]
+    }
+  ],
+  "description": "Controls UV texture mapping and flipbook animation.",
+  "title": "UV Proxy Client Misc"
+}

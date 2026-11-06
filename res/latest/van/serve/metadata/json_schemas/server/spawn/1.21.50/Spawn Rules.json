@@ -1,0 +1,25 @@
+{
+  "$id": "/server/spawn/1.21.50/Spawn%20Rules.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "conditions": {
+      "default": [
+      ],
+      "items": {
+        "$ref": "./Spawn%20BiomeConditions.json"
+      },
+      "type": "array",
+      "x-ordinal-index": 1
+    },
+    "description": {
+      "$ref": "./Spawn%20Description.json",
+      "x-ordinal-index": 0
+    }
+  },
+  "required": [
+    "description"
+  ],
+  "title": "Spawn Rules",
+  "type": "object",
+  "x-format-version": "1.21.50"
+}

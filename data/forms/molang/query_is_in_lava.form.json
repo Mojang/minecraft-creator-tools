@@ -1,0 +1,19 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "checks if entity is in lava"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "query.is_in_lava",
+  "fields": [],
+  "description": "Returns 1.0 if the entity is in lava, else it returns 0.0.",
+  "title": "Is In Lava"
+}

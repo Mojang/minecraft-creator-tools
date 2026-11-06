@@ -1,0 +1,18 @@
+{
+  "files": [
+    "dragon.png",
+    "dragon.texture_set.json",
+    "dragon.tga",
+    "dragon_exploding.png",
+    "dragon_exploding.texture_set.json",
+    "dragon_exploding_mers.png",
+    "dragon_exploding_mers.tga",
+    "dragon_eyes.png",
+    "dragon_eyes.texture_set.json",
+    "dragon_eyes_mers.png",
+    "dragon_eyes_mers.tga",
+    "dragon_mers.png",
+    "dragon_mers.tga"
+  ],
+  "folders": []
+}

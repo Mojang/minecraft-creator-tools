@@ -1,0 +1,195 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Healable",
+  "description": "How entities heal",
+  "properties": {
+    "force_use": {
+      "title": "Whether an item can be used even if the entity is at full health",
+      "description": "Determines if item can be used regardless of entity being at full health.\n\nSample values:\n• parrot: true",
+      "type": "boolean",
+      "default": false
+    },
+    "filters": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "title": "Domain",
+              "description": "The domain the test should be performed in.",
+              "type": "object"
+            },
+            "operator": {
+              "title": "Operator",
+              "description": "The comparison to apply with 'value'.",
+              "type": "object"
+            },
+            "subject": {
+              "title": "Subject",
+              "description": "The subject of this filter test.",
+              "type": "object"
+            },
+            "test": {
+              "title": "Test",
+              "description": "The name of the test to apply.",
+              "type": "string"
+            },
+            "value": {
+              "title": "Value",
+              "description": "The value being compared with the test.",
+              "type": "object"
+            }
+          }
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "domain": {
+                "title": "Domain",
+                "description": "The domain the test should be performed in.",
+                "type": "object"
+              },
+              "operator": {
+                "title": "Operator",
+                "description": "The comparison to apply with 'value'.",
+                "type": "object"
+              },
+              "subject": {
+                "title": "Subject",
+                "description": "The subject of this filter test.",
+                "type": "object"
+              },
+              "test": {
+                "title": "Test",
+                "description": "The name of the test to apply.",
+                "type": "string"
+              },
+              "value": {
+                "title": "Value",
+                "description": "The value being compared with the test.",
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "all_of": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "domain": {
+                    "title": "Domain",
+                    "description": "The domain the test should be performed in.",
+                    "type": "object"
+                  },
+                  "operator": {
+                    "title": "Operator",
+                    "description": "The comparison to apply with 'value'.",
+                    "type": "object"
+                  },
+                  "subject": {
+                    "title": "Subject",
+                    "description": "The subject of this filter test.",
+                    "type": "object"
+                  },
+                  "test": {
+                    "title": "Test",
+                    "description": "The name of the test to apply.",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "The value being compared with the test.",
+                    "type": "object"
+                  }
+                }
+              }
+            },
+            "any_of": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "domain": {
+                    "title": "Domain",
+                    "description": "The domain the test should be performed in.",
+                    "type": "object"
+                  },
+                  "operator": {
+                    "title": "Operator",
+                    "description": "The comparison to apply with 'value'.",
+                    "type": "object"
+                  },
+                  "subject": {
+                    "title": "Subject",
+                    "description": "The subject of this filter test.",
+                    "type": "object"
+                  },
+                  "test": {
+                    "title": "Test",
+                    "description": "The name of the test to apply.",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "The value being compared with the test.",
+                    "type": "object"
+                  }
+                }
+              }
+            },
+            "none_of": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "domain": {
+                    "title": "Domain",
+                    "description": "The domain the test should be performed in.",
+                    "type": "object"
+                  },
+                  "operator": {
+                    "title": "Operator",
+                    "description": "The comparison to apply with 'value'.",
+                    "type": "object"
+                  },
+                  "subject": {
+                    "title": "Subject",
+                    "description": "The subject of this filter test.",
+                    "type": "object"
+                  },
+                  "test": {
+                    "title": "Test",
+                    "description": "The name of the test to apply.",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "The value being compared with the test.",
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": "Additional filters when healing happens",
+      "description": "The filter group that defines the conditions for using this item to heal the entity.\n\nSample values:\n• parrot: {\"operator\":\"!=\",\"test\":\"is_riding\",\"value\":true}"
+    },
+    "items": {
+      "title": "Items",
+      "description": "The array of items that can be used to heal this entity.\n\nSample values:\n• llama: [{\"item\":\"wheat\",\"heal_amount\":2},{\"item\":\"hay_...\n• parrot: [{\"effects\":[{\"amplifier\":0,\"chance\":1,\"duratio...",
+      "type": "array",
+      "items": {
+        "$ref": "./entity_healablecomponentfeeditem.schema.json"
+      }
+    }
+  }
+}

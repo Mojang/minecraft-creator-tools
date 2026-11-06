@@ -1,0 +1,8 @@
+{
+  "files": [
+    "custom_arrow.render_controllers.json",
+    "custom_bow.render_controllers.json",
+    "custom_snowball.render_controllers.json"
+  ],
+  "folders": []
+}

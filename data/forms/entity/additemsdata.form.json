@@ -1,0 +1,14 @@
+{
+  "id": "AddItemsData",
+  "fields": [
+    {
+      "id": "table",
+      "title": "Table",
+      "description": "File path, relative to the Behavior Pack's path, to the loot table file.",
+      "dataType": "string",
+      "isRequired": true
+    }
+  ],
+  "title": "Entity AddItemsData",
+  "dataVersion": "1.26.50"
+}

@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity SpawnChanceSubcomponentDefinition",
+  "description": "Conditionally spawns one or two groups of entities at the impact location and optionally fires events on each spawned entity.",
+  "properties": {
+    "first_spawn_chance": {
+      "title": "First Spawn Chance",
+      "description": "Percent chance (0-1.0) that the first group spawns.",
+      "type": "number",
+      "maximum": 1,
+      "default": 0
+    },
+    "first_spawn_count": {
+      "title": "First Spawn Count",
+      "description": "Number of entities spawned when the first roll succeeds.",
+      "type": "integer",
+      "default": 0
+    },
+    "on_spawn": {
+      "title": "Spawn",
+      "description": "Array of entity event triggers to fire on each spawned entity.",
+      "type": "array",
+      "items": {
+        "$ref": "./entity_actordefinitiontrigger.schema.json"
+      }
+    },
+    "second_spawn_chance": {
+      "title": "Second Spawn Chance",
+      "description": "Percent chance (0-1.0) that the second group spawns (rolled independently of the first).",
+      "type": "number",
+      "maximum": 1,
+      "default": 0
+    },
+    "second_spawn_count": {
+      "title": "Second Spawn Count",
+      "description": "Number of entities spawned when the second roll succeeds.",
+      "type": "integer",
+      "default": 0
+    },
+    "spawn_baby": {
+      "title": "Spawn Baby",
+      "description": "If `true`, spawned entities start as babies (where applicable).",
+      "type": "boolean",
+      "default": false
+    },
+    "spawn_definition": {
+      "title": "Spawn Definition",
+      "description": "Identifier of the entity definition to spawn.",
+      "type": "string",
+      "default": ""
+    }
+  }
+}

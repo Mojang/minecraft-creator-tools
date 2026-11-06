@@ -1,0 +1,24 @@
+{
+  "$id": "/client/biome/1.21.40/Client%20Biome%20Document.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Contains a format version and a Client Biome definition",
+  "properties": {
+    "format_version": {
+      "description": "Version of the JSON schema used by this file",
+      "type": "string",
+      "x-ordinal-index": 1
+    },
+    "minecraft:client_biome": {
+      "$ref": "./Client%20Biome%20Definition.json",
+      "description": "A single Client Biome definition, containing rendering or sound settings related to a Biome defined by the game or a behavior pack",
+      "x-ordinal-index": 0
+    }
+  },
+  "required": [
+    "format_version",
+    "minecraft:client_biome"
+  ],
+  "title": "Client Biome JSON File",
+  "type": "object",
+  "x-format-version": "1.21.40"
+}

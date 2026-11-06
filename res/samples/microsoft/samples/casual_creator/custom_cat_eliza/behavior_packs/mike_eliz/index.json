@@ -1,0 +1,11 @@
+{
+  "files": [
+    "manifest.json",
+    "pack_icon.png"
+  ],
+  "folders": [
+    "entities",
+    "loot_tables",
+    "spawn_rules"
+  ]
+}

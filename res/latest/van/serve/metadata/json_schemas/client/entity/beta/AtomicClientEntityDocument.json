@@ -1,0 +1,23 @@
+{
+  "$id": "/client/entity/beta/AtomicClientEntityDocument.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Document structure for Atomic Client Entity JSON files. Simplified format with no component groups or events.",
+  "properties": {
+    "components": {
+      "$ref": "./Atomic%20Client%20Entity%20component%20definitions.json",
+      "description": "Component definitions for Atomic Client Entity. Flat component storage with no groups or events.",
+      "x-ordinal-index": 1
+    },
+    "description": {
+      "$ref": "./Atomic%20Client%20Entity%20Description.json",
+      "description": "Description metadata for Atomic Client Entity. Contains the entity identifier.",
+      "x-ordinal-index": 0
+    }
+  },
+  "required": [
+    "description"
+  ],
+  "title": "Atomic Client Entity Document",
+  "type": "object",
+  "x-format-version": "beta"
+}

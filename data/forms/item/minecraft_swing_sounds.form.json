@@ -1,0 +1,41 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "minecraft:swing_sounds",
+  "versionIntroduced": "1.21.130",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has custom swing sounds"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "attack_critical_hit",
+      "title": "Attack Critical Hit",
+      "description": "Sound played when an attack hits and deals critical damage.",
+      "dataType": "string"
+    },
+    {
+      "id": "attack_hit",
+      "title": "Attack Hit",
+      "description": "Sound played when an attack hits.",
+      "dataType": "string"
+    },
+    {
+      "id": "attack_miss",
+      "title": "Attack Miss",
+      "description": "Sound played when an attack misses or deals no damage due to invulnerability.",
+      "dataType": "string"
+    }
+  ],
+  "description": "Overrides the swing sounds emitted by the user. Each field accepts the name of any sound event defined in `sound_definitions.json`, including the built-in vanilla sound events.",
+  "title": "Item Swing Sounds",
+  "samples": {},
+  "dataVersion": "1.26.50"
+}

@@ -1,0 +1,23 @@
+{
+  "$id": "/client_server/dimension/1.21.60/Dimension.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "components": {
+      "$ref": "./Components.json",
+      "description": "Contains the components that configure the custom dimension.",
+      "x-ordinal-index": 1
+    },
+    "description": {
+      "$ref": "./Description.json",
+      "description": "Contains identifying information for the custom dimension.",
+      "x-ordinal-index": 0
+    }
+  },
+  "required": [
+    "components",
+    "description"
+  ],
+  "title": "Dimension",
+  "type": "object",
+  "x-format-version": "1.21.60"
+}

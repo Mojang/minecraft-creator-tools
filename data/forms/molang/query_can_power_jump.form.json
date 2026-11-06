@@ -1,0 +1,19 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "checks if entity can power jump"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "query.can_power_jump",
+  "fields": [],
+  "description": "Returns 1.0 if the entity can power jump, else it returns 0.0.",
+  "title": "Can Power Jump"
+}

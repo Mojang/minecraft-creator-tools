@@ -1,0 +1,15 @@
+{
+  "id": "TransformationAddComponents",
+  "fields": [
+    {
+      "id": "component_groups",
+      "title": "Component Groups",
+      "description": "Names of component groups to add",
+      "dataType": "stringArray",
+      "defaultValue": []
+    }
+  ],
+  "description": "List of components to add to the entity after the transformation",
+  "title": "Entity TransformationAddComponents",
+  "dataVersion": "1.26.60"
+}

@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity SoundDefinition",
+  "properties": {
+    "condition": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        {
+          "type": "string"
+        },
+        {
+          "description": "\n\nProperties:\n• expression (string)\n• version (int)",
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "../../common/expression.schema.json"
+          }
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "title": "Condition",
+      "description": "A Molang expression describing under which conditions to play this sound, given that the entity was provoked."
+    },
+    "sound": {
+      "title": "Sound",
+      "description": "The sound to play.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "condition",
+    "sound"
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "data_items": [
+    {
+      "name": "minecraft:abandoned_camp_bamboo_jungle"
+    },
+    {
+      "name": "minecraft:abandoned_camp_birch_forest"
+    },
+    {
+      "name": "minecraft:abandoned_camp_cherry_grove"
+    },
+    {
+      "name": "minecraft:abandoned_camp_dappled_forest"
+    },
+    {
+      "name": "minecraft:abandoned_camp_extreme_hills_plus_trees"
+    },
+    {
+      "name": "minecraft:abandoned_camp_flower_forest"
+    },
+    {
+      "name": "minecraft:abandoned_camp_pale_garden"
+    },
+    {
+      "name": "minecraft:abandoned_camp_swampland"
+    },
+    {
+      "name": "minecraft:ancient_city"
+    },
+    {
+      "name": "minecraft:bastion_remnant"
+    },
+    {
+      "name": "minecraft:buried_treasure"
+    },
+    {
+      "name": "minecraft:end_city"
+    },
+    {
+      "name": "minecraft:fortress"
+    },
+    {
+      "name": "minecraft:mansion"
+    },
+    {
+      "name": "minecraft:mineshaft"
+    },
+    {
+      "name": "minecraft:monument"
+    },
+    {
+      "name": "minecraft:pillager_outpost"
+    },
+    {
+      "name": "minecraft:ruined_portal"
+    },
+    {
+      "name": "minecraft:ruins"
+    },
+    {
+      "name": "minecraft:shipwreck"
+    },
+    {
+      "name": "minecraft:stronghold"
+    },
+    {
+      "name": "minecraft:temple"
+    },
+    {
+      "name": "minecraft:trail_ruins"
+    },
+    {
+      "name": "minecraft:trial_chambers"
+    },
+    {
+      "name": "minecraft:village"
+    }
+  ],
+  "module_type": "vanilla_data",
+  "name": "mojang-feature",
+  "vanilla_data_type": "feature"
+}

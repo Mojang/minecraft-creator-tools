@@ -1,0 +1,27 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shapeless": {
+    "description": {
+    "identifier": "minecraft:packed_mud"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "ingredients": [
+      {
+        "item": "minecraft:mud"
+      },
+      {
+        "item": "minecraft:wheat"
+      }
+    ],
+	"unlock": [
+      {
+        "item": "minecraft:mud"
+      }
+    ],
+    "result": {
+      "item": "minecraft:packed_mud"
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "id": "cmd_me",
+  "title": "me",
+  "description": "Displays a message about yourself.",
+  "note": "In 1.21.60, the message text supports input glyph replacement. For example, `:_input_key.jump:` is rendered as `JUMP` on keyboard or as a glyph on a gamepad.",
+  "fields": [
+    {
+      "id": "message",
+      "title": "message",
+      "type": "string",
+      "isOptional": false,
+      "description": "A plain text or `string` that can include spaces and [target selector](https://learn.microsoft.com/minecraft/creator/documents/commandsintroduction#target-selectors)s.",
+      "subFormId": "type_message_root",
+      "commandType": "MESSAGE_ROOT"
+    }
+  ],
+  "overloads": [
+    {
+      "id": "1",
+      "title": "Me",
+      "description": "Display a `message`.",
+      "params": [
+        {
+          "name": "message",
+          "type": "MESSAGE_ROOT",
+          "isOptional": false
+        }
+      ]
+    }
+  ],
+  "permissionLevel": 0,
+  "requiresCheats": false
+}

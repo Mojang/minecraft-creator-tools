@@ -1,0 +1,29 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:magenta_carpet"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "group": "carpet",
+    "pattern": [
+      "##"
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:magenta_wool"
+      }
+    },
+	"unlock": [
+      {
+        "item": "minecraft:magenta_wool"
+      }
+    ],
+    "result": {
+      "item": "minecraft:magenta_carpet",
+      "count": 3
+    }
+  }
+}

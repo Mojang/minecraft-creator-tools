@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Block Entity",
+  "description": "Adds per-instance metadata for this block.",
+  "properties": {
+    "container": {
+      "title": "Container",
+      "description": "Adds a container to this block.",
+      "$ref": "./block_container.schema.json",
+      "defaultSnippets": [
+        {
+          "label": "Block Container",
+          "description": "Adds a container to this block.",
+          "body": {
+            "show_ui_on_interaction": true,
+            "slot_count": 0,
+            "title": ""
+          }
+        }
+      ]
+    },
+    "dynamic_properties": {
+      "title": "Dynamic Properties",
+      "description": "Dynamic-properties can store and retrieve variables on a block via scripting, more at https://learn.microsoft.com/en-us/minecraft/creator/scriptapi/minecraft/server/blockdynamicpropertiescomponent.",
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

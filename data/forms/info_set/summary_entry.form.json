@@ -1,0 +1,45 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "tracks validation outcome for a requirement"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "info_set.summaryEntry",
+  "title": "Summary Entry",
+  "description": "Represents a single validation outcome keyed by requirement code.",
+  "fields": [
+    {
+      "id": "title",
+      "title": "Title",
+      "dataType": "string"
+    },
+    {
+      "id": "defaultMessage",
+      "title": "Default Message",
+      "dataType": "longFormString"
+    },
+    {
+      "id": "errors",
+      "title": "Errors",
+      "dataType": "int"
+    },
+    {
+      "id": "testCompleteFails",
+      "title": "Test Complete Fails",
+      "dataType": "int"
+    },
+    {
+      "id": "testCompleteSuccesses",
+      "title": "Test Complete Successes",
+      "dataType": "int"
+    }
+  ]
+}

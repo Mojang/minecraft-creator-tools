@@ -1,0 +1,121 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "projectile_entity",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "shoots "
+          },
+          {
+            "type": "value",
+            "field": "projectile_entity"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "projectile_entity",
+      "dataType": "string",
+      "samples": {
+        "/vanilla/behavior_pack/items/wind_charge.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:projectile/",
+            "content": "wind_charge_projectile"
+          }
+        ],
+        "/samples/custom_items/behavior_packs/custom_item/items/my_sword_chuck.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:projectile/",
+            "content": "minecraft:snowball"
+          }
+        ],
+        "/samples/custom_items/behavior_packs/custom_item/items/my_sword_shoot.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:projectile/",
+            "content": "minecraft:snowball"
+          }
+        ]
+      },
+      "description": "Which entity is to be fired as a projectile.",
+      "title": "Projectile Entity",
+      "isRequired": true,
+      "validity": [
+        {
+          "comparison": "pattern",
+          "value": "^(?:\\w+(?:\\.\\w+)*:(?=\\w))?(?:\\w+(?:\\.\\w+)*)(?:<((?:\\w+(?:\\.\\w+)*:(?=\\w))?\\w+(?:\\.\\w+)*)*>)?$"
+        }
+      ]
+    },
+    {
+      "id": "minimum_critical_power",
+      "title": "Minimum Critical Power",
+      "description": "Specifies how long a player must charge a projectile for it to critically hit.",
+      "dataType": "float",
+      "defaultValue": 0,
+      "samples": {
+        "/samples/custom_items/behavior_packs/custom_item/items/my_sword_chuck.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:projectile/",
+            "content": 1.25
+          }
+        ],
+        "/samples/custom_items/behavior_packs/custom_item/items/my_sword_shoot.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:projectile/",
+            "content": 1.25
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Defines an item as a projectile that can be shot from dispensers or used as ammunition with minecraft:shooter. When combined with minecraft:throwable, this component specifies which entity is spawned when the item is thrown.",
+  "samples": {
+    "sample": [
+      {
+        "path": "sample",
+        "content": {
+          "minimum_critical_power": 1.25,
+          "projectile_entity": "arrow"
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/wind_charge.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:projectile/",
+        "content": {
+          "projectile_entity": "wind_charge_projectile"
+        }
+      }
+    ],
+    "/samples/custom_items/behavior_packs/custom_item/items/my_sword_chuck.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:projectile/",
+        "content": {
+          "minimum_critical_power": 1.25,
+          "projectile_entity": "minecraft:snowball"
+        }
+      }
+    ],
+    "/samples/custom_items/behavior_packs/custom_item/items/my_sword_shoot.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:projectile/",
+        "content": {
+          "minimum_critical_power": 1.25,
+          "projectile_entity": "minecraft:snowball"
+        }
+      }
+    ]
+  },
+  "title": "Item Components Projectile",
+  "id": "minecraft:projectile"
+}

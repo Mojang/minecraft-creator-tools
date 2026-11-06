@@ -1,0 +1,207 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "ProcessorList",
+  "title": "Processor List",
+  "description": "Defines a list of structure processors that modify blocks during structure generation. Processors are functions that run when placing a Structure Template in the world. For example, you might want to randomly replace half of the Cobblestone blocks with Mossy Cobblestone, or replace Gravel with Suspicious Gravel and add a loot table. A Processor List contains one or more Processors that are run in sequence on each block. Each Processor contains one or more Predicates with a given Filter; if all the filters pass, the placed block will be modified according to the Output State.",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines a list of block processors for structure generation"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "format_version",
+      "title": "Format Version",
+      "description": "The format version of this processor list definition.",
+      "dataType": "string",
+      "isRequired": true
+    },
+    {
+      "id": "minecraft:processor_list",
+      "title": "Processor List Definition",
+      "description": "The processor list definition.",
+      "dataType": "object",
+      "isRequired": true,
+      "subForm": {
+        "id": "processor_list_definition",
+        "fields": [
+          {
+            "id": "description",
+            "title": "Description",
+            "description": "The description block containing the processor list identifier.",
+            "dataType": "object",
+            "isRequired": true,
+            "subFormId": "jigsaw/jigsawstructureprocessorlist_description"
+          },
+          {
+            "id": "processors",
+            "title": "Processors",
+            "description": "Array of processor configurations to apply in order. Rules within each processor are evaluated in order as defined in the list, and only the first rule whose conditions are all met will take effect on a given block.",
+            "dataType": "objectArray",
+            "isRequired": true,
+            "subForm": {
+              "id": "processor_entry",
+              "fields": [
+                {
+                  "id": "processor_type",
+                  "title": "Processor Type",
+                  "description": "The kind of processor, which determines what other fields are valid on this entry.",
+                  "dataType": "string",
+                  "isRequired": true,
+                  "choices": [
+                    {
+                      "id": "minecraft:block_ignore",
+                      "title": "Block Ignore",
+                      "description": "Removes specified blocks from the placed structure. Removed blocks are not replaced by air; the world blocks underneath are retained. Requires 'blocks'."
+                    },
+                    {
+                      "id": "minecraft:protected_blocks",
+                      "title": "Protected Blocks",
+                      "description": "Specifies which blocks in the world cannot be overridden by this structure. Requires 'value' (a block tag)."
+                    },
+                    {
+                      "id": "minecraft:capped",
+                      "title": "Capped",
+                      "description": "Applies a nested processor to some random blocks instead of all blocks, with a maximum number of applications. Requires 'limit' (integer or IntProvider) and 'delegate' (any processor except another 'minecraft:capped')."
+                    },
+                    {
+                      "id": "minecraft:rule",
+                      "title": "Rule",
+                      "description": "Runs a list of block rules per block. Requires 'rules'. Each block in the structure template is processed independently and only the first rule with all conditions met takes effect."
+                    }
+                  ]
+                },
+                {
+                  "id": "blocks",
+                  "title": "Blocks",
+                  "description": "List of block identifiers to remove from the placed structure. Used by 'minecraft:block_ignore'.",
+                  "dataType": "stringArray"
+                },
+                {
+                  "id": "value",
+                  "title": "Value",
+                  "description": "Block tag for blocks already in the world that will be protected from replacement. Used by 'minecraft:protected_blocks'.",
+                  "dataType": "string"
+                },
+                {
+                  "id": "limit",
+                  "title": "Limit",
+                  "description": "Maximum number of blocks the 'minecraft:capped' processor may apply to. Either a constant integer or an IntProvider object for dynamic ranges.",
+                  "dataType": "int",
+                  "alternates": [
+                    {
+                      "id": "limit",
+                      "dataType": "object",
+                      "description": "IntProvider for the limit.",
+                      "subForm": {
+                        "id": "int_provider",
+                        "fields": [
+                          {
+                            "id": "type",
+                            "title": "Type",
+                            "description": "IntProvider type.",
+                            "dataType": "string",
+                            "choices": [
+                              {
+                                "id": "constant",
+                                "title": "Constant",
+                                "description": "A single constant value. Requires 'value'."
+                              },
+                              {
+                                "id": "uniform",
+                                "title": "Uniform",
+                                "description": "A value selected uniformly at random within [min_inclusive, max_inclusive]. max_inclusive must be greater than min_inclusive."
+                              }
+                            ]
+                          },
+                          {
+                            "id": "value",
+                            "title": "Value",
+                            "description": "Constant integer value (when type is 'constant').",
+                            "dataType": "int"
+                          },
+                          {
+                            "id": "min_inclusive",
+                            "title": "Min Inclusive",
+                            "description": "Minimum possible value (when type is 'uniform').",
+                            "dataType": "int"
+                          },
+                          {
+                            "id": "max_inclusive",
+                            "title": "Max Inclusive",
+                            "description": "Maximum possible value (when type is 'uniform').",
+                            "dataType": "int"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "delegate",
+                  "title": "Delegate",
+                  "description": "Nested processor configuration for the 'minecraft:capped' processor type. Any processor except another 'minecraft:capped'.",
+                  "dataType": "object"
+                },
+                {
+                  "id": "rules",
+                  "title": "Rules",
+                  "description": "Array of processing rules for the 'minecraft:rule' processor type. Rules are evaluated in order; only the first rule whose conditions are all met takes effect on a given block.",
+                  "dataType": "objectArray",
+                  "subForm": {
+                    "id": "processor_rule",
+                    "fields": [
+                      {
+                        "id": "input_predicate",
+                        "title": "Input Predicate",
+                        "description": "BlockRule evaluated on the Structure Template block (the block that would be placed by the structure).",
+                        "dataType": "object",
+                        "subFormId": "jigsaw/jigsaw_block_predicate"
+                      },
+                      {
+                        "id": "location_predicate",
+                        "title": "Location Predicate",
+                        "description": "BlockRule evaluated on the world block (the block in the world that would be overridden).",
+                        "dataType": "object",
+                        "subFormId": "jigsaw/jigsaw_block_predicate"
+                      },
+                      {
+                        "id": "position_predicate",
+                        "title": "Position Predicate",
+                        "description": "PositionRule evaluated on the distance between the structure's world origin and the world block.",
+                        "dataType": "object",
+                        "subFormId": "jigsaw/jigsaw_position_predicate"
+                      },
+                      {
+                        "id": "output_state",
+                        "title": "Output State",
+                        "description": "BlockSpecifier for the block to place if all predicates evaluate to true.",
+                        "dataType": "object",
+                        "isRequired": true,
+                        "subFormId": "jigsaw/jigsaw_block_specifier"
+                      },
+                      {
+                        "id": "block_entity_modifier",
+                        "title": "Block Entity Modifier",
+                        "description": "Optional modifier applied to the output block's block entity data when all predicates match.",
+                        "dataType": "object",
+                        "subFormId": "jigsaw/jigsaw_block_entity_modifier"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

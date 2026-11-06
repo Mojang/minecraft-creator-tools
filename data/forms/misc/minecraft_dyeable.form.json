@@ -1,0 +1,33 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines dyeable component"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "minecraft:dyeable",
+  "fields": [
+    {
+      "id": "default_color",
+      "title": "Default Color",
+      "dataType": "string",
+      "alternates": [
+        {
+          "id": "default_color",
+          "dataType": "numberArray",
+          "minLength": 3,
+          "maxLength": 3
+        }
+      ]
+    }
+  ],
+  "description": "Defines dyeable component.",
+  "title": "Minecraft Dyeable Misc"
+}

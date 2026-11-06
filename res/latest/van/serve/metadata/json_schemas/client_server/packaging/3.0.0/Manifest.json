@@ -1,0 +1,97 @@
+{
+  "$id": "/client_server/packaging/3.0.0/Manifest.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "capabilities": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array",
+      "x-ordinal-index": 6
+    },
+    "dependencies": {
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "./PackDependency.json"
+          },
+          {
+            "$ref": "./NativeModuleDependency.json"
+          }
+        ],
+        "x-control-value-type": "uint32"
+      },
+      "type": "array",
+      "x-ordinal-index": 3
+    },
+    "format_version": {
+      "maximum": 255,
+      "minimum": 0,
+      "type": "integer",
+      "x-ordinal-index": 0,
+      "x-underlying-type": "uint8"
+    },
+    "has_education_metadata": {
+      "type": "boolean",
+      "x-ordinal-index": 8,
+      "x-underlying-type": "boolean"
+    },
+    "header": {
+      "$ref": "./Header.json",
+      "x-ordinal-index": 1
+    },
+    "metadata": {
+      "$ref": "./Metadata.json",
+      "x-ordinal-index": 7
+    },
+    "modules": {
+      "items": {
+        "$ref": "./Module.json"
+      },
+      "minItems": 1,
+      "type": "array",
+      "x-ordinal-index": 2
+    },
+    "settings": {
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "./LabelSetting.json"
+          },
+          {
+            "$ref": "./SliderSetting.json"
+          },
+          {
+            "$ref": "./ToggleSetting.json"
+          },
+          {
+            "$ref": "./DropdownSetting.json"
+          },
+          {
+            "$ref": "./MultiSelectSetting.json"
+          }
+        ],
+        "x-control-value-type": "uint32"
+      },
+      "maxItems": 50,
+      "minItems": 1,
+      "type": "array",
+      "x-ordinal-index": 4
+    },
+    "subpacks": {
+      "items": {
+        "$ref": "./Subpack.json"
+      },
+      "type": "array",
+      "x-ordinal-index": 5
+    }
+  },
+  "required": [
+    "format_version",
+    "header",
+    "modules"
+  ],
+  "title": "PackManifestDocument",
+  "type": "object",
+  "x-format-version": "3.0.0"
+}

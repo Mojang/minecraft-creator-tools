@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity MobEffectInstance",
+  "properties": {
+    "amplifier": {
+      "title": "Amplifier",
+      "type": "integer",
+      "default": 1
+    },
+    "durationeasy": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "title": "Durationeasy"
+    },
+    "durationhard": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "title": "Durationhard"
+    },
+    "durationnormal": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "title": "Durationnormal"
+    },
+    "effect": {
+      "title": "Effect",
+      "type": "string",
+      "default": ""
+    }
+  }
+}

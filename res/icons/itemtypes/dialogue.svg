@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Dialogue: Speech bubble -->
+  <path d="M2 2H14V10H6L3 13V10H2V2Z" fill-opacity="0.15"/>
+  <path d="M3 3H13V9H6L4 11V9H3V3Z" fill-opacity="0.4"/>
+  <rect x="5" y="5" width="6" height="1" rx="0.3"/>
+  <rect x="5" y="7" width="4" height="1" rx="0.3" fill-opacity="0.6"/>
+</svg>

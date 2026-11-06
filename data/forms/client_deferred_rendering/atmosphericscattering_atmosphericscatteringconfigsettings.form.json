@@ -1,0 +1,248 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "fields": [
+    {
+      "id": "format_version",
+      "title": "format_version",
+      "description": "format_version",
+      "dataType": "string"
+    },
+    {
+      "id": "minecraft:atmosphere_settings",
+      "title": "minecraft:atmosphere_settings",
+      "description": "minecraft:atmosphere_settings",
+      "dataType": "object",
+      "subForm": {
+        "title": "AtmosphericScattering AtmosphericScatteringConfigSettings AtmosphericScatteringSettings",
+        "description": "AtmosphericScattering AtmosphericScatteringConfigSettings AtmosphericScatteringSettings",
+        "fields": [
+          {
+            "id": "description",
+            "title": "description",
+            "description": "description",
+            "dataType": "object",
+            "subForm": {
+              "title": "AtmosphericScattering AtmosphericScatteringConfigSettings AtmosphericScatteringSettings AtmosphericScatteringDescription",
+              "description": "AtmosphericScattering AtmosphericScatteringConfigSettings AtmosphericScatteringSettings AtmosphericScatteringDescription",
+              "fields": [
+                {
+                  "id": "identifier",
+                  "title": "identifier",
+                  "description": "identifier",
+                  "dataType": "string"
+                }
+              ]
+            }
+          },
+          {
+            "id": "sky_zenith_color",
+            "title": "sky_zenith_color",
+            "description": "sky_zenith_color",
+            "dataType": "keyedStringCollection",
+            "alternates": [
+              {
+                "id": "sky_zenith_color",
+                "dataType": "keyedNumberArrayCollection",
+                "minLength": 3,
+                "maxLength": 3
+              },
+              {
+                "id": "sky_zenith_color",
+                "dataType": "keyedObjectCollection"
+              }
+            ]
+          },
+          {
+            "id": "sky_horizon_color",
+            "title": "sky_horizon_color",
+            "description": "sky_horizon_color",
+            "dataType": "keyedStringCollection",
+            "alternates": [
+              {
+                "id": "sky_horizon_color",
+                "dataType": "keyedNumberArrayCollection",
+                "minLength": 3,
+                "maxLength": 3
+              },
+              {
+                "id": "sky_horizon_color",
+                "dataType": "keyedObjectCollection"
+              }
+            ]
+          },
+          {
+            "id": "moon_mie_strength",
+            "title": "moon_mie_strength",
+            "description": "moon_mie_strength",
+            "dataType": "float",
+            "validity": [
+              {
+                "comparison": "<=",
+                "value": 20
+              }
+            ],
+            "alternates": [
+              {
+                "id": "moon_mie_strength",
+                "dataType": "keyedNumberCollection"
+              }
+            ]
+          },
+          {
+            "id": "horizon_blend_stops",
+            "title": "horizon_blend_stops",
+            "description": "horizon_blend_stops",
+            "dataType": "object",
+            "subForm": {
+              "title": "AtmosphericScattering AtmosphericScatteringConfigSettings AtmosphericScatteringSettings HorizonBlendKeyFrames",
+              "description": "AtmosphericScattering AtmosphericScatteringConfigSettings AtmosphericScatteringSettings HorizonBlendKeyFrames",
+              "fields": [
+                {
+                  "id": "min",
+                  "title": "min",
+                  "description": "min",
+                  "dataType": "float",
+                  "validity": [
+                    {
+                      "comparison": "<=",
+                      "value": 1
+                    }
+                  ],
+                  "alternates": [
+                    {
+                      "id": "min",
+                      "dataType": "keyedNumberCollection"
+                    }
+                  ]
+                },
+                {
+                  "id": "start",
+                  "title": "start",
+                  "description": "start",
+                  "dataType": "float",
+                  "validity": [
+                    {
+                      "comparison": "<=",
+                      "value": 1
+                    }
+                  ],
+                  "alternates": [
+                    {
+                      "id": "start",
+                      "dataType": "keyedNumberCollection"
+                    }
+                  ]
+                },
+                {
+                  "id": "mie_start",
+                  "title": "mie_start",
+                  "description": "mie_start",
+                  "dataType": "float",
+                  "validity": [
+                    {
+                      "comparison": "<=",
+                      "value": 1.2000000476837158
+                    }
+                  ],
+                  "alternates": [
+                    {
+                      "id": "mie_start",
+                      "dataType": "keyedNumberCollection"
+                    }
+                  ]
+                },
+                {
+                  "id": "max",
+                  "title": "max",
+                  "description": "max",
+                  "dataType": "float",
+                  "validity": [
+                    {
+                      "comparison": "<=",
+                      "value": 1
+                    }
+                  ],
+                  "alternates": [
+                    {
+                      "id": "max",
+                      "dataType": "keyedNumberCollection"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "id": "rayleigh_strength",
+            "title": "rayleigh_strength",
+            "description": "rayleigh_strength",
+            "dataType": "float",
+            "validity": [
+              {
+                "comparison": "<=",
+                "value": 11
+              }
+            ],
+            "alternates": [
+              {
+                "id": "rayleigh_strength",
+                "dataType": "keyedNumberCollection"
+              }
+            ]
+          },
+          {
+            "id": "sun_mie_strength",
+            "title": "sun_mie_strength",
+            "description": "sun_mie_strength",
+            "dataType": "float",
+            "validity": [
+              {
+                "comparison": "<=",
+                "value": 60
+              }
+            ],
+            "alternates": [
+              {
+                "id": "sun_mie_strength",
+                "dataType": "keyedNumberCollection"
+              }
+            ]
+          },
+          {
+            "id": "sun_glare_shape",
+            "title": "sun_glare_shape",
+            "description": "sun_glare_shape",
+            "dataType": "float",
+            "validity": [
+              {
+                "comparison": "<=",
+                "value": 50
+              }
+            ],
+            "alternates": [
+              {
+                "id": "sun_glare_shape",
+                "dataType": "keyedNumberCollection"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "id": "minecraft:atmosphere_settings",
+  "title": "Atmospheric Scattering",
+  "description": "Customize atmospherics effects",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "controls atmospheric scattering and sky appearance for Vibrant Visuals"
+          }
+        ]
+      }
+    ]
+  }
+}

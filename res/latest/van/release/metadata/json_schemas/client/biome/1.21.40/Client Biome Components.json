@@ -1,0 +1,46 @@
+{
+  "$id": "/client/biome/1.21.40/Client%20Biome%20Components.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Any components that this Client Biome uses",
+  "properties": {
+    "minecraft:ambient_sounds": {
+      "$ref": "./minecraft_ambient_sounds.json",
+      "description": "Set the ambient sounds for the biome. These sounds must be in the 'individual_named_sounds' in a 'sounds.json' file.",
+      "x-ordinal-index": 0
+    },
+    "minecraft:biome_music": {
+      "$ref": "./minecraft_biome_music.json",
+      "description": "Affect how music plays within the biome",
+      "x-ordinal-index": 4
+    },
+    "minecraft:fog_appearance": {
+      "$ref": "./minecraft_fog_appearance.json",
+      "description": "Set the fog settings used during rendering. Biomes without this component will have default fog settings.",
+      "x-ordinal-index": 1
+    },
+    "minecraft:foliage_appearance": {
+      "$ref": "./minecraft_foliage_appearance.json",
+      "description": "Set the foliage color or color map used during rendering. Biomes without this component will have default foliage appearance.",
+      "x-ordinal-index": 2
+    },
+    "minecraft:grass_appearance": {
+      "$ref": "./minecraft_grass_appearance.json",
+      "description": "Set the grass color or color map used during rendering. Biomes without this component will have default grass appearance.",
+      "x-ordinal-index": 3
+    },
+    "minecraft:sky_color": {
+      "$ref": "./minecraft_sky_color.json",
+      "description": "Set the sky color used during rendering. Biomes without this component will have default sky color behavior.",
+      "x-ordinal-index": 5
+    },
+    "minecraft:water_appearance": {
+      "$ref": "./minecraft_water_appearance.json",
+      "description": "Set the water surface color used during rendering. Biomes without this component will have default water surface color behavior.",
+      "x-ordinal-index": 6,
+      "x-runtime-constraint-description": "Make sure that at least either the surface color or the opacity is specified"
+    }
+  },
+  "title": "Client Biome Components",
+  "type": "object",
+  "x-format-version": "1.21.40"
+}

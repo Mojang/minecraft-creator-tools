@@ -1,0 +1,24 @@
+{
+  "files": [
+    "Blocks.json",
+    "Collision Box.json",
+    "Components.json",
+    "Connection Enabled State.json",
+    "Connection.json",
+    "Description.json",
+    "Menu Category.json",
+    "Multi Block Enabled State.json",
+    "Multi Block.json",
+    "Permutation.json",
+    "Placement Direction Enabled State.json",
+    "Placement Direction.json",
+    "Placement Position Enabled State.json",
+    "Placement Position.json",
+    "Range.json",
+    "States.json",
+    "Traits.json",
+    "Values.json",
+    "block_entity.json"
+  ],
+  "folders": []
+}

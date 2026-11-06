@@ -1,0 +1,29 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:black_carpet"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "group": "carpet",
+    "pattern": [
+      "##"
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:black_wool"
+      }
+    },
+	"unlock": [
+      {
+        "item": "minecraft:black_wool"
+      }
+    ],
+    "result": {
+      "item": "minecraft:black_carpet",
+      "count": 3
+    }
+  }
+}

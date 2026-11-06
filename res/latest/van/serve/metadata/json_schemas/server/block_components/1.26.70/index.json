@@ -1,0 +1,11 @@
+{
+  "files": [
+    "Block Components.json",
+    "Bounding Box Data.json",
+    "Collision Box.json",
+    "Destructible By Mining.json",
+    "Detailed Mining Speed.json",
+    "Jukebox Playlist Source.json"
+  ],
+  "folders": []
+}

@@ -1,0 +1,15 @@
+{
+  "files": [
+    "ActorDocument.json",
+    "Entity component definitions.json",
+    "ImpactDamageSubcomponentDefinition.json",
+    "OnHitCommandsStorage.json",
+    "TrailPlacementChecks.json",
+    "TrailShape.json",
+    "minecraft_projectile.json",
+    "minecraft_teleport.json",
+    "minecraft_trail placement_conditions entry.json",
+    "minecraft_trail.json"
+  ],
+  "folders": []
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity SpawnItemsData",
+  "properties": {
+    "table": {
+      "title": "Table",
+      "description": "File path, relative to the Behavior Pack's path, to the loot table file.",
+      "type": "string",
+      "default": ""
+    },
+    "y_offset": {
+      "title": "y Offset",
+      "description": "Will offset the items spawn position this amount in the y direction.",
+      "type": "number",
+      "default": 1
+    }
+  }
+}

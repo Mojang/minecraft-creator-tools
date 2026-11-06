@@ -1,0 +1,85 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "minecraft:compostable",
+  "summarizer": {
+    "phrases": [
+      {
+        "visibility": [
+          {
+            "field": "composting_chance",
+            "comparison": "defined"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has "
+          },
+          {
+            "type": "value",
+            "field": "composting_chance"
+          },
+          {
+            "type": "literal",
+            "text": "% chance to compost"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "composting_chance",
+      "title": "Composting Chance",
+      "description": "The chance of this item to create a layer upon composting with the composter. Valid value range is 1 - 100 inclusive",
+      "dataType": "int",
+      "validity": [
+        {
+          "comparison": ">=",
+          "value": 1
+        },
+        {
+          "comparison": "<=",
+          "value": 100
+        }
+      ],
+      "isRequired": true,
+      "samples": {
+        "/vanilla/behavior_pack/items/red_shrub.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:compostable/",
+            "content": 30
+          }
+        ],
+        "/vanilla/behavior_pack/items/shelf_mushroom.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:compostable/",
+            "content": 65
+          }
+        ]
+      }
+    }
+  ],
+  "versionIntroduced": "1.21.60",
+  "description": "Specifies that an item is compostable and provides the chance of creating a composting layer in the composter",
+  "title": "Item Compostable",
+  "samples": {
+    "/vanilla/behavior_pack/items/red_shrub.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:compostable/",
+        "content": {
+          "composting_chance": 30
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/shelf_mushroom.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:compostable/",
+        "content": {
+          "composting_chance": 65
+        }
+      }
+    ]
+  },
+  "dataVersion": "1.26.30"
+}

@@ -1,0 +1,102 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "sends events to other entities"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "event_choices",
+      "title": "Event Choices",
+      "description": "List of possible events to send with conditions, weights, and targeting parameters.",
+      "dataType": "objectArray",
+      "defaultValue": [],
+      "subFormId": "entity/sendeventchoice"
+    },
+    {
+      "id": "control_flags",
+      "title": "Control Flags",
+      "dataType": "stringArray",
+      "defaultValue": [],
+      "choices": [
+        {
+          "id": "jump",
+          "title": "Jump"
+        },
+        {
+          "id": "look",
+          "title": "Look"
+        },
+        {
+          "id": "move",
+          "title": "Move"
+        }
+      ],
+      "mustMatchChoices": true
+    },
+    {
+      "id": "priority",
+      "title": "Priority",
+      "dataType": "int",
+      "defaultValue": 0,
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal."
+    },
+    {
+      "id": "cast_duration",
+      "title": "Cast Duration",
+      "description": "Time in seconds for the entire event sending process",
+      "dataType": "float"
+    },
+    {
+      "id": "look_at_target",
+      "title": "Look At Target",
+      "description": "If true, the mob will face the entity it sends an event to",
+      "defaultValue": true,
+      "dataType": "boolean"
+    },
+    {
+      "id": "sequence",
+      "title": "Sequence",
+      "description": "List of events to send",
+      "dataType": "objectArray",
+      "subForm": {
+        "id": "",
+        "description": "List of events to send",
+        "fields": [
+          {
+            "id": "base_delay",
+            "title": "Base Delay",
+            "description": "Amount of time in seconds before starting this step",
+            "defaultValue": 0,
+            "dataType": "float"
+          },
+          {
+            "id": "event",
+            "title": "Event",
+            "description": "The event to send to the entity",
+            "dataType": "minecraftEventTrigger"
+          },
+          {
+            "id": "sound_event",
+            "title": "Sound Event",
+            "description": "The sound event to play when this step happens",
+            "dataType": "minecraftEventTrigger"
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Allows the mob to send an event to another mob.",
+  "title": "Entity Send Event Behavior",
+  "samples": {},
+  "id": "minecraft:behavior.send_event",
+  "dataVersion": "1.26.60"
+}

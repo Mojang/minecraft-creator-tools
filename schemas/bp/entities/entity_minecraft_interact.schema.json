@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Interact",
+  "description": "Defines interactions with this entity.",
+  "properties": {
+    "interactions": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "$ref": "./entity_interactiondata.schema.json"
+          }
+        },
+        {
+          "type": "object"
+        }
+      ],
+      "title": "Interactions",
+      "description": "The list of interactions for this entity."
+    },
+    "cooldown": {
+      "title": "Cooldown",
+      "description": "Time in seconds before this entity can be interacted with again.",
+      "type": "number",
+      "default": 0
+    },
+    "cooldown_after_being_attacked": {
+      "title": "Cooldown After Being Attacked",
+      "description": "Time in seconds before this entity can be interacted with after being attacked.",
+      "type": "number",
+      "default": 0
+    },
+    "drop_item_slot": {
+      "title": "Drop Item Slot",
+      "description": "The entity's slot to remove and drop the item from, if any, upon successful interaction. Inventory slots are denoted by positive numbers. Equipment slots are denoted by 'slot.weapon.mainhand', 'slot.weapon.offhand', 'slot.armor.head', 'slot.armor.chest', 'slot.armor.legs', 'slot.armor.feet' and 'slot.armor.body'.",
+      "type": "string"
+    },
+    "drop_item_y_offset": {
+      "title": "Drop Item y Offset",
+      "description": "Will offset the item drop position this amount in the y direction. Requires \"drop_item_slot\" to be specified.",
+      "type": "number",
+      "default": 0
+    },
+    "equip_item_slot": {
+      "title": "Equip Item Slot",
+      "description": "The entity's slot to equip the item to, if any, upon successful interaction. Inventory slots are denoted by positive numbers. Equipment slots are denoted by 'slot.weapon.mainhand', 'slot.weapon.offhand', 'slot.armor.head', 'slot.armor.chest', 'slot.armor.legs', 'slot.armor.feet' and 'slot.armor.body'.",
+      "type": "string"
+    },
+    "health_amount": {
+      "title": "Health Amount",
+      "description": "The amount of health this entity will recover or lose when interacting with this item. Negative values will harm the entity.",
+      "type": "integer",
+      "default": 0
+    },
+    "hurt_item": {
+      "title": "Hurt Item",
+      "description": "The amount of damage the item will take when used to interact with this entity. A value of 0 means the item won't lose durability.",
+      "type": "integer",
+      "default": 0
+    },
+    "interact_text": {
+      "title": "Interact Text",
+      "description": "Text to show when the player is able to interact in this way with this entity when playing with touch-screen controls.",
+      "type": "string"
+    }
+  }
+}

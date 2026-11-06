@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Health",
+  "description": "Defines the health pool for an entity, measured in health points (1 point = half a heart). Typical values: cow (10), zombie (20), iron golem (100), wither (600).",
+  "properties": {
+    "value": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 0
+        },
+        {
+          "description": "\n\nProperties:\n• range_min (int)\n• range_max (int)",
+          "type": "object",
+          "properties": {
+            "range_min": {
+              "type": "integer"
+            },
+            "range_max": {
+              "type": "integer"
+            }
+          },
+          "defaultSnippets": [
+            {
+              "label": "Value (object)",
+              "description": "Use Value as an object",
+              "body": {
+                "range_min": 0,
+                "range_max": 0
+              }
+            }
+          ]
+        }
+      ],
+      "title": "Value",
+      "description": "Starting health for this entity in health points (1 point = half a heart).",
+      "defaultSnippets": [
+        {
+          "label": "Value (object)",
+          "description": "Use Value as an object",
+          "body": {
+            "range_min": 0,
+            "range_max": 0
+          }
+        }
+      ]
+    },
+    "max": {
+      "title": "Max",
+      "description": "Maximum health this entity can have. Can be higher than the starting value to allow healing beyond initial health.",
+      "type": "integer",
+      "minimum": 0,
+      "default": 20
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "contains the required identifier for the item"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "identifier",
+      "title": "Identifier",
+      "description": "Unique name for the item that must include a namespace and must not use the Minecraft namespace unless overriding a Vanilla item.",
+      "dataType": "object",
+      "isRequired": true
+    },
+    {
+      "id": "menu_category",
+      "title": "Menu Category",
+      "description": "menu_category contains the creative group name and category for this item.",
+      "dataType": "object",
+      "subFormId": "misc/menu_category"
+    }
+  ],
+  "description": "Contains the required identifier for the item. May contain optional fields like menu_category.",
+  "title": "Description Misc",
+  "id": "description"
+}

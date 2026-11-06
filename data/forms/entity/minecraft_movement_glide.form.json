@@ -1,0 +1,69 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "uses gliding movement"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "max_turn",
+      "title": "Max Turn",
+      "description": "The maximum number in degrees the mob can turn per tick.",
+      "defaultValue": 30,
+      "dataType": "float"
+    },
+    {
+      "id": "speed_when_turning",
+      "title": "Speed when turning",
+      "description": "Speed that the mob adjusts to when it has to turn quickly.",
+      "defaultValue": 0.2,
+      "dataType": "float",
+      "samples": {
+        "/vanilla/behavior_pack/entities/phantom.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:movement.glide/",
+            "content": 0.2
+          }
+        ]
+      }
+    },
+    {
+      "id": "start_speed",
+      "title": "Start Speed",
+      "description": "Initial speed of the mob when it starts gliding.",
+      "dataType": "float",
+      "defaultValue": 0.10000000149011612,
+      "samples": {
+        "/vanilla/behavior_pack/entities/phantom.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:movement.glide/",
+            "content": 0.1
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Move control for a flying mob that has a gliding movement",
+  "title": "Entity Glide Movement",
+  "samples": {
+    "/vanilla/behavior_pack/entities/phantom.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:movement.glide/",
+        "content": {
+          "speed_when_turning": 0.2,
+          "start_speed": 0.1
+        }
+      }
+    ]
+  },
+  "id": "minecraft:movement.glide",
+  "dataVersion": "1.26.60"
+}

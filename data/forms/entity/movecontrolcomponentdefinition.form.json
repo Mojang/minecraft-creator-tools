@@ -1,0 +1,14 @@
+{
+  "id": "MoveControlComponentDefinition",
+  "fields": [
+    {
+      "id": "max_turn",
+      "title": "Max Turn",
+      "description": "The maximum number in degrees the mob can turn per tick.",
+      "dataType": "float",
+      "defaultValue": 30
+    }
+  ],
+  "title": "Entity MoveControlComponentDefinition",
+  "dataVersion": "1.26.60"
+}

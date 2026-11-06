@@ -1,0 +1,29 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:white_carpet"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "group": "carpet",
+    "pattern": [
+      "##"
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:white_wool"
+      }
+    },
+	"unlock": [
+      {
+        "item": "minecraft:white_wool"
+      }
+    ],
+    "result": {
+      "item": "minecraft:white_carpet",
+      "count": 3
+    }
+  }
+}

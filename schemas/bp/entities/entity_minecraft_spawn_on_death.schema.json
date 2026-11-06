@@ -1,0 +1,91 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Spawn On Death",
+  "description": "Component for spawning entities when an entity perishes.",
+  "properties": {
+    "additional_spawn_range": {
+      "title": "Additional Spawn Range",
+      "description": "Additional random range of entities to spawn, defaults to 0, 0 when not set",
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        {
+          "$ref": "../../common/intrange.schema.json"
+        }
+      ]
+    },
+    "entity_to_spawn": {
+      "title": "Entity To Spawn",
+      "description": "What entity to spawn, defaults to owning entity when not set",
+      "type": "string",
+      "default": "self"
+    },
+    "filters": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "title": "Domain",
+              "description": "The domain the test should be performed in.",
+              "type": "object"
+            },
+            "operator": {
+              "title": "Operator",
+              "description": "The comparison to apply with 'value'.",
+              "type": "object"
+            },
+            "subject": {
+              "title": "Subject",
+              "description": "The subject of this filter test.",
+              "type": "object"
+            },
+            "test": {
+              "title": "Test",
+              "description": "The name of the test to apply.",
+              "type": "string"
+            },
+            "value": {
+              "title": "Value",
+              "description": "The value being compared with the test.",
+              "type": "object"
+            }
+          }
+        },
+        {
+          "type": "object"
+        }
+      ],
+      "description": "Conditions that need to be met for the behavior to start."
+    },
+    "inherit_parent_name": {
+      "title": "Inherit Parent Name",
+      "description": "If true, the entity will inherit the name of the parent entity, defaults to true when not set",
+      "type": "boolean",
+      "default": true
+    },
+    "spawn_amount": {
+      "title": "Spawn Amount",
+      "description": "How many entities to spawn, defaults to 1 when not set",
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "default": 1
+    },
+    "spawn_method": {
+      "title": "Spawn Method",
+      "description": "Spawn method. born, spawned, or summoned, defaults to spawned when not set",
+      "type": "string",
+      "default": "spawned"
+    }
+  }
+}

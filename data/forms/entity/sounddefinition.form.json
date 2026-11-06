@@ -1,0 +1,32 @@
+{
+  "id": "SoundDefinition",
+  "fields": [
+    {
+      "id": "condition",
+      "title": "Condition",
+      "description": "A Molang expression describing under which conditions to play this sound, given that the entity was provoked.",
+      "dataType": "keyedStringCollection",
+      "alternates": [
+        {
+          "id": "condition",
+          "dataType": "keyedObjectCollection",
+          "subFormId": "legacy/molang_expression"
+        },
+        {
+          "id": "condition",
+          "dataType": "float"
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "sound",
+      "title": "Sound",
+      "description": "The sound to play.",
+      "dataType": "string",
+      "isRequired": true
+    }
+  ],
+  "title": "Entity SoundDefinition",
+  "dataVersion": "1.26.50"
+}

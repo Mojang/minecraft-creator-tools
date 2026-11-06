@@ -1,0 +1,19 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "returns the mathematical constant pi (3.14159...)"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "`math.pi`",
+  "fields": [],
+  "description": "Returns the float representation of the constant pi.",
+  "title": "Pi"
+}

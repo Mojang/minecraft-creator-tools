@@ -1,0 +1,86 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "Box",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines a 3D bounding box with min and max coordinates"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "max",
+      "title": "Max",
+      "dataType": "numberArray",
+      "alternates": [
+        {
+          "id": "max",
+          "dataType": "object",
+          "subForm": {
+            "id": "max",
+            "title": "Max",
+            "fields": [
+              {
+                "id": "x",
+                "title": "X",
+                "dataType": "float"
+              },
+              {
+                "id": "y",
+                "title": "Y",
+                "dataType": "float"
+              },
+              {
+                "id": "z",
+                "title": "Z",
+                "dataType": "float"
+              }
+            ]
+          }
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "min",
+      "title": "Min",
+      "dataType": "numberArray",
+      "alternates": [
+        {
+          "id": "min",
+          "dataType": "object",
+          "subForm": {
+            "id": "min",
+            "title": "Min",
+            "fields": [
+              {
+                "id": "x",
+                "title": "X",
+                "dataType": "float"
+              },
+              {
+                "id": "y",
+                "title": "Y",
+                "dataType": "float"
+              },
+              {
+                "id": "z",
+                "title": "Z",
+                "dataType": "float"
+              }
+            ]
+          }
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "description": "Defines a 3D bounding box with min and max coordinates.",
+  "title": "Box Misc"
+}

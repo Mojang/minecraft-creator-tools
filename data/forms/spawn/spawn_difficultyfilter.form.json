@@ -1,0 +1,83 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "Spawn DifficultyFilter",
+  "title": "Difficulty Filter",
+  "description": "Restricts mob spawning to specific difficulty levels (Peaceful, Easy, Normal, Hard). For example, hostile mobs don't spawn on Peaceful, and some dangerous variants only appear on Hard difficulty.",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "spawns on difficulty "
+          },
+          {
+            "type": "value",
+            "field": "min"
+          },
+          {
+            "type": "literal",
+            "text": " to "
+          },
+          {
+            "type": "value",
+            "field": "max"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "max",
+      "title": "Max",
+      "dataType": "stringEnum",
+      "defaultValue": "hard",
+      "choices": [
+        {
+          "id": "easy",
+          "title": "Easy"
+        },
+        {
+          "id": "hard",
+          "title": "Hard"
+        },
+        {
+          "id": "normal",
+          "title": "Normal"
+        },
+        {
+          "id": "peaceful",
+          "title": "Peaceful"
+        }
+      ],
+      "mustMatchChoices": true
+    },
+    {
+      "id": "min",
+      "title": "Min",
+      "dataType": "stringEnum",
+      "defaultValue": "peaceful",
+      "choices": [
+        {
+          "id": "easy",
+          "title": "Easy"
+        },
+        {
+          "id": "hard",
+          "title": "Hard"
+        },
+        {
+          "id": "normal",
+          "title": "Normal"
+        },
+        {
+          "id": "peaceful",
+          "title": "Peaceful"
+        }
+      ],
+      "mustMatchChoices": true
+    }
+  ],
+  "dataVersion": "1.21.50"
+}

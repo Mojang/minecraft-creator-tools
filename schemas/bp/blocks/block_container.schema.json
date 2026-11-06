@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Block Container",
+  "properties": {
+    "show_ui_on_interaction": {
+      "title": "Show Ui On Interaction",
+      "description": "Determines whether interacting with this block opens its container UI. Defaults to true. When false, normal block interaction events can run instead.",
+      "type": "boolean",
+      "default": true
+    },
+    "slot_count": {
+      "title": "Slot Count",
+      "description": "Sets the number of slots in the container.",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 54
+    },
+    "title": {
+      "title": "Title",
+      "description": "Optional container title, stored as a language file key or raw text. Must be nonempty and at most 256 characters.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    }
+  },
+  "required": [
+    "slot_count"
+  ]
+}

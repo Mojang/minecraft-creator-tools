@@ -1,0 +1,27 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "fields": [],
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "executes actions in sequence"
+          }
+        ]
+      }
+    ]
+  },
+  "samples": {
+    "samples": [
+      {
+        "path": "Example:",
+        "content": "\t\t\"sequence\": [\n\t\t\t{\n\t\t\t\t// I will execute first! c:\n\t\t\t},\n\t\t\t{\n\t\t\t\t// I will execute last! :c\n\t\t\t}\n\t\t]\n\t"
+      }
+    ]
+  },
+  "id": "sequence_node",
+  "description": "Executes actions in sequence.",
+  "title": "Sequence Node"
+}

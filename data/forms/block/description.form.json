@@ -1,0 +1,67 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has block identifier, states, and traits"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Description",
+  "fields": [
+    {
+      "id": "identifier",
+      "title": "Identifier",
+      "description": "Must have a namespace and can't use the \"minecraft\" one. Example: \"namespace:my_block\"",
+      "dataType": "string",
+      "validity": [
+        {
+          "comparison": "pattern",
+          "value": "^\\S+$",
+          "patternFlags": "i"
+        }
+      ],
+      "isRequired": true
+    },
+    {
+      "id": "menu_category",
+      "title": "Menu Category",
+      "description": "Configures the block behavior in inventory and menu category",
+      "dataType": "object",
+      "defaultValue": {
+        "category": "none",
+        "group": null,
+        "is_hidden_in_commands": false
+      },
+      "subFormId": "block/menu_category"
+    },
+    {
+      "id": "states",
+      "title": "States",
+      "description": "Define custom states for a block that can be referenced in permutation. Each state must contain an array or a \"values\" with an array or a \"min\"/\"max\" range",
+      "dataType": "object",
+      "defaultValue": {}
+    },
+    {
+      "id": "traits",
+      "title": "Traits",
+      "description": "Change the connection, multiblock state, placement position and/or direction behaviors of a block",
+      "dataType": "object",
+      "defaultValue": {
+        "minecraft:connection": null,
+        "minecraft:multi_block": null,
+        "minecraft:placement_direction": null,
+        "minecraft:placement_position": null
+      },
+      "subFormId": "block/traits"
+    }
+  ],
+  "description": "Information about the block, must have at minimum an \"identifier\" and can have also the following optional field \"menu_category\", \"states\" and/or \"traits\"",
+  "title": "Block Description",
+  "dataVersion": "1.26.20"
+}

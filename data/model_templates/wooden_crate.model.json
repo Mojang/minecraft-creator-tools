@@ -1,0 +1,246 @@
+{
+  "formatVersion": "1.0.0",
+  "identifier": "wooden_crate",
+  "description": "A wooden storage crate with planks and metal corners",
+  "pixelsPerUnit": 2,
+  "textures": {
+    "planks": {
+      "background": {
+        "type": "stipple_noise",
+        "colors": [
+          "#8B7355",
+          "#7A6248",
+          "#9C8462"
+        ],
+        "seed": 2101,
+        "factor": 0.25
+      },
+      "effects": {
+        "overlay": {
+          "pattern": "scratches",
+          "density": 0.1,
+          "seed": 2102
+        }
+      },
+      "pixelArt": [
+        {
+          "lines": [
+            "                ",
+            "################",
+            "                ",
+            "                ",
+            "################",
+            "                ",
+            "                ",
+            "################"
+          ],
+          "palette": {
+            "#": {
+              "hex": "#5C4A3A"
+            }
+          },
+          "scaleMode": "cover"
+        }
+      ]
+    },
+    "metal": {
+      "background": {
+        "type": "dither_noise",
+        "colors": [
+          "#4A4A4A",
+          "#3A3A3A"
+        ],
+        "seed": 2103
+      },
+      "effects": {
+        "lighting": {
+          "preset": "outset",
+          "intensity": 0.3
+        }
+      }
+    }
+  },
+  "bones": [
+    {
+      "name": "block",
+      "pivot": [
+        0,
+        8,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -8,
+            0,
+            -8
+          ],
+          "size": [
+            16,
+            16,
+            16
+          ],
+          "faces": {
+            "north": {
+              "textureId": "planks"
+            },
+            "south": {
+              "textureId": "planks"
+            },
+            "east": {
+              "textureId": "planks"
+            },
+            "west": {
+              "textureId": "planks"
+            },
+            "up": {
+              "textureId": "planks"
+            },
+            "down": {
+              "textureId": "planks"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "corners",
+      "pivot": [
+        0,
+        8,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -8,
+            0,
+            -8
+          ],
+          "size": [
+            2,
+            16,
+            2
+          ],
+          "faces": {
+            "north": {
+              "textureId": "metal"
+            },
+            "south": {
+              "textureId": "metal"
+            },
+            "east": {
+              "textureId": "metal"
+            },
+            "west": {
+              "textureId": "metal"
+            },
+            "up": {
+              "textureId": "metal"
+            },
+            "down": {
+              "textureId": "metal"
+            }
+          }
+        },
+        {
+          "origin": [
+            6,
+            0,
+            -8
+          ],
+          "size": [
+            2,
+            16,
+            2
+          ],
+          "faces": {
+            "north": {
+              "textureId": "metal"
+            },
+            "south": {
+              "textureId": "metal"
+            },
+            "east": {
+              "textureId": "metal"
+            },
+            "west": {
+              "textureId": "metal"
+            },
+            "up": {
+              "textureId": "metal"
+            },
+            "down": {
+              "textureId": "metal"
+            }
+          }
+        },
+        {
+          "origin": [
+            -8,
+            0,
+            6
+          ],
+          "size": [
+            2,
+            16,
+            2
+          ],
+          "faces": {
+            "north": {
+              "textureId": "metal"
+            },
+            "south": {
+              "textureId": "metal"
+            },
+            "east": {
+              "textureId": "metal"
+            },
+            "west": {
+              "textureId": "metal"
+            },
+            "up": {
+              "textureId": "metal"
+            },
+            "down": {
+              "textureId": "metal"
+            }
+          }
+        },
+        {
+          "origin": [
+            6,
+            0,
+            6
+          ],
+          "size": [
+            2,
+            16,
+            2
+          ],
+          "faces": {
+            "north": {
+              "textureId": "metal"
+            },
+            "south": {
+              "textureId": "metal"
+            },
+            "east": {
+              "textureId": "metal"
+            },
+            "west": {
+              "textureId": "metal"
+            },
+            "up": {
+              "textureId": "metal"
+            },
+            "down": {
+              "textureId": "metal"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "category": "block"
+}

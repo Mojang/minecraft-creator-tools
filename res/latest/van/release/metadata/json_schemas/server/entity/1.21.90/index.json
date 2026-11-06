@@ -1,0 +1,10 @@
+{
+  "files": [
+    "ActorDocument.json",
+    "BaseGoal.json",
+    "Entity component definitions.json",
+    "Goal's control flags.json",
+    "minecraft_behavior.breed.json"
+  ],
+  "folders": []
+}

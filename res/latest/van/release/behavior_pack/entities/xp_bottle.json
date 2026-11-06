@@ -1,0 +1,48 @@
+{
+  "format_version": "1.26.50",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "minecraft:xp_bottle",
+      "is_summonable": true,
+      "is_spawnable": false,
+      "spawn_category": "misc"
+    },
+    "components": {
+      "minecraft:type_family": {
+        "family": [
+          "projectile",
+          "xp_bottle"
+        ]
+      },
+      "minecraft:collision_box": {
+        "height": 0.25,
+        "width": 0.25
+      },
+      "minecraft:conditional_bandwidth_optimization": {
+        "default_values": {
+          "max_dropped_ticks": 5,
+          "max_optimized_distance": 80.0,
+          "use_motion_prediction_hints": true
+        }
+      },
+      "minecraft:physics": {},
+      "minecraft:projectile": {
+        "angle_offset": -20.0,
+        "on_hit": {
+          "grant_xp": {
+            "maxXP": 11,
+            "minXP": 3
+          },
+          "remove_on_hit": {}
+        },
+        "gravity": 0.05,
+        "hit_sound": "glass",
+        "power": 0.5,
+        "isolated_physics": false
+      },
+      "minecraft:pushable_by_entity": {},
+      "minecraft:pushable_by_block": {}
+    },
+    "events": null
+  }
+}

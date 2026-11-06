@@ -1,0 +1,20 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "is stunned"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [],
+  "description": "Sets that this entity is currently stunned.",
+  "title": "Is Stunned",
+  "samples": {},
+  "id": "minecraft:is_stunned"
+}

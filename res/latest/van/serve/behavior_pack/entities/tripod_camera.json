@@ -1,0 +1,49 @@
+{
+  "format_version": "1.26.0",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "minecraft:tripod_camera",
+      "is_experimental": false,
+      "is_summonable": false,
+      "is_spawnable": false,
+      "spawn_category": "misc"
+    },
+    "components": {
+      "minecraft:collision_box": {
+        "height": 1.8,
+        "width": 0.75
+      },
+      "minecraft:conditional_bandwidth_optimization": {},
+      "minecraft:health": {
+        "max": 4,
+        "value": 4
+      },
+      "minecraft:hurt_on_condition": {
+        "damage_conditions": [
+          {
+            "cause": "lava",
+            "damage_per_tick": 4,
+            "filters": {
+              "operator": "==",
+              "test": "in_lava",
+              "subject": "self",
+              "value": true
+            }
+          }
+        ]
+      },
+      "minecraft:loot": {
+        "table": "loot_tables/empty.json"
+      },
+      "minecraft:physics": {},
+      "minecraft:type_family": {
+        "family": [
+          "tripodcamera",
+          "inanimate",
+          "mob"
+        ]
+      }
+    },
+    "events": null
+  }
+}

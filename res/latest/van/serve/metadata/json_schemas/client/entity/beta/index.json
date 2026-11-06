@@ -1,0 +1,14 @@
+{
+  "files": [
+    "Atomic Client Entity Description.json",
+    "Atomic Client Entity component definitions.json",
+    "AtomicClientEntityDocument.json",
+    "CompanionBlockAvoidanceComponentDefinition.json",
+    "CompanionBlockClippingComponentDefinition.json",
+    "Conditional Animate Entry.json",
+    "ScriptDescription.json",
+    "minecraft_aabb_dimensions.json",
+    "minecraft_companion_visibility_boundary.json"
+  ],
+  "folders": []
+}

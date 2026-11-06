@@ -1,0 +1,16 @@
+{
+  "$id": "/client_server/world/1.21.20/SpreadType.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "enum": [
+    "linear",
+    "triangular"
+  ],
+  "title": "SpreadType",
+  "type": "string",
+  "x-enum-binary-value": [
+    0,
+    1
+  ],
+  "x-format-version": "1.21.20",
+  "x-underlying-type": "uint8"
+}

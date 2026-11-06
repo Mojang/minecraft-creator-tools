@@ -1,0 +1,8 @@
+{
+  "id": "query.get_level_seed_based_fraction",
+  "versionIntroduced": "1.26.10",
+  "note": "Introduced in 1.26.0 behind the Upcoming Creator Features experimental toggle. Available without the experimental toggle in 1.26.10.",
+  "fields": [],
+  "description": "Returns a value in range [0.0, 1.0] based on the level seed.",
+  "title": "Get Level Seed Based Fraction"
+}

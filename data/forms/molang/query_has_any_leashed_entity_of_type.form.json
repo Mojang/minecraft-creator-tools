@@ -1,0 +1,20 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "returns whether"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "query.has_any_leashed_entity_of_type",
+  "versionIntroduced": "1.21.80",
+  "fields": [],
+  "description": "Returns whether or not the entity is currently leashing other entities of the designated types.",
+  "title": "Has Any Leashed Entity Of Type"
+}

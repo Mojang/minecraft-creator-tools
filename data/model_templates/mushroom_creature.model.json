@@ -1,0 +1,388 @@
+{
+  "formatVersion": "1.0.0",
+  "identifier": "custom_mushroom_creature",
+  "description": "An adorable walking mushroom with a spotted cap. 16 units tall (~1 block). Perfect for forest or fantasy mobs.",
+  "textureSize": [
+    32,
+    32
+  ],
+  "textures": {
+    "cap_red": {
+      "background": {
+        "type": "stipple_noise",
+        "colors": [
+          "#C02020",
+          "#A01818",
+          "#E02828"
+        ],
+        "seed": 10001
+      }
+    },
+    "cap_spots": {
+      "background": {
+        "type": "solid",
+        "colors": [
+          "#FFFACD"
+        ]
+      }
+    },
+    "stem": {
+      "background": {
+        "type": "stipple_noise",
+        "colors": [
+          "#F5DEB3",
+          "#E8D4A0",
+          "#FFEAC6"
+        ],
+        "seed": 10002
+      }
+    },
+    "eyes": {
+      "background": {
+        "type": "solid",
+        "colors": [
+          "#000000"
+        ]
+      }
+    },
+    "mouth": {
+      "background": {
+        "type": "solid",
+        "colors": [
+          "#8B4513"
+        ]
+      }
+    }
+  },
+  "bones": [
+    {
+      "name": "cap",
+      "pivot": [
+        0,
+        8,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -6,
+            8,
+            -6
+          ],
+          "size": [
+            12,
+            6,
+            12
+          ],
+          "faces": {
+            "north": {
+              "textureId": "cap_red"
+            },
+            "south": {
+              "textureId": "cap_red"
+            },
+            "east": {
+              "textureId": "cap_red"
+            },
+            "west": {
+              "textureId": "cap_red"
+            },
+            "up": {
+              "textureId": "cap_red"
+            },
+            "down": {
+              "textureId": "stem"
+            }
+          }
+        },
+        {
+          "origin": [
+            -2,
+            14,
+            -7
+          ],
+          "size": [
+            3,
+            0.5,
+            1
+          ],
+          "faces": {
+            "north": {
+              "textureId": "cap_spots"
+            },
+            "south": {
+              "textureId": "cap_spots"
+            },
+            "east": {
+              "textureId": "cap_spots"
+            },
+            "west": {
+              "textureId": "cap_spots"
+            },
+            "up": {
+              "textureId": "cap_spots"
+            },
+            "down": {
+              "textureId": "cap_spots"
+            }
+          }
+        },
+        {
+          "origin": [
+            2,
+            12,
+            -7
+          ],
+          "size": [
+            2,
+            0.5,
+            1
+          ],
+          "faces": {
+            "north": {
+              "textureId": "cap_spots"
+            },
+            "south": {
+              "textureId": "cap_spots"
+            },
+            "east": {
+              "textureId": "cap_spots"
+            },
+            "west": {
+              "textureId": "cap_spots"
+            },
+            "up": {
+              "textureId": "cap_spots"
+            },
+            "down": {
+              "textureId": "cap_spots"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "body",
+      "pivot": [
+        0,
+        4,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -3,
+            2,
+            -3
+          ],
+          "size": [
+            6,
+            6,
+            6
+          ],
+          "faces": {
+            "north": {
+              "textureId": "stem"
+            },
+            "south": {
+              "textureId": "stem"
+            },
+            "east": {
+              "textureId": "stem"
+            },
+            "west": {
+              "textureId": "stem"
+            },
+            "up": {
+              "textureId": "stem"
+            },
+            "down": {
+              "textureId": "stem"
+            }
+          }
+        },
+        {
+          "origin": [
+            -2,
+            5,
+            -4
+          ],
+          "size": [
+            1,
+            2,
+            1
+          ],
+          "faces": {
+            "north": {
+              "textureId": "eyes"
+            },
+            "south": {
+              "textureId": "eyes"
+            },
+            "east": {
+              "textureId": "eyes"
+            },
+            "west": {
+              "textureId": "eyes"
+            },
+            "up": {
+              "textureId": "eyes"
+            },
+            "down": {
+              "textureId": "eyes"
+            }
+          }
+        },
+        {
+          "origin": [
+            1,
+            5,
+            -4
+          ],
+          "size": [
+            1,
+            2,
+            1
+          ],
+          "faces": {
+            "north": {
+              "textureId": "eyes"
+            },
+            "south": {
+              "textureId": "eyes"
+            },
+            "east": {
+              "textureId": "eyes"
+            },
+            "west": {
+              "textureId": "eyes"
+            },
+            "up": {
+              "textureId": "eyes"
+            },
+            "down": {
+              "textureId": "eyes"
+            }
+          }
+        },
+        {
+          "origin": [
+            -1,
+            3,
+            -4
+          ],
+          "size": [
+            2,
+            1,
+            1
+          ],
+          "faces": {
+            "north": {
+              "textureId": "mouth"
+            },
+            "south": {
+              "textureId": "mouth"
+            },
+            "east": {
+              "textureId": "mouth"
+            },
+            "west": {
+              "textureId": "mouth"
+            },
+            "up": {
+              "textureId": "mouth"
+            },
+            "down": {
+              "textureId": "mouth"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "left_foot",
+      "pivot": [
+        -2,
+        2,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -3,
+            0,
+            -2
+          ],
+          "size": [
+            3,
+            2,
+            4
+          ],
+          "faces": {
+            "north": {
+              "textureId": "stem"
+            },
+            "south": {
+              "textureId": "stem"
+            },
+            "east": {
+              "textureId": "stem"
+            },
+            "west": {
+              "textureId": "stem"
+            },
+            "up": {
+              "textureId": "stem"
+            },
+            "down": {
+              "textureId": "stem"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "right_foot",
+      "pivot": [
+        2,
+        2,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            0,
+            0,
+            -2
+          ],
+          "size": [
+            3,
+            2,
+            4
+          ],
+          "faces": {
+            "north": {
+              "textureId": "stem"
+            },
+            "south": {
+              "textureId": "stem"
+            },
+            "east": {
+              "textureId": "stem"
+            },
+            "west": {
+              "textureId": "stem"
+            },
+            "up": {
+              "textureId": "stem"
+            },
+            "down": {
+              "textureId": "stem"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "category": "entity"
+}

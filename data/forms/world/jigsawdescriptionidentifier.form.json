@@ -1,0 +1,27 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "JigsawDescriptionIdentifier",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines the identifier for a Jigsaw Structure"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "identifier",
+      "title": "Identifier",
+      "dataType": "string",
+      "isRequired": true
+    }
+  ],
+  "description": "Identifier of the Jigsaw Structure.",
+  "title": "World JigsawDescriptionIdentifier",
+  "dataVersion": "1.21.20"
+}

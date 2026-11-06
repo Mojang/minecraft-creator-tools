@@ -1,0 +1,23 @@
+{
+  "description": "Pre-encoded placeholder PNG textures for content wizard. These are used when runtime PNG encoding is not available (e.g., in browser environments).",
+  "textures": {
+    "entity": {
+      "description": "64x64 gray placeholder for entity textures",
+      "width": 64,
+      "height": 64,
+      "base64": "iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAeElEQVR4AeXBAQEAMAyDMI7yOt+FkLxtR5jESZzESZzESZzESZzESZzESZzESZzESZzESZzESZzESZzESZzESZzESZzESZzESZzESZzESZzESZzESZzESZzESZzESZzESZzESZzESZzESZzESZzESZzESZzESZzESZzEfbNUAv/+T/uYAAAAAElFTkSuQmCC"
+    },
+    "block": {
+      "description": "16x16 gray placeholder for block textures",
+      "width": 16,
+      "height": 16,
+      "base64": "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAALElEQVR4AaXBAQEAMAyDMI7yOt9FkLxtRyCRRBJJJJFEEkkkkUQSSSSRRBJ9YpoCnyiF6V0AAAAASUVORK5CYII="
+    },
+    "item": {
+      "description": "16x16 light gray placeholder for item textures",
+      "width": 16,
+      "height": 16,
+      "base64": "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAALUlEQVR4AaXBAQEAMAyDMI5/EXW6iyB5245AIokkkkgiiSSSSCKJJJJIIokk+ufpAv+MBfj8AAAAAElFTkSuQmCC"
+    }
+  }
+}

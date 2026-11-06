@@ -1,0 +1,19 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "truncates a value towards zero"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "`math.trunc(value)`",
+  "fields": [],
+  "description": "Round value towards zero",
+  "title": "Trunc(value)"
+}

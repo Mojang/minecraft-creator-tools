@@ -1,0 +1,29 @@
+{
+  "files": [
+    "Spawn BiomeConditions.json",
+    "Spawn BrightnessFilter.json",
+    "Spawn DelayFilter.json",
+    "Spawn DensityLimit.json",
+    "Spawn Description.json",
+    "Spawn DifficultyFilter.json",
+    "Spawn DisallowSpawnInBubble.json",
+    "Spawn DistanceFilter.json",
+    "Spawn HeightFilter.json",
+    "Spawn Herd.json",
+    "Spawn IsExperimental.json",
+    "Spawn IsPersistant.json",
+    "Spawn MobEventFilter.json",
+    "Spawn PermuteType.json",
+    "Spawn PlayerInVillageFilter.json",
+    "Spawn Rules.json",
+    "Spawn SpawnAboveBlockFilter.json",
+    "Spawn SpawnInLava.json",
+    "Spawn SpawnOnSurface.json",
+    "Spawn SpawnUnderground.json",
+    "Spawn SpawnUnderwater.json",
+    "Spawn Weight.json",
+    "Spawn WorldAgeFilter.json",
+    "SpawnDifficulty Legacy.json"
+  ],
+  "folders": []
+}

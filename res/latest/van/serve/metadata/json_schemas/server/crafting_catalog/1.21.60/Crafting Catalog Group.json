@@ -1,0 +1,27 @@
+{
+  "$id": "/server/crafting_catalog/1.21.60/Crafting%20Catalog%20Group.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Represents a group of items. A group can be collapsible if it is provided with a group identifier, or added a set of loose items without an icon.",
+  "properties": {
+    "group_identifier": {
+      "$ref": "./Crafting%20Catalog%20Group%20Icon.json",
+      "description": "Optional field to give an icon and name to a group. Otherwise the items are added as loose items.",
+      "x-ordinal-index": 0
+    },
+    "items": {
+      "description": "The items to add to the group.",
+      "items": {
+        "$ref": "./Crafting%20Catalog%20Item.json",
+        "description": "A single item or block."
+      },
+      "type": "array",
+      "x-ordinal-index": 1
+    }
+  },
+  "required": [
+    "items"
+  ],
+  "title": "Crafting Catalog Group",
+  "type": "object",
+  "x-format-version": "1.21.60"
+}

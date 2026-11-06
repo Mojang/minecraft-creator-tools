@@ -1,0 +1,39 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:arrow"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "pattern": [
+      "X",
+      "#",
+      "Y"
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:stick"
+      },
+      "X": {
+        "item": "minecraft:flint"
+      },
+      "Y": {
+        "item": "minecraft:feather"
+      }
+    },
+	"unlock": [
+      {
+        "item": "minecraft:flint"
+	  },
+	  {
+		"item": "minecraft:feather"
+      }
+    ],
+    "result": {
+      "item": "minecraft:arrow",
+      "count": 4
+    }
+  }
+}

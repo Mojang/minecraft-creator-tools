@@ -1,0 +1,16 @@
+{
+  "files": [
+    "ActorDocument.json",
+    "Entity component definitions.json",
+    "minecraft_behavior.charge_attack.json",
+    "minecraft_behavior.circle_around_anchor.json",
+    "minecraft_behavior.controlled_by_player.json",
+    "minecraft_behavior.dragonflaming.json",
+    "minecraft_behavior.eat_mob.json",
+    "minecraft_behavior.transport_items.json",
+    "minecraft_tick_world.json",
+    "place_strategy.json",
+    "search_strategy.json"
+  ],
+  "folders": []
+}

@@ -1,0 +1,82 @@
+{
+  "$id": "/server/entity/1.26.0/TimerActorFlagBaseGoalDefinition.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "control_flags": {
+      "default": [
+      ],
+      "items": {
+        "$ref": "../1.21.90/Goal's%20control%20flags.json",
+        "x-underlying-type": "int32"
+      },
+      "type": "array",
+      "x-ordinal-index": 5
+    },
+    "cooldown_range": {
+      "$ref": "../../../client_server/common/legacy/FloatRange.json",
+      "default": {
+        "max": 0,
+        "min": 0
+      },
+      "description": "Goal cooldown range in seconds. If specified, the cooldown will have to elapse even before the goal can be selected for the first time.",
+      "x-ordinal-index": 1
+    },
+    "duration_range": {
+      "$ref": "../../../client_server/common/legacy/FloatRange.json",
+      "default": {
+        "max": 0,
+        "min": 0
+      },
+      "description": "Goal duration range in seconds.",
+      "x-ordinal-index": 0
+    },
+    "on_end": {
+      "$ref": "../1.21.120/ActorDefinitionTrigger.json",
+      "default": {
+        "event": "",
+        "filters": {
+          "AND": null,
+          "NOT": null,
+          "OR": null,
+          "all": null,
+          "all_of": null,
+          "any": null,
+          "any_of": null,
+          "none_of": null
+        },
+        "target": "self"
+      },
+      "description": "Event(s) to run when the goal ends.",
+      "x-ordinal-index": 3
+    },
+    "on_start": {
+      "$ref": "../1.21.120/ActorDefinitionTrigger.json",
+      "default": {
+        "event": "",
+        "filters": {
+          "AND": null,
+          "NOT": null,
+          "OR": null,
+          "all": null,
+          "all_of": null,
+          "any": null,
+          "any_of": null,
+          "none_of": null
+        },
+        "target": "self"
+      },
+      "description": "Event(s) to run when the goal starts.",
+      "x-ordinal-index": 2
+    },
+    "priority": {
+      "default": 0,
+      "minimum": 0,
+      "type": "integer",
+      "x-ordinal-index": 4,
+      "x-underlying-type": "int32"
+    }
+  },
+  "title": "TimerActorFlagBaseGoalDefinition",
+  "type": "object",
+  "x-format-version": "1.26.0"
+}

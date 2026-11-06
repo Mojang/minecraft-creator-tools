@@ -1,0 +1,19 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "checks if player has selected an item in inventory"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "query.is_selected_item",
+  "fields": [],
+  "description": "Returns true if the player has selected an item in the inventory, else it returns 0.0.",
+  "title": "Is Selected Item"
+}

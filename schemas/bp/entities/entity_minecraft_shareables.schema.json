@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Entity Shareables",
+  "description": "Defines a list of items the mob wants to share or pick up. Items can be configured with optional parameters to control pickup, sharing, and inventory behavior.",
+  "properties": {
+    "all_items": {
+      "title": "All Items",
+      "description": "A bucket for all other items in the game. Note this category is always least priority items.",
+      "type": "boolean",
+      "default": false
+    },
+    "all_items_max_amount": {
+      "title": "All Items Max Amount",
+      "description": "Maximum number of this item the mob will hold.",
+      "type": "integer",
+      "default": -1
+    },
+    "all_items_surplus_amount": {
+      "title": "All Items Surplus Amount",
+      "description": "Number of this item considered extra that the entity wants to share.",
+      "type": "integer",
+      "default": -1
+    },
+    "all_items_want_amount": {
+      "title": "All Items Want Amount",
+      "description": "Number of this item this entity wants to share.",
+      "type": "integer",
+      "default": -1
+    },
+    "items": {
+      "title": "Items",
+      "description": "List of items or item tags that the entity wants to share. Items in-game will match to this list from top to bottom, meaning that the first occurance of a match, be it name or tag, will shadow those coming after.\n\nSample values:\n• bogged: [{\"item\":\"minecraft:netherite_sword\",\"priority\"...\n• drowned: [{\"item\":\"minecraft:trident\",\"priority\":0,\"surp...",
+      "type": "array",
+      "items": {
+        "$ref": "./entity_shareabledata.schema.json"
+      }
+    },
+    "singular_pickup": {
+      "title": "Singular Pickup",
+      "description": "Boolean value that controls if the mob is able to pick up more of the same item if it is already holding that item",
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

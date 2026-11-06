@@ -1,0 +1,100 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Celebrate Hunt",
+  "description": "Specifies hunt celebration behaviour.",
+  "properties": {
+    "broadcast": {
+      "title": "Broadcast",
+      "description": "If true, celebration will be broadcasted to other entities in the radius.",
+      "type": "boolean",
+      "default": true
+    },
+    "celeberation_targets": {
+      "title": "Celeberation Targets",
+      "description": "The list of conditions that target of hunt must satisfy to initiate celebration.",
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "all_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "any_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "none_of": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "celebrate_sound": {
+      "title": "Celebrate Sound",
+      "description": "The sound event to play when the mob is celebrating",
+      "type": "string"
+    },
+    "duration": {
+      "title": "Duration",
+      "description": "Duration, in seconds, of celebration",
+      "type": "integer",
+      "default": 4
+    },
+    "radius": {
+      "title": "Radius",
+      "description": "If broadcast is enabled, specifies the radius in which it will notify other entities for celebration.",
+      "type": "number",
+      "default": 16
+    },
+    "sound_interval": {
+      "title": "Sound Interval",
+      "description": "The range of time in seconds to randomly wait before playing the sound again",
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        {
+          "type": "object",
+          "properties": {
+            "min": {
+              "type": "integer",
+              "description": "Minimum value of the range"
+            },
+            "max": {
+              "type": "integer",
+              "description": "Maximum value of the range"
+            }
+          }
+        }
+      ],
+      "default": 0
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:spruce_planks"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "group": "planks",
+    "pattern": [
+      "#"
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:spruce_log"
+      }
+    },
+    "unlock": [
+      {
+        "item": "minecraft:spruce_log"
+      }
+    ],
+    "result": {
+      "item": "minecraft:spruce_planks",
+      "count": 4
+    }
+  }
+}

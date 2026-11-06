@@ -1,0 +1,26 @@
+{
+  "$id": "/server/biome/1.21.110/SurfaceBuilderType.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "enum": [
+    "minecraft:overworld",
+    "minecraft:frozen_ocean",
+    "minecraft:mesa",
+    "minecraft:swamp",
+    "minecraft:capped",
+    "minecraft:the_end",
+    "minecraft:noise_gradient"
+  ],
+  "title": "SurfaceBuilderType",
+  "type": "string",
+  "x-enum-binary-value": [
+    0,
+    2,
+    5,
+    1,
+    3,
+    4,
+    7
+  ],
+  "x-format-version": "1.21.110",
+  "x-underlying-type": "int32"
+}

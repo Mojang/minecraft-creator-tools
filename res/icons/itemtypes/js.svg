@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- JavaScript: JS letters in a code block -->
+  <rect x="1" y="2" width="14" height="12" rx="1" fill-opacity="0.15"/>
+  <path d="M4 6V10.5H5V11H3V6H4ZM6 8.5C6 7.67 6.67 7 7.5 7H9V8H7.5C7.22 8 7 8.22 7 8.5C7 8.78 7.22 9 7.5 9H8.5C9.33 9 10 9.67 10 10.5C10 11.33 9.33 12 8.5 12H6V11H8.5C8.78 11 9 10.78 9 10.5C9 10.22 8.78 10 8.5 10H7.5C6.67 10 6 9.33 6 8.5ZM11 6H13V7H12V11H11V6Z"/>
+</svg>

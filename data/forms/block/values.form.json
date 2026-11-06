@@ -1,0 +1,27 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "has an array or range of values"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "Values",
+  "fields": [
+    {
+      "id": "values",
+      "title": "Values",
+      "dataType": "object",
+      "isRequired": true
+    }
+  ],
+  "description": "Must be assigned an array or a \"range\"",
+  "title": "Block Values",
+  "dataVersion": "1.26.20"
+}

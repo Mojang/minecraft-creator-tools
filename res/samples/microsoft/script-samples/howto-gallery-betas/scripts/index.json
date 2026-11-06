@@ -1,0 +1,15 @@
+{
+  "files": [
+    "Chat.ts",
+    "NetUse.ts",
+    "SampleManager.ts",
+    "Server-AdminSampleLibrary.ts",
+    "Server-GameTestSampleLibrary.ts",
+    "Server-NetSampleLibrary.ts",
+    "ServerAdmin.ts",
+    "ServerSampleLibrary.ts",
+    "SimpleGameTests.ts",
+    "main.ts"
+  ],
+  "folders": []
+}

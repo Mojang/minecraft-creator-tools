@@ -1,0 +1,63 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines block culling rules for rendering optimization"
+          }
+        ]
+      }
+    ]
+  },
+  "versionIntroduced": "1.20.60",
+  "note": "Data-driven block culling rules were added in 1.20.60 to improve custom block performance and provide more control over per-face rendering.",
+  "fields": [
+    {
+      "id": "format_version",
+      "title": "format_version",
+      "description": "format_version",
+      "dataType": "string"
+    },
+    {
+      "id": "minecraft:block_culling_rules",
+      "title": "minecraft:block_culling_rules",
+      "description": "minecraft:block_culling_rules",
+      "dataType": "object",
+      "subForm": {
+        "title": "Block Culling Rules",
+        "description": "Block Culling Rules",
+        "fields": [
+          {
+            "id": "description",
+            "title": "description",
+            "description": "description",
+            "dataType": "object",
+            "subForm": {
+              "title": "Description",
+              "description": "Description",
+              "fields": [
+                {
+                  "id": "identifier",
+                  "title": "identifier",
+                  "description": "identifier",
+                  "dataType": "string"
+                }
+              ]
+            }
+          },
+          {
+            "id": "rules",
+            "title": "rules",
+            "description": "rules",
+            "dataType": "objectArray"
+          }
+        ]
+      }
+    }
+  ],
+  "description": "BlockCulling",
+  "title": "BlockCulling"
+}

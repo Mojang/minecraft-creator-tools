@@ -1,0 +1,46 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "tracks sleepless nights for phantom spawning"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "days_until_insomnia",
+      "title": "Days Until Insomnia",
+      "description": "Number of days the mob has to stay up until the insomnia effect begins.",
+      "dataType": "float",
+      "defaultValue": 3,
+      "samples": {
+        "/vanilla/behavior_pack/entities/player.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:insomnia/",
+            "content": 3
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Adds a timer since last rested to see if phantoms should spawn.",
+  "title": "Entity Insomnia",
+  "samples": {
+    "/vanilla/behavior_pack/entities/player.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:insomnia/",
+        "content": {
+          "days_until_insomnia": 3
+        }
+      }
+    ]
+  },
+  "id": "minecraft:insomnia",
+  "dataVersion": "1.26.50"
+}

@@ -1,0 +1,20 @@
+{
+  "files": [
+    "Client Biome Components.json",
+    "Client Biome Definition.json",
+    "Client Biome Description.json",
+    "Client Biome Document.json",
+    "Foliage Color Map.json",
+    "Foliage Colormap.json",
+    "Grass Color Map.json",
+    "Grass Colormap.json",
+    "minecraft_ambient_sounds.json",
+    "minecraft_biome_music.json",
+    "minecraft_fog_appearance.json",
+    "minecraft_foliage_appearance.json",
+    "minecraft_grass_appearance.json",
+    "minecraft_sky_color.json",
+    "minecraft_water_appearance.json"
+  ],
+  "folders": []
+}

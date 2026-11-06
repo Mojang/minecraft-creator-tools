@@ -1,0 +1,31 @@
+{
+  "files": [
+    "example_beziercurve.json",
+    "example_blendmode_add.json",
+    "example_blendmode_alpha.json",
+    "example_blendmode_blend.json",
+    "example_bounce.json",
+    "example_catmullromcurve.json",
+    "example_colorcurve.json",
+    "example_colorcurve2.json",
+    "example_combocurve.json",
+    "example_directional_sphere.json",
+    "example_enitity_sparkle_box.json",
+    "example_entity_sparkle_aabb.json",
+    "example_expire_on_contact.json",
+    "example_flipbook.json",
+    "example_highrestitution.json",
+    "example_linearcurve.json",
+    "example_particle_event_system.json",
+    "example_smoke_puff.json",
+    "example_spiral.json",
+    "example_vertexrandom.json",
+    "example_watertest.json",
+    "fireworks_events_demo.json",
+    "fireworks_pop_part.json",
+    "fireworks_rocket_part.json",
+    "fireworks_trail.json",
+    "fireworks_twinkles.json"
+  ],
+  "folders": []
+}

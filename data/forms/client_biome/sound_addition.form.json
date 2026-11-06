@@ -1,0 +1,42 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "id": "Sound Addition",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "defines an occasional ambient sound effect"
+          }
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "asset",
+      "title": "Asset",
+      "description": "Name of the sound asset to play",
+      "dataType": "string",
+      "minLength": 1,
+      "isRequired": true
+    },
+    {
+      "id": "chance",
+      "title": "Chance",
+      "description": "Probability of the sound playing each interval, between 0.0 and 1.0",
+      "dataType": "float",
+      "validity": [
+        {
+          "comparison": "<=",
+          "value": 1
+        }
+      ],
+      "isRequired": true
+    }
+  ],
+  "description": "Defines an occasional ambient sound effect.",
+  "title": "Client Biome Sound Addition",
+  "dataVersion": "1.21.120"
+}

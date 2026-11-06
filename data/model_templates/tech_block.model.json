@@ -1,0 +1,196 @@
+{
+  "formatVersion": "1.0.0",
+  "identifier": "tech_block",
+  "description": "A high-tech machinery block with panels and lights",
+  "pixelsPerUnit": 2,
+  "textures": {
+    "panel": {
+      "background": {
+        "type": "dither_noise",
+        "colors": [
+          "#37474F",
+          "#455A64",
+          "#546E7A"
+        ],
+        "seed": 2501,
+        "factor": 0.15
+      },
+      "effects": {
+        "border": {
+          "all": {
+            "style": "solid",
+            "width": 1,
+            "color": "#263238"
+          }
+        },
+        "lighting": {
+          "preset": "inset",
+          "intensity": 0.2
+        }
+      }
+    },
+    "vent": {
+      "background": {
+        "type": "solid",
+        "colors": [
+          "#263238"
+        ]
+      },
+      "pixelArt": [
+        {
+          "lines": [
+            "  ############  ",
+            "                ",
+            "  ############  ",
+            "                ",
+            "  ############  ",
+            "                ",
+            "  ############  ",
+            "                "
+          ],
+          "palette": {
+            "#": {
+              "hex": "#1A1A1A"
+            }
+          },
+          "scaleMode": "cover"
+        }
+      ]
+    },
+    "light": {
+      "background": {
+        "type": "gradient",
+        "colors": [
+          "#00E676",
+          "#69F0AE"
+        ],
+        "seed": 2502
+      },
+      "effects": {
+        "lighting": {
+          "preset": "pillow",
+          "intensity": 0.4
+        }
+      }
+    }
+  },
+  "bones": [
+    {
+      "name": "block",
+      "pivot": [
+        0,
+        8,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -8,
+            0,
+            -8
+          ],
+          "size": [
+            16,
+            16,
+            16
+          ],
+          "faces": {
+            "north": {
+              "textureId": "vent"
+            },
+            "south": {
+              "textureId": "panel"
+            },
+            "east": {
+              "textureId": "panel"
+            },
+            "west": {
+              "textureId": "panel"
+            },
+            "up": {
+              "textureId": "panel"
+            },
+            "down": {
+              "textureId": "panel"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "light_strip",
+      "pivot": [
+        0,
+        8,
+        0
+      ],
+      "cubes": [
+        {
+          "origin": [
+            -7,
+            14,
+            -9
+          ],
+          "size": [
+            14,
+            1,
+            1
+          ],
+          "faces": {
+            "north": {
+              "textureId": "light"
+            },
+            "south": {
+              "textureId": "light"
+            },
+            "east": {
+              "textureId": "light"
+            },
+            "west": {
+              "textureId": "light"
+            },
+            "up": {
+              "textureId": "light"
+            },
+            "down": {
+              "textureId": "light"
+            }
+          }
+        },
+        {
+          "origin": [
+            -7,
+            1,
+            -9
+          ],
+          "size": [
+            14,
+            1,
+            1
+          ],
+          "faces": {
+            "north": {
+              "textureId": "light"
+            },
+            "south": {
+              "textureId": "light"
+            },
+            "east": {
+              "textureId": "light"
+            },
+            "west": {
+              "textureId": "light"
+            },
+            "up": {
+              "textureId": "light"
+            },
+            "down": {
+              "textureId": "light"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "category": "block"
+}

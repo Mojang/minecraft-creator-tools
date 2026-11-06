@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Voxel Shapes Shape",
+  "description": "Defines a voxel shape with boxes.",
+  "properties": {
+    "boxes": {
+      "title": "Boxes",
+      "description": "\n\nProperties:\n• max\n• min",
+      "type": "array",
+      "items": {
+        "$ref": "./voxel_shapes_box.schema.json"
+      },
+      "minLength": 1,
+      "maxLength": 32
+    }
+  },
+  "required": [
+    "boxes"
+  ]
+}

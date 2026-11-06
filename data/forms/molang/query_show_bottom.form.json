@@ -1,0 +1,19 @@
+{
+  "$schema": "../../../schemas/dataform/form-definition.schema.json",
+  "summarizer": {
+    "phrases": [
+      {
+        "tokens": [
+          {
+            "type": "literal",
+            "text": "checks if we render the entity's bottom"
+          }
+        ]
+      }
+    ]
+  },
+  "id": "query.show_bottom",
+  "fields": [],
+  "description": "Returns 1.0 if we render the entity's bottom, else it returns 0.0.",
+  "title": "Show Bottom"
+}

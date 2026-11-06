@@ -1,0 +1,9 @@
+{
+  "files": [
+    "Box.json",
+    "Description.json",
+    "Shape.json",
+    "VoxelShapeFile.json"
+  ],
+  "folders": []
+}
