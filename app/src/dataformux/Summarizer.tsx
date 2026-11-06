@@ -24,6 +24,15 @@
  *    Uses semantic CSS classes that adapt to light/dark themes.
  *    Colors are mapped: positive=green, negative=red, warning=yellow, info=blue.
  *
+ * 4. UNAVAILABLE STATE:
+ *    Summarizer definitions are hand-authored JSON that ships inside form
+ *    files, and this component sits inside DataForm, so a definition the
+ *    evaluator cannot use must never surface as a React error. Evaluation is
+ *    wrapped, and when it throws or reports `issues` (a token whose child
+ *    list is missing, as the upstream shooter form once did) the component
+ *    renders a visible "Summary unavailable" note with the detail on its
+ *    tooltip instead of a partial phrase.
+ *
  * RELATED FILES:
  *    - src/dataform/ISummarizer.ts - Result interfaces
  *    - src/dataform/ISummarizerToken.ts - Token and effect definitions
@@ -46,6 +55,7 @@ import ISummarizer from "../dataform/ISummarizer";
 import IProjectTheme from "../UX/types/IProjectTheme";
 import IFormDefinition from "../dataform/IFormDefinition";
 import CreatorToolsHost, { CreatorToolsThemeStyle } from "../app/CreatorToolsHost";
+import Log from "../core/Log";
 
 export interface ISummarizerProps {
   /**
@@ -117,6 +127,12 @@ export interface ISummarizerProps {
 
 interface ISummarizerState {
   result?: ISummarizerEvaluatedResult;
+
+  /**
+   * Set when evaluating the summarizer threw; the message is shown in place
+   * of the summary.
+   */
+  error?: string;
 }
 
 /**
@@ -164,9 +180,7 @@ export default class Summarizer extends Component<ISummarizerProps, ISummarizerS
     super(props);
 
     this.evaluator = new SummarizerEvaluator();
-    this.state = {
-      result: this.evaluateSummarizer(props),
-    };
+    this.state = this.evaluateSummarizer(props);
   }
 
   componentDidUpdate(prevProps: ISummarizerProps) {
@@ -179,20 +193,59 @@ export default class Summarizer extends Component<ISummarizerProps, ISummarizerS
       prevProps.maxPhrases !== this.props.maxPhrases ||
       prevProps.formDefinition !== this.props.formDefinition
     ) {
-      this.setState({
-        result: this.evaluateSummarizer(this.props),
-      });
+      this.setState(this.evaluateSummarizer(this.props));
     }
   }
 
-  private evaluateSummarizer(props: ISummarizerProps): ISummarizerEvaluatedResult | undefined {
+  private evaluateSummarizer(props: ISummarizerProps): ISummarizerState {
     if (!props.summarizer || !props.data) {
-      return undefined;
+      return { result: undefined, error: undefined };
     }
 
-    return this.evaluator.evaluateWithEffects(props.summarizer, props.data, props.formDefinition, {
-      maxPhrases: props.maxPhrases,
-    });
+    try {
+      const result = this.evaluator.evaluateWithEffects(props.summarizer, props.data, props.formDefinition, {
+        maxPhrases: props.maxPhrases,
+      });
+
+      return { result, error: undefined };
+    } catch (e) {
+      const message = e instanceof Error ? e.message : String(e);
+
+      Log.error(`Could not evaluate summarizer '${props.summarizer.id || "(unnamed)"}': ${message}`);
+
+      return { result: undefined, error: message };
+    }
+  }
+
+  /**
+   * Rendered instead of the summary when the definition could not be
+   * evaluated. Partial phrases would read as the real summary ("shoots  for
+   * ranged attacks"), so the note replaces them; the first problem is shown
+   * inline and all of them sit on the tooltip for whoever maintains the form.
+   */
+  private renderUnavailable(issues: string[]): JSX.Element {
+    const { plainText, variant, className } = this.props;
+    const isDark = CreatorToolsHost.theme === CreatorToolsThemeStyle.dark;
+    const themeClass = isDark ? "sum-dark" : "sum-light";
+    const detail = issues.join("\n");
+
+    if (plainText) {
+      return (
+        <span className={`sum-plain sum-unavailable ${themeClass} ${className || ""}`.trim()} title={detail}>
+          Summary unavailable
+        </span>
+      );
+    }
+
+    const containerClass =
+      `sum-container sum-${variant || "card"} sum-unavailable ${themeClass} ${className || ""}`.trim();
+
+    return (
+      <div className={containerClass} title={detail}>
+        <span className="sum-unavailable-title">Summary unavailable</span>
+        <span className="sum-unavailable-detail">{issues[0]}</span>
+      </div>
+    );
   }
 
   /**
@@ -385,8 +438,13 @@ export default class Summarizer extends Component<ISummarizerProps, ISummarizerS
   }
 
   render() {
-    const { result } = this.state;
+    const { result, error } = this.state;
     const { plainText, variant, className } = this.props;
+
+    const issues = error !== undefined ? [error] : result?.issues;
+    if (issues && issues.length > 0) {
+      return this.renderUnavailable(issues);
+    }
 
     // No summarizer or no data
     if (!result || result.phrases.length === 0) {

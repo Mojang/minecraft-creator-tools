@@ -43,7 +43,15 @@
  *    - Subfolders with manifest.json, behavior_packs/, etc. are detected
  *
  * 4. Single Project (fallback):
- *    - Treat the entire input folder as one project
+ *    - Treat the entire input folder as one project. --single selects this mode without scanning children.
+ *
+ * Detection precedes selection: --psw/--project-starts-with filters the detected project names
+ * case-insensitively, including the folder selected by --single and the filename selected by --if.
+ * These are pre-hydration names: folder leaf names without trailing separators, and package filenames
+ * including extensions, not pack display titles or the shortened basenames used for accessory metadata.
+ * Filtering inside the layout scans would conflate "no matches" with "not a multi-project layout"
+ * and could fall back to a different target. An unmatched prefix fails before hydration or output
+ * folder creation; an empty/non-string prefix fails before folder selection.
  *
  * STORAGE SETUP:
  * - inputStorage: NodeStorage pointing to input folder (read-only for non-edit commands)
@@ -105,6 +113,7 @@ import { commandRegistry } from "./CommandRegistry";
 import { needsOutputFolder } from "./CommandEffects";
 import { escapeControlCharacters } from "./CommandLineHelp";
 import { hasInputFileOption, INVALID_INPUT_FILE_OPTION_MESSAGE, isValidInputFileOption } from "./InputFileOption";
+import { INVALID_PROJECT_PREFIX_OPTION_MESSAGE, isValidProjectPrefixOption } from "./ProjectPrefixOption";
 import Log from "../../core/Log";
 
 /**
@@ -181,7 +190,7 @@ export interface IRawOptions {
   warnOnly?: boolean;
 
   // Filtering
-  projectStartsWith?: string;
+  projectStartsWith?: unknown;
 
   // Misc
   isolated?: boolean;
@@ -326,6 +335,9 @@ export class CommandContextFactory {
     if (!isValidInputFileOption(options.inputFile)) {
       throw new Error(INVALID_INPUT_FILE_OPTION_MESSAGE);
     }
+    if (!isValidProjectPrefixOption(options.projectStartsWith)) {
+      throw new Error(INVALID_PROJECT_PREFIX_OPTION_MESSAGE);
+    }
 
     // Parse numeric and boolean options
     const threads = CommandContextFactory.parseThreads(options.threads);
@@ -400,6 +412,7 @@ export class CommandContextFactory {
     const createsOutputFolder = !dryRun && commandNeedsOutputFolder;
     const shouldCreateOutputFolder =
       createsOutputFolder && outputFolder !== inputFolder && options.outputFolder !== undefined;
+    const deferOutputCreation = options.projectStartsWith !== undefined;
 
     let outputWorkFolder = inputWorkFolder;
 
@@ -412,14 +425,14 @@ export class CommandContextFactory {
 
       // An output folder that isn't created stays an empty, unloaded folder when it doesn't exist.
       outputWorkFolder =
-        !createsOutputFolder && !(await outputStorage.rootFolder.exists())
+        (!createsOutputFolder || deferOutputCreation) && !(await outputStorage.rootFolder.exists())
           ? outputStorage.rootFolder
           : await CommandContextFactory.getWorkFolder(
               outputStorage.rootFolder,
               taskType,
               options.inputFolder,
               options.outputFolder,
-              shouldCreateOutputFolder // isOutputFolder - will create if needed
+              shouldCreateOutputFolder && !deferOutputCreation // isOutputFolder - will create if needed
             );
     }
 
@@ -433,13 +446,30 @@ export class CommandContextFactory {
     const onlyOutputSpecified = !options.inputFolder && options.outputFolder !== undefined;
     const projectDetectionFolder = isEditInPlace && onlyOutputSpecified ? outputWorkFolder : inputWorkFolder;
 
-    const projectStarts = await CommandContextFactory.detectProjects(
+    const detectedProjects = await CommandContextFactory.detectProjects(
       creatorTools,
       taskType,
       options,
       projectDetectionFolder,
       log
     );
+    const prefix = options.projectStartsWith?.toLowerCase();
+    const projectStarts =
+      prefix === undefined
+        ? detectedProjects
+        : detectedProjects.filter((project) => project.ctorProjectName.toLowerCase().startsWith(prefix));
+
+    if (options.projectStartsWith !== undefined && projectStarts.length === 0) {
+      throw new Error(
+        `No projects match '--psw ${escapeControlCharacters(options.projectStartsWith)}'. ` +
+          "Check the prefix or use -i <path> to select a different folder."
+      );
+    }
+
+    if (deferOutputCreation && shouldCreateOutputFolder) {
+      await outputWorkFolder.ensureExists();
+      await outputWorkFolder.load();
+    }
 
     if (projectStarts.length === 0) {
       Log.debug("No Minecraft projects detected in " + projectDetectionFolder.fullPath);
@@ -632,7 +662,6 @@ export class CommandContextFactory {
       throw new Error(INVALID_INPUT_FILE_OPTION_MESSAGE);
     }
     const projectStarts: IProjectStartInfo[] = [];
-    const psw = options.projectStartsWith?.toLowerCase();
     const additionalFiles = CommandContextFactory.parseAdditionalFiles(options.additionalFiles);
 
     // -------------------------------------------------------------------------
@@ -694,7 +723,6 @@ export class CommandContextFactory {
     const multiLevelProjects = await CommandContextFactory.detectMultiLevelProjects(
       workFolder,
       additionalFiles,
-      psw,
       log
     );
 
@@ -703,7 +731,7 @@ export class CommandContextFactory {
     }
 
     // Try children-of-folder multi-project detection
-    const childrenProjects = await CommandContextFactory.detectChildrenProjects(workFolder, additionalFiles, psw, log);
+    const childrenProjects = await CommandContextFactory.detectChildrenProjects(workFolder, additionalFiles, log);
 
     if (childrenProjects.length > 0) {
       return childrenProjects;
@@ -733,7 +761,6 @@ export class CommandContextFactory {
   private static async detectMultiLevelProjects(
     workFolder: IFolder,
     additionalFiles: string[],
-    psw?: string,
     log?: ILogger
   ): Promise<IProjectStartInfo[]> {
     const projectStarts: IProjectStartInfo[] = [];
@@ -819,9 +846,7 @@ export class CommandContextFactory {
 
         ps.localFilePath = file.fullPath;
 
-        if (!psw || baseName.toLowerCase().startsWith(psw)) {
-          projectStarts.push(ps);
-        }
+        projectStarts.push(ps);
       }
     }
 
@@ -842,7 +867,6 @@ export class CommandContextFactory {
   private static async detectChildrenProjects(
     workFolder: IFolder,
     additionalFiles: string[],
-    psw?: string,
     log?: ILogger
   ): Promise<IProjectStartInfo[]> {
     const projectStarts: IProjectStartInfo[] = [];
@@ -915,13 +939,11 @@ export class CommandContextFactory {
         continue;
       }
 
-      if (!psw || file.name.toLowerCase().startsWith(psw)) {
-        projectStarts.push({
-          ctorProjectName: file.name,
-          localFilePath: file.fullPath,
-          accessoryFiles: [...additionalFiles],
-        });
-      }
+      projectStarts.push({
+        ctorProjectName: file.name,
+        localFilePath: file.fullPath,
+        accessoryFiles: [...additionalFiles],
+      });
     }
 
     // Collect folder-based projects
@@ -932,13 +954,11 @@ export class CommandContextFactory {
       await folder.load();
 
       if (folder.folderCount > 0) {
-        if (!psw || folder.name.toLowerCase().startsWith(psw)) {
-          projectStarts.push({
-            ctorProjectName: folder.name,
-            localFolderPath: folder.fullPath,
-            accessoryFiles: [...additionalFiles],
-          });
-        }
+        projectStarts.push({
+          ctorProjectName: folder.name,
+          localFolderPath: folder.fullPath,
+          accessoryFiles: [...additionalFiles],
+        });
       }
     }
 

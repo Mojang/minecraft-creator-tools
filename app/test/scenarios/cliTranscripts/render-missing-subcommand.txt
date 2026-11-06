@@ -1,0 +1,35 @@
+$ mct render
+cwd: <work>
+exit code: 1
+
+stdout: (empty)
+
+stderr:
+Render models, structures, or vanilla content to images.
+
+USAGE
+  mct render <command> [flags]
+
+AVAILABLE COMMANDS
+  model:      Render a model from your project to an image.
+  batch:      Render model images from a JSON manifest in one process.
+  vanilla:    Render vanilla blocks, entities, or items to images.
+  structure:  Render a structure from your project to an image.
+
+INHERITED FLAGS
+  -h, --help  Show help for the command.
+
+EXAMPLES
+  $ mct render model mob.geo.json preview.png -i "./My Addon"
+  $ mct render structure tower.mcstructure tower.png -i "./My Addon"
+
+LEARN MORE
+  Use `mct help render <command>` for more information about a command.
+  Read the documentation at
+  https://learn.microsoft.com/minecraft/creator/documents/mctoolsoverview
+
+files under <work>: (none)
+
+files under <data-dir>: (none)
+
+network requests: (none)

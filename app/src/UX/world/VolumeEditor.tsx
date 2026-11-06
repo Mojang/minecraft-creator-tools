@@ -7,6 +7,8 @@ import Entity from "../../minecraft/Entity";
 import Block from "../../minecraft/Block";
 import BlockMeshFactory from "./BlockMeshFactory";
 import MinecraftEnvironment from "./MinecraftEnvironment";
+import RenderPresentationScene from "./RenderPresentationScene";
+import { renderPresentationFromUrl } from "../../app/RenderPresentation";
 import IBlockVolumeBounds from "../../minecraft/IBlockVolumeBounds";
 import Utilities from "../../core/Utilities";
 import Log from "../../core/Log";
@@ -46,6 +48,11 @@ import "./VolumeEditor.css";
  * MinecraftEnvironment.ts (shared with WorldRenderer) to ensure consistent
  * visual appearance across all 3D views. VolumeEditor calls these shared
  * methods from _createMinecraftEnvironment() / _createIsolatedEnvironment().
+ * CLI render presentation URLs instead install RenderPresentationScene after meshes are placed. Only
+ * solid block roots and entity geometry contribute to its bounds; air selection
+ * placeholders and cached templates must never affect camera zoom or shadows.
+ * RenderPresentationScene owns its stage resources and the synchronous headless capture bridge.
+ * Without that explicit URL opt-in, the interactive environment is unchanged.
  *
  * COORDINATE SYSTEMS:
  * -------------------
@@ -434,6 +441,7 @@ export default class VolumeEditor extends Component<IVolumeEditorProps, IVolumeE
   private _uiTexture: GUI.AdvancedDynamicTexture | undefined;
   private _blockMeshes: Map<string, BABYLON.AbstractMesh | undefined> = new Map();
   private _entityMeshes: Map<string, BABYLON.AbstractMesh | undefined> = new Map();
+  private _presentation?: RenderPresentationScene;
   private _coordinatesText: GUI.TextBlock | undefined;
   private _axisIndicator: GUI.TextBlock | undefined;
   private _hoverBlock: BABYLON.Mesh | undefined;
@@ -2137,6 +2145,7 @@ export default class VolumeEditor extends Component<IVolumeEditorProps, IVolumeE
   initialize() {
     const eo: BABYLON.EngineOptions = {
       alpha: false, // Opaque canvas — clearColor fills gaps, no HTML bleed-through
+      loseContextOnDispose: renderPresentationFromUrl() !== undefined,
     };
     const engine = new BABYLON.Engine(this._canvas, true, eo, false);
     this._engine = engine;
@@ -2162,10 +2171,36 @@ export default class VolumeEditor extends Component<IVolumeEditorProps, IVolumeE
     this._lastBlockCubeMaxZ = this.props.blockVolume?.maxZ;
     this._lastViewBounds = this.props.viewBounds;
 
+    this._presentation?.dispose();
+    this._presentation = undefined;
     this._clearAll();
     this._addEnvironment();
-    this._addBlocks();
-    this._addEntities();
+    const presentation = renderPresentationFromUrl();
+    if (presentation) delete window.mctPresentationError;
+    try {
+      this._addBlocks();
+      this._addEntities();
+      if (presentation && this._scene && this._camera) {
+        const roots = [...this._blockMeshes.values(), ...this._entityMeshes.values()].filter(
+          (mesh): mesh is BABYLON.AbstractMesh =>
+            mesh !== undefined && !mesh.isDisposed() && mesh.metadata?.isSolid !== false
+        );
+        const model = this.props.viewMode === VolumeEditorViewMode.ModelPreview;
+        this._presentation = new RenderPresentationScene(
+          this._scene,
+          this._camera,
+          roots,
+          presentation,
+          model ? 1 : -1,
+          model ? 1 : -1
+        );
+        window.mctPresentation = this._presentation;
+      }
+    } catch (error) {
+      if (!presentation) throw error;
+      window.mctPresentationError = error instanceof Error ? error.message : String(error);
+      Log.error(window.mctPresentationError);
+    }
   }
 
   resize() {
@@ -3298,6 +3333,7 @@ export default class VolumeEditor extends Component<IVolumeEditorProps, IVolumeE
   }
 
   _addEnvironment() {
+    if (renderPresentationFromUrl()) return;
     if (this._scene == null || this.props.blockVolume == null) {
       return;
     }
@@ -3705,10 +3741,11 @@ export default class VolumeEditor extends Component<IVolumeEditorProps, IVolumeE
 
     // Check if we have a custom model with either texture data or texture URL
     const hasTexture = entity.customTextureData || entity.customTextureUrl;
-    if (entity.customModel && hasTexture && this._modelMeshFactory !== undefined) {
+    if (entity.customModel && (hasTexture || renderPresentationFromUrl()) && this._modelMeshFactory !== undefined) {
       // Prefer pre-transformed geometry (has VanillaGeometryTransforms applied)
       // over the raw definition's defaultGeometry (which hasn't been transformed).
-      let geo = entity.customGeometry || entity.customModel.defaultGeometry;
+      const skeleton = renderPresentationFromUrl()?.skeleton ?? false;
+      const { geometry: geo, authoredGeometry } = entity.getCustomModelGeometry(skeleton);
 
       if (geo) {
         const name = "e" + entityId;
@@ -3742,7 +3779,10 @@ export default class VolumeEditor extends Component<IVolumeEditorProps, IVolumeE
               geo,
               entity.id,
               entity.customTextureData,
-              entity.customTextureUrl
+              entity.customTextureUrl,
+              undefined,
+              authoredGeometry,
+              skeleton
             );
 
             // Apply tint color if present (e.g., sheep wool overlay)
@@ -4031,6 +4071,7 @@ export default class VolumeEditor extends Component<IVolumeEditorProps, IVolumeE
       } else if (
         (block.isTouchingOtherBlock || y === 0) &&
         this._selectionPlaceholderMesh !== undefined &&
+        !renderPresentationFromUrl() &&
         this.props.showToolbar !== false
       ) {
         const name = "p" + posName;

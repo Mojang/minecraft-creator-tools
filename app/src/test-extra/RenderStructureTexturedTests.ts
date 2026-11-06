@@ -24,6 +24,7 @@ import * as path from "path";
 import { spawn } from "child_process";
 import { chunksToLinesAsync } from "@rauschma/stringio";
 import { Readable } from "stream";
+import "../test/TestDataDir";
 import {
   testFolders,
   assertValidPng,
@@ -79,6 +80,7 @@ describe("renderStructureCommandCannonTextured", () => {
     const process = spawn("node", [
       "./toolbuild/jsn/cli/index.mjs",
       "renderstructure",
+      "--no-gpu",
       "cannon.mcstructure",
       "./test/results/renderStructureCommandCannonTextured/cannon.png",
       "-i",
@@ -174,6 +176,7 @@ describe("renderStructureCommandDoubleExtenderTextured", () => {
     const process = spawn("node", [
       "./toolbuild/jsn/cli/index.mjs",
       "renderstructure",
+      "--no-gpu",
       "double_extender.mcstructure",
       "./test/results/renderStructureCommandDoubleExtenderTextured/double_extender.png",
       "-i",
@@ -259,6 +262,7 @@ describe("renderStructureCommandRepeaterClockTextured", () => {
     const process = spawn("node", [
       "./toolbuild/jsn/cli/index.mjs",
       "renderstructure",
+      "--no-gpu",
       "repeater_clock.mcstructure",
       "./test/results/renderStructureCommandRepeaterClockTextured/repeater_clock.png",
       "-i",

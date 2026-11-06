@@ -31,10 +31,28 @@
  * /api/shutdown          - Graceful shutdown (view mode only)
  * /api/acceptEula        - Accept Minecraft EULA (admin only, enables BDS features)
  * /api/eulaStatus        - Check if EULA has been accepted
- * /api/commands          - List available ToolCommands
- * /api/commands/<cmd>    - Execute a ToolCommand (POST with args/flags JSON body)
+ * /api/commands          - List the ToolCommands that opt in to the server API (see below)
+ * /api/commands/<cmd>    - Execute one of them (POST with args/flags JSON body)
  * /mcp                   - MCP Streamable HTTP endpoint (only when enabled; see below)
  * ```
+ *
+ * ## Tool commands (/api/commands)
+ *
+ * Clients with the updateState or admin passcode can run ToolCommands, in the serverApi scope
+ * and with no project open. Only commands that list serverApi in metadata.scopes are listed or
+ * run (add, create, script, and server); any other command name gets 404, as an unknown one does.
+ * Before a command runs, handleCommandsRequest() refuses, so nothing is written:
+ *
+ * - a write command (isWriteCommand: create, add) when the Minecraft EULA isn't accepted: 451
+ *   with the same message as the CLI's create and add (LocalUtilities.eulaNotAcceptedMessage).
+ *   Like the MCP server, it re-reads acceptance from disk, and the EULA environment variable
+ *   counts.
+ * - a request whose flags aren't the command's, with values of their types, or whose inputs
+ *   would choose where the server reads or writes, such as create's output flag, server's project
+ *   flag, or a project name or creator like ../../folder, C:temp, or CON: 400
+ *   (ToolCommandRequestGuard.ts). create writes only to the server's projects folder.
+ *
+ * The web and Electron command bar runs ToolCommands in the app (ui scope), not through here.
  *
  * ## MCP Endpoint (/mcp)
  *
@@ -126,6 +144,17 @@
  *
  * ## Integration with ServerManager
  *
+ * Startup is asynchronous: init() and waitForReady() settle only after every configured
+ * HTTP/HTTPS listener has bound. Listen errors reject with their original cause, after
+ * closing partial listeners and WebSocket resources. ServerManager coalesces concurrent
+ * starts and caches only a ready server, so callers must await ensureHttpServer().
+ *
+ * Shutdown gives notification WebSockets one second to receive the shutdown message
+ * and finish their close handshake, then terminates remaining upgraded connections.
+ * HTTP close waits for upgraded sockets too; closeAllConnections() does not close them.
+ * Listener closure is still attempted if the WebSocket phase fails, preserving its
+ * error after cleanup and logging any additional listener-close failures.
+ *
  * HttpServer receives events from ServerManager and converts them to notifications:
  *
  * ```
@@ -149,6 +178,7 @@
  * - IStorageWatcher.ts: Interface definitions for watcher system
  * - MinecraftMcpServer.ts: MCP server for AI tool integration
  * - McpRequestGuard.ts: Host and Origin checks for /mcp
+ * - ToolCommandRequestGuard.ts: request body and path checks for /api/commands
  *
  * ## Key Methods
  *
@@ -187,6 +217,7 @@ import ProjectInfoUtilities from "../info/ProjectInfoUtilities";
 import IProjectMetaState from "../info/IProjectMetaState";
 import MinecraftMcpServer from "./MinecraftMcpServer";
 import McpRequestGuard, { IListeningEndpoint, IMcpRequestCheckResult } from "./McpRequestGuard";
+import ToolCommandRequestGuard from "./ToolCommandRequestGuard";
 import HttpUtilities from "./HttpUtilities";
 import Utilities from "../core/Utilities";
 import HttpStorage from "../storage/HttpStorage";
@@ -241,6 +272,27 @@ export function buildDebugSlotConfig(ds: DedicatedServer): ISlotConfig {
   return ds.getDebugSlotConfig();
 }
 
+// Allow a local notification/close round-trip without delaying owned-server cleanup for ws's 30s timeout.
+const WEBSOCKET_SHUTDOWN_GRACE_MS = 1000;
+
+/** An expected bind failure, with recovery guidance and the original diagnostic as its cause. */
+export class HttpServerListenError extends Error {
+  constructor(
+    public readonly code: "EADDRINUSE" | "EACCES",
+    public readonly address: string,
+    public readonly port: number,
+    public readonly protocol: "HTTP" | "HTTPS",
+    cause: Error
+  ) {
+    const reason =
+      code === "EADDRINUSE"
+        ? "The port is already in use. Stop the process using this address and try again."
+        : "Permission denied. Check your network permissions or choose an allowed address and port.";
+    super(`Cannot start ${protocol} server at ${address}:${port}. ${reason}`, { cause });
+    this.name = "HttpServerListenError";
+  }
+}
+
 export default class HttpServer {
   host = "localhost";
   public port = 80;
@@ -276,7 +328,7 @@ export default class HttpServer {
 
   // Track whether the server is listening and ready to accept connections
   private _isListeningMetaFlag: boolean = false;
-  private _readyResolvers: (() => void)[] = [];
+  private _startupPromise: Promise<void> | undefined;
 
   /**
    * Returns true if the HTTP server is actually listening and accepting connections.
@@ -298,48 +350,42 @@ export default class HttpServer {
   }
 
   /**
-   * Returns a promise that resolves when the server is ready to accept connections.
-   * If the server is already listening, resolves immediately.
+   * Observes the current init() attempt, including its original startup failure.
+   * A completed shutdown is not readiness, even if an earlier init() succeeded.
    * @param timeoutMs Optional timeout in milliseconds. If provided and the server
    *   doesn't become ready in time, the promise rejects with a timeout error.
    */
   public waitForReady(timeoutMs?: number): Promise<void> {
-    if (this._isListeningMetaFlag) {
-      return Promise.resolve();
+    if (!this._startupPromise) {
+      return Promise.reject(new Error("HTTP server has not been initialized."));
     }
-    return new Promise<void>((resolve, reject) => {
-      let timer: ReturnType<typeof setTimeout> | undefined;
 
-      const onReady = () => {
-        if (timer !== undefined) {
-          clearTimeout(timer);
-        }
-        resolve();
-      };
-
-      this._readyResolvers.push(onReady);
-
-      if (timeoutMs !== undefined && timeoutMs > 0) {
-        timer = setTimeout(() => {
-          const idx = this._readyResolvers.indexOf(onReady);
-          if (idx !== -1) {
-            this._readyResolvers.splice(idx, 1);
-          }
-          reject(new Error(`HTTP server did not become ready within ${timeoutMs}ms`));
-        }, timeoutMs);
+    const ready = this._startupPromise.then(() => {
+      if (!this.isListening) {
+        throw new Error("HTTP server has stopped.");
       }
     });
-  }
 
-  /**
-   * Called when the server starts listening to mark it as ready and resolve any pending waiters.
-   */
-  private _markAsListening(): void {
-    this._isListeningMetaFlag = true;
-    for (const resolve of this._readyResolvers) {
-      resolve();
+    if (timeoutMs === undefined || timeoutMs <= 0) {
+      return ready;
     }
-    this._readyResolvers = [];
+
+    return new Promise<void>((resolve, reject) => {
+      const timer = setTimeout(
+        () => reject(new Error(`HTTP server did not become ready within ${timeoutMs}ms`)),
+        timeoutMs
+      );
+      ready.then(
+        () => {
+          clearTimeout(timer);
+          resolve();
+        },
+        (error: unknown) => {
+          clearTimeout(timer);
+          reject(error);
+        }
+      );
+    });
   }
 
   // Experimental SSL configuration - passed via command line, not persisted
@@ -511,8 +557,14 @@ export default class HttpServer {
     this.processRequest = this.processRequest.bind(this);
   }
 
-  init() {
+  init(): Promise<void> {
+    this._startupPromise = this.startListening();
+    return this._startupPromise;
+  }
+
+  private async startListening(): Promise<void> {
     const requestListener = this.processRequest;
+    this._isListeningMetaFlag = false;
 
     if (this._localEnvironment && this._localEnvironment.serverHostPort) {
       this.port = this._localEnvironment.serverHostPort;
@@ -522,53 +574,67 @@ export default class HttpServer {
       this.host = this._localEnvironment.serverDomainName;
     }
 
-    // Initialize HTTPS if experimental SSL config is provided
-    if (this._sslConfig) {
-      this.initHttps(requestListener);
-    }
+    try {
+      if (this._sslConfig) {
+        this._httpsServer = https.createServer(this.buildHttpsOptions(), requestListener);
+        await this.listen(this._httpsServer, this._sslConfig.port ?? 443, "HTTPS");
+      }
 
-    // Initialize HTTP server (unless experimental SSL-only mode is enabled)
-    if (!this._sslConfig?.httpsOnly) {
-      this._httpServer = http.createServer(requestListener);
+      if (!this._sslConfig?.httpsOnly) {
+        this._httpServer = http.createServer(requestListener);
+        this.initWebSocketServer(this._httpServer);
+        await this.listen(this._httpServer, this.port, "HTTP");
 
-      // Bind to 127.0.0.1 when host is "localhost" to ensure IPv4 connectivity.
-      // Node.js resolves "localhost" via the OS, which may return only ::1 (IPv6),
-      // causing ECONNREFUSED for IPv4-only clients.
-      const listenHost = this.host === "localhost" ? "127.0.0.1" : this.host;
+        const address = this._httpServer.address();
+        if (address && typeof address !== "string") {
+          this.port = address.port;
+        }
+      }
 
-      this._httpServer.listen(this.port, listenHost, () => {
-        // Server started - mark as listening to unblock waiters
-        this._markAsListening();
-      });
-
-      // Initialize WebSocket server for notifications
-      this.initWebSocketServer(this._httpServer);
+      this._isListeningMetaFlag = true;
+      if (this._httpsServer) {
+        Log.message(
+          `(EXPERIMENTAL) Minecraft HTTPS server is running on https://${this.host}:${this._sslConfig?.port ?? 443}`
+        );
+      }
+    } catch (error) {
+      await this.stop("HTTP server startup failed");
+      throw error;
     }
   }
 
-  /**
-   * Initialize HTTPS server with experimental SSL configuration.
-   * SSL config is passed via command line arguments - nothing is persisted.
-   */
-  private initHttps(requestListener: (req: http.IncomingMessage, res: http.ServerResponse) => void) {
-    if (!this._sslConfig) {
-      return;
-    }
+  private listen(server: http.Server | https.Server, port: number, protocol: "HTTP" | "HTTPS"): Promise<void> {
+    // Use IPv4 so clients can connect even when the OS resolves localhost to ::1.
+    const address = this.host === "localhost" ? "127.0.0.1" : this.host;
+    return new Promise<void>((resolve, reject) => {
+      const cleanup = () => {
+        server.removeListener("listening", onListening);
+        server.removeListener("error", onError);
+      };
+      const onListening = () => {
+        cleanup();
+        resolve();
+      };
+      const onError = (error: unknown) => {
+        cleanup();
+        if (error instanceof Error && "code" in error && (error.code === "EADDRINUSE" || error.code === "EACCES")) {
+          if (Utilities.isDebug || process.env.MCT_DEBUG === "1") {
+            Log.error(error.stack || error.message);
+          }
+          reject(new HttpServerListenError(error.code, address, port, protocol, error));
+        } else {
+          reject(error);
+        }
+      };
 
-    try {
-      const httpsOptions = this.buildHttpsOptions();
-      const httpsPort = this._sslConfig.port ?? 443;
-
-      this._httpsServer = https.createServer(httpsOptions, requestListener);
-      const httpsListenHost = this.host === "localhost" ? "127.0.0.1" : this.host;
-      this._httpsServer.listen(httpsPort, httpsListenHost, () => {
-        Log.message(`(EXPERIMENTAL) Minecraft HTTPS server is running on https://${this.host}:${httpsPort}`);
-        this._markAsListening();
-      });
-    } catch (error) {
-      Log.fail(`Failed to initialize experimental HTTPS server: ${error}`);
-      throw error;
-    }
+      server.once("error", onError);
+      server.once("listening", onListening);
+      try {
+        server.listen(port, address);
+      } catch (error) {
+        onError(error);
+      }
+    });
   }
 
   /**
@@ -622,10 +688,11 @@ export default class HttpServer {
    * The WebSocket server shares the HTTP server and handles upgrade requests to /ws/notifications.
    */
   private initWebSocketServer(httpServer: http.Server) {
-    this._wsServer = new WebSocketServer({ noServer: true, maxPayload: 64 * 1024 * 1024 });
+    const wsServer = new WebSocketServer({ noServer: true, maxPayload: 64 * 1024 * 1024 });
+    this._wsServer = wsServer;
 
     // Handle WebSocket connections
-    this._wsServer.on("connection", (socket: WebSocket, req: http.IncomingMessage) => {
+    wsServer.on("connection", (socket: WebSocket, req: http.IncomingMessage) => {
       this.handleWebSocketConnection(socket, req);
     });
 
@@ -648,10 +715,10 @@ export default class HttpServer {
         }
 
         Log.verbose("WebSocket upgrade accepted");
-        this._wsServer!.handleUpgrade(request, socket, head, (ws) => {
+        wsServer.handleUpgrade(request, socket, head, (ws) => {
           // Store permission level on the request for later use
           (request as any).permissionLevel = permissionLevel;
-          this._wsServer!.emit("connection", ws, request);
+          wsServer.emit("connection", ws, request);
         });
       } else {
         socket.destroy();
@@ -1091,6 +1158,8 @@ export default class HttpServer {
   }
 
   async stop(reason?: string) {
+    this._isListeningMetaFlag = false;
+
     // Stop all storage watchers
     this.stopAllStorageWatchers();
 
@@ -1105,79 +1174,109 @@ export default class HttpServer {
       this._mcpServerInitPromise = undefined;
     }
 
-    // Notify all WebSocket clients that the server is shutting down BEFORE closing connections
-    if (this._wsServer && this._wsClients.size > 0) {
-      const shutdownNotification = {
-        header: {
-          version: 1,
-          requestId: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`,
-          messageType: "notification",
-          messagePurpose: "event",
-        },
-        body: {
-          eventName: "serverShutdown",
-          timestamp: Date.now(),
-          reason: reason || "Server shutting down",
-          graceful: true,
-        },
-      };
+    const errors: unknown[] = [];
+    try {
+      await this.stopWebSocketServer(reason);
+    } catch (error) {
+      errors.push(error);
+    }
 
-      const message = JSON.stringify(shutdownNotification);
-      let sentCount = 0;
+    const servers = [this._httpServer, this._httpsServer];
+    this._httpServer = undefined;
+    this._httpsServer = undefined;
+    const results = await Promise.allSettled(
+      servers.map(
+        (server) =>
+          new Promise<void>((resolve, reject) => {
+            if (!server) {
+              resolve();
+              return;
+            }
+            server.close((error?: NodeJS.ErrnoException) => {
+              if (error && error.code !== "ERR_SERVER_NOT_RUNNING") {
+                reject(error);
+                return;
+              }
+              if (!error) {
+                Log.message(`Minecraft ${server instanceof https.Server ? "https" : "HTTP"} server closed.`);
+              }
+              resolve();
+            });
+            server.closeAllConnections?.();
+            server.unref();
+          })
+      )
+    );
+    for (const result of results) {
+      if (result.status === "rejected") {
+        errors.push(result.reason);
+      }
+    }
+    if (errors.length > 0) {
+      for (const error of errors.slice(1)) {
+        Log.debug("Additional error closing HTTP servers: " + (error instanceof Error ? error.message : String(error)));
+      }
+      throw errors[0];
+    }
+  }
 
-      for (const [socket] of this._wsClients) {
-        try {
-          if (socket.readyState === socket.OPEN) {
+  private async stopWebSocketServer(reason?: string): Promise<void> {
+    const wsServer = this._wsServer;
+    if (!wsServer) {
+      return;
+    }
+    this._wsServer = undefined;
+    // Observe callback errors even if sending a notification throws before the graceful wait.
+    const closed = Promise.allSettled([
+      new Promise<void>((resolve, reject) => {
+        wsServer.close((error) => (error ? reject(error) : resolve()));
+      }),
+    ]);
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    try {
+      const deadline = new Promise<void>((resolve) => {
+        timer = setTimeout(resolve, WEBSOCKET_SHUTDOWN_GRACE_MS);
+      });
+      if (wsServer.clients.size > 0) {
+        const message = JSON.stringify({
+          header: {
+            version: 1,
+            requestId: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`,
+            messageType: "notification",
+            messagePurpose: "event",
+          },
+          body: {
+            eventName: "serverShutdown",
+            timestamp: Date.now(),
+            reason: reason || "Server shutting down",
+            graceful: true,
+          },
+        });
+        let sentCount = 0;
+        for (const socket of wsServer.clients) {
+          if (socket.readyState === WebSocket.OPEN) {
             socket.send(message);
             sentCount++;
           }
-        } catch (e) {
-          // Ignore send errors during shutdown
-        }
-      }
-
-      Log.message(`Sent shutdown notification to ${sentCount} WebSocket clients.`);
-
-      // Give the message a moment to be delivered before closing connections
-      if (sentCount > 0) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-      }
-    }
-
-    // Close WebSocket server and all connections
-    if (this._wsServer) {
-      for (const [socket] of this._wsClients) {
-        try {
+          // ws queues the close frame after the notification; both share the same deadline.
           socket.close();
-        } catch (e) {
-          // Ignore close errors
         }
+        Log.message(`Sent shutdown notification to ${sentCount} WebSocket clients.`);
+      }
+      await Promise.race([closed, deadline]);
+    } finally {
+      clearTimeout(timer);
+      // Use ws's connection set: a socket can outlive its notification registration after an error.
+      for (const socket of wsServer.clients) {
+        socket.terminate();
       }
       this._wsClients.clear();
-      this._wsServer.close();
-      Log.message("WebSocket notification server closed.");
     }
-
-    // Reset listening state BEFORE closing servers
-    this._isListeningMetaFlag = false;
-
-    if (this._httpServer) {
-      // Force close all connections immediately
-      this._httpServer.closeAllConnections?.();
-      this._httpServer.close(() => {
-        Log.message(`Minecraft HTTP server closed.`);
-      });
-      // Unref the server so it doesn't keep the process alive
-      this._httpServer.unref();
+    const [result] = await closed;
+    if (result.status === "rejected") {
+      throw result.reason;
     }
-
-    if (this._httpsServer) {
-      this._httpsServer.closeAllConnections?.();
-      this._httpsServer.close(() => {
-        Log.message(`Minecraft https server closed.`);
-      });
-      this._httpsServer.unref();
-    }
+    Log.message("WebSocket notification server closed.");
   }
 
   private _salt: Buffer | undefined;
@@ -4426,14 +4525,26 @@ export default class HttpServer {
    * Handle /api/commands/* endpoints for invoking ToolCommands via REST API.
    *
    * Endpoints:
-   * GET  /api/commands - List available commands
-   * POST /api/commands/{commandName} - Execute a command
+   * GET  /api/commands - List the commands that opt in to the serverApi scope
+   * POST /api/commands/{commandName} - Execute one of them
+   *
+   * Only commands whose metadata.scopes list serverApi are listed or run (see
+   * ToolCommandRegistry.isAvailableIn); any other name gets the same 404 as an unknown command.
+   * Before a command runs:
+   * - Write commands (isWriteCommand, such as create and add) need the Minecraft EULA, as in the
+   *   CLI and the MCP server: 451 with the CLI's message otherwise.
+   * - 400 for a body that isn't JSON with string args and the command's flags as their declared
+   *   types, or for an input that would let the client choose where the server reads or writes,
+   *   such as create's output flag or the project name ../../folder (see ToolCommandRequestGuard).
+   * So a rejected request writes nothing. processRequest has already required the updateState
+   * passcode.
    *
    * Request body for POST (JSON):
    * {
    *   "args": ["arg1", "arg2"],
    *   "flags": { "session": "mySession", "traits": ["tameable"] }
    * }
+   * args are strings; each flag is one the command declares, with a value of its type.
    *
    * Response (JSON):
    * {
@@ -4489,15 +4600,13 @@ export default class HttpServer {
     if (commandName && req.method === "POST") {
       const command = registry.get(commandName);
 
-      if (!command) {
+      if (!command || !ToolCommandRegistry.isAvailableIn(command, ToolCommandScope.serverApi)) {
         this.sendErrorRequest(404, `Command '${commandName}' not found`, req, res);
         return;
       }
 
-      // Check if command is available in serverApi scope
-      const scopes = command.metadata.scopes;
-      if (scopes && !scopes.includes(ToolCommandScope.serverApi)) {
-        this.sendErrorRequest(403, `Command '${commandName}' is not available via API`, req, res);
+      if (command.metadata.isWriteCommand && !(await this._isEulaAccepted())) {
+        this._sendCommandError(451, "EULA_REQUIRED", LocalUtilities.eulaNotAcceptedMessage, req, res, corsHeaders);
         return;
       }
 
@@ -4518,16 +4627,21 @@ export default class HttpServer {
 
       req.on("end", async () => {
         try {
-          let args: string[] = [];
-          let flags: Record<string, string | boolean | string[]> = {};
-          let sessionName: string | undefined;
+          const request = ToolCommandRequestGuard.parse(command, body);
 
-          if (body) {
-            const data = JSON.parse(body);
-            args = data.args || [];
-            flags = data.flags || {};
-            sessionName = data.sessionName || flags.session;
+          if (typeof request === "string") {
+            this._sendCommandError(400, "INVALID_REQUEST", request, req, res, corsHeaders);
+            return;
           }
+
+          const pathError = ToolCommandRequestGuard.findPathInput(command, request);
+
+          if (pathError) {
+            this._sendCommandError(400, "PATH_NOT_ALLOWED", pathError, req, res, corsHeaders);
+            return;
+          }
+
+          const { args, flags, sessionName } = request;
 
           // Create output collector
           const messages: string[] = [];
@@ -4585,6 +4699,45 @@ export default class HttpServer {
 
     // Unsupported method
     this.sendErrorRequest(405, "Method not allowed", req, res);
+  }
+
+  /**
+   * Whether the Minecraft EULA is accepted, for write commands run through /api/commands. Like the
+   * MCP server's check, it re-reads acceptance from disk, so `mct eula --accept` run in another
+   * terminal takes effect without a restart. MCTOOLS_I_ACCEPT_EULA_AT_MINECRAFTDOTNETSLASHEULA=true
+   * also counts, and is saved as acceptance, as the CLI's create and add save it.
+   */
+  private async _isEulaAccepted(): Promise<boolean> {
+    const env = this._localEnvironment;
+
+    if (!env.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula) {
+      await env.reloadEulaAcceptance();
+    }
+
+    if (env.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula) {
+      return true;
+    }
+
+    if (LocalUtilities.eulaAcceptedViaEnvironment) {
+      await env.saveEulaAcceptance();
+      return true;
+    }
+
+    return false;
+  }
+
+  /** Sends a request that /api/commands refused, as a failed command result. */
+  private _sendCommandError(
+    statusCode: number,
+    code: string,
+    message: string,
+    req: http.IncomingMessage,
+    res: http.ServerResponse,
+    corsHeaders: { [key: string]: string }
+  ) {
+    Log.message(HttpUtilities.getShortReqDescription(req) + "Error request: " + message);
+    res.writeHead(statusCode, { ...corsHeaders, "Content-Type": "application/json" });
+    res.end(JSON.stringify({ success: false, error: { code, message }, output: [] }));
   }
 
   getMainContent(req: http.IncomingMessage) {

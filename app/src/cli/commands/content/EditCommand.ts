@@ -3,6 +3,7 @@ import { ICommand, ICommandMetadata, CommandBase } from "../../core/ICommand";
 import { ICommandContext, ErrorCodes } from "../../core/ICommandContext";
 import { TaskType } from "../../ClUtils";
 import ServerManager, { ServerManagerFeatures } from "../../../local/ServerManager";
+import HttpServer, { HttpServerListenError } from "../../../local/HttpServer";
 import LocalUtilities from "../../../local/LocalUtilities";
 import Log from "../../../core/Log";
 import * as fs from "fs";
@@ -98,9 +99,14 @@ export class EditCommand extends CommandBase implements ICommand {
     const sm = new ServerManager(localEnv, creatorTools);
     sm.features = ServerManagerFeatures.all;
 
-    const httpServer = sm.ensureHttpServer();
-    if (!httpServer) {
-      log.error("Failed to create HTTP server.");
+    let httpServer: HttpServer;
+    try {
+      httpServer = await sm.ensureHttpServer();
+    } catch (error) {
+      if (!(error instanceof HttpServerListenError)) {
+        throw error;
+      }
+      log.error(error.message);
       context.setExitCode(ErrorCodes.INIT_ERROR);
       return;
     }

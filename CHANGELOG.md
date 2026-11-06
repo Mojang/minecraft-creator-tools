@@ -39,6 +39,19 @@ For the full commit history, see [Releases](https://github.com/Mojang/minecraft-
   and `--dry-run` still writes nothing. **Exit code change:** when these fixes can't determine the
   target version or can't save a file, `mct fix` now lists what changed and what failed and exits
   with code 1 instead of 0.
+- **Render commands no longer wait for Edge's updater**: after rendering with Microsoft Edge,
+  `mct` could wait for Edge's updater to finish before it exited, because the updater keeps the
+  browser's output open. On macOS, a long `mct render batch` could take several seconds longer,
+  or exit 1 with "Timed out while trying to close renderer." even though it wrote every image.
+  Render sessions no longer start the browser's updater, and closing the browser now finishes once
+  the browser itself has exited, even if a process it started is still running. That process
+  isn't stopped.
+- **Render commands no longer leave empty temporary folders**: each time `mct` started a browser
+  to render, in the render commands or for `mct mcp` previews, it left two empty folders
+  (`playwright-artifacts-*` and `playwright_chromiumdev_profile-*`) in the temporary folder for
+  each browser it tried that isn't installed, such as Google Chrome on a computer that only has
+  Microsoft Edge. It now skips browsers that aren't installed, so it doesn't create those
+  folders. It tries browsers in the same order as before, and successful renders are unchanged.
 - **`--dry-run` safety**: commands that don't support `--dry-run` now stop before doing
   anything and exit 1 with "`mct <command>` doesn't support --dry-run yet, so nothing was
   changed." Previously most commands ignored it and made real changes. Without `-o`, some
@@ -48,6 +61,12 @@ For the full commit history, see [Releases](https://github.com/Mojang/minecraft-
   the output folder (`-o`) is no longer created, and passcode flags aren't saved. Without
   `-i`, `fix --dry-run` now names the projects in `-o` (`./out` by default), which a real
   run changes, instead of the current folder's project.
+- **Render commands no longer hang when a page never loads**: when a render page never finished
+  loading, for example because the local render server didn't respond, `mct render model`,
+  `mct render structure`, and `mct render vanilla` with one item could hang after the timeout
+  instead of failing. They now fail with the timeout error and exit 1. Before closing the page,
+  `mct` waits at most a second for it to release its scene. Timeout values and successful renders
+  are unchanged.
 - **No more stray `./out` folder**: commands that don't write to the output folder, such as
   `version`, `info`, `mcp`, `eula`, `passcodes`, `setup`, `serve`, and the render commands,
   no longer create an empty `./out` in the current folder (or in your project, when run from
@@ -56,10 +75,35 @@ For the full commit history, see [Releases](https://github.com/Mojang/minecraft-
   packages there, such as `validate` and `exportaddon`, still write them to `./out` by default.
   Without `-i`, `add`, `create`, `fix`, `view`, `edit`, and `world set` still use `./out` as
   before.
+- **Interrupted commands no longer exit 0**: when Ctrl+C (SIGINT) or SIGTERM stops a command
+  that runs to completion, such as `mct validate`, `mct` now exits with code 130 (SIGINT) or 143
+  (SIGTERM) once its shutdown finishes, and no longer prints "Graceful shutdown complete.".
+  Before, it exited 0, so scripts and CI treated an interrupted run as a success, and after
+  Ctrl+C, `mct validate … && next-step` ran `next-step`. **Exit code change:** interrupted
+  one-shot commands exit 130 or 143 instead of 0. Servers that you stop with Ctrl+C or SIGTERM
+  (`serve`, `dedicatedserve`, `view`, `edit`, and `mcp`) still exit 0.
 - **MCP EULA check**: `createProject`, `addItem`, and `createMinecraftSessionWithContent`
   now return an error asking the user to run `mct eula` when the Minecraft EULA hasn't been
   accepted. Previously `createProject` reported success without creating any files.
   Accepting in another terminal takes effect without restarting the MCP server.
+- **Server API commands**: `mct serve`'s HTTP API for tool commands (`/api/commands`, which
+  `mct edit` also offers) now runs only the commands that opt in to it: `add`, `create`,
+  `script`, and `server`. It no longer lists the others, such as `deploy`, `remove`, and
+  `rename`, and returns 404 for them. `create` and `add` there now fail with HTTP 451 and say how
+  to accept the Minecraft EULA when it isn't accepted, instead of creating a project. The API
+  also refuses file and folder paths, such as `create`'s `output` folder, `server`'s `project`
+  folder, and names or creators like `../folder`, `C:temp`, `CON`, or ones with control
+  characters, and flags that a command doesn't have or that have the wrong type of value.
+  Projects are created only in the server's projects folder. `add` now checks its input before
+  it creates a starter project, so a failed `add`, through the API or the command bar, no longer
+  leaves a new project behind.
+- **`add` no longer reports success when it can't download a template**: without a network,
+  adding a template that's downloaded, such as an entity with `mct add allay`, or `add entity`
+  through `mct serve`'s API or the command bar, said it added the content but wrote nothing, and
+  could leave an empty resource pack or a new starter project behind. `add` now fails before it
+  changes anything, and says it couldn't download the template and to check your internet
+  connection. With `--offline` or `--isolated`, `mct add` says to run it without them.
+  **Exit code change:** `mct add` exits 1 instead of 0 when it can't download the template.
 - **`mct eula` consent**: `--yes` and `--json` no longer accept the Minecraft
   EULA. Accept it with `mct eula --accept`, by setting the
   `MCTOOLS_I_ACCEPT_EULA_AT_MINECRAFTDOTNETSLASHEULA` environment variable to
@@ -97,6 +141,12 @@ For the full commit history, see [Releases](https://github.com/Mojang/minecraft-
 - **Fewer color codes in pipes**: the `mct` header line and command messages such as
   `Error: …` are colored only on a terminal that supports color, as help already was.
   `NO_COLOR` turns color off and `FORCE_COLOR` turns it on, as they do for help.
+- **Render timeouts say what the page was waiting for**: when a render page doesn't become
+  ready in time, `mct render` commands now follow the timeout error with the requests that
+  failed or were still pending, the page's latest console errors, and any error the viewer
+  reported, at most five of each. When requests to mctools.dev didn't finish, the error
+  suggests checking your internet connection. URLs show only their origin and path. Timeout
+  values and successful renders are unchanged.
 
 ## [0.16.1] (2026-04-03)
 

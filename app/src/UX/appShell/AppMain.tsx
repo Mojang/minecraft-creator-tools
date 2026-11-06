@@ -23,6 +23,7 @@ import MCWorld from "../../minecraft/MCWorld";
 import CodeStartPage from "../home/CodeStartPage";
 import ProjectItem from "../../app/ProjectItem";
 import ProjectUtilities from "../../app/ProjectUtilities";
+import { GeneratedWithTools } from "../../minecraft/ManifestGeneratedWith";
 import CodeToolboxNoProjectLanding from "../codeEditors/CodeToolboxNoProjectLanding";
 import { LocalFolderType, LocalGalleryCommand } from "../utils/LocalGalleryCommand";
 import WebUtilities from "../utils/WebUtilities";
@@ -1955,7 +1956,13 @@ export default class AppMain extends Component<AppProps, AppState> {
       description = description ? description : title;
 
       try {
-        await ProjectUtilities.processNewProject(newProject, suggestedName, description, suggestedShortName, true);
+        await ProjectUtilities.processNewProject(
+          newProject,
+          suggestedName,
+          description,
+          suggestedShortName,
+          GeneratedWithTools.web
+        );
 
         if (projectSeed?.postCreateAction) {
           newProject.pendingPostCreateAction = projectSeed.postCreateAction;

@@ -172,6 +172,7 @@ import ProjectDisplay from "./ProjectDisplay";
 import IGitHubInfo from "../../app/IGitHubInfo";
 import MinecraftDisplay from "../server/MinecraftDisplay";
 import WebUtilities from "../utils/WebUtilities";
+import { isDirectoryPickerSupported } from "../utils/DirectoryPicker";
 import ProjectInfoDisplay, { InfoItemCommand } from "./projectInfo/ProjectInfoDisplay";
 import ProjectInfoItem from "../../info/ProjectInfoItem";
 import { MinecraftPushWorldType } from "../../app/MinecraftPush";
@@ -408,6 +409,7 @@ class ProjectEditor extends Component<IProjectEditorProps, IProjectEditorState> 
     this._handleFilterTextChanged = this._handleFilterTextChanged.bind(this);
     this._incrementVisualSeed = this._incrementVisualSeed.bind(this);
     this._handleItemContentChanged = this._handleItemContentChanged.bind(this);
+    this._ensurePersisted = this._ensurePersisted.bind(this);
 
     this._showMinecraftClick = this._showMinecraftClick.bind(this);
     this._showSettingsClick = this._showSettingsClick.bind(this);
@@ -1090,6 +1092,11 @@ class ProjectEditor extends Component<IProjectEditorProps, IProjectEditorState> 
       prevProps.creatorTools.onMinecraftStateChanged.unsubscribe(this._serverStateChanged);
     }
 
+    if (prevProps !== undefined && prevProps.project !== undefined && prevProps.project !== this.props.project) {
+      prevProps.project.removeSaveParticipant(this._ensurePersisted);
+      this.props.project.addSaveParticipant(this._ensurePersisted);
+    }
+
     this._connectToProps();
   }
 
@@ -1321,6 +1328,10 @@ class ProjectEditor extends Component<IProjectEditorProps, IProjectEditorState> 
     if (this.state.dialogData && this.state.activeProjectItem) {
       const newVariantSeed = this.state.dialogData as IProjectItemVariantSeed;
 
+      // The variant copies the item's file content, so what the active editor
+      // holds in memory goes into the file first.
+      await this._ensurePersisted();
+
       await ProjectItemVariantCreateManager.createVariant(this.state.activeProjectItem, newVariantSeed);
 
       // Save the project and set activeVariant to the newly created variant's label
@@ -1487,6 +1498,14 @@ class ProjectEditor extends Component<IProjectEditorProps, IProjectEditorState> 
 
     this._isMountedInternal = true;
 
+    // Whatever asks the project to save (this editor's Save, creating a
+    // variant, a settings panel, an import), the active editor's in-memory
+    // definition goes into its file first. Registered on mount and removed
+    // on unmount (and moved on a project swap), never from the constructor,
+    // so an editor that is constructed but never mounted does not stay on
+    // the project.
+    this.props.project.addSaveParticipant(this._ensurePersisted);
+
     window.setTimeout(this._doAsyncLoading, ASYNC_LOADING_TIMEOUT);
     window.setInterval(this._editorTick, EDITOR_TICK_INTERVAL);
   }
@@ -1506,6 +1525,7 @@ class ProjectEditor extends Component<IProjectEditorProps, IProjectEditorState> 
       document.removeEventListener("mousemove", this._handleToolPaneSplitterMouseMove as any);
       document.removeEventListener("mouseup", this._handleToolPaneSplitterMouseUp as any);
     }
+    this.props.project.removeSaveParticipant(this._ensurePersisted);
     this._isMountedInternal = false;
   }
 
@@ -4543,7 +4563,7 @@ class ProjectEditor extends Component<IProjectEditorProps, IProjectEditorState> 
       };
       exportMenu.push(exportKeys[nextExportKey]);
 
-      if (!isFocusedMode && !AppServiceProxy.hasAppService && window.showDirectoryPicker !== undefined) {
+      if (!isFocusedMode && !AppServiceProxy.hasAppService && isDirectoryPickerSupported(window)) {
         nextExportKey = "exportFolder";
         exportKeys[nextExportKey] = {
           key: nextExportKey,

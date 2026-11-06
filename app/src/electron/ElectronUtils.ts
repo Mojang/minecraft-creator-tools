@@ -146,7 +146,7 @@ export default class ElectronUtils {
 
     this._minecraftReleasePath =
       this.getRoamingPath() +
-      "Microsoft Bedrock" +
+      "Minecraft Bedrock" +
       path.sep +
       "Users" +
       path.sep +
@@ -187,7 +187,7 @@ export default class ElectronUtils {
 
     this._minecraftPreviewPath =
       this.getRoamingPath() +
-      "Microsoft Bedrock Preview" +
+      "Minecraft Bedrock Preview" +
       path.sep +
       "Users" +
       path.sep +

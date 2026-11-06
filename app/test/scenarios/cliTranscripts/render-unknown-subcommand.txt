@@ -1,0 +1,21 @@
+$ mct render modle --width 256
+cwd: <work>
+exit code: 1
+
+stdout: (empty)
+
+stderr:
+error: unknown command "modle" for "mct render"
+
+Did you mean this?
+  model
+
+Usage:  mct render <command> [flags]
+
+Run `mct help render` to see available commands.
+
+files under <work>: (none)
+
+files under <data-dir>: (none)
+
+network requests: (none)

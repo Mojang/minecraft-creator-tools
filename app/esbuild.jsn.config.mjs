@@ -4,7 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 /**
- * ESBuild configuration for the NodeJS CLI (replaces webpack.jsn.config.js)
+ * ESBuild configuration for the NodeJS CLI.
+ * This bundles without type-checking; run `npm run typecheck-cli` separately.
  *
  * Benefits over webpack:
  * - ~50-100x faster builds (500ms vs 30+ seconds)
@@ -46,7 +47,7 @@ const isWatch = process.argv.includes("--watch");
 
 /** @type {import('esbuild').BuildOptions} */
 const buildOptions = {
-  entryPoints: ["src/cli/index.ts", "src/cli/TaskWorker.ts"],
+  entryPoints: ["src/cli/index.ts", "src/cli/TaskWorker.ts", "src/cli/StructureSandboxWorker.ts"],
   bundle: true,
   platform: "node",
   target: "node22",

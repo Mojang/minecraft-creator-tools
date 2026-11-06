@@ -16,6 +16,8 @@ import IFolder from "../storage/IFolder";
 import StorageUtilities from "../storage/StorageUtilities";
 import IGitHubInfo from "./IGitHubInfo";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
+import type { EntityTraitId } from "../minecraft/IContentMetaSchema";
+import type { IEntityTraitJournal } from "../minecraft/EntityTraitApplier";
 import { ProjectEditPreference } from "./IProjectData";
 import MCWorld from "../minecraft/MCWorld";
 import ZipStorage from "../storage/ZipStorage";
@@ -125,6 +127,45 @@ export default class ProjectItem {
 
   public set isInWorld(isInWorld: boolean | undefined) {
     this._data.isInWorld = isInWorld;
+  }
+
+  /** Body shape chosen in the Traits tab; see IProjectItemData.bodyShape. */
+  public get bodyShape() {
+    return this._data.bodyShape;
+  }
+
+  public set bodyShape(bodyShape: EntityTraitId | undefined) {
+    if (this._data.bodyShape === bodyShape) {
+      return;
+    }
+
+    if (bodyShape === undefined) {
+      delete this._data.bodyShape;
+    } else {
+      this._data.bodyShape = bodyShape;
+    }
+
+    this._onPropertyChanged.dispatch(this, "bodyShape");
+  }
+
+  /** Journal of authored entries trait changes removed; see IProjectItemData.traitJournal. */
+  public get traitJournal() {
+    return this._data.traitJournal;
+  }
+
+  public set traitJournal(journal: IEntityTraitJournal | undefined) {
+    if (journal === undefined) {
+      if (this._data.traitJournal === undefined) {
+        return;
+      }
+      delete this._data.traitJournal;
+    } else {
+      // The applier edits the journal in place and then assigns it back, so
+      // an identity check would swallow the change; always announce it.
+      this._data.traitJournal = journal;
+    }
+
+    this._onPropertyChanged.dispatch(this, "traitJournal");
   }
 
   public get project() {
@@ -378,6 +419,35 @@ export default class ProjectItem {
     const variant = this.ensureVariant(variantName);
 
     return variant.file;
+  }
+
+  /**
+   * Returns the default file and every variant file, binding any that aren't bound yet (without
+   * loading content). Subpack copies of a path are folded into one item as variants, so
+   * primaryFile alone can belong to a different subpack than the caller's.
+   *
+   * Binding doesn't check storage: an item rebuilt from saved data gets a file for every saved
+   * path, including a folded root path that only exists in subpacks and paths deleted since.
+   * Callers that need real files must check exists() on the files they use.
+   */
+  async ensureAllFiles(): Promise<IFile[]> {
+    await this.ensureStorage();
+
+    const files: IFile[] = this._defaultFile ? [this._defaultFile] : [];
+
+    for (const variant of this._getVariantList()) {
+      if (variant.label !== "") {
+        await variant.ensureFileStorage();
+      }
+
+      const file = variant.file;
+
+      if (file && !files.includes(file)) {
+        files.push(file);
+      }
+    }
+
+    return files;
   }
 
   /// NOTE: ProjectItem.ensureFolderStorage or ensureStorage should be called before this method.

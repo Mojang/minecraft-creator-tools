@@ -1,0 +1,2347 @@
+{
+  "info": {
+    "capabilities": [
+      "behaviorPack",
+      "resourcePack"
+    ],
+    "behaviorPackManifestCount": 1,
+    "unknownJsonCount": 5,
+    "entityTypeManifestCount": 0,
+    "itemTypeManifestCount": 0,
+    "blockTypeManifestCount": 0,
+    "resourcePackManifestCount": 1,
+    "worldCount": 0,
+    "entityTypeResourceCount": 0,
+    "behaviorPackAnimationCount": 0,
+    "behaviorPackAnimationControllerCount": 0,
+    "overallSize": 6959,
+    "fileCounts": 22,
+    "folderCounts": 8,
+    "contentSize": 6903,
+    "contentFileCounts": 21,
+    "contentFolderCounts": 6,
+    "fileCount": 22,
+    "defaultBehaviorPackUuid": "9a16c747-6d53-408a-96f2-663db7c55138",
+    "defaultBehaviorPackMinEngineVersion": "1.21.40",
+    "minBehaviorPackMinEngineVersionString": "1.21.40",
+    "minBehaviorPackMinEngineVersion": 11021040,
+    "defaultBehaviorPackName": "Crystal Caverns Biome",
+    "defaultBehaviorPackDescription": "Adds the Crystal Caverns biome to your world",
+    "defaultResourcePackUuid": "3235710f-de4e-4b60-b926-bbfe91eeba4c",
+    "defaultResourcePackMinEngineVersion": "1.21.40",
+    "minResourcePackMinEngineVersionString": "1.21.40",
+    "minResourcePackMinEngineVersion": 11021040,
+    "defaultResourcePackName": "Crystal Caverns Resources",
+    "defaultResourcePackDescription": "Resources for the Crystal Caverns biome",
+    "subpackCount": 0,
+    "entityTypeComponents": [],
+    "blockTypeComponents": [],
+    "itemTypeComponents": [],
+    "biomeBehaviorTypeComponents": [
+      "minecraftClimate",
+      "minecraftOverworldHeight",
+      "minecraftReplaceBiomes",
+      "minecraftSurfaceBuilder",
+      "minecraftTags"
+    ],
+    "biomeClientTypeComponents": [],
+    "particleEmitterTypeComponents": [],
+    "particleTypeComponents": [],
+    "apisUsed": [],
+    "itemTypes": [
+      "Behavior pack folder",
+      "Behavior pack manifest",
+      "Biome",
+      "Feature",
+      "Fog",
+      "General json file",
+      "Icon",
+      "Resource pack folder",
+      "Resource pack manifest",
+      "Spawn rule",
+      "World feature rule"
+    ],
+    "completeVanillaCopy": 0,
+    "partialVanillaCopy": 0,
+    "animationCount": 0,
+    "textureCount": 0,
+    "textureTexelSize": 0,
+    "vanillaGameTextureCoverage": 0,
+    "vanillaGameTextureCount": 0,
+    "minimumSupportablePerformanceTier": 0,
+    "invalidCommandSyntaxCount": 0,
+    "linesWithSlashCount": 0,
+    "multipleSoundsManifests": 0,
+    "soundsDefinitionManifestFormatIsValid": 0,
+    "soundsDefinitionManifestIsNotValidJson": 0,
+    "experimentalFlagIsOrWasTrue": 0,
+    "levelDatNotFound": 0,
+    "worldNotFound": 0,
+    "deprecatedBlockOverride": 0,
+    "deprecatedTerrainTexture": 0,
+    "deprecatedTexture": 0,
+    "restrictedPolyMeshFound": 0,
+    "jsonParseError": 0,
+    "invalidManifestJson": 0,
+    "missingResourcePackDependencies": 0,
+    "internalProcessingErrors": 0,
+    "invalidWorldPackReferencesJson": 0,
+    "missingWorldPackReferencesFile": 0,
+    "invalidPackIds": 0,
+    "missingManifestVersion": 0,
+    "invalidManifestVersion": 0,
+    "packReferencesNotFound": 0,
+    "minBaseGameVersion": 0,
+    "chunkCount": 0,
+    "subchunkLessChunkCount": 0,
+    "completedWorldDataProcessing": true,
+    "worldLoadErrors": 0,
+    "commands": [],
+    "featureSets": {
+      "biomeBehaviorType.biomeComponents": {
+        "minecraftClimate": 1,
+        "minecraftOverworldHeight": 1,
+        "minecraftReplaceBiomes": 1,
+        "minecraftSurfaceBuilder": 1,
+        "minecraftTags": 1
+      },
+      "behaviorPackManifest.size": {
+        "instanceCount": 1,
+        "total": 384,
+        "max": 384,
+        "min": 384,
+        "average": 384
+      },
+      "behaviorPackManifest.lines": {
+        "instanceCount": 1,
+        "total": 17,
+        "max": 17,
+        "min": 17,
+        "average": 17
+      },
+      "generalJsonFile.size": {
+        "instanceCount": 5,
+        "total": 629,
+        "max": 330,
+        "min": 56,
+        "average": 126
+      },
+      "generalJsonFile.lines": {
+        "instanceCount": 5,
+        "total": 45,
+        "max": 17,
+        "min": 5,
+        "average": 9
+      },
+      "resourcePackManifest.size": {
+        "instanceCount": 1,
+        "total": 307,
+        "max": 307,
+        "min": 307,
+        "average": 307
+      },
+      "resourcePackManifest.lines": {
+        "instanceCount": 1,
+        "total": 13,
+        "max": 13,
+        "min": 13,
+        "average": 13
+      },
+      "fog.size": {
+        "instanceCount": 2,
+        "total": 700,
+        "max": 649,
+        "min": 51,
+        "average": 350
+      },
+      "fog.lines": {
+        "instanceCount": 2,
+        "total": 44,
+        "max": 39,
+        "min": 5,
+        "average": 22
+      },
+      "biome.size": {
+        "instanceCount": 2,
+        "total": 822,
+        "max": 775,
+        "min": 47,
+        "average": 411
+      },
+      "biome.lines": {
+        "instanceCount": 2,
+        "total": 43,
+        "max": 38,
+        "min": 5,
+        "average": 22
+      },
+      "worldFeatureRule.size": {
+        "instanceCount": 3,
+        "total": 1034,
+        "max": 479,
+        "min": 81,
+        "average": 345
+      },
+      "worldFeatureRule.lines": {
+        "instanceCount": 3,
+        "total": 57,
+        "max": 27,
+        "min": 6,
+        "average": 19
+      },
+      "feature.size": {
+        "instanceCount": 4,
+        "total": 988,
+        "max": 365,
+        "min": 102,
+        "average": 247
+      },
+      "feature.lines": {
+        "instanceCount": 4,
+        "total": 47,
+        "max": 20,
+        "min": 7,
+        "average": 12
+      },
+      "spawnRule.size": {
+        "instanceCount": 2,
+        "total": 631,
+        "max": 586,
+        "min": 45,
+        "average": 316
+      },
+      "spawnRule.lines": {
+        "instanceCount": 2,
+        "total": 38,
+        "max": 33,
+        "min": 5,
+        "average": 19
+      },
+      "icon.size": {
+        "instanceCount": 2,
+        "total": 1464,
+        "max": 957,
+        "min": 507,
+        "average": 732
+      },
+      "textureImages.vanillaGameTextureCoverage": {
+        "overrideCount": 0,
+        "percent": 0
+      },
+      "textureImagesTier0.nonVanillaTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier0.totalTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier0.blockAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier0.itemAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier1.nonVanillaTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier1.totalTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier1.blockAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier1.itemAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier2.nonVanillaTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier2.totalTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier2.blockAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier2.itemAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier3.nonVanillaTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier3.totalTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier3.blockAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier3.itemAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier4.nonVanillaTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier4.totalTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier4.blockAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier4.itemAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier5.nonVanillaTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier5.totalTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier5.blockAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      },
+      "textureImagesTier5.itemAtlasTextureMemoryTier": {
+        "instanceCount": 1,
+        "total": 0,
+        "max": 0,
+        "min": 0,
+        "average": 0
+      }
+    },
+    "errorCount": 8,
+    "internalProcessingErrorCount": 0,
+    "warningCount": 19,
+    "testSuccessCount": 37,
+    "testFailCount": 3,
+    "testNotApplicableCount": 14,
+    "errorSummary": "ERROR: [CPACKICON104] pack_icon must be square with size 2, 4, 8, 16, 32, 64, 128, or 256. Found [64 x 32] on pack_icon.png\nERROR: [FORMATVER250] (/behavior_pack/spawn_rules/index.json) Spawn rules does not define a format_version.\nERROR: [FORMATVER310] (/resource_pack/fogs/index.json) Fog resource does not define a format_version.\nERROR: [UNKJSON101] (/behavior_pack/index.json) Unknown JSON file found\nERROR: [UNKJSON101] (/index.json) Unknown JSON file found\nERROR: [UNKJSON101] (/resource_pack/biomes_client/crystal_caverns.biome_client.json) Unknown JSON file found\nERROR: [UNKJSON101] (/resource_pack/biomes_client/index.json) Unknown JSON file found\nERROR: [UNKJSON101] (/resource_pack/index.json) Unknown JSON file found",
+    "internalProcessingErrorSummary": "",
+    "warningSummary": "WARNING: [COMJSON131] (/resource_pack/fogs/index.json) JSON structure error: () The property files is not defined in the schema and the schema does not allow additional properties\nWARNING: [COMJSON131] (/resource_pack/fogs/index.json) JSON structure error: () The property folders is not defined in the schema and the schema does not allow additional properties\nWARNING: [COMJSON140] (/behavior_pack/feature_rules/index.json) JSON structure error: () The property files is not defined in the schema and the schema does not allow additional properties\nWARNING: [COMJSON140] (/behavior_pack/feature_rules/index.json) JSON structure error: () The property folders is not defined in the schema and the schema does not allow additional properties\nWARNING: [COMJSON141] (/behavior_pack/features/index.json) JSON structure error: () The property files is not defined in the schema and the schema does not allow additional properties\nWARNING: [COMJSON141] (/behavior_pack/features/index.json) JSON structure error: () The property folders is not defined in the schema and the schema does not allow additional properties\nWARNING: [COMJSON144] (/behavior_pack/spawn_rules/crystal_golem.json) JSON structure error: (format_version) does not have a value in the enumeration 1.8.0, 1.10.0, 1.12.0\nWARNING: [COMJSON144] (/behavior_pack/spawn_rules/index.json) JSON structure error: () The property files is not defined in the schema and the schema does not allow additional properties\nWARNING: [COMJSON144] (/behavior_pack/spawn_rules/index.json) JSON structure error: () The property folders is not defined in the schema and the schema does not allow additional properties\nWARNING: [FORMATVER258] (/behavior_pack/spawn_rules/crystal_golem.json) Spawn rules version (1.21.40) has a higher minor version number compared to the expected version (1.12.0)\nWARNING: [JSONF110] (/behavior_pack/features/single_glowing_mushroom.json) At minecraft:single_block_feature.places_block, data does not match any one of the expected types: Data 'minecraft:brown_mushroom' is of type string, which does not match type 'Array of objects'.Data 'minecraft:brown_mushroom' is of type string, which does not match type 'Object'.Data 'minecraft:brown_mushroom' is of type string, which does not match type 'Array of strings'.\nWARNING: [JSONF121] (/behavior_pack/biomes/index.json) At format_version, data is missing required field 'format_version'.\nWARNING: [JSONF121] (/behavior_pack/biomes/index.json) At minecraft:biome, data is missing required field 'minecraft:biome'.\nWARNING: [JSONF121] (/behavior_pack/features/index.json) At format_version, data is missing required field 'format_version'.\nWARNING: [JSONF121] (/behavior_pack/spawn_rules/index.json) At format_version, data is missing required field 'format_version'.",
+    "testFailSummary": "TESTFAIL: [CPACKICON000] Found 1 error in Pack Icon check\nTESTFAIL: [FORMATVER000] Found 2 errors in Format Version check\nTESTFAIL: [UNKJSON000] Found 5 errors in Unknown JSON check",
+    "reds": 1617,
+    "summary": {
+      "BASEGAMEVER": {
+        "2": {
+          "defaultMessage": "No applicable items found for test Base Game Version (BASEGAMEVER)"
+        }
+      },
+      "BLOCKSCAT": {
+        "2": {
+          "defaultMessage": "No applicable items found for test Blocks Catalog (BLOCKSCAT)"
+        }
+      },
+      "CBFG": {
+        "1": {
+          "title": "Beta Features",
+          "defaultMessage": "Beta Features completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "CDWORLDDATA": {
+        "2": {
+          "defaultMessage": "No applicable items found for test Custom Dimension World Data Validation (CDWORLDDATA)"
+        }
+      },
+      "CHECKFEATUREDEPRECATION": {
+        "2": {
+          "defaultMessage": "No applicable items found for test Feature Deprecation (CHECKFEATUREDEPRECATION)"
+        }
+      },
+      "CHKMANIF": {
+        "1": {
+          "title": "Manifest Validation",
+          "defaultMessage": "Manifest Validation completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "COMJSON": {
+        "1": {
+          "title": "JSON Parse Error (Community Schema)",
+          "defaultMessage": "Community JSON Schema Validation completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "131": {
+          "defaultMessage": "JSON structure error",
+          "warnings": 2
+        },
+        "140": {
+          "defaultMessage": "JSON structure error",
+          "warnings": 2
+        },
+        "141": {
+          "defaultMessage": "JSON structure error",
+          "warnings": 2
+        },
+        "144": {
+          "defaultMessage": "JSON structure error",
+          "warnings": 3
+        }
+      },
+      "CPACKICON": {
+        "0": {
+          "title": "Pack Icon",
+          "defaultMessage": "Found 1 error in Pack Icon check",
+          "testCompleteFails": 1
+        },
+        "104": {
+          "title": "Invalid Size",
+          "defaultMessage": "pack_icon must be square with size 2, 4, 8, 16, 32, 64, 128, or 256. Found [64 x 32] on pack_icon.png",
+          "errors": 1
+        }
+      },
+      "CPARTI": {
+        "1": {
+          "title": "Particle Identifiers",
+          "defaultMessage": "Particle Identifiers completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "CROSSREFINDEX": {
+        "2": {
+          "defaultMessage": "No applicable items found for test Cross-Reference Index (CROSSREFINDEX)"
+        }
+      },
+      "CSPJ": {
+        "1": {
+          "title": "Skin Pack",
+          "defaultMessage": "Skin Pack Validation completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "CWI": {
+        "1": {
+          "title": "World Icon",
+          "defaultMessage": "World Icons completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "ENTITYTYPE": {
+        "1": {
+          "title": "Entity Type",
+          "defaultMessage": "Entity Type completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "52": {
+          "title": "Runtime Identifier",
+          "defaultMessage": "Entity Type Runtime Identifier"
+        },
+        "53": {
+          "title": "Entity Identifier",
+          "defaultMessage": "Entity Type Identifier"
+        },
+        "54": {
+          "title": "Entity Metadata",
+          "defaultMessage": "Entity Type Metadata"
+        }
+      },
+      "EXPFLAG": {
+        "2": {
+          "defaultMessage": "No applicable items found for test Experimental Flags (EXPFLAG)"
+        }
+      },
+      "FORBFILE": {
+        "1": {
+          "title": "Forbidden Files",
+          "defaultMessage": "Forbidden Files completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "FORMATVER": {
+        "0": {
+          "title": "Format Version",
+          "defaultMessage": "Found 2 errors in Format Version check",
+          "testCompleteFails": 1
+        },
+        "250": {
+          "defaultMessage": "Spawn rules does not define a format_version.",
+          "errors": 1
+        },
+        "258": {
+          "defaultMessage": "Spawn rules version (1.21.40) has a higher minor version number compared to the expected version (1.12.0)",
+          "warnings": 1
+        },
+        "310": {
+          "defaultMessage": "Fog resource does not define a format_version.",
+          "errors": 1
+        },
+        "320": {
+          "defaultMessage": "Fog resource version (1.21.40) has a lower patch version number compared to the expected version (1.26.50)",
+          "recommendations": 1
+        },
+        "631": {
+          "defaultMessage": "Fog format_version"
+        },
+        "644": {
+          "defaultMessage": "Spawn rule format_version"
+        }
+      },
+      "GEOFMT": {
+        "1": {
+          "title": "Geometry Format",
+          "defaultMessage": "Geometry Format completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "GEOMETRY": {
+        "1": {
+          "title": "Model Geometry",
+          "defaultMessage": "Model Geometry Validation completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Block Geometry"
+        },
+        "102": {
+          "title": "Entity Geometry"
+        },
+        "103": {
+          "title": "Item Geometry",
+          "defaultMessage": "Items Geometry"
+        }
+      },
+      "ITEMS": {
+        "1": {
+          "title": "Content Counts",
+          "defaultMessage": "Minimum Definition of a Pack completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "102": {
+          "title": "Behavior Pack",
+          "defaultMessage": "Behavior pack manifest found"
+        },
+        "103": {
+          "title": "Resource Pack",
+          "defaultMessage": "Resource pack manifest found"
+        },
+        "205": {
+          "title": "Behavior pack manifest count",
+          "defaultMessage": "Behavior pack manifest item count"
+        },
+        "206": {
+          "title": "General json file count",
+          "defaultMessage": "General json file item count"
+        },
+        "214": {
+          "title": "Resource pack manifest count",
+          "defaultMessage": "Resource pack manifest item count"
+        },
+        "231": {
+          "title": "Fog count",
+          "defaultMessage": "Fog item count"
+        },
+        "238": {
+          "title": "Biome count",
+          "defaultMessage": "Biome item count"
+        },
+        "240": {
+          "title": "World feature rule count",
+          "defaultMessage": "World feature rule item count"
+        },
+        "241": {
+          "title": "Feature count",
+          "defaultMessage": "Feature item count"
+        },
+        "244": {
+          "title": "Spawn rule count",
+          "defaultMessage": "Spawn rule item count"
+        },
+        "303": {
+          "title": "Icon count",
+          "defaultMessage": "Icon item count"
+        },
+        "309": {
+          "title": "Behavior pack folder count",
+          "defaultMessage": "Behavior pack folder item count"
+        },
+        "310": {
+          "title": "Resource pack folder count",
+          "defaultMessage": "Resource pack folder item count"
+        }
+      },
+      "ITEMTYPE": {
+        "1": {
+          "title": "Item Types",
+          "defaultMessage": "Item Type completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "53": {
+          "title": "Identifier",
+          "defaultMessage": "Item Type Identifier"
+        },
+        "55": {
+          "title": "Category",
+          "defaultMessage": "Item Type Category"
+        }
+      },
+      "JSON": {
+        "1": {
+          "title": "JSON Parse Error (Schema Validation)",
+          "defaultMessage": "JSON Schema Validation completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "JSONF": {
+        "1": {
+          "title": "JSON Form Structure Validation",
+          "defaultMessage": "JSON Structure completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "110": {
+          "title": "Data Type Mismatch",
+          "defaultMessage": "At minecraft:single_block_feature.places_block, data does not match any one of the expected types: Data 'minecraft:brown_mushroom' is of type string, which does not match type 'Array of objects'.Data 'minecraft:brown_mushroom' is of type string, which does not match type 'Object'.Data 'minecraft:brown_mushroom' is of type string, which does not match type 'Array of strings'.",
+          "warnings": 1
+        },
+        "121": {
+          "title": "Missing Required Field",
+          "defaultMessage": "At format_version, data is missing required field 'format_version'.",
+          "warnings": 7
+        }
+      },
+      "JSONTAGS": {
+        "1": {
+          "title": "Content Tags",
+          "defaultMessage": "JSON Tags completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "109": {
+          "title": "Biome Behavior Type",
+          "defaultMessage": "Biome behavior file"
+        }
+      },
+      "LINESIZE": {
+        "1": {
+          "title": "File Size/Lines",
+          "defaultMessage": "File Line/Size Information completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "105": {
+          "title": "Behavior pack manifest",
+          "defaultMessage": "Behavior pack manifest file lines"
+        },
+        "106": {
+          "title": "General json file",
+          "defaultMessage": "General json file file lines"
+        },
+        "114": {
+          "title": "Resource pack manifest",
+          "defaultMessage": "Resource pack manifest file lines"
+        },
+        "131": {
+          "title": "Fog",
+          "defaultMessage": "Fog file lines"
+        },
+        "138": {
+          "title": "Biome",
+          "defaultMessage": "Biome file lines"
+        },
+        "140": {
+          "title": "World feature rule",
+          "defaultMessage": "World feature rule file lines"
+        },
+        "141": {
+          "title": "Feature",
+          "defaultMessage": "Feature file lines"
+        },
+        "144": {
+          "title": "Spawn rule",
+          "defaultMessage": "Spawn rule file lines"
+        },
+        "203": {
+          "title": "Icon",
+          "defaultMessage": "Icon file size"
+        },
+        "209": {
+          "title": "Behavior pack folder",
+          "defaultMessage": "Behavior pack folder file lines"
+        },
+        "210": {
+          "title": "Resource pack folder",
+          "defaultMessage": "Resource pack folder file lines"
+        }
+      },
+      "MCFUNCTION": {
+        "2": {
+          "defaultMessage": "No applicable items found for test MC Function Validation (MCFUNCTION)"
+        }
+      },
+      "MINENGINEVER": {
+        "1": {
+          "title": "Min Engine Version",
+          "defaultMessage": "Min Engine Version completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "605": {
+          "title": "605",
+          "defaultMessage": "Behavior pack manifest min_engine_version"
+        },
+        "614": {
+          "title": "614",
+          "defaultMessage": "Resource pack manifest format_version"
+        }
+      },
+      "NOBOM": {
+        "1": {
+          "title": "BOM Validation",
+          "defaultMessage": "No Byte Order Mark allowed in json file. completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "PACK": {
+        "1": {
+          "title": "Pack Manifest Info",
+          "defaultMessage": "General info completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "104": {
+          "title": "BP Name",
+          "defaultMessage": "Behavior Pack Name"
+        },
+        "105": {
+          "title": "BP Description",
+          "defaultMessage": "Behavior Pack Description"
+        },
+        "106": {
+          "title": "BP Custom ID",
+          "defaultMessage": "Behavior Pack Id"
+        },
+        "107": {
+          "title": "BP Min Version",
+          "defaultMessage": "Behavior Pack Min Engine Version"
+        },
+        "108": {
+          "title": "BP UUID",
+          "defaultMessage": "Behavior Pack Uuid"
+        },
+        "109": {
+          "title": "BP Manifest",
+          "defaultMessage": "Behavior Pack Manifest"
+        },
+        "111": {
+          "title": "RP Min Version",
+          "defaultMessage": "Resource Pack Min Engine Version"
+        },
+        "112": {
+          "title": "RP UUID",
+          "defaultMessage": "Resource Pack Uuid"
+        },
+        "113": {
+          "title": "RP Manifest",
+          "defaultMessage": "Resource Pack Manifest"
+        },
+        "114": {
+          "title": "RP Name",
+          "defaultMessage": "Resource Pack Name"
+        },
+        "115": {
+          "title": "RP Description",
+          "defaultMessage": "Resource Pack Description"
+        },
+        "116": {
+          "title": "RP Custom ID",
+          "defaultMessage": "Resource Pack Id"
+        },
+        "117": {
+          "title": "RP Format Version",
+          "defaultMessage": "Resource Pack Format Version"
+        },
+        "245": {
+          "title": "Subpack Tiers",
+          "defaultMessage": "Entity Geometry"
+        }
+      },
+      "PACKFILECOUNT": {
+        "1": {
+          "defaultMessage": "Pack File Count completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "defaultMessage": "File Count"
+        }
+      },
+      "PACKMETADATA": {
+        "1": {
+          "title": "Pack Metadata Info",
+          "defaultMessage": "General info completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "PACKSIZE": {
+        "1": {
+          "title": "Pack Size",
+          "defaultMessage": "Pack Size Information completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Total Size",
+          "defaultMessage": "Overall Size"
+        },
+        "102": {
+          "title": "File Count"
+        },
+        "103": {
+          "title": "Folder Count"
+        },
+        "104": {
+          "title": "Content Size"
+        },
+        "105": {
+          "title": "Content Files",
+          "defaultMessage": "Content File Count"
+        },
+        "106": {
+          "title": "Content Folders",
+          "defaultMessage": "Content Folder Count"
+        }
+      },
+      "PATHLENGTH": {
+        "1": {
+          "title": "Path Length",
+          "defaultMessage": "Path Length completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "PRJINT": {
+        "1": {
+          "title": "Project Integrity",
+          "defaultMessage": "Project Integrity completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "RESOURCEANIMATION": {
+        "1": {
+          "title": "Animation Analysis",
+          "defaultMessage": "Resource Animation completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Animation Count",
+          "defaultMessage": "Animations"
+        },
+        "102": {
+          "title": "Bone Count",
+          "defaultMessage": "Bones"
+        }
+      },
+      "RPDEPENDS": {
+        "1": {
+          "title": "Resource Pack Deps",
+          "defaultMessage": "Resource Pack Dependencies completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "SCRIPT": {
+        "1": {
+          "title": "Script Analysis",
+          "defaultMessage": "Script completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "APIs Used"
+        }
+      },
+      "SCRIPTMODULE": {
+        "2": {
+          "defaultMessage": "No applicable items found for test Script Modules (SCRIPTMODULE)"
+        }
+      },
+      "SNDSDEF": {
+        "2": {
+          "defaultMessage": "No applicable items found for test Sound Definitions (SNDSDEF)"
+        }
+      },
+      "STRICT": {
+        "1": {
+          "title": "Platform Validation",
+          "defaultMessage": "Strict Platform completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "SUMMARY": {
+        "1": {
+          "title": "Project Summary",
+          "defaultMessage": "Summary Information completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Resource Manifest",
+          "defaultMessage": "Resource Manifests"
+        },
+        "102": {
+          "title": "Behavior Manifest",
+          "defaultMessage": "Behavior Manifests"
+        }
+      },
+      "TEXTURE": {
+        "1": {
+          "title": "Texture Validation",
+          "defaultMessage": "Texture Validation completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Textures"
+        }
+      },
+      "TEXTUREIMAGE": {
+        "1": {
+          "title": "Texture Images",
+          "defaultMessage": "Texture Image Validation completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Texture Images"
+        },
+        "200": {
+          "title": "Texture Images Tier0",
+          "defaultMessage": "Texture Images Tier 0"
+        },
+        "201": {
+          "title": "Texture Images Tier1",
+          "defaultMessage": "Texture Images Tier 1"
+        },
+        "202": {
+          "title": "Texture Images Tier2",
+          "defaultMessage": "Texture Images Tier 2"
+        },
+        "203": {
+          "title": "Texture Images Tier3",
+          "defaultMessage": "Texture Images Tier 3"
+        },
+        "204": {
+          "title": "Texture Images Tier4",
+          "defaultMessage": "Texture Images Tier 4"
+        },
+        "205": {
+          "title": "Texture Images Tier5",
+          "defaultMessage": "Texture Images Tier 5"
+        }
+      },
+      "TEXTURELIST": {
+        "2": {
+          "defaultMessage": "No applicable items found for test Texture List Validation (TEXTURELIST)"
+        }
+      },
+      "TEXTUREREF": {
+        "1": {
+          "title": "Texture References",
+          "defaultMessage": "Texture References completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Reference List",
+          "defaultMessage": "Texture References"
+        }
+      },
+      "TYPES": {
+        "1": {
+          "title": "Content Types",
+          "defaultMessage": "Types Info Aggregation completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Type Summary",
+          "defaultMessage": "Types"
+        }
+      },
+      "UNKFILE": {
+        "1": {
+          "title": "Unknown Files",
+          "defaultMessage": "Unknown files completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "UNKJSON": {
+        "0": {
+          "title": "Unknown JSON",
+          "defaultMessage": "Found 5 errors in Unknown JSON check",
+          "testCompleteFails": 1
+        },
+        "101": {
+          "title": "Unknown JSON Type",
+          "defaultMessage": "Unknown JSON file found",
+          "errors": 5
+        }
+      },
+      "UNLINK": {
+        "1": {
+          "title": "Unlinked Items",
+          "defaultMessage": "Unlinked Items completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "310": {
+          "defaultMessage": "Link to entity type is not found in this pack",
+          "warnings": 1
+        }
+      },
+      "VALFILE": {
+        "2": {
+          "defaultMessage": "No applicable items found for test Valid files (VALFILE)"
+        }
+      },
+      "VANPRO": {
+        "1": {
+          "defaultMessage": "Vanilla Protected Assets completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "VSCODEFILE": {
+        "2": {
+          "defaultMessage": "No applicable items found for test VSCode Files (VSCODEFILE)"
+        }
+      },
+      "WORLD": {
+        "2": {
+          "defaultMessage": "No applicable items found for test World Validation (WORLD)"
+        }
+      },
+      "WORLDDATA": {
+        "2": {
+          "defaultMessage": "No applicable items found for test World Data Validation (WORLDDATA)"
+        }
+      },
+      "WPACKREFS": {
+        "1": {
+          "title": "World Pack Refs",
+          "defaultMessage": "World Pack References completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      }
+    }
+  },
+  "items": [
+    {
+      "iTp": 8,
+      "gId": "BASEGAMEVER",
+      "gIx": 2
+    },
+    {
+      "iTp": 8,
+      "gId": "BLOCKSCAT",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "CBFG",
+      "gIx": 1
+    },
+    {
+      "iTp": 8,
+      "gId": "CDWORLDDATA",
+      "gIx": 2
+    },
+    {
+      "iTp": 8,
+      "gId": "CHECKFEATUREDEPRECATION",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "CHKMANIF",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "COMJSON",
+      "gIx": 1
+    },
+    {
+      "iTp": 4,
+      "gId": "COMJSON",
+      "gIx": 131,
+      "p": "/resource_pack/fogs/index.json",
+      "d": "() The property files is not defined in the schema and the schema does not allow additional properties"
+    },
+    {
+      "iTp": 4,
+      "gId": "COMJSON",
+      "gIx": 131,
+      "p": "/resource_pack/fogs/index.json",
+      "d": "() The property folders is not defined in the schema and the schema does not allow additional properties"
+    },
+    {
+      "iTp": 4,
+      "gId": "COMJSON",
+      "gIx": 140,
+      "p": "/behavior_pack/feature_rules/index.json",
+      "d": "() The property files is not defined in the schema and the schema does not allow additional properties"
+    },
+    {
+      "iTp": 4,
+      "gId": "COMJSON",
+      "gIx": 140,
+      "p": "/behavior_pack/feature_rules/index.json",
+      "d": "() The property folders is not defined in the schema and the schema does not allow additional properties"
+    },
+    {
+      "iTp": 4,
+      "gId": "COMJSON",
+      "gIx": 141,
+      "p": "/behavior_pack/features/index.json",
+      "d": "() The property files is not defined in the schema and the schema does not allow additional properties"
+    },
+    {
+      "iTp": 4,
+      "gId": "COMJSON",
+      "gIx": 141,
+      "p": "/behavior_pack/features/index.json",
+      "d": "() The property folders is not defined in the schema and the schema does not allow additional properties"
+    },
+    {
+      "iTp": 4,
+      "gId": "COMJSON",
+      "gIx": 144,
+      "p": "/behavior_pack/spawn_rules/crystal_golem.json",
+      "d": "(format_version) does not have a value in the enumeration 1.8.0, 1.10.0, 1.12.0"
+    },
+    {
+      "iTp": 4,
+      "gId": "COMJSON",
+      "gIx": 144,
+      "p": "/behavior_pack/spawn_rules/index.json",
+      "d": "() The property files is not defined in the schema and the schema does not allow additional properties"
+    },
+    {
+      "iTp": 4,
+      "gId": "COMJSON",
+      "gIx": 144,
+      "p": "/behavior_pack/spawn_rules/index.json",
+      "d": "() The property folders is not defined in the schema and the schema does not allow additional properties"
+    },
+    {
+      "iTp": 0,
+      "gId": "CPACKICON",
+      "gIx": 0
+    },
+    {
+      "iTp": 3,
+      "gId": "CPACKICON",
+      "gIx": 104
+    },
+    {
+      "iTp": 1,
+      "gId": "CPARTI",
+      "gIx": 1
+    },
+    {
+      "iTp": 8,
+      "gId": "CROSSREFINDEX",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "CSPJ",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "CWI",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "ENTITYTYPE",
+      "gIx": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "ENTITYTYPE",
+      "gIx": 52
+    },
+    {
+      "iTp": 7,
+      "gId": "ENTITYTYPE",
+      "gIx": 53
+    },
+    {
+      "iTp": 7,
+      "gId": "ENTITYTYPE",
+      "gIx": 54
+    },
+    {
+      "iTp": 8,
+      "gId": "EXPFLAG",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "FORBFILE",
+      "gIx": 1
+    },
+    {
+      "iTp": 0,
+      "gId": "FORMATVER",
+      "gIx": 0
+    },
+    {
+      "iTp": 3,
+      "gId": "FORMATVER",
+      "gIx": 250,
+      "p": "/behavior_pack/spawn_rules/index.json"
+    },
+    {
+      "iTp": 4,
+      "gId": "FORMATVER",
+      "gIx": 258,
+      "p": "/behavior_pack/spawn_rules/crystal_golem.json"
+    },
+    {
+      "iTp": 3,
+      "gId": "FORMATVER",
+      "gIx": 310,
+      "p": "/resource_pack/fogs/index.json"
+    },
+    {
+      "iTp": 6,
+      "gId": "FORMATVER",
+      "gIx": 320,
+      "p": "/resource_pack/fogs/crystal_caverns_fog.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 631,
+      "p": "/resource_pack/fogs/crystal_caverns_fog.json",
+      "d": [
+        1,
+        21,
+        40
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 631,
+      "p": "/resource_pack/fogs/index.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 644,
+      "p": "/behavior_pack/spawn_rules/crystal_golem.json",
+      "d": [
+        1,
+        21,
+        40
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 644,
+      "p": "/behavior_pack/spawn_rules/index.json"
+    },
+    {
+      "iTp": 1,
+      "gId": "GEOFMT",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "GEOMETRY",
+      "gIx": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "GEOMETRY",
+      "gIx": 101
+    },
+    {
+      "iTp": 7,
+      "gId": "GEOMETRY",
+      "gIx": 102
+    },
+    {
+      "iTp": 7,
+      "gId": "GEOMETRY",
+      "gIx": 103
+    },
+    {
+      "iTp": 1,
+      "gId": "ITEMS",
+      "gIx": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 102,
+      "p": "/behavior_pack/manifest.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 103,
+      "p": "/resource_pack/manifest.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 205,
+      "d": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 206,
+      "d": 5
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 214,
+      "d": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 231,
+      "d": 2
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 238,
+      "d": 2
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 240,
+      "d": 3
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 241,
+      "d": 4
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 244,
+      "d": 2
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 303,
+      "d": 2
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 309,
+      "d": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 310,
+      "d": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "ITEMTYPE",
+      "gIx": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "ITEMTYPE",
+      "gIx": 53
+    },
+    {
+      "iTp": 7,
+      "gId": "ITEMTYPE",
+      "gIx": 55
+    },
+    {
+      "iTp": 1,
+      "gId": "JSON",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "JSONF",
+      "gIx": 1
+    },
+    {
+      "iTp": 4,
+      "gId": "JSONF",
+      "gIx": 110,
+      "p": "/behavior_pack/features/single_glowing_mushroom.json"
+    },
+    {
+      "iTp": 4,
+      "gId": "JSONF",
+      "gIx": 121,
+      "p": "/behavior_pack/biomes/index.json"
+    },
+    {
+      "iTp": 4,
+      "gId": "JSONF",
+      "gIx": 121,
+      "m": "At minecraft:biome, data is missing required field 'minecraft:biome'.",
+      "p": "/behavior_pack/biomes/index.json"
+    },
+    {
+      "iTp": 4,
+      "gId": "JSONF",
+      "gIx": 121,
+      "p": "/behavior_pack/features/index.json"
+    },
+    {
+      "iTp": 4,
+      "gId": "JSONF",
+      "gIx": 121,
+      "p": "/behavior_pack/spawn_rules/index.json"
+    },
+    {
+      "iTp": 4,
+      "gId": "JSONF",
+      "gIx": 121,
+      "m": "At minecraft:spawn_rules, data is missing required field 'minecraft:spawn_rules'.",
+      "p": "/behavior_pack/spawn_rules/index.json"
+    },
+    {
+      "iTp": 4,
+      "gId": "JSONF",
+      "gIx": 121,
+      "p": "/resource_pack/fogs/index.json"
+    },
+    {
+      "iTp": 4,
+      "gId": "JSONF",
+      "gIx": 121,
+      "m": "At minecraft:fog_settings, data is missing required field 'minecraft:fog_settings'.",
+      "p": "/resource_pack/fogs/index.json"
+    },
+    {
+      "iTp": 1,
+      "gId": "JSONTAGS",
+      "gIx": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "JSONTAGS",
+      "gIx": 109,
+      "p": "/behavior_pack/biomes/crystal_caverns.json",
+      "d": "/behavior_pack/biomes/crystal_caverns.json",
+      "fs": {
+        "biomeComponents": {
+          "minecraftClimate": 1,
+          "minecraftOverworldHeight": 1,
+          "minecraftReplaceBiomes": 1,
+          "minecraftSurfaceBuilder": 1,
+          "minecraftTags": 1
+        }
+      }
+    },
+    {
+      "iTp": 1,
+      "gId": "LINESIZE",
+      "gIx": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 105,
+      "fs": {
+        "size": {
+          "instanceCount": 1,
+          "total": 384,
+          "max": 384,
+          "min": 384,
+          "average": 384
+        },
+        "lines": {
+          "instanceCount": 1,
+          "total": 17,
+          "max": 17,
+          "min": 17,
+          "average": 17
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 106,
+      "fs": {
+        "size": {
+          "instanceCount": 5,
+          "total": 629,
+          "max": 330,
+          "min": 56,
+          "average": 126
+        },
+        "lines": {
+          "instanceCount": 5,
+          "total": 45,
+          "max": 17,
+          "min": 5,
+          "average": 9
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 114,
+      "fs": {
+        "size": {
+          "instanceCount": 1,
+          "total": 307,
+          "max": 307,
+          "min": 307,
+          "average": 307
+        },
+        "lines": {
+          "instanceCount": 1,
+          "total": 13,
+          "max": 13,
+          "min": 13,
+          "average": 13
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 131,
+      "fs": {
+        "size": {
+          "instanceCount": 2,
+          "total": 700,
+          "max": 649,
+          "min": 51,
+          "average": 350
+        },
+        "lines": {
+          "instanceCount": 2,
+          "total": 44,
+          "max": 39,
+          "min": 5,
+          "average": 22
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 138,
+      "fs": {
+        "size": {
+          "instanceCount": 2,
+          "total": 822,
+          "max": 775,
+          "min": 47,
+          "average": 411
+        },
+        "lines": {
+          "instanceCount": 2,
+          "total": 43,
+          "max": 38,
+          "min": 5,
+          "average": 22
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 140,
+      "fs": {
+        "size": {
+          "instanceCount": 3,
+          "total": 1034,
+          "max": 479,
+          "min": 81,
+          "average": 345
+        },
+        "lines": {
+          "instanceCount": 3,
+          "total": 57,
+          "max": 27,
+          "min": 6,
+          "average": 19
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 141,
+      "fs": {
+        "size": {
+          "instanceCount": 4,
+          "total": 988,
+          "max": 365,
+          "min": 102,
+          "average": 247
+        },
+        "lines": {
+          "instanceCount": 4,
+          "total": 47,
+          "max": 20,
+          "min": 7,
+          "average": 12
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 144,
+      "fs": {
+        "size": {
+          "instanceCount": 2,
+          "total": 631,
+          "max": 586,
+          "min": 45,
+          "average": 316
+        },
+        "lines": {
+          "instanceCount": 2,
+          "total": 38,
+          "max": 33,
+          "min": 5,
+          "average": 19
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 203,
+      "fs": {
+        "size": {
+          "instanceCount": 2,
+          "total": 1464,
+          "max": 957,
+          "min": 507,
+          "average": 732
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 209
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 210
+    },
+    {
+      "iTp": 8,
+      "gId": "MCFUNCTION",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "MINENGINEVER",
+      "gIx": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "MINENGINEVER",
+      "gIx": 605,
+      "p": "/behavior_pack/manifest.json",
+      "d": [
+        1,
+        21,
+        40
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "MINENGINEVER",
+      "gIx": 614,
+      "p": "/resource_pack/manifest.json",
+      "d": [
+        1,
+        21,
+        40
+      ]
+    },
+    {
+      "iTp": 1,
+      "gId": "NOBOM",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "PACK",
+      "gIx": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 104,
+      "p": "/behavior_pack/manifest.json",
+      "d": "Crystal Caverns Biome"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 105,
+      "p": "/behavior_pack/manifest.json",
+      "d": "Adds the Crystal Caverns biome to your world"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 106,
+      "p": "/behavior_pack/manifest.json",
+      "d": "9a16c747-6d53-408a-96f2-663db7c55138|1.0.0"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 107,
+      "p": "/behavior_pack/manifest.json",
+      "d": 2
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 107,
+      "p": "/behavior_pack/manifest.json",
+      "d": [
+        1,
+        21,
+        40
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 108,
+      "p": "/behavior_pack/manifest.json",
+      "d": "9a16c747-6d53-408a-96f2-663db7c55138"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 109,
+      "p": "/behavior_pack/manifest.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 111,
+      "p": "/resource_pack/manifest.json",
+      "d": [
+        1,
+        21,
+        40
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 112,
+      "p": "/resource_pack/manifest.json",
+      "d": "3235710f-de4e-4b60-b926-bbfe91eeba4c"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 113,
+      "p": "/resource_pack/manifest.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 114,
+      "p": "/resource_pack/manifest.json",
+      "d": "Crystal Caverns Resources"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 115,
+      "p": "/resource_pack/manifest.json",
+      "d": "Resources for the Crystal Caverns biome"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 116,
+      "p": "/resource_pack/manifest.json",
+      "d": "3235710f-de4e-4b60-b926-bbfe91eeba4c|1.0.0"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 117,
+      "p": "/resource_pack/manifest.json",
+      "d": 2
+    },
+    {
+      "iTp": 7,
+      "gId": "PACK",
+      "gIx": 245
+    },
+    {
+      "iTp": 1,
+      "gId": "PACKFILECOUNT",
+      "gIx": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKFILECOUNT",
+      "gIx": 101,
+      "d": 22
+    },
+    {
+      "iTp": 1,
+      "gId": "PACKMETADATA",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "PACKSIZE",
+      "gIx": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 101,
+      "d": 6959
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 102,
+      "d": 22
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 103,
+      "d": 8
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 104,
+      "d": 6903
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 105,
+      "d": 21
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 106,
+      "d": 6
+    },
+    {
+      "iTp": 1,
+      "gId": "PATHLENGTH",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "PRJINT",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "RESOURCEANIMATION",
+      "gIx": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "RESOURCEANIMATION",
+      "gIx": 101
+    },
+    {
+      "iTp": 7,
+      "gId": "RESOURCEANIMATION",
+      "gIx": 102
+    },
+    {
+      "iTp": 1,
+      "gId": "RPDEPENDS",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "SCRIPT",
+      "gIx": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "SCRIPT",
+      "gIx": 101
+    },
+    {
+      "iTp": 8,
+      "gId": "SCRIPTMODULE",
+      "gIx": 2
+    },
+    {
+      "iTp": 8,
+      "gId": "SNDSDEF",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "STRICT",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "SUMMARY",
+      "gIx": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "SUMMARY",
+      "gIx": 101
+    },
+    {
+      "iTp": 7,
+      "gId": "SUMMARY",
+      "gIx": 102
+    },
+    {
+      "iTp": 1,
+      "gId": "TEXTURE",
+      "gIx": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTURE",
+      "gIx": 101
+    },
+    {
+      "iTp": 1,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 101,
+      "fs": {
+        "vanillaGameTextureCoverage": {
+          "overrideCount": 0,
+          "percent": 0
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 200,
+      "fs": {
+        "nonVanillaTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
+        },
+        "totalTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
+        },
+        "blockAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
+        },
+        "itemAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 201,
+      "fs": {
+        "nonVanillaTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
+        },
+        "totalTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
+        },
+        "blockAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
+        },
+        "itemAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 202,
+      "fs": {
+        "nonVanillaTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
+        },
+        "totalTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
+        },
+        "blockAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
+        },
+        "itemAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 203,
+      "fs": {
+        "nonVanillaTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
+        },
+        "totalTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
+        },
+        "blockAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
+        },
+        "itemAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 204,
+      "fs": {
+        "nonVanillaTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
+        },
+        "totalTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
+        },
+        "blockAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
+        },
+        "itemAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 205,
+      "fs": {
+        "nonVanillaTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
+        },
+        "totalTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
+        },
+        "blockAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
+        },
+        "itemAtlasTextureMemoryTier": {
+          "instanceCount": 1,
+          "total": 0,
+          "max": 0,
+          "min": 0,
+          "average": 0
+        }
+      }
+    },
+    {
+      "iTp": 8,
+      "gId": "TEXTURELIST",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "TEXTUREREF",
+      "gIx": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTUREREF",
+      "gIx": 101
+    },
+    {
+      "iTp": 1,
+      "gId": "TYPES",
+      "gIx": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "TYPES",
+      "gIx": 101
+    },
+    {
+      "iTp": 1,
+      "gId": "UNKFILE",
+      "gIx": 1
+    },
+    {
+      "iTp": 0,
+      "gId": "UNKJSON",
+      "gIx": 0
+    },
+    {
+      "iTp": 3,
+      "gId": "UNKJSON",
+      "gIx": 101,
+      "p": "/behavior_pack/index.json"
+    },
+    {
+      "iTp": 3,
+      "gId": "UNKJSON",
+      "gIx": 101,
+      "p": "/index.json"
+    },
+    {
+      "iTp": 3,
+      "gId": "UNKJSON",
+      "gIx": 101,
+      "p": "/resource_pack/biomes_client/crystal_caverns.biome_client.json"
+    },
+    {
+      "iTp": 3,
+      "gId": "UNKJSON",
+      "gIx": 101,
+      "p": "/resource_pack/biomes_client/index.json"
+    },
+    {
+      "iTp": 3,
+      "gId": "UNKJSON",
+      "gIx": 101,
+      "p": "/resource_pack/index.json"
+    },
+    {
+      "iTp": 1,
+      "gId": "UNLINK",
+      "gIx": 1
+    },
+    {
+      "iTp": 4,
+      "gId": "UNLINK",
+      "gIx": 310,
+      "p": "/behavior_pack/spawn_rules/crystal_golem.json",
+      "d": "/behavior_pack/spawn_rules/crystal_golem.json to `custom:crystal_golem`"
+    },
+    {
+      "iTp": 8,
+      "gId": "VALFILE",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "VANPRO",
+      "gIx": 1
+    },
+    {
+      "iTp": 8,
+      "gId": "VSCODEFILE",
+      "gIx": 2
+    },
+    {
+      "iTp": 8,
+      "gId": "WORLD",
+      "gIx": 2
+    },
+    {
+      "iTp": 8,
+      "gId": "WORLDDATA",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "WPACKREFS",
+      "gIx": 1
+    }
+  ],
+  "generatorName": "Minecraft Creator Tools",
+  "suite": 0
+}

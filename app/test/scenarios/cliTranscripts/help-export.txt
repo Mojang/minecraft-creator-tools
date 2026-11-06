@@ -1,0 +1,33 @@
+$ mct help export
+cwd: <work>
+exit code: 0
+
+stdout:
+Package add-ons or flat GameTest worlds for sharing.
+
+USAGE
+  mct export <command> [flags]
+
+AVAILABLE COMMANDS
+  addon:  Package your project's packs for sharing.
+  world:  Export a flat GameTest world with your project's packs.
+
+INHERITED FLAGS
+  -h, --help  Show help for the command.
+
+EXAMPLES
+  $ mct export addon -i "./My Addon" -o ./packages
+  $ mct export world -i "./My Addon" -o ./packages
+
+LEARN MORE
+  Use `mct help export <command>` for more information about a command.
+  Read the documentation at
+  https://learn.microsoft.com/minecraft/creator/documents/mctoolsoverview
+
+stderr: (empty)
+
+files under <work>: (none)
+
+files under <data-dir>: (none)
+
+network requests: (none)

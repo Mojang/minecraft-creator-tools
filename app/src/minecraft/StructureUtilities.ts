@@ -119,6 +119,19 @@ export default class StructureUtilities {
 
     structure.cube = cube;
 
+    if (blockVolume.entities) {
+      for (const entity of blockVolume.entities) {
+        if (entity && entity.typeId && entity.locationWithinVolume) {
+          structure.entityPlacements.push({
+            typeId: entity.typeId,
+            x: entity.locationWithinVolume.x,
+            y: entity.locationWithinVolume.y,
+            z: entity.locationWithinVolume.z,
+          });
+        }
+      }
+    }
+
     return structure;
   }
 
@@ -292,7 +305,10 @@ export default class StructureUtilities {
     }
 
     return {
-      entities: [], // TODO: Support entity conversion
+      entities: structure.entityPlacements.map((placement) => ({
+        typeId: placement.typeId,
+        locationWithinVolume: { x: placement.x, y: placement.y, z: placement.z },
+      })),
       southWestBottom: {
         x: structure.originX ?? 0,
         y: structure.originY ?? 0,

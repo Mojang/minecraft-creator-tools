@@ -49,14 +49,22 @@ export default class Block extends ComponentizedBase implements IPropertyObject 
 
   public properties: { [id: string]: BlockProperty } = {};
 
-  private _onTypeChanged = new EventDispatcher<Block, Block>();
-  private _onPropertyChanged = new EventDispatcher<Block, BlockProperty>();
+  // Created on first subscription: structures can hold millions of Block
+  // instances, and eager dispatchers dominate their memory footprint.
+  private _onTypeChanged: EventDispatcher<Block, Block> | undefined;
+  private _onPropertyChanged: EventDispatcher<Block, BlockProperty> | undefined;
 
   public get onTypeChanged() {
+    if (!this._onTypeChanged) {
+      this._onTypeChanged = new EventDispatcher<Block, Block>();
+    }
     return this._onTypeChanged.asEvent();
   }
 
   public get onPropertyChanged() {
+    if (!this._onPropertyChanged) {
+      this._onPropertyChanged = new EventDispatcher<Block, BlockProperty>();
+    }
     return this._onPropertyChanged.asEvent();
   }
 
@@ -185,6 +193,12 @@ export default class Block extends ComponentizedBase implements IPropertyObject 
 
     this._type = Database.ensureBlockType(this._typeId);
 
+    // ensureBlockType returns undefined until the vanilla catalog is loaded;
+    // headless callers (CLI/MCP structure writers) can set properties before that.
+    if (this._type === undefined) {
+      return;
+    }
+
     if (
       this._type.javaData !== null &&
       this._type.javaData.name !== null &&
@@ -242,13 +256,13 @@ export default class Block extends ComponentizedBase implements IPropertyObject 
   }
 
   _notifyTypeChanged() {
-    this._onTypeChanged.dispatch(this, this);
+    this._onTypeChanged?.dispatch(this, this);
   }
 
   _notifyPropertyChanged(blockProperty: BlockProperty) {
     this._updateDataFromProperties();
 
-    this._onPropertyChanged.dispatch(this, blockProperty);
+    this._onPropertyChanged?.dispatch(this, blockProperty);
 
     if (this.line !== undefined && this.line.cube !== undefined) {
       this.line.cube._notifyBlockPropertyChanged(this);

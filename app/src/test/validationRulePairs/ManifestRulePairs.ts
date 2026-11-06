@@ -801,4 +801,52 @@ export const ManifestRulePairs: readonly ValidationRuleCoveragePair[] = [
       message: `must declare the "pbr" capability`,
     },
   }),
+
+  // Vibrant Visuals folders such as water/ are only recognized at the pack root. Creators often reuse the
+  // same names for their own subfolders under entity/ or items/, which must not be treated as PBR content.
+  chkmanifPair("pbr-capability-nested-vv-folder-names", {
+    ruleKey: "CHKMANIF:135",
+    baseFiles: {
+      [`${RpRoot}/entity/abilities/water/water_projectile.ce.json`]: json({
+        format_version: "1.10.0",
+        "minecraft:client_entity": {
+          description: {
+            identifier: "harness:water_projectile",
+            materials: { default: "entity_alphatest" },
+            textures: { default: "textures/entity/water_projectile" },
+            geometry: { default: "geometry.water_projectile" },
+            render_controllers: ["controller.render.default"],
+          },
+        },
+      }),
+      [`${RpRoot}/items/techniques/water/water_orb.json`]: json({
+        format_version: "1.10.0",
+        "minecraft:item": {
+          description: { identifier: "harness:water_orb", category: "Equipment" },
+          components: { "minecraft:icon": "water_orb" },
+        },
+      }),
+    },
+    acceptingDescription:
+      "Resource pack whose entity/ and items/ subfolders are named 'water' but has no Vibrant Visuals files; CHKMANIF:135 must stay quiet.",
+    acceptingFiles: minimalRpFiles(),
+    rejectingDescription:
+      "Same resource pack plus a root-level water/ Vibrant Visuals file and no 'pbr' capability; CHKMANIF:135 must flag the manifest.",
+    rejectingFiles: {
+      ...minimalRpFiles(),
+      [`${RpRoot}/water/water.json`]: json({
+        format_version: "1.21.70",
+        "minecraft:water_settings": {
+          description: { identifier: "harness:default_water" },
+          particle_concentrations: { chlorophyll: 0.5, suspended_sediment: 0.0, cdom: 0.0 },
+        },
+      }),
+    },
+    rejectingExpectation: {
+      severity: InfoItemType.error,
+      count: 1,
+      projectPath: /manifest\.json$/,
+      message: `must declare the "pbr" capability`,
+    },
+  }),
 ];

@@ -48,7 +48,7 @@
     "completedWorldDataProcessing": true,
     "contentFileCounts": 51,
     "contentFolderCounts": 26,
-    "contentSize": 2199795,
+    "contentSize": 2199471,
     "defaultBehaviorPackDescription": "Adds a world with a zoo of mobs - (pack.description)",
     "defaultBehaviorPackMinEngineVersion": "1.20.0",
     "defaultBehaviorPackName": "More Mob World Behaviors - (pack.name)",
@@ -680,11 +680,11 @@
         "total": 2
       },
       "javaScriptMap.size": {
-        "average": 4804,
+        "average": 4642,
         "instanceCount": 2,
-        "max": 6145,
-        "min": 3462,
-        "total": 9607
+        "max": 5933,
+        "min": 3350,
+        "total": 9283
       },
       "languageCatalog.lines": {
         "average": 2,
@@ -1502,6 +1502,7 @@
         "total": 310
       }
     },
+    "fileCount": 67,
     "fileCounts": 67,
     "folderCounts": 31,
     "internalProcessingErrorCount": 0,
@@ -1560,7 +1561,7 @@
     "missingResourcePackDependencies": 0,
     "missingWorldPackReferencesFile": 0,
     "multipleSoundsManifests": 0,
-    "overallSize": 9337616,
+    "overallSize": 9337292,
     "packReferencesNotFound": 0,
     "partialVanillaCopy": 0,
     "particleEmitterTypeComponents": [
@@ -1721,7 +1722,7 @@
           "recommendations": 3
         },
         "296": {
-          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version",
+          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the expected version (1.26.60) or its previous minor version",
           "recommendations": 3
         },
         "619": {
@@ -2100,12 +2101,12 @@
           "title": "Min Engine Version"
         },
         "120": {
-          "defaultMessage": "Behavior pack manifest (1.20.0) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version",
+          "defaultMessage": "Behavior pack manifest (1.20.0) has a lower minor version number compared to the expected version (1.26.60) or its previous minor version",
           "recommendations": 1,
           "title": "BP Minor Low"
         },
         "220": {
-          "defaultMessage": "Resource pack manifest (1.20.0) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version",
+          "defaultMessage": "Resource pack manifest (1.20.0) has a lower minor version number compared to the expected version (1.26.60) or its previous minor version",
           "recommendations": 1,
           "title": "RP Minor Low"
         },
@@ -2186,6 +2187,15 @@
         "245": {
           "defaultMessage": "Entity Geometry",
           "title": "Subpack Tiers"
+        }
+      },
+      "PACKFILECOUNT": {
+        "1": {
+          "defaultMessage": "Pack File Count completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "defaultMessage": "File Count"
         }
       },
       "PACKMETADATA": {
@@ -2515,7 +2525,7 @@
     "testFailCount": 0,
     "testFailSummary": "",
     "testNotApplicableCount": 11,
-    "testSuccessCount": 42,
+    "testSuccessCount": 43,
     "textureCount": 3,
     "textureTexelSize": 16384,
     "unknownJsonCount": 0,
@@ -2753,7 +2763,7 @@
       "gId": "FORMATVER",
       "gIx": 296,
       "iTp": 6,
-      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version",
+      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the expected version (1.26.60) or its previous minor version",
       "p": "/Content/world_templates/aop_mobwt/resource_packs/aop_mobwrp/entity/sheepomelon.entity.json"
     },
     {
@@ -3961,11 +3971,11 @@
           "total": 2
         },
         "size": {
-          "average": 4804,
+          "average": 4642,
           "instanceCount": 2,
-          "max": 6145,
-          "min": 3462,
-          "total": 9607
+          "max": 5933,
+          "min": 3350,
+          "total": 9283
         }
       },
       "gId": "LINESIZE",
@@ -4136,6 +4146,17 @@
       "iTp": 7
     },
     {
+      "gId": "PACKFILECOUNT",
+      "gIx": 1,
+      "iTp": 1
+    },
+    {
+      "d": 67,
+      "gId": "PACKFILECOUNT",
+      "gIx": 101,
+      "iTp": 7
+    },
+    {
       "gId": "PACKMETADATA",
       "gIx": 1,
       "iTp": 1
@@ -4146,7 +4167,7 @@
       "iTp": 1
     },
     {
-      "d": 9337616,
+      "d": 9337292,
       "gId": "PACKSIZE",
       "gIx": 101,
       "iTp": 7
@@ -4164,7 +4185,7 @@
       "iTp": 7
     },
     {
-      "d": 2199795,
+      "d": 2199471,
       "gId": "PACKSIZE",
       "gIx": 104,
       "iTp": 7

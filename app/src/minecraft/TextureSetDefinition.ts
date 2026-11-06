@@ -6,7 +6,6 @@ import Log from "../core/Log";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
 import { ProjectItemType } from "../app/IProjectItemData";
-import Utilities from "../core/Utilities";
 import Database from "./Database";
 import Project from "../app/Project";
 import ProjectItem from "../app/ProjectItem";
@@ -27,6 +26,14 @@ export default class TextureSetDefinition implements IDefinition {
     return this._data;
   }
 
+  /**
+   * Texture set layers can be a texture name or a uniform colour (a "#RRGGBB"/"#RRGGBBAA"
+   * hex string or a numeric array). Only names refer to texture files.
+   */
+  static isTextureReference(value: unknown): value is string {
+    return typeof value === "string" && value.length > 0 && !value.startsWith("#");
+  }
+
   public get texturesList() {
     if (!this._data || !this._data["minecraft:texture_set"]) {
       return undefined;
@@ -36,22 +43,19 @@ export default class TextureSetDefinition implements IDefinition {
 
     const textureSet = this._data["minecraft:texture_set"];
 
-    if (textureSet.metalness_emissive_roughness && typeof textureSet.metalness_emissive_roughness === "string") {
+    if (TextureSetDefinition.isTextureReference(textureSet.metalness_emissive_roughness)) {
       textureList.push(this.adaptTexturePath(textureSet.metalness_emissive_roughness));
     }
 
-    if (
-      textureSet.metalness_emissive_roughness_subsurface &&
-      typeof textureSet.metalness_emissive_roughness_subsurface === "string"
-    ) {
+    if (TextureSetDefinition.isTextureReference(textureSet.metalness_emissive_roughness_subsurface)) {
       textureList.push(this.adaptTexturePath(textureSet.metalness_emissive_roughness_subsurface));
     }
 
-    if (textureSet.heightmap && typeof textureSet.heightmap === "string") {
+    if (TextureSetDefinition.isTextureReference(textureSet.heightmap)) {
       textureList.push(this.adaptTexturePath(textureSet.heightmap));
     }
 
-    if (textureSet.normal && typeof textureSet.normal === "string") {
+    if (TextureSetDefinition.isTextureReference(textureSet.normal)) {
       textureList.push(this.adaptTexturePath(textureSet.normal));
     }
 
@@ -74,11 +78,11 @@ export default class TextureSetDefinition implements IDefinition {
     const textureSet = this._data["minecraft:texture_set"];
     const references: string[] = [];
 
-    if (typeof textureSet.metalness_emissive_roughness === "string") {
+    if (TextureSetDefinition.isTextureReference(textureSet.metalness_emissive_roughness)) {
       references.push(textureSet.metalness_emissive_roughness);
     }
 
-    if (typeof textureSet.metalness_emissive_roughness_subsurface === "string") {
+    if (TextureSetDefinition.isTextureReference(textureSet.metalness_emissive_roughness_subsurface)) {
       references.push(textureSet.metalness_emissive_roughness_subsurface);
     }
 
@@ -298,25 +302,18 @@ export default class TextureSetDefinition implements IDefinition {
       }
     }
 
-    for (const candItem of textureItems) {
-      if (packRootFolder && textureList) {
-        if (!candItem.isContentLoaded) {
-          await candItem.loadContent();
-        }
+    const resolved = await StorageUtilities.resolvePackPathCandidates(
+      textureItems,
+      packRootFolder,
+      textureList,
+      (file) => StorageUtilities.getBaseRelativePath(file, packRootFolder)
+    );
 
-        if (candItem.primaryFile) {
-          let relativePath = StorageUtilities.getBaseRelativePath(candItem.primaryFile, packRootFolder);
-
-          if (relativePath) {
-            if (textureList && textureList.includes(relativePath)) {
-              item.addChildItem(candItem);
-
-              textureList = Utilities.removeItemInArray(relativePath, textureList);
-            }
-          }
-        }
-      }
+    for (const candItem of resolved.matches) {
+      item.addChildItem(candItem);
     }
+
+    textureList = resolved.unmatched;
 
     if (textureList) {
       for (const texturePath of textureList) {

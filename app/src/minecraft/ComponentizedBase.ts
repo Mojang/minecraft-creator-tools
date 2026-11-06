@@ -20,19 +20,29 @@ export default class ComponentizedBase implements IManagedComponentSetItem {
 
   private _componentProperties: { [id: string]: ComponentProperty };
 
-  private _onComponentAdded = new EventDispatcher<ComponentizedBase, IManagedComponent>();
-  private _onComponentRemoved = new EventDispatcher<ComponentizedBase, string>();
-  private _onComponentChanged = new EventDispatcher<ComponentizedBase, IManagedComponent>();
+  // Created on first subscription; see Block for why.
+  private _onComponentAdded: EventDispatcher<ComponentizedBase, IManagedComponent> | undefined;
+  private _onComponentRemoved: EventDispatcher<ComponentizedBase, string> | undefined;
+  private _onComponentChanged: EventDispatcher<ComponentizedBase, IManagedComponent> | undefined;
 
   public get onComponentAdded() {
+    if (!this._onComponentAdded) {
+      this._onComponentAdded = new EventDispatcher<ComponentizedBase, IManagedComponent>();
+    }
     return this._onComponentAdded.asEvent();
   }
 
   public get onComponentRemoved() {
+    if (!this._onComponentRemoved) {
+      this._onComponentRemoved = new EventDispatcher<ComponentizedBase, string>();
+    }
     return this._onComponentRemoved.asEvent();
   }
 
   public get onComponentChanged() {
+    if (!this._onComponentChanged) {
+      this._onComponentChanged = new EventDispatcher<ComponentizedBase, IManagedComponent>();
+    }
     return this._onComponentChanged.asEvent();
   }
 
@@ -70,7 +80,7 @@ export default class ComponentizedBase implements IManagedComponentSetItem {
     if (component === undefined) {
       Log.unexpectedUndefined("CBNCU");
     } else {
-      this._onComponentChanged.dispatch(this, component);
+      this._onComponentChanged?.dispatch(this, component);
     }
   }
 
@@ -137,7 +147,7 @@ export default class ComponentizedBase implements IManagedComponentSetItem {
     this._managedComponents[id] = component;
     this._components[id] = component.getData();
 
-    this._onComponentAdded.dispatch(this, component);
+    this._onComponentAdded?.dispatch(this, component);
 
     return component;
   }
@@ -157,7 +167,7 @@ export default class ComponentizedBase implements IManagedComponentSetItem {
     if (this._managedComponents !== undefined) {
       this._managedComponents[id] = component;
 
-      this._onComponentAdded.dispatch(this, component);
+      this._onComponentAdded?.dispatch(this, component);
     }
 
     if (this._components) {

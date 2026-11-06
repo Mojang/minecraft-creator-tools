@@ -56,6 +56,7 @@ import ContentSourceManager from "./ContentSourceManager";
 import LocalCommandHandler from "./LocalCommandHandler";
 import ElectronUtils from "./ElectronUtils";
 import ContentLogWatcher from "../local/ContentLogWatcher";
+import { MinecraftTrack } from "../app/ICreatorToolsData";
 import StorageUtilities from "../storage/StorageUtilities";
 import LocalEnvironment from "../local/LocalEnvironment";
 import Log from "../core/Log";
@@ -455,7 +456,7 @@ function _startWindow(): void {
 
     _createMainAppWindow();
 
-    _contentLogger?.watchMinecraftReleaseFolder();
+    _contentLogger?.watchMinecraftFolder(_creatorTools?.track === MinecraftTrack.preview);
 
     if (isDev) {
       installExtension(REACT_DEVELOPER_TOOLS)

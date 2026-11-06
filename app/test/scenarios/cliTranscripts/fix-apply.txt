@@ -5,7 +5,7 @@ exit code: 0
 stdout:
 [<timestamp>] [MESSAGE ] [##] mct v<version>  in (-i): <work>/simple
 Applying fix 'setnewestminengineversion' to project: simple
-  Updated behavior pack min_engine_version to '1.26.20'.: 1.26.20
+  Updated behavior pack min_engine_version to '1.26.60'.: 1.26.60
 Updated 1 min_engine_version(s) in project: simple
 
 stderr: (empty)

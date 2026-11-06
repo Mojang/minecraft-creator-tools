@@ -1,0 +1,24 @@
+$ mct add allay testerName -i simple
+cwd: <work>
+exit code: 1
+note: testerName is a test-only name that skips the EULA check without accepting it. The test refuses the download of the Allay template from Minecraft's vanilla packs, so add fails and changes nothing.
+
+stdout:
+[<timestamp>] [MESSAGE ] [##] mct v<version>  in (-i): <work>/simple
+Warning: Item name 'testerName' contains invalid characters. Minecraft identifiers should use lowercase letters, numbers, and underscores only.
+[<timestamp>] [DEBUG   ] HttpFolder: Could not load index for https://mctools.dev/res/latest/van/release/behavior_pack/ - Request failed with status code 403
+[<timestamp>] [DEBUG   ] HttpFolder: Could not load index for https://mctools.dev/res/latest/van/release/resource_pack/ - Request failed with status code 403
+
+stderr:
+Error: Couldn't download the 'Allay' template. Check your internet connection.
+
+files under <work>: (none)
+
+files under <data-dir>:
+  created cli/
+  created server/envprefs/
+  created server/packCache/
+  created worlds/
+
+network requests (refused by the test):
+  mctools.dev:443

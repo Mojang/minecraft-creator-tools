@@ -158,7 +158,9 @@ export default class TextureDefinition implements IDefinition {
           this._imageData = decoded.pixels;
         } else {
           this._errorProcessing = true;
-          this._errorMessage = "Failed to decode TGA image.";
+          this._errorMessage = TextureDefinition.isPngData(this._file.content)
+            ? "File has a .tga extension but contains PNG data."
+            : "Failed to decode TGA image.";
         }
       } catch (e: any) {
         this._errorProcessing = true;
@@ -210,6 +212,10 @@ export default class TextureDefinition implements IDefinition {
     }
 
     return undefined;
+  }
+
+  static isPngData(data: Uint8Array) {
+    return data.length >= 4 && data[0] === 0x89 && data[1] === 0x50 && data[2] === 0x4e && data[3] === 0x47;
   }
 
   static async ensureOnFile(file: IFile, loadHandler?: IEventHandler<TextureDefinition, TextureDefinition>) {

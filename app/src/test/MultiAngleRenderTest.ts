@@ -4,9 +4,8 @@
 /**
  * Multi-Angle Render Debug Tests
  *
- * These tests specifically target the multi-angle rendering functionality in the MCP server.
- * The issue is that when rendering multiple angles, some renders fail silently resulting
- * in missing panels in the final stitched image.
+ * These fixtures once rendered with missing panels in the MCP server's multi-angle
+ * model previews, which have since been removed.
  *
  * Known failing patterns:
  * 1. Models with overlay effect arrays (e.g., mossy_stone with [cracks, moss])
@@ -182,53 +181,5 @@ describe("Multi-Angle Render Debug Tests", function () {
     });
   });
 });
-
-/**
- * JSON payloads that can be used to debug the MCP server directly
- * Copy these into MCP tool calls to reproduce failing behavior
- */
-export const MultiAngleDebugPayloads = {
-  /**
-   * previewModelDesign call with MOSSY_STONE that fails
-   */
-  MOSSY_STONE_PREVIEW: {
-    name: "previewModelDesign",
-    arguments: {
-      design: MultiAngleFailingFixtures.MOSSY_STONE,
-      width: 768,
-      height: 768,
-      multiAngle: true,
-      anglePresets: ["front-right", "front-left"],
-    },
-  },
-
-  /**
-   * previewModelDesign call with CRYSTAL_BLOCK that fails
-   */
-  CRYSTAL_BLOCK_PREVIEW: {
-    name: "previewModelDesign",
-    arguments: {
-      design: MultiAngleFailingFixtures.CRYSTAL_BLOCK,
-      width: 768,
-      height: 768,
-      multiAngle: true,
-      anglePresets: ["front-right", "front-left"],
-    },
-  },
-
-  /**
-   * previewModelDesign call with simple cube (baseline that should work)
-   */
-  SIMPLE_CUBE_PREVIEW: {
-    name: "previewModelDesign",
-    arguments: {
-      design: MultiAngleFailingFixtures.SIMPLE_CUBE,
-      width: 768,
-      height: 768,
-      multiAngle: true,
-      anglePresets: ["front-right", "front-left"],
-    },
-  },
-};
 
 export default MultiAngleFailingFixtures;

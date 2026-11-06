@@ -232,7 +232,8 @@ export default class ProfilerWrapper {
         try {
           peakSnapshotPath = ProfilerWrapper.generateHeapSnapshot(traceName + "-peak", report);
         } catch (e) {
-          console.warn("Failed to write peak heap snapshot:", e);
+          // String(e), not e: the CLI keeps stack traces out of stderr.
+          console.warn(`Failed to write peak heap snapshot: ${String(e)}`);
         }
         peakRss = m.rss;
       } else if (m.rss > peakRss) {

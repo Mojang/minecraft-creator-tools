@@ -183,6 +183,13 @@ export interface ISummarizerEvaluatedResult {
   asCompleteSentence: string;
 
   /**
+   * Problems found in the summarizer definition while evaluating (for example
+   * a token whose child token list is missing). The affected tokens output
+   * nothing; present only when at least one problem was found.
+   */
+  issues?: string[];
+
+  /**
    * Debug information if debug mode was enabled.
    */
   debug?: {
@@ -500,6 +507,13 @@ export interface ISummarizerResult {
    * e.g., "This entity has high health, can fly, and deals fire damage."
    */
   asCompleteSentence: string;
+
+  /**
+   * Problems found in the summarizer definition while evaluating (for example
+   * a token whose child token list is missing). The affected tokens output
+   * nothing; present only when at least one problem was found.
+   */
+  issues?: string[];
 
   /**
    * Debug information if debug mode was enabled.

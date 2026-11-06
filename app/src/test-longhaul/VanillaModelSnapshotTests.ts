@@ -43,6 +43,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { PNG } from "pngjs";
 import { chunksToLinesAsync } from "@rauschma/stringio";
+import "../test/TestDataDir";
 
 // Import test utilities
 import { getSnapshotBlockNames, getSnapshotMobNames, SNAPSHOTS_DIR } from "../test-extra/TestExtraUtilities";
@@ -123,7 +124,7 @@ async function renderBlockChunk(
 
   console.log(`      Chunk ${chunkIndex + 1}/${totalChunks}: Rendering ${blockNames.length} blocks...`);
 
-  const proc = spawn("node", [CLI_PATH, "rendervanilla", "block", `@${tempFile}`, RESULTS_DIR]);
+  const proc = spawn("node", [CLI_PATH, "rendervanilla", "block", `@${tempFile}`, RESULTS_DIR, "--no-gpu"]);
 
   // Stream output in real-time to show progress - capture promises
   const stdoutPromise = collectLines(proc.stdout, stdoutLines, true);
@@ -225,7 +226,7 @@ async function renderMobChunk(
 
   console.log(`      Chunk ${chunkIndex + 1}/${totalChunks}: Rendering ${mobNames.length} mobs...`);
 
-  const proc = spawn("node", [CLI_PATH, "rendervanilla", "mob", `@${tempFile}`, RESULTS_DIR]);
+  const proc = spawn("node", [CLI_PATH, "rendervanilla", "mob", `@${tempFile}`, RESULTS_DIR, "--no-gpu"]);
 
   // Stream output in real-time to show progress - capture promises
   const stdoutPromise = collectLines(proc.stdout, stdoutLines, true);

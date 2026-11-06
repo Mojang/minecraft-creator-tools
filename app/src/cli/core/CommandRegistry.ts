@@ -26,6 +26,10 @@
  * - commands: Map<string, ICommand> - Name/alias → command lookup
  * - commandsByTaskType: Map<TaskType, ICommand> - TaskType → command lookup
  * - capturedState: Holds the captured TaskType and arguments after parsing
+ * - A metadata.route creates a second Commander leaf, not a second ICommand or TaskType.
+ *   Both leaves use the same argument definitions, configure method, and capture handler.
+ *   Help and pre-action guards resolve Commander objects through getForCommand(), never by
+ *   leaf name alone: "model" must retain rendermodel's effects and inherited options.
  *
  * The registry enforces uniqueness:
  * - Each command name must be unique
@@ -58,6 +62,26 @@ import { Command, Argument } from "commander";
 import { ICommand, ICommandMetadata } from "./ICommand";
 import { TaskType } from "../ClUtils";
 import Utilities from "../../core/Utilities";
+import type { CommandHelpMetadata } from "./CommandHelpWriter";
+
+const COMMAND_GROUPS = {
+  render: {
+    description: "Render models, structures, or vanilla content to images.",
+    category: "Render",
+    examples: [
+      { command: 'mct render model mob.geo.json preview.png -i "./My Addon"' },
+      { command: 'mct render structure tower.mcstructure tower.png -i "./My Addon"' },
+    ],
+  },
+  export: {
+    description: "Package add-ons or flat GameTest worlds for sharing.",
+    category: "Project",
+    examples: [
+      { command: 'mct export addon -i "./My Addon" -o ./packages' },
+      { command: 'mct export world -i "./My Addon" -o ./packages' },
+    ],
+  },
+};
 
 /**
  * Captured state from Commander action handlers.
@@ -86,6 +110,8 @@ export interface ICapturedCommandState {
 export class CommandRegistry {
   private commands: Map<string, ICommand> = new Map();
   private commandsByTaskType: Map<TaskType, ICommand> = new Map();
+  private commanderCommands = new WeakMap<Command, ICommand>();
+  private commanderGroups = new WeakMap<Command, CommandHelpMetadata>();
 
   /** Captured state after Commander parses and executes an action */
   private capturedState: ICapturedCommandState = {
@@ -99,9 +125,13 @@ export class CommandRegistry {
    * @param command The command to register
    */
   register(command: ICommand): void {
-    const { name, taskType, aliases } = command.metadata;
+    const { name, taskType, aliases, route } = command.metadata;
 
     const lowerName = name.toLowerCase();
+    const routeName = route?.join(" ").toLowerCase();
+    if (routeName && this.commands.has(routeName)) {
+      throw new Error(`Command route '${routeName}' is already registered`);
+    }
 
     // Register by name
     if (this.commands.has(lowerName)) {
@@ -124,6 +154,10 @@ export class CommandRegistry {
         }
         this.commands.set(lowerAlias, command);
       }
+    }
+
+    if (routeName) {
+      this.commands.set(routeName, command);
     }
   }
 
@@ -153,6 +187,31 @@ export class CommandRegistry {
    */
   getByTaskType(taskType: TaskType): ICommand | undefined {
     return this.commandsByTaskType.get(taskType);
+  }
+
+  /** Resolve a parsed leaf to its implementation, including nested routes. */
+  getForCommand(command: Command): ICommand | undefined {
+    return this.commanderCommands.get(command);
+  }
+
+  getHelpMetadata(command: Command): CommandHelpMetadata | undefined {
+    const implementation = this.getForCommand(command);
+    if (!implementation) {
+      return this.commanderGroups.get(command);
+    }
+
+    const metadata = implementation.metadata;
+    if (!metadata.route) {
+      return metadata;
+    }
+
+    if (command.name() !== metadata.name) {
+      return metadata;
+    }
+    return {
+      ...metadata,
+      learnMore: [...(metadata.learnMore ?? []), `Also available as \`mct ${metadata.route.join(" ")}\`.`],
+    };
   }
 
   /**
@@ -232,68 +291,91 @@ export class CommandRegistry {
    * @param program The Commander.js program instance
    */
   configureCommander(program: Command): void {
+    const groups = new Map<string, Command>();
     for (const command of this.getAll()) {
-      const { name, description, aliases, arguments: argDefs, taskType, debugOnly, internal } = command.metadata;
+      const { name, route, aliases, debugOnly, internal } = command.metadata;
 
       // Skip debug-only commands unless in debug mode
       if (debugOnly && !Utilities.isDebug) {
         continue;
       }
 
-      const cmd = program.command(name, { hidden: !!internal }).description(description);
+      let group: Command | undefined;
+      if (route) {
+        group = groups.get(route[0]);
+        if (!group) {
+          const metadata = COMMAND_GROUPS[route[0]];
+          group = program.command(route[0]).description(metadata.description);
+          groups.set(route[0], group);
+          this.commanderGroups.set(group, {
+            ...metadata,
+            globalOptionGroups: [],
+            omitProcessOptions: true,
+          });
+        }
+      }
+
+      // Compatibility routes stay visible to Commander's suggestions and lookup. Only the
+      // root help renderer omits them by default, so legacy error-text probes don't change.
+      const cmd = program.command(name, { hidden: !!internal });
 
       // Add aliases
       if (aliases && aliases.length > 0) {
         cmd.aliases(aliases);
       }
 
-      // Add arguments from metadata
-      if (argDefs && argDefs.length > 0) {
-        for (const argDef of argDefs) {
-          const argName = argDef.required ? `<${argDef.name}>` : `[${argDef.name}]`;
-          const arg = new Argument(argName, argDef.description);
+      this.configureLeaf(cmd, command);
+      if (group && route) {
+        this.configureLeaf(group.command(route[1]), command);
+      }
+    }
+  }
 
-          if (argDef.choices) {
-            arg.choices(argDef.choices);
+  private configureLeaf(cmd: Command, command: ICommand): void {
+    const { description, arguments: argDefs, taskType } = command.metadata;
+    cmd.description(description);
+    this.commanderCommands.set(cmd, command);
+
+    if (argDefs) {
+      for (const argDef of argDefs) {
+        const argName = argDef.required ? `<${argDef.name}>` : `[${argDef.name}]`;
+        const arg = new Argument(argName, argDef.description);
+
+        if (argDef.choices) {
+          arg.choices(argDef.choices);
+        }
+
+        if (argDef.defaultValue !== undefined) {
+          arg.default(argDef.defaultValue, argDef.defaultDescription);
+        }
+
+        cmd.addArgument(arg);
+      }
+    }
+
+    command.configure(cmd);
+
+    cmd.action((...actionArgs: any[]) => {
+      // Commander passes positional args first, then options, then the Command object.
+      const numArgs = argDefs?.length ?? 0;
+      const positionalArgs = actionArgs.slice(0, numArgs);
+      const cmdOptions = numArgs < actionArgs.length - 1 ? actionArgs[numArgs] : {};
+
+      this.capturedState.taskType = taskType;
+      this.capturedState.args = {};
+      this.capturedState.commandOptions = cmdOptions;
+
+      if (argDefs) {
+        for (let i = 0; i < argDefs.length; i++) {
+          const argDef = argDefs[i];
+          const value = positionalArgs[i];
+
+          if (argDef.contextField && value !== undefined) {
+            this.capturedState.args[argDef.contextField] = value;
           }
-
-          if (argDef.defaultValue !== undefined) {
-            arg.default(argDef.defaultValue, argDef.defaultDescription);
-          }
-
-          cmd.addArgument(arg);
         }
       }
-
-      // Let the command configure its own additional options
-      command.configure(cmd);
-
-      // Set up action handler that captures arguments
-      cmd.action((...actionArgs: any[]) => {
-        // Commander passes positional args first, then options object, then Command object
-        // The number of positional args matches the number of arguments defined
-        const numArgs = argDefs?.length ?? 0;
-        const positionalArgs = actionArgs.slice(0, numArgs);
-        const cmdOptions = numArgs < actionArgs.length - 1 ? actionArgs[numArgs] : {};
-
-        // Set the task type
-        this.capturedState.taskType = taskType;
-        this.capturedState.args = {};
-        this.capturedState.commandOptions = cmdOptions;
-
-        // Map positional arguments to their contextField names
-        if (argDefs) {
-          for (let i = 0; i < argDefs.length; i++) {
-            const argDef = argDefs[i];
-            const value = positionalArgs[i];
-
-            if (argDef.contextField && value !== undefined) {
-              this.capturedState.args[argDef.contextField] = value;
-            }
-          }
-        }
-      });
-    }
+    });
   }
 }
 

@@ -1,0 +1,80 @@
+$ mct help export addon
+cwd: <work>
+exit code: 0
+
+stdout:
+Package your project's packs for sharing. Produces .mcaddon when both a behavior
+and resource pack are present, .mcpack for single-pack projects.
+
+USAGE
+  mct export addon [flags]
+
+FLAGS
+  --format <format>  Output format: 'auto' (default — picks mcaddon for BP+RP,
+                     mcpack otherwise), 'mcpack', or 'mcaddon'. (default: auto)
+
+INHERITED FLAGS
+  -i, --input-folder [path]   Path to the input folder. If not specified, the
+                              current working directory is used.
+  --if, --input-file <path>   Path to the input MCWorld, MCTemplate, MCPack,
+                              MCAddon or other zip file.
+  --single                    When pointed at a folder via -i, force that folder
+                              to be processed as a single project.
+  --psw, --project-starts-with <prefix>
+                              Only process a project if it starts with the
+                              starter term; this can be used to subdivide
+                              processing.
+  --afs, --additional-files [paths]
+                              Comma-separated list of additional files to add to
+                              projects.
+
+  -o, --output-folder <path>  Path to the output project folder. If not
+                              specified, the current working directory + 'out'
+                              is used. (default: out)
+  --of, --output-file [path]  Path to the export file, if applicable for the
+                              command you are using.
+
+  -n, --dry-run               Show what would be done without making changes or
+                              writing files. Commands that don't support it exit
+                              with an error before doing anything.
+
+  --json                      Output results in JSON format for machine parsing.
+
+  --bp, --base-path <path>    Path, relative to the current working folder,
+                              where common data files and folders are found.
+  --isolated                  Do not load vanilla Minecraft resources (e.g.,
+                              textures, ground blocks) from the web
+  --offline                   Same as --isolated. Useful in CI where the network
+                              is unreliable; some checks (e.g. latest version)
+                              may still use the network.
+  -d, --debug                 Add debug logging, options, and even more
+                              experimental commands.
+  --verbose                   Show verbose log messages.
+  -q, --quiet                 Suppress non-essential output. Only show errors
+                              and final results.
+
+  -h, --help                  Show help for the command.
+
+EXAMPLES
+  # Auto-detect the format
+  $ mct export addon -i ./myproj -o ./out
+
+  # Force .mcaddon
+  $ mct export addon -i ./myproj -o ./out --format mcaddon
+
+  # Explicit file name and JSON result
+  $ mct export addon -i ./myproj -o ./out --of ./out/myproj.mcpack --json
+
+LEARN MORE
+  JSON results retain the command name exportaddon, with one record per project.
+  Use `mct help` to see all commands.
+  Read the documentation at
+  https://learn.microsoft.com/minecraft/creator/documents/mctoolsoverview
+
+stderr: (empty)
+
+files under <work>: (none)
+
+files under <data-dir>: (none)
+
+network requests: (none)

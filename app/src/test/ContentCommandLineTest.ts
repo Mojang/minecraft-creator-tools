@@ -231,6 +231,82 @@ describe("buildStructureCommandInvalidJson", async () => {
   }).timeout(10000);
 });
 
+describe("buildStructureCommandProgram", async () => {
+  const scenario = "buildStructureProgram";
+  const resultDir = path.join("test", "results", scenario);
+  const towerPath = path.join(resultDir, "tower.mcstructure");
+  const editedPath = path.join(resultDir, "edited.mcstructure");
+
+  function runCli(args: string[]): Promise<{ code: number | null; output: string }> {
+    return new Promise((resolve) => {
+      const lines: string[] = [];
+      const proc = spawn("node", ["./toolbuild/jsn/cli/index.mjs", "buildstructure", ...args]);
+      collectLines(proc.stdout, lines);
+      collectLines(proc.stderr, lines);
+      proc.on("exit", (code) => resolve({ code, output: lines.join("\n") }));
+    });
+  }
+
+  before(function () {
+    removeResultFolder(scenario);
+    ensureResultFolder(scenario);
+
+    fs.writeFileSync(
+      path.join(resultDir, "tower.js"),
+      [
+        "function build(api) {",
+        "  api.declareSize(5, 6, 5);",
+        '  api.fill(0, 0, 0, 4, 0, 4, "minecraft:stone");',
+        '  api.hollowBox(0, 1, 0, 4, 5, 4, "minecraft:stone_bricks");',
+        '  console.log("tower built");',
+        "}",
+      ].join("\n")
+    );
+    fs.writeFileSync(
+      path.join(resultDir, "cap.js"),
+      ["function build(api) {", '  api.fill(0, 5, 0, 4, 5, 4, "minecraft:glass");', "}"].join("\n")
+    );
+    fs.writeFileSync(
+      path.join(resultDir, "broken.js"),
+      ["function build(api) {", '  api.set(0, 0, 0, "minecraft:stone");', "}"].join("\n")
+    );
+  });
+
+  it("builds a .mcstructure from a .js program", async () => {
+    const { code, output } = await runCli([path.join(resultDir, "tower.js"), towerPath]);
+    assert.equal(code, 0, output);
+    assert(output.includes("[program] tower built"), "Should echo program logs. Got: " + output);
+    assert(output.includes("5 x 6 x 5"), "Should report the declared size. Got: " + output);
+    assert(fs.existsSync(towerPath), "Output structure should exist");
+  }).timeout(30000);
+
+  it("refuses to replace an existing file without --overwrite", async () => {
+    const { code, output } = await runCli([path.join(resultDir, "tower.js"), towerPath]);
+    assert.notEqual(code, 0, "Existing output should fail without --overwrite");
+    assert(output.includes("already exists"), "Should explain the refusal. Got: " + output);
+  }).timeout(30000);
+
+  it("replaces an existing file with --overwrite", async () => {
+    const { code, output } = await runCli([path.join(resultDir, "tower.js"), towerPath, "--overwrite"]);
+    assert.equal(code, 0, output);
+  }).timeout(30000);
+
+  it("edits a base structure with --base", async () => {
+    const { code, output } = await runCli([path.join(resultDir, "cap.js"), editedPath, "--base", towerPath]);
+    assert.equal(code, 0, output);
+    assert(output.includes("5 x 6 x 5"), "Edit should keep the base size. Got: " + output);
+    assert(fs.existsSync(editedPath), "Edited structure should exist");
+  }).timeout(30000);
+
+  it("reports a program error and writes nothing", async () => {
+    const brokenOut = path.join(resultDir, "broken.mcstructure");
+    const { code, output } = await runCli([path.join(resultDir, "broken.js"), brokenOut]);
+    assert.notEqual(code, 0, "A program without declareSize should fail");
+    assert(output.includes("declareSize"), "Should point at the missing declareSize. Got: " + output);
+    assert(!fs.existsSync(brokenOut), "No output should be written on failure");
+  }).timeout(30000);
+});
+
 describe("searchCommandMissingTerm", async () => {
   let exitCode: number | null = null;
   const stdoutLines: string[] = [];

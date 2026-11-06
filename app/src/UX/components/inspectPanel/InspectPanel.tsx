@@ -42,7 +42,10 @@ export default function InspectPanel({ onFilesSubmitted, editFolder, openAppFold
     editFolder(directory.root, directory.name, false);
   };
 
-  const [, pickDirectory, dirError] = useDirectoryPicker(window, { onDirectoryPicked, checkUnsafeFiles: true });
+  const [, pickDirectory, dirError, isFolderPickerSupported] = useDirectoryPicker(window, {
+    onDirectoryPicked,
+    checkUnsafeFiles: true,
+  });
 
   const handleButtonUpload = (input: React.ChangeEvent<HTMLInputElement>) => {
     handleFileUpload(input, "button");
@@ -143,12 +146,21 @@ export default function InspectPanel({ onFilesSubmitted, editFolder, openAppFold
                 </McButton>
               </Box>
             )}
-            {!isApp && editFolder && typeof window.showDirectoryPicker === "function" && (
+            {!isApp && editFolder && isFolderPickerSupported && (
               <Box sx={{ display: "flex" }}>
                 <McButton variant="green" fullWidth onClick={pickDirectory}>
                   {intl.formatMessage({ id: "home.inspect_panel.open_project_folder_device" })}
                 </McButton>
               </Box>
+            )}
+            {!isApp && !isFolderPickerSupported && (
+              <Typography
+                variant="body2"
+                data-testid="folder-picker-unsupported-hint"
+                sx={(theme) => ({ color: theme.palette.text.secondary })}
+              >
+                {intl.formatMessage({ id: "home.inspect_panel.folder_unsupported_hint" })}
+              </Typography>
             )}
           </Box>
         </>

@@ -21,9 +21,7 @@ PROJECT COMMANDS
                      healthy
   set:               Temporarily disabled in CLI.
   deploy:            Deploys Minecraft project packs to a destination.
-  exportaddon:       Packages the specified project into an addon file.
-  exportworld:       Exports a flat GameTest world for the behavior packs in the
-                     project folder.
+  export:            Package add-ons or flat GameTest worlds for sharing.
 
 VALIDATION COMMANDS
   validate:          Validate the current project.
@@ -40,14 +38,9 @@ WORLD COMMANDS
   ensureworld:       Create/ensure a flat GameTest world for a project
 
 RENDER COMMANDS
-  rendermodel:       Renders a model geometry file from the project to a PNG
-                     image.
-  renderbatch:       Renders many model geometry files in one process, reusing a
-                     headless Chromium instance for the entire batch.
-  rendervanilla:     Renders vanilla Minecraft block(s) or mob(s) to PNG
-                     image(s).
-  renderstructure:   Render a .mcstructure file to a PNG image
-  buildstructure:    Build an .mcstructure file from IBlockVolume JSON
+  render:            Render models, structures, or vanilla content to images.
+  buildstructure:    Build an .mcstructure file from IBlockVolume JSON or a
+                     structure program (JavaScript)
 
 SERVER COMMANDS
   serve:             Start web server with Bedrock Dedicated Server support
@@ -85,7 +78,8 @@ EXAMPLES
 LEARN MORE
   Use `mct help <command>` for more information about a command, including all
   of its flags.
-  Use `mct --all-commands` to also list 8 content-production commands.
+  Use `mct --all-commands` to also list 8 content-production commands and 6
+  compatibility commands.
   Read the documentation at
   https://learn.microsoft.com/minecraft/creator/documents/mctoolsoverview
   Report a problem at https://aka.ms/mctbugs

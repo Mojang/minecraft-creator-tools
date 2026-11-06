@@ -3,6 +3,8 @@
 
 import IGitHubInfo from "./IGitHubInfo";
 import IProjectItemVariant from "./IProjectItemVariant";
+import type { EntityTraitId } from "../minecraft/IContentMetaSchema";
+import type { IEntityTraitJournal } from "../minecraft/EntityTraitApplier";
 
 export const MaxItemTypes = 166;
 
@@ -246,4 +248,23 @@ export default interface IProjectItemData {
    * This is set during relations processing based on item relationships.
    */
   thumbnailLink?: string;
+
+  /**
+   * Body shape the creator picked in the entity Traits tab ("humanoid" or
+   * "quadruped"). Body shapes cannot be told apart from an entity's
+   * components, so the choice lives here as tool-only metadata rather than
+   * in the shipped behavior file: `minecraft:type_family` is gameplay data
+   * (filters and selectors match on it) and must not carry editor state.
+   * Consulted ahead of component-based detection; unset means "infer".
+   */
+  bodyShape?: EntityTraitId;
+
+  /**
+   * What trait changes in the entity Traits tab took away from the mob's
+   * own hand-written content (an authored `minecraft:angry` group entry that
+   * went when Hostile replaced Neutral, a family Undead added). Kept here so
+   * re-selecting the trait can put the entries back even after the file was
+   * saved and the editor reopened. Unset when there is nothing to restore.
+   */
+  traitJournal?: IEntityTraitJournal;
 }

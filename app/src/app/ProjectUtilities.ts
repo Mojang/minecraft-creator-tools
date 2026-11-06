@@ -16,6 +16,7 @@ import ResourceManifestDefinition from "../minecraft/ResourceManifestDefinition"
 import ISnippet from "./ISnippet";
 import IGalleryItem from "./IGalleryItem";
 import IFolder from "../storage/IFolder";
+import IFile from "../storage/IFile";
 import ProjectItemUtilities from "./ProjectItemUtilities";
 import { PackType } from "../minecraft/Pack";
 import BlockTypeDefinition from "../minecraft/BlockTypeDefinition";
@@ -29,6 +30,9 @@ import { constants } from "../core/Constants";
 import ProjectContent from "./ProjectContent";
 import TerrainTextureCatalogDefinition from "../minecraft/TerrainTextureCatalogDefinition";
 import { IBlockResource } from "../minecraft/IBlocksCatalog";
+import type { PackageJSON } from "@npm/types";
+import { GeneratedWithTool, GeneratedWithTools } from "../minecraft/ManifestGeneratedWith";
+import type { IToolCommandContext } from "./toolcommands/IToolCommandContext";
 
 const behaviorPackFolderHints = ["behavior_pack", "/bp/", "/bps/"];
 
@@ -822,94 +826,66 @@ export default class ProjectUtilities {
     return defaultPath;
   }
 
+  /**
+   * Sets the project's script entry point and copies it to the script module of the default behavior pack
+   * manifest, in every edit mode. In simplified (summarized) mode a script module is added if the manifest
+   * doesn't have one; in other modes only an existing script module is updated, so a creator's manifest
+   * doesn't gain a module they didn't ask for.
+   */
   static async applyScriptEntryPoint(project: Project, newScriptEntryPoint: string) {
     project.scriptEntryPoint = newScriptEntryPoint;
 
-    if (project.effectiveEditPreference === ProjectEditPreference.summarized && project.defaultBehaviorPackUniqueId) {
-      const itemsCopy = project.getItemsCopy();
+    await ProjectUtilities.queueManifestSync(project, async () => {
+      const canAddScriptModule = project.effectiveEditPreference === ProjectEditPreference.summarized;
 
-      for (const projectItem of itemsCopy) {
-        if (projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
-          await projectItem.loadFileContent();
+      await ProjectUtilities.editDefaultPackManifests(project, {
+        behavior: (manifest) => {
+          const modules: unknown = manifest.definition?.modules;
 
-          if (projectItem.primaryFile) {
-            const manifestJson = await BehaviorManifestDefinition.ensureOnFile(projectItem.primaryFile);
-
-            if (
-              manifestJson &&
-              manifestJson.definition &&
-              Utilities.uuidEqual(manifestJson.definition.header.uuid, project.defaultBehaviorPackUniqueId)
-            ) {
-              const sm = manifestJson.ensureScriptModule(project.title, project.description);
-
-              sm.entry = project.scriptEntryPoint;
-
-              manifestJson.save();
+          // leave a module list that isn't an array alone; only simplified mode may create a missing one
+          if (!Array.isArray(modules)) {
+            if (modules !== undefined || !canAddScriptModule || !manifest.definition) {
+              return;
             }
+
+            manifest.definition.modules = [];
           }
-        }
-      }
-    }
+
+          const scriptModule = canAddScriptModule
+            ? manifest.ensureScriptModule(project.title, project.description)
+            : manifest.getScriptModule();
+
+          if (scriptModule) {
+            scriptModule.entry = newScriptEntryPoint;
+          }
+        },
+      });
+    });
   }
 
+  /**
+   * Sets the project's description and copies it to the header of the default behavior and resource pack
+   * manifests, in every edit mode. package.json is only updated in simplified (summarized) mode.
+   */
   static async applyDescription(project: Project, newDescription: string) {
     project.description = newDescription;
 
-    if (project.effectiveEditPreference === ProjectEditPreference.summarized && project.defaultBehaviorPackUniqueId) {
-      const itemsCopy = project.getItemsCopy();
-
-      for (const projectItem of itemsCopy) {
-        if (projectItem.itemType === ProjectItemType.packageJson) {
-          await projectItem.loadFileContent();
-
-          if (projectItem.primaryFile) {
-            const npmPackageJson = await NpmPackageDefinition.ensureOnFile(projectItem.primaryFile);
-
-            if (npmPackageJson && npmPackageJson.definition) {
-              npmPackageJson.definition.description = newDescription;
-
-              await npmPackageJson.save();
-            }
-          }
-        } else if (projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
-          await projectItem.loadFileContent();
-
-          if (projectItem.primaryFile) {
-            const manifestJson = await BehaviorManifestDefinition.ensureOnFile(projectItem.primaryFile);
-
-            if (
-              manifestJson &&
-              manifestJson.definition &&
-              Utilities.uuidEqual(manifestJson.definition.header.uuid, project.defaultBehaviorPackUniqueId)
-            ) {
-              const header = manifestJson.ensureHeader(project.title, project.description);
-
-              header.description = newDescription;
-
-              await manifestJson.save();
-            }
-          }
-        } else if (projectItem.itemType === ProjectItemType.resourcePackManifestJson) {
-          await projectItem.loadFileContent();
-
-          if (projectItem.primaryFile) {
-            const manifestJson = await ResourceManifestDefinition.ensureOnFile(projectItem.primaryFile);
-
-            if (
-              manifestJson &&
-              manifestJson.definition &&
-              Utilities.uuidEqual(manifestJson.definition.header.uuid, project.defaultResourcePackUniqueId)
-            ) {
-              const header = manifestJson.ensureHeader(project.title, project.description);
-
-              header.description = newDescription;
-
-              await manifestJson.save();
-            }
-          }
-        }
+    await ProjectUtilities.queueManifestSync(project, async () => {
+      if (project.effectiveEditPreference === ProjectEditPreference.summarized) {
+        await ProjectUtilities.editPackageJson(project, (packageJson) => {
+          packageJson.description = newDescription;
+        });
       }
-    }
+
+      await ProjectUtilities.editDefaultPackManifests(project, {
+        behavior: (manifest) => {
+          manifest.ensureHeader(project.title, project.description).description = newDescription;
+        },
+        resource: (manifest) => {
+          manifest.ensureHeader(project.title, project.description).description = newDescription;
+        },
+      });
+    });
   }
 
   static async applyCreator(project: Project, newCreator: string) {
@@ -920,85 +896,125 @@ export default class ProjectUtilities {
     project.shortName = newShortName;
   }
 
-  static async ensureGeneratedWith(project: Project, isToolWeb?: boolean) {
-    const appName = isToolWeb ? "mctoolsweb" : "mctoolscli";
+  /**
+   * Records the current Creator Tools version under `tool` in `metadata.generated_with` for every behavior
+   * and resource pack manifest in the project, so packs show which Creator Tools surface created or changed
+   * them. Runs for new projects and after `add`, whatever the edit mode. Manifests inside file containers
+   * (zips, .mcworld) or embedded in worlds are left alone, and unchanged manifests aren't rewritten.
+   *
+   * Manifests come from both project items and the project's packs: a manifest that
+   * `ensureDefaultBehaviorPackFolder` just created exists on its pack but isn't a project item yet.
+   */
+  static async ensureGeneratedWith(project: Project, tool: GeneratedWithTool) {
+    const manifestFiles: { file: IFile; isBehavior: boolean }[] = [];
 
-    if (project.effectiveEditPreference === ProjectEditPreference.summarized && project.defaultBehaviorPackUniqueId) {
-      const itemsCopy = project.getItemsCopy();
+    for (const projectItem of project.getItemsCopy()) {
+      const isBehavior = projectItem.itemType === ProjectItemType.behaviorPackManifestJson;
 
-      for (const projectItem of itemsCopy) {
-        if (projectItem.primaryFile && projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
-          const bpManifestJson = await BehaviorManifestDefinition.ensureOnFile(projectItem.primaryFile);
+      if (
+        (!isBehavior && projectItem.itemType !== ProjectItemType.resourcePackManifestJson) ||
+        projectItem.isInFileContainer ||
+        projectItem.isInWorld
+      ) {
+        continue;
+      }
 
-          if (bpManifestJson && bpManifestJson.definition) {
-            bpManifestJson.ensureGeneratedWith(appName, constants.version);
-            await bpManifestJson.save();
-          }
-        } else if (projectItem.primaryFile && projectItem.itemType === ProjectItemType.resourcePackManifestJson) {
-          const rpManifestJson = await ResourceManifestDefinition.ensureOnFile(projectItem.primaryFile);
+      await projectItem.loadFileContent();
 
-          if (rpManifestJson && rpManifestJson.definition) {
-            rpManifestJson.ensureGeneratedWith(appName, constants.version);
-            await rpManifestJson.save();
-          }
-        }
+      if (projectItem.primaryFile) {
+        manifestFiles.push({ file: projectItem.primaryFile, isBehavior });
+      }
+    }
+
+    for (const pack of project.packs) {
+      if (
+        (pack.packType !== PackType.behavior && pack.packType !== PackType.resource) ||
+        !pack.manifestFile ||
+        pack.isInWorld ||
+        pack.projectItem?.isInFileContainer ||
+        manifestFiles.some((entry) => entry.file === pack.manifestFile)
+      ) {
+        continue;
+      }
+
+      manifestFiles.push({ file: pack.manifestFile, isBehavior: pack.packType === PackType.behavior });
+    }
+
+    for (const { file, isBehavior } of manifestFiles) {
+      if (!file.isContentLoaded) {
+        await file.loadContent();
+      }
+
+      const manifest = isBehavior
+        ? await BehaviorManifestDefinition.ensureOnFile(file)
+        : await ResourceManifestDefinition.ensureOnFile(file);
+
+      if (!manifest) {
+        continue;
+      }
+
+      // reload with comments preserved so stamping doesn't strip comments from creators' manifests
+      await manifest.load(true);
+
+      if (manifest.definition && manifest.ensureGeneratedWith(tool, constants.version)) {
+        await manifest.save();
       }
     }
   }
 
+  /** Maps the surface a tool command ran from to the tool name recorded in pack manifests. */
+  static getGeneratedWithToolForScope(scope: IToolCommandContext["scope"]): GeneratedWithTool {
+    switch (scope) {
+      case "ui":
+        return GeneratedWithTools.web;
+      case "mcp":
+        return GeneratedWithTools.mcp;
+      default:
+        return GeneratedWithTools.cli;
+    }
+  }
+
+  /**
+   * Sets the project's title and copies it to the header name of the default behavior and resource pack
+   * manifests, in every edit mode. package.json's `name` is only updated in simplified (summarized) mode,
+   * since npm package names have stricter rules than pack names.
+   */
   static async applyTitle(project: Project, newTitle: string) {
     project.title = newTitle;
 
-    if (project.effectiveEditPreference === ProjectEditPreference.summarized && project.defaultBehaviorPackUniqueId) {
-      const itemsCopy = project.getItemsCopy();
-
-      for (const projectItem of itemsCopy) {
-        if (projectItem.primaryFile && projectItem.itemType === ProjectItemType.packageJson) {
-          const npmPackageJson = await NpmPackageDefinition.ensureOnFile(projectItem.primaryFile);
-
-          if (npmPackageJson && npmPackageJson.definition) {
-            npmPackageJson.definition.name = newTitle;
-            await npmPackageJson.save();
-          }
-        } else if (projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
-          await projectItem.loadFileContent();
-
-          if (projectItem.primaryFile) {
-            const manifestJson = await BehaviorManifestDefinition.ensureOnFile(projectItem.primaryFile);
-
-            if (
-              manifestJson &&
-              manifestJson.definition &&
-              Utilities.uuidEqual(manifestJson.definition.header.uuid, project.defaultBehaviorPackUniqueId)
-            ) {
-              const header = manifestJson.ensureHeader(project.title, project.description);
-
-              header.name = newTitle;
-
-              await manifestJson.save();
-            }
-          }
-        } else if (projectItem.itemType === ProjectItemType.resourcePackManifestJson) {
-          await projectItem.loadFileContent();
-
-          if (projectItem.primaryFile) {
-            const manifestJson = await ResourceManifestDefinition.ensureOnFile(projectItem.primaryFile);
-
-            if (
-              manifestJson &&
-              manifestJson.definition &&
-              Utilities.uuidEqual(manifestJson.definition.header.uuid, project.defaultResourcePackUniqueId)
-            ) {
-              const header = manifestJson.ensureHeader(project.title, project.description);
-
-              header.name = newTitle;
-
-              await manifestJson.save();
-            }
-          }
-        }
+    await ProjectUtilities.queueManifestSync(project, async () => {
+      if (project.effectiveEditPreference === ProjectEditPreference.summarized) {
+        await ProjectUtilities.editPackageJson(project, (packageJson) => {
+          packageJson.name = newTitle;
+        });
       }
-    }
+
+      await ProjectUtilities.editDefaultPackManifests(project, {
+        behavior: (manifest) => {
+          manifest.ensureHeader(project.title, project.description).name = newTitle;
+        },
+        resource: (manifest) => {
+          manifest.ensureHeader(project.title, project.description).name = newTitle;
+        },
+      });
+    });
+  }
+
+  private static readonly manifestSyncQueues = new WeakMap<Project, Promise<void>>();
+
+  /**
+   * Runs `sync` after every manifest sync already queued for `project`. The property editor starts an apply call
+   * on each keystroke without waiting for the last one, and each call yields while it loads and saves files; run
+   * side by side, an older call could finish last and write an older value. Running them in order means the last
+   * value applied is the last one written. A failed sync rejects its own promise but doesn't stop later ones.
+   */
+  private static queueManifestSync(project: Project, sync: () => Promise<void>): Promise<void> {
+    const previous = ProjectUtilities.manifestSyncQueues.get(project) ?? Promise.resolve();
+    const next = previous.catch(() => {}).then(sync);
+
+    ProjectUtilities.manifestSyncQueues.set(project, next);
+
+    return next;
   }
 
   static async applyBehaviorPackUniqueId(project: Project, newBehaviorPackId: string) {
@@ -1081,6 +1097,137 @@ export default class ProjectUtilities {
             }
           }
         }
+      }
+    }
+  }
+
+  /**
+   * Runs `edit` on the manifest of the project's default behavior pack and/or default resource pack (found by
+   * header UUID) and saves it if anything changed. Other packs are left alone.
+   *
+   * The edit is made to a fresh, comment-preserving parse of the file's current text, not to the manifest
+   * manager's loaded definition: Raw Mode writes editor text straight to the file without refreshing the
+   * manager (or the file's comment cache), so that definition can be older than the file. A file whose text
+   * doesn't parse is left untouched. The manager is then pointed at the edited object so later saves through
+   * it don't write older state back over this edit.
+   */
+  private static async editDefaultPackManifests(
+    project: Project,
+    edit: {
+      behavior?: (manifest: BehaviorManifestDefinition) => void;
+      resource?: (manifest: ResourceManifestDefinition) => void;
+    }
+  ) {
+    const behaviorPackId = project.defaultBehaviorPackUniqueId;
+    const resourcePackId = project.defaultResourcePackUniqueId;
+
+    for (const projectItem of project.getItemsCopy()) {
+      const isBehavior = projectItem.itemType === ProjectItemType.behaviorPackManifestJson;
+      const isResource = projectItem.itemType === ProjectItemType.resourcePackManifestJson;
+
+      if (!(isBehavior && edit.behavior && behaviorPackId) && !(isResource && edit.resource && resourcePackId)) {
+        continue;
+      }
+
+      await projectItem.loadFileContent();
+
+      const file = projectItem.primaryFile;
+
+      if (!file) {
+        continue;
+      }
+
+      const manifest = isBehavior
+        ? await BehaviorManifestDefinition.ensureOnFile(file)
+        : await ResourceManifestDefinition.ensureOnFile(file);
+
+      if (!manifest) {
+        continue;
+      }
+
+      file.commentJsonCache = undefined;
+      const definition = StorageUtilities.getJsonObjectWithComments(file);
+      const headerUuid: unknown = definition?.header?.uuid;
+
+      // the text may parse but still be missing the header or its UUID while a creator is mid-edit in Raw Mode
+      if (
+        !definition ||
+        typeof definition !== "object" ||
+        Array.isArray(definition) ||
+        typeof headerUuid !== "string" ||
+        !Utilities.uuidEqual(headerUuid, isBehavior ? behaviorPackId : resourcePackId)
+      ) {
+        continue;
+      }
+
+      manifest.definition = definition;
+
+      if (manifest instanceof BehaviorManifestDefinition) {
+        edit.behavior?.(manifest);
+      } else {
+        edit.resource?.(manifest);
+      }
+
+      if (StorageUtilities.setJsonObjectWithComments(file, definition)) {
+        await file.saveContent(false);
+      }
+    }
+  }
+
+  /**
+   * Points the manager of every behavior and resource pack manifest at a fresh, comment-preserving parse of its
+   * file's current text, so later edits and saves through the manager keep the creator's comments. A file whose
+   * text doesn't parse to an object keeps its current definition.
+   */
+  private static async loadPackManifestsWithComments(project: Project) {
+    for (const projectItem of project.getItemsCopy()) {
+      const isBehavior = projectItem.itemType === ProjectItemType.behaviorPackManifestJson;
+
+      if (!isBehavior && projectItem.itemType !== ProjectItemType.resourcePackManifestJson) {
+        continue;
+      }
+
+      if (!projectItem.isContentLoaded) {
+        await projectItem.loadContent();
+      }
+
+      const file = projectItem.primaryFile;
+
+      if (!file) {
+        continue;
+      }
+
+      const manifest = isBehavior
+        ? await BehaviorManifestDefinition.ensureOnFile(file)
+        : await ResourceManifestDefinition.ensureOnFile(file);
+
+      file.commentJsonCache = undefined;
+      const definition = StorageUtilities.getJsonObjectWithComments(file);
+
+      if (manifest && definition && typeof definition === "object" && !Array.isArray(definition)) {
+        manifest.definition = definition;
+      }
+    }
+  }
+
+  /** Runs `edit` on each package.json in the project and saves it. */
+  private static async editPackageJson(project: Project, edit: (packageJson: PackageJSON) => void) {
+    for (const projectItem of project.getItemsCopy()) {
+      if (projectItem.itemType !== ProjectItemType.packageJson) {
+        continue;
+      }
+
+      await projectItem.loadFileContent();
+
+      if (!projectItem.primaryFile) {
+        continue;
+      }
+
+      const npmPackageJson = await NpmPackageDefinition.ensureOnFile(projectItem.primaryFile);
+
+      if (npmPackageJson && npmPackageJson.definition) {
+        edit(npmPackageJson.definition);
+        await npmPackageJson.save();
       }
     }
   }
@@ -1219,8 +1366,8 @@ export default class ProjectUtilities {
     project: Project,
     title: string,
     description: string,
-    suggestedShortName?: string,
-    isWeb?: boolean
+    suggestedShortName: string | undefined,
+    tool: GeneratedWithTool
   ) {
     await project.inferProjectItemsFromFiles();
 
@@ -1259,7 +1406,7 @@ export default class ProjectUtilities {
 
     await ProjectUtilities.applyTitle(project, title);
     await ProjectUtilities.applyDescription(project, description);
-    await ProjectUtilities.ensureGeneratedWith(project, isWeb);
+    await ProjectUtilities.ensureGeneratedWith(project, tool);
 
     await ProjectStandard.ensureIsStandard(project);
 
@@ -1529,6 +1676,10 @@ export default class ProjectUtilities {
     // the module it actually targeted.
     const previousScriptModuleUuid = await ProjectUtilities.getDefaultPackScriptModuleUuid(project);
 
+    // Every manifest may be saved below (including by the dependency updates in the default-ID setters), so load
+    // each one with its comments first; saving the plain definition loaded during project inference drops them.
+    await ProjectUtilities.loadPackManifestsWithComments(project);
+
     await project.setDefaultResourcePackUniqueIdAndUpdateDependencies(Utilities.createUuid());
     await project.setDefaultBehaviorPackUniqueIdAndUpdateDependencies(Utilities.createUuid());
     project.defaultDataUniqueId = Utilities.createUuid();
@@ -1566,6 +1717,9 @@ export default class ProjectUtilities {
             } else {
               assignedDefaultBehaviorPack = true;
             }
+
+            // write the new UUIDs now, since later edits (such as applyTitle) work from the file's text
+            await bpManifestJson.save();
           }
         } else if (pi.itemType === ProjectItemType.resourcePackManifestJson) {
           const rpManifestJson = await ResourceManifestDefinition.ensureOnFile(pi.primaryFile);
@@ -1588,6 +1742,8 @@ export default class ProjectUtilities {
             } else {
               assignedDefaultResourcePack = true;
             }
+
+            await rpManifestJson.save();
           }
         }
       }

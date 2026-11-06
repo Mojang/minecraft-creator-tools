@@ -40,6 +40,8 @@ import { Component, createRef, RefObject } from "react";
 import * as BABYLON from "babylonjs";
 import BlockMeshFactory from "./BlockMeshFactory";
 import MinecraftEnvironment from "./MinecraftEnvironment";
+import RenderPresentationScene from "./RenderPresentationScene";
+import { renderPresentationFromUrl } from "../../app/RenderPresentation";
 import Database from "../../minecraft/Database";
 import Block from "../../minecraft/Block";
 import BlockType from "../../minecraft/BlockType";
@@ -65,6 +67,7 @@ class BlockViewer extends Component<IBlockViewerProps, IBlockViewerState> {
   private _engine: BABYLON.Engine | null = null;
   private _scene: BABYLON.Scene | null = null;
   private _camera: BABYLON.ArcRotateCamera | null = null;
+  private _presentation?: RenderPresentationScene;
   private _blockMeshFactory: BlockMeshFactory | null = null;
   private _currentMesh: BABYLON.Mesh | null = null;
 
@@ -112,7 +115,11 @@ class BlockViewer extends Component<IBlockViewerProps, IBlockViewerState> {
     if (!canvas) return;
 
     // Opaque canvas — clearColor fills gaps, no HTML bleed-through
-    this._engine = new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, alpha: false });
+    this._engine = new BABYLON.Engine(canvas, true, {
+      preserveDrawingBuffer: true,
+      alpha: false,
+      loseContextOnDispose: renderPresentationFromUrl() !== undefined,
+    });
 
     this._scene = new BABYLON.Scene(this._engine);
 
@@ -151,7 +158,7 @@ class BlockViewer extends Component<IBlockViewerProps, IBlockViewerState> {
 
     // Skip the gradient sky dome in flat-background mode — we want a uniform
     // clearColor so the block reads as an icon, not a scene screenshot.
-    if (!flatBackground) {
+    if (!flatBackground && !renderPresentationFromUrl()) {
       MinecraftEnvironment.createSkyDome(this._scene);
     }
 
@@ -245,6 +252,8 @@ class BlockViewer extends Component<IBlockViewerProps, IBlockViewerState> {
     const { blockTypes, currentBlockIndex } = this.state;
     if (currentBlockIndex < 0 || currentBlockIndex >= blockTypes.length) return;
 
+    this._presentation?.dispose();
+    this._presentation = undefined;
     // Remove existing mesh and all its children
     if (this._currentMesh) {
       this._disposeMeshRecursively(this._currentMesh);
@@ -265,9 +274,15 @@ class BlockViewer extends Component<IBlockViewerProps, IBlockViewerState> {
         if (this._camera) {
           this._camera.setTarget(BABYLON.Vector3.Zero());
           this._camera.radius = 3;
+          const presentation = renderPresentationFromUrl();
+          if (presentation) {
+            this._presentation = new RenderPresentationScene(this._scene, this._camera, [mesh], presentation, -1, 1);
+            window.mctPresentation = this._presentation;
+          }
         }
       }
     } catch (error) {
+      if (renderPresentationFromUrl()) window.mctPresentationError = String(error);
       Log.verbose(`Error rendering block ${blockType.shortId}: ${error}`);
       this.setState(() => ({
         errorMessage: `Error rendering ${blockType.shortId}: ${error}`,

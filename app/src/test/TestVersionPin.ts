@@ -13,9 +13,9 @@
  * `Database.getLatestVersionInfo`) into the messages they emit — for example:
  *
  *   "Behavior pack manifest (1.20.0) has a lower minor version number compared
- *    to the expected version (1.26.20) or its previous minor version"
+ *    to the expected version (1.26.60) or its previous minor version"
  *
- * Without pinning, every product version bump (e.g. 1.26.10 → 1.26.20) would
+ * Without pinning, every product version bump (e.g. 1.26.50 → 1.26.60) would
  * silently invalidate every CLI scenario baseline that contains such a message.
  * That has historically been the source of one-off baseline refresh churn —
  * baselines get updated, but the underlying behavior never actually changed.
@@ -49,10 +49,10 @@
  */
 
 /** Version returned for `MinecraftTrack.main` when tests are running. */
-export const TEST_PINNED_MC_VERSION = "1.26.20";
+export const TEST_PINNED_MC_VERSION = "1.26.60";
 
 /** Version returned for `MinecraftTrack.preview` when tests are running. */
-export const TEST_PINNED_MC_PREVIEW_VERSION = "1.26.20.27";
+export const TEST_PINNED_MC_PREVIEW_VERSION = "1.26.70.23";
 
 /**
  * Sets `MCT_TEST_PINNED_MC_VERSION` / `MCT_TEST_PINNED_MC_PREVIEW_VERSION` on

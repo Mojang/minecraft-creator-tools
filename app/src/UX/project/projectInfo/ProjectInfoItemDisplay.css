@@ -370,14 +370,22 @@
   margin: 12px 0;
 }
 
+/* The dialog is the one place a phone user can read a message or file path in
+   full, so neither may force horizontal scrolling inside it. Messages carry long
+   identifiers (minecraft:some_component_group_name) and paths have no spaces at
+   all, so allow breaks anywhere rather than only at word boundaries. */
 .piid-dialog-message {
   font-size: 13px;
   margin: 8px 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .piid-dialog-location {
   font-size: 13px;
   margin: 8px 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .piid-dialog-location code {
@@ -385,6 +393,8 @@
   background-color: rgba(255, 255, 255, 0.1);
   padding: 2px 6px;
   border-radius: 3px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 /* Legacy styles for backwards compatibility */

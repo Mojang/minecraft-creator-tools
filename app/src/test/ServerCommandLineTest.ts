@@ -1,6 +1,10 @@
 import { assert } from "chai";
-import { ChildProcessWithoutNullStreams, spawn } from "child_process";
+import { ChildProcessWithoutNullStreams, spawn, spawnSync } from "child_process";
+import { EventEmitter } from "events";
+import * as fs from "fs";
 import * as net from "net";
+import * as path from "path";
+import { PassThrough, Readable } from "stream";
 import Utilities from "../core/Utilities";
 import IFile from "../storage/IFile";
 import axios, { AxiosResponse, AxiosError } from "axios";
@@ -20,10 +24,71 @@ import {
   removeResultFolder,
   collectLines,
 } from "./CommandLineTestHelpers";
-import { cliEnv, createTestDataDir } from "./TestDataDir";
+import { NetworkBlocker } from "./CliTranscriptHarness";
+import { cliEnv, createTestDataDir, setEnvironmentVariable } from "./TestDataDir";
+import TestPaths from "./TestPaths";
 
 const SERVER_STARTUP_TIMEOUT_MS = 15000;
 const SERVER_HOST = "127.0.0.1";
+
+/** Where validation looks up the latest versions of a pack's @minecraft/* script modules. */
+const NPM_REGISTRY_HOST = "registry.npmjs.org:443";
+
+/** Where validation looks for the vanilla resource pack's file index (see Database.matchesVanillaPath). */
+const VANILLA_CONTENT_HOST = "mctools.dev:443";
+
+/** Proxy settings that could send a request past the NetworkBlocker, removed from the CLI's environment. */
+const PROXY_ENV_VARS = ["HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY", "NO_PROXY", "NODE_USE_ENV_PROXY"];
+
+/** Matches ANSI color codes, which the CLI's log adds to warnings. */
+// eslint-disable-next-line no-control-regex
+const ANSI_CODES = /\x1b\[[0-9;]*m/g;
+
+/** A warning from the CLI's log: "[<timestamp>] [WARN    ] <message>", with the thread ID after it under --verbose. */
+const LOG_WARNING_LINE = /^\[\d{4}-\d{2}-\d{2}T[\d:.]+Z\] \[WARN *\] (.*?)(?: \[threadId:\d+\])?$/;
+
+/**
+ * The environment for a CLI process whose outbound requests all go to `proxyUrl`. The CLI's lookups use
+ * axios, which reads these variables. NODE_USE_ENV_PROXY stays unset, as in CliTranscriptHarness,
+ * because Node 22 warns on stderr that it's experimental.
+ */
+function getIsolatedCliEnv(proxyUrl: string): NodeJS.ProcessEnv {
+  const env = cliEnv();
+
+  for (const name of PROXY_ENV_VARS) {
+    setEnvironmentVariable(env, name, undefined);
+  }
+
+  env.HTTP_PROXY = proxyUrl;
+  env.HTTPS_PROXY = proxyUrl;
+
+  return env;
+}
+
+/** The warning the CLI prints when the NetworkBlocker refuses the npm registry lookup for a script module. */
+function getRefusedRegistryWarning(moduleName: string) {
+  return (
+    `Could not load registry for '${moduleName}': Request failed with status code 403 ` +
+    "Latest script package checks are unavailable; existing dependencies are unchanged."
+  );
+}
+
+/** The message of a warning line from the CLI's log, or the whole line, marked, if it isn't a warning. */
+function getWarningMessage(line: string) {
+  const plainLine = line.replace(ANSI_CODES, "");
+  const match = LOG_WARNING_LINE.exec(plainLine);
+
+  return match ? match[1] : "(not a warning) " + plainLine;
+}
+
+/** Asserts that stderr holds exactly one refused registry lookup warning per module, and nothing else. */
+function assertOnlyRefusedRegistryWarnings(stderrLines: string[], scriptModules: string[]) {
+  assert.deepEqual(
+    stderrLines.map(getWarningMessage).sort(),
+    scriptModules.map(getRefusedRegistryWarning).sort(),
+    "stderr: " + stderrLines.join("\n") + "|"
+  );
+}
 
 async function canConnectToServer(port: number): Promise<boolean> {
   return new Promise((resolve) => {
@@ -134,37 +199,64 @@ async function waitForServerStartup(
   );
 }
 
+/** The parts of a child process that trackProcessCompletion uses. */
+interface IChildProcessOutput {
+  readonly stdout: Readable;
+  readonly stderr: Readable;
+  readonly exitCode: number | null;
+  once(event: "exit", listener: (code: number | null) => void): unknown;
+}
+
 /**
- * Registers the child's `exit` listener synchronously (call this immediately after
- * spawn, before any `await`) and returns a promise that resolves with the exit code.
- *
- * In `--once` mode the server starts shutting down the instant it calls `res.end()`,
- * so the child can exit *before* the test finishes awaiting the HTTP response. Node
- * does not replay a missed `exit` event, so attaching the listener late would leave
- * the `before` hook waiting until its multi-minute mocha timeout — the exact CI flake
- * this avoids. Attaching at spawn time (and short-circuiting if the process has
- * somehow already exited) closes that window while preserving the graceful-exit
- * assertion (the returned promise still only resolves once the child actually exits).
+ * Starts collecting the child's stdout and stderr lines into the given arrays, and returns a promise
+ * that resolves with its exit code once it has exited and both streams have ended. Call it right
+ * after spawn, before any `await`:
+ * - In `--once` mode the server starts shutting down the instant it calls `res.end()`, so the child
+ *   can exit before the test finishes awaiting the HTTP response. Node doesn't replay a missed `exit`
+ *   event, so a listener attached late would leave the `before` hook waiting until its mocha timeout.
+ * - Node can emit `exit` before it has read everything the child wrote, so a line written just before
+ *   exit can still be in the pipe. Waiting for both streams to end means the arrays are complete
+ *   before tests compare them. A grandchild that kept the pipes open would make this wait too.
  */
-function trackProcessExit(serverProcess: ChildProcessWithoutNullStreams): Promise<number | null> {
-  return new Promise((resolve) => {
-    if (serverProcess.exitCode !== null) {
-      resolve(serverProcess.exitCode);
+function trackProcessCompletion(
+  child: IChildProcessOutput,
+  stdoutLines: string[],
+  stderrLines: string[]
+): Promise<number | null> {
+  const exited = new Promise<number | null>((resolve) => {
+    if (child.exitCode !== null) {
+      resolve(child.exitCode);
       return;
     }
 
-    serverProcess.once("exit", (code) => resolve(code));
+    child.once("exit", (code) => resolve(code));
   });
+
+  const collected = Promise.all([collectLines(child.stdout, stdoutLines), collectLines(child.stderr, stderrLines)]);
+
+  return Promise.all([exited, collected]).then(([exitCode]) => exitCode);
 }
 
 /**
  * Creates a standard serve command validation test suite.
  * Reduces duplication across the 5 serveCommand* test suites.
+ *
+ * The server sends its outbound requests through a NetworkBlocker, a local proxy that refuses them at
+ * once (see CliTranscriptHarness.ts), so a run doesn't depend on which hosts the machine can reach:
+ * - Validation asks mctools.dev for the vanilla resource pack's file index. When that fails, it uses
+ *   the vanilla content index installed with the CLI, which gives these packs the same report.
+ * - Validating a pack with @minecraft/* dependencies looks up their latest versions on the npm
+ *   registry, and the CLI warns on stderr when it can't. These packs have no package.json and no beta
+ *   dependencies, so their reports don't depend on that lookup.
+ * Each suite expects exactly those hosts, and exactly those warnings on stderr.
+ *
+ * @param scriptModules The @minecraft/* modules whose versions the validation looks up.
  */
 function createServeValidationTest(
   suiteName: string,
   samplePath: string,
   port: number,
+  scriptModules: string[],
   extraHeaders?: Record<string, string>
 ) {
   describe(suiteName, () => {
@@ -172,6 +264,8 @@ function createServeValidationTest(
     const stdoutLines: string[] = [];
     const stderrLines: string[] = [];
     let serverProcess: ChildProcessWithoutNullStreams | null = null;
+    const blocker = new NetworkBlocker();
+    let networkRequests: string[] = [];
 
     before(async function () {
       this.timeout(40000);
@@ -185,24 +279,26 @@ function createServeValidationTest(
 
       const sampleFile: IFile = await sampleFolder.ensureFileFromRelativePath(samplePath);
 
-      serverProcess = spawn("node", [
-        "./toolbuild/jsn/cli/index.mjs",
-        "serve",
-        "basicwebservices",
-        "--port",
-        String(port),
-        "--verbose",
-        "--once",
-        "--updatepc",
-        passcode,
-      ]);
+      await blocker.start();
 
-      collectLines(serverProcess.stdout, stdoutLines);
-      collectLines(serverProcess.stderr, stderrLines);
+      serverProcess = spawn(
+        "node",
+        [
+          "./toolbuild/jsn/cli/index.mjs",
+          "serve",
+          "basicwebservices",
+          "--port",
+          String(port),
+          "--verbose",
+          "--once",
+          "--updatepc",
+          passcode,
+        ],
+        { env: getIsolatedCliEnv(blocker.url) }
+      );
 
-      // Attach the exit listener synchronously with spawn so a fast --once shutdown
-      // can't fire `exit` before we're listening for it (see trackProcessExit).
-      const serverExitPromise = trackProcessExit(serverProcess);
+      // Start collecting output and listening for exit at spawn (see trackProcessCompletion).
+      const serverCompletion = trackProcessCompletion(serverProcess, stdoutLines, stderrLines);
 
       await sampleFile.loadContent();
       const content = sampleFile.content;
@@ -229,16 +325,24 @@ function createServeValidationTest(
         "PACKFILECOUNT",
       ]);
 
-      exitCode = await serverExitPromise;
+      // After this, the server has exited and all of its output has been collected.
+      exitCode = await serverCompletion;
       serverProcess = null;
+      networkRequests = blocker.takeRequests();
     });
 
-    it("should have no stderr lines", async () => {
+    it("should have only the refused registry lookups on stderr", async () => {
       if (serverProcess) {
         serverProcess.kill();
         serverProcess = null;
       }
-      assert.equal(stderrLines.length, 0, "Error: " + stderrLines.join("\n") + "|");
+      assertOnlyRefusedRegistryWarnings(stderrLines, scriptModules);
+    }).timeout(10000);
+
+    it("should have tried to reach only the vanilla content and npm registry hosts", () => {
+      const expectedHosts = [VANILLA_CONTENT_HOST, ...(scriptModules.length > 0 ? [NPM_REGISTRY_HOST] : [])];
+
+      assert.deepEqual(networkRequests, expectedHosts.sort());
     }).timeout(10000);
 
     it("exit code should be zero", async () => {
@@ -253,35 +357,226 @@ function createServeValidationTest(
       await folderMatches(scenariosFolder, resultsFolder, suiteName, [...volatileFileExtensions, "report.json"]);
     });
 
-    after(function () {
+    after(async function () {
       if (serverProcess) {
         serverProcess.kill();
         serverProcess = null;
       }
+      await blocker.stop();
     });
   });
 }
 
+/** The @minecraft/* modules the sample packs depend on. */
+const SAMPLE_SCRIPT_MODULES = ["@minecraft/server", "@minecraft/server-ui"];
+
+/**
+ * The world sample's TypeScript, which its build embeds in the source maps it packages with the world
+ * template. serveCommandValidateWorld and serveCommandValidateMashup record those maps' sizes, so the
+ * files need LF line endings on every OS. samplecontent/world/.gitattributes checks them out that way.
+ */
+const WORLD_SCRIPTS_FOLDER = "samplecontent/world/scripts";
+
+const CARRIAGE_RETURN = 13;
+
+function listTypeScriptFiles(folder: string): string[] {
+  return fs
+    .readdirSync(folder, { recursive: true, encoding: "utf8" })
+    .filter((name) => name.endsWith(".ts"))
+    .map((name) => path.join(folder, name));
+}
+
+describe("serve report fixtures", () => {
+  it("has the world sample's TypeScript with LF line endings", () => {
+    const files = listTypeScriptFiles(path.join(TestPaths.repoRoot, WORLD_SCRIPTS_FOLDER));
+
+    assert.isNotEmpty(files);
+    assert.deepEqual(
+      files.filter((file) => fs.readFileSync(file).includes(CARRIAGE_RETURN)),
+      [],
+      "These files have CR line endings, so the world sample's source maps won't match the serve report " +
+        `scenarios. Delete them, run \`git checkout -- ${WORLD_SCRIPTS_FOLDER}\`, and rebuild the sample ` +
+        "with `npx gulp package` in samplecontent/world."
+    );
+  });
+
+  it("checks the world sample's TypeScript out with LF where Git converts text to CRLF", function () {
+    const listed = spawnSync("git", ["ls-files", "-z", "--", WORLD_SCRIPTS_FOLDER], {
+      cwd: TestPaths.repoRoot,
+      encoding: "utf8",
+    });
+
+    if (listed.error || listed.status !== 0) {
+      // Not a Git checkout, so no checkout converted the files; the test above still checks them.
+      this.skip();
+    }
+
+    const files = listed.stdout.split("\0").filter((file) => file.endsWith(".ts"));
+    assert.isNotEmpty(files);
+
+    for (const file of files) {
+      // Git for Windows sets core.autocrlf=true, so its checkouts convert text files to CRLF.
+      const checkedOut = spawnSync("git", ["-c", "core.autocrlf=true", "cat-file", "--filters", ":" + file], {
+        cwd: TestPaths.repoRoot,
+      });
+
+      assert.equal(checkedOut.status, 0, String(checkedOut.stderr));
+      assert.isFalse(
+        checkedOut.stdout.includes(CARRIAGE_RETURN),
+        `Git for Windows would check ${file} out with CRLF line endings. samplecontent/world/.gitattributes ` +
+          "should check it out with LF."
+      );
+    }
+  });
+});
+
+/** A warning line as the CLI's log prints it under --verbose (see LocalLogFormatter). */
+function formatLogWarning(message: string) {
+  return `\x1b[33m[${new Date().toISOString()}] [WARN    ] ${message} [threadId:0]\x1b[0m`;
+}
+
+/** What validating the sample packs behind the NetworkBlocker writes to stderr. */
+const REFUSED_REGISTRY_WARNING_LINES = SAMPLE_SCRIPT_MODULES.map((moduleName) =>
+  formatLogWarning(getRefusedRegistryWarning(moduleName))
+);
+
+const UNEXPECTED_LINE = "An unexpected final line";
+
+/** Node code for a child that writes the lines in TEST_STDERR_LINES to stderr and exits right after. */
+const WRITE_STDERR_AND_EXIT =
+  "const lines = JSON.parse(process.env.TEST_STDERR_LINES);" +
+  "require('fs').writeSync(2, lines.map((line) => line + '\\n').join(''));" +
+  "process.exit(0);";
+
+/** How many short-lived children each case starts, to exercise the order of exit and pipe reads. */
+const SHORT_LIVED_CHILD_RUNS = 20;
+
+/** Runs the stderr check the serve suites make, expecting it to pass or to reject UNEXPECTED_LINE. */
+function checkSampleStderr(stderrLines: string[], accepted: boolean) {
+  if (accepted) {
+    assertOnlyRefusedRegistryWarnings(stderrLines, SAMPLE_SCRIPT_MODULES);
+  } else {
+    assert.throws(() => assertOnlyRefusedRegistryWarnings(stderrLines, SAMPLE_SCRIPT_MODULES), UNEXPECTED_LINE);
+  }
+}
+
+describe("serve validation output capture", () => {
+  // Node can emit `exit` before it has read a child's last lines. A fake child makes that order certain.
+  const outputAfterExitCases = [
+    {
+      name: "waits for a warning that arrives after the child exits",
+      beforeExit: REFUSED_REGISTRY_WARNING_LINES.slice(0, 1),
+      afterExit: REFUSED_REGISTRY_WARNING_LINES.slice(1),
+      accepted: true,
+    },
+    {
+      name: "rejects an unexpected line that arrives after the child exits",
+      beforeExit: REFUSED_REGISTRY_WARNING_LINES,
+      afterExit: [UNEXPECTED_LINE],
+      accepted: false,
+    },
+  ];
+
+  for (const testCase of outputAfterExitCases) {
+    it(testCase.name, async () => {
+      const child = Object.assign(new EventEmitter(), {
+        stdout: new PassThrough(),
+        stderr: new PassThrough(),
+        exitCode: null as number | null,
+      });
+      const stdoutLines: string[] = [];
+      const stderrLines: string[] = [];
+      let exitCode: number | null | undefined;
+      const completion = trackProcessCompletion(child, stdoutLines, stderrLines).then((code) => (exitCode = code));
+
+      child.stderr.write(testCase.beforeExit.map((line) => line + "\n").join(""));
+      child.exitCode = 0;
+      child.emit("exit", 0, null);
+      await new Promise((resolve) => setImmediate(resolve));
+
+      assert.isUndefined(exitCode, "Resolved when the child exited, before its output ended.");
+
+      child.stderr.end(testCase.afterExit.map((line) => line + "\n").join(""));
+      child.stdout.end();
+      await completion;
+
+      assert.equal(exitCode, 0);
+      assert.lengthOf(stderrLines, testCase.beforeExit.length + testCase.afterExit.length);
+      checkSampleStderr(stderrLines, testCase.accepted);
+    });
+  }
+
+  const shortLivedChildCases = [
+    {
+      name: "collects every warning short-lived children write right before they exit",
+      lines: REFUSED_REGISTRY_WARNING_LINES,
+      accepted: true,
+    },
+    {
+      name: "rejects an unexpected last line from short-lived children",
+      lines: [...REFUSED_REGISTRY_WARNING_LINES, UNEXPECTED_LINE],
+      accepted: false,
+    },
+  ];
+
+  for (const testCase of shortLivedChildCases) {
+    it(testCase.name, async function () {
+      this.timeout(60000);
+
+      for (let run = 1; run <= SHORT_LIVED_CHILD_RUNS; run++) {
+        const child = spawn(process.execPath, ["-e", WRITE_STDERR_AND_EXIT], {
+          env: { ...process.env, TEST_STDERR_LINES: JSON.stringify(testCase.lines) },
+        });
+        const stdoutLines: string[] = [];
+        const stderrLines: string[] = [];
+
+        const exitCode = await trackProcessCompletion(child, stdoutLines, stderrLines);
+
+        assert.equal(exitCode, 0, `Run ${run}: stderr: ${stderrLines.join("\n")}`);
+        assert.lengthOf(stderrLines, testCase.lines.length, `Run ${run}: stderr: ${stderrLines.join("\n")}`);
+        checkSampleStderr(stderrLines, testCase.accepted);
+      }
+    });
+  }
+});
+
 createServeValidationTest(
   "serveCommandValidate",
   "/addon/build/packages/aop_moremobs_animationmanifesterrors.zip",
-  16127
+  16127,
+  SAMPLE_SCRIPT_MODULES
 );
 
+// The add-on suite doesn't check script modules, so it doesn't look them up.
 createServeValidationTest(
   "serveCommandValidateAddon",
   "/addon/build/packages/aop_moremobs_animationmanifesterrors.zip",
   16128,
+  [],
   { mctsuite: "addon" }
 );
 
-createServeValidationTest("serveCommandValidateWorld", "/world/build/packages/aop_moremobs_linkerrors.zip", 16129);
+createServeValidationTest(
+  "serveCommandValidateWorld",
+  "/world/build/packages/aop_moremobs_linkerrors.zip",
+  16129,
+  SAMPLE_SCRIPT_MODULES
+);
 
-createServeValidationTest("serveCommandValidateMashup", "/world/build/packages/aop_moremobs_mashup.zip", 16130);
+createServeValidationTest(
+  "serveCommandValidateMashup",
+  "/world/build/packages/aop_moremobs_mashup.zip",
+  16130,
+  SAMPLE_SCRIPT_MODULES
+);
 
-createServeValidationTest("serveCommandValidateAdvanced", "/addon/build/packages/aop_moremobs_advanced.zip", 16131, {
-  mctsuite: "all",
-});
+createServeValidationTest(
+  "serveCommandValidateAdvanced",
+  "/addon/build/packages/aop_moremobs_advanced.zip",
+  16131,
+  SAMPLE_SCRIPT_MODULES,
+  { mctsuite: "all" }
+);
 
 const MB = 1024 * 1024;
 
@@ -323,12 +618,8 @@ function createServeZipErrorTest(
         passcode,
       ]);
 
-      collectLines(serverProcess.stdout, stdoutLines);
-      collectLines(serverProcess.stderr, stderrLines);
-
-      // Attach the exit listener synchronously with spawn so a fast --once shutdown
-      // can't fire `exit` before we're listening for it (see trackProcessExit).
-      const serverExitPromise = trackProcessExit(serverProcess);
+      // Start collecting output and listening for exit at spawn (see trackProcessCompletion).
+      const serverCompletion = trackProcessCompletion(serverProcess, stdoutLines, stderrLines);
 
       const body = await buildBody();
 
@@ -353,7 +644,7 @@ function createServeZipErrorTest(
         response = errResponse as AxiosResponse;
       }
 
-      exitCode = await serverExitPromise;
+      exitCode = await serverCompletion;
       serverProcess = null;
     });
 

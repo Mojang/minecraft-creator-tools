@@ -598,7 +598,13 @@ export default class FormPropertyManager {
       return undefined;
     }
 
-    const val = this.getTypedData(field, data);
+    // The control that produced this input belongs to the field variant matching
+    // the current value (e.g. the string alternate of a boolean scalar), so
+    // convert the input with that variant rather than the primary definition.
+    const currentValue = this.getProperty(id, undefined, currentDirectObject);
+    const effectiveField = DataFormUtilities.selectFieldForValue(field, currentValue);
+
+    const val = this.getTypedData(effectiveField, data);
 
     return this.setPropertyValue(id, val, currentDirectObject);
   }

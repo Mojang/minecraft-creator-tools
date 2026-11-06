@@ -188,6 +188,21 @@ export default class ClUtils {
   }
 
   /**
+   * Returns true for commands that run a server until they're stopped: serve, dedicatedserve, view, edit, and mcp.
+   * A signal that stops one of these exits 0; one that stops any other command exits 130 or 143, because that run
+   * didn't finish (see ServerManager.commandKind).
+   */
+  static getIsServerCommand(taskType: TaskType) {
+    return (
+      taskType === TaskType.serve ||
+      taskType === TaskType.runDedicatedServer ||
+      taskType === TaskType.view ||
+      taskType === TaskType.edit ||
+      taskType === TaskType.mcp
+    );
+  }
+
+  /**
    * The folder to look for projects in: -o for a write command given -o but not -i, otherwise -i or the current
    * folder. A real run creates a missing -o. With dryRun, it's the same folder, but it isn't created: a missing -o
    * comes back empty and unloaded, like the folder a real run creates, or fails when a real run couldn't create it.

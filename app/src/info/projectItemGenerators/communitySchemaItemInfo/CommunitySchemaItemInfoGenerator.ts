@@ -21,6 +21,7 @@ import {
   CommunitySchemaValidationRules,
 } from "./CommunitySchemaItemInfoData";
 import { IValidationRuleProvider, ValidationRuleDefinition } from "../../tests/ValidationRuleDefinition";
+import { getValidatorSchema } from "../ValidatorSchema";
 
 export { CommunitySchemaItemInfoGeneratorTest };
 
@@ -85,7 +86,7 @@ export default class CommunitySchemaItemInfoGenerator implements IProjectInfoIte
 
             try {
               contentObj = JSON.parse(content);
-              const results = validate(contentObj, schemaContents);
+              const results = validate(contentObj, getValidatorSchema(schemaContents));
 
               for (const err of results.errors) {
                 items.push(

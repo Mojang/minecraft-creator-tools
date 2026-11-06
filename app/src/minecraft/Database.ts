@@ -3,6 +3,8 @@
 
 import Catalog from "./ICatalog";
 import axios from "axios";
+import { Packument } from "@npm/types";
+import { requestMetadata } from "../core/MetadataRequest";
 import BlockType from "./BlockType";
 import BlockBaseType from "./BlockBaseType";
 import MinecraftUtilities from "./MinecraftUtilities";
@@ -18,7 +20,6 @@ import ITypeDefCatalog from "./ITypeDefCatalog";
 import CreatorToolsHost from "../app/CreatorToolsHost";
 import Utilities from "../core/Utilities";
 import NpmModule from "../devproject/NpmModule";
-import IMainInfoVersions from "./IMainInfoVersions";
 import IFormDefinition from "../dataform/IFormDefinition";
 import FieldUtilities from "../dataform/FieldUtilities";
 import ContentIndex, { AnnotationCategory } from "../core/ContentIndex";
@@ -46,6 +47,13 @@ import AppServiceProxy, { AppServiceProxyCommands } from "../core/AppServiceProx
 import IContentSource from "../app/IContentSource";
 import { ScriptModuleInfoProvider } from "../langcore/javascript/ScriptModuleInfo";
 
+/**
+ * Version/registry metadata uses a per-request deadline (MetadataRequest), including in workers.
+ * LocalUtilities additionally owns Node proxy-handshake cancellation; browser hosts use axios
+ * directly. Version failures, including malformed responses, warn and cache the existing bundled
+ * fallback. Registry failures remain unavailable, never an empty successful NpmModule.
+ * Escape untrusted identifiers/error text only for diagnostics; request URLs and cache keys stay raw.
+ */
 export default class Database {
   static isVanillaLoaded = false;
   static isScriptTypesLoaded = false;
@@ -75,6 +83,9 @@ export default class Database {
   static local: ILocalUtilities | null = null;
   static vanillaInfoData: IProjectInfoData | null = null;
   static vanillaContentIndex: ContentIndex | null = null;
+  /** IDs from the shipped vanilla item catalog (data/recipe-item-catalog.json); undefined until loaded. */
+  static vanillaItemIds: Set<string> | undefined;
+  private static _vanillaItemIdsLoad: Promise<Set<string>> | undefined;
 
   static blocksCatalog: BlocksCatalogDefinition | undefined = undefined;
   static terrainTextureCatalog: TerrainTextureCatalogDefinition | undefined = undefined;
@@ -137,8 +148,10 @@ export default class Database {
 
   static minecraftEduVersion = "1.21.90";
   static minecraftEduPreviewVersion = "1.21.110";
-  static fallbackMinecraftVersion = "1.26.0"; // used if we fail to retrieve the latest version from the network
-  static fallbackMinecraftPreviewVersion = "1.26.10.27"; // should be occasionally statically updated.
+  // Used if we fail to retrieve the latest version from the network. Update these (and the
+  // other pins listed in docs/UpdatingMinecraftVersion.md) whenever a new Bedrock version ships.
+  static fallbackMinecraftVersion = "1.26.60";
+  static fallbackMinecraftPreviewVersion = "1.26.70.23";
 
   static defaultContentSources: IContentSource[] = [
     {
@@ -173,6 +186,7 @@ export default class Database {
     "1.19": "80",
     "1.20": "80",
     "1.21": "120",
+    "1.26": "60",
   };
 
   static moduleDescriptors: { [id: string]: NpmModule | undefined } = {};
@@ -648,17 +662,23 @@ export default class Database {
     const url = "https://registry.npmjs.org/" + moduleId;
 
     try {
-      const response = await axios.get(url);
-
-      Database.moduleDescriptors[moduleId] = new NpmModule(response.data);
-    } catch (e: any) {
-      if (e && (!e.message || !e.message.indexOf || e.message.indexOf("etwork ") < 0)) {
-        Log.debugAlert("Could not load registry for '" + moduleId + "': " + e.toString());
-      } else {
-        CreatorToolsHost.getCreatorTools()?.notifyStatusUpdate(
-          "Could not connect to network to retrieve latest script package details. Url: " + url
-        );
+      const data = await Database.getMetadataJson<Packument>(url);
+      if (
+        !data ||
+        typeof data !== "object" ||
+        typeof data["dist-tags"]?.latest !== "string" ||
+        !data.versions ||
+        !data.versions[data["dist-tags"].latest]
+      ) {
+        throw new Error("Registry response has no latest package version.");
       }
+      Database.moduleDescriptors[moduleId] = new NpmModule(data);
+    } catch (error) {
+      Log.important(
+        Utilities.escapeControlCharacters(
+          `Could not load registry for '${moduleId}': ${error instanceof Error ? error.message : String(error)} `
+        ) + "Latest script package checks are unavailable; existing dependencies are unchanged."
+      );
     }
 
     return Database.moduleDescriptors[moduleId];
@@ -692,7 +712,7 @@ export default class Database {
     const moduleDescriptor = await this.getModuleDescriptor("@minecraft/server");
 
     if (!moduleDescriptor || !moduleDescriptor.latestPreviewVersion) {
-      return "1.21.0";
+      return Database.fallbackMinecraftPreviewVersion.split(".").slice(0, 3).join(".");
     }
 
     return moduleDescriptor.latestPreviewVersion;
@@ -702,7 +722,7 @@ export default class Database {
     const moduleDescriptor = await this.getModuleDescriptor("@minecraft/server");
 
     if (!moduleDescriptor || !moduleDescriptor.latestRetailVersion) {
-      return "1.21.0";
+      return Database.fallbackMinecraftVersion;
     }
 
     return moduleDescriptor.latestRetailVersion;
@@ -872,88 +892,95 @@ export default class Database {
       return Database.latestVersion;
     }
 
-    let minecraftInfoResponse: any = undefined;
-
     let versionUrl = "https://raw.githubusercontent.com/Mojang/bedrock-samples/main/version.json";
 
     if (track === MinecraftTrack.preview) {
       versionUrl = "https://raw.githubusercontent.com/Mojang/bedrock-samples/preview/version.json";
     }
 
+    let version: string;
     try {
-      minecraftInfoResponse = await axios.get(versionUrl);
-    } catch (e: any) {
-      if (e && (!e.message || !e.message.indexOf || e.message.indexOf("etwork ") < 0)) {
-        Log.debugAlert("Could not load version info from '" + versionUrl + "': " + e.toString());
-      } else {
-        CreatorToolsHost.getCreatorTools()?.notifyStatusUpdate(
-          "Could not connect to network to retrieve latest Minecraft version details. Url: " + versionUrl
-        );
-      }
-
-      if (track === MinecraftTrack.preview) {
-        Database.latestPreviewVersion = Database.fallbackMinecraftPreviewVersion;
-        return Database.fallbackMinecraftPreviewVersion;
-      }
-
-      if (track === MinecraftTrack.main) {
-        Database.latestVersion = Database.fallbackMinecraftVersion;
-        return Database.fallbackMinecraftVersion;
-      }
+      version = Database.getLatestVersionFromMetadata(await Database.getMetadataJson<unknown>(versionUrl), track);
+    } catch (error) {
+      version =
+        track === MinecraftTrack.preview ? Database.fallbackMinecraftPreviewVersion : Database.fallbackMinecraftVersion;
+      Log.important(
+        Utilities.escapeControlCharacters(
+          `Could not load version info from '${versionUrl}': ${error instanceof Error ? error.message : String(error)} `
+        ) +
+          `Using bundled ${track === MinecraftTrack.preview ? "preview" : "retail"} Minecraft version ${version}; ` +
+          "it may not be the latest version."
+      );
     }
+    if (track === MinecraftTrack.preview) {
+      Database.latestPreviewVersion = version;
+    } else {
+      Database.latestVersion = version;
+    }
+    return version;
+  }
 
+  private static getMetadataJson<T>(url: string): Promise<T> {
+    return Database.local?.getMetadataJson ? Database.local.getMetadataJson<T>(url) : requestMetadata<T>(url);
+  }
+
+  /** Select the newest valid version for the requested track; empty metadata is not success. */
+  static getLatestVersionFromMetadata(data: unknown, track: MinecraftTrack): string {
+    if (!data || typeof data !== "object" || Array.isArray(data)) {
+      throw new Error("Invalid Minecraft version metadata.");
+    }
     let latestVersionIndex = 0;
     let latestVerStr = "";
-    try {
-      if (minecraftInfoResponse === undefined || minecraftInfoResponse.data === undefined) {
-        throw new Error("Unexpected empty response.");
+    const entries: unknown[] = Object.values(data);
+    for (const entry of entries) {
+      if (
+        !entry ||
+        typeof entry !== "object" ||
+        !("version" in entry) ||
+        typeof entry.version !== "string" ||
+        !/^\d+\.\d+\.\d+\.\d+$/.test(entry.version)
+      ) {
+        continue;
       }
-
-      const responseJson: IMainInfoVersions = JSON.parse(JSON.stringify(minecraftInfoResponse.data));
-
-      if (!responseJson) {
-        throw new Error("Improperly formatted response (source: " + minecraftInfoResponse.data + ")");
-      }
-
-      for (const verId in responseJson) {
-        const ver = responseJson[verId].version;
-
-        if (ver) {
-          const isPreview = Database.getVersionIsPreview(ver); // version ends with .20 or higher
-
-          const versionIndex = Database.getVersionIndexFromVersionStr(ver);
-
-          if (
-            versionIndex > 0 &&
-            versionIndex > latestVersionIndex &&
-            ((isPreview && track === MinecraftTrack.preview) || (!isPreview && track === MinecraftTrack.main))
-          ) {
-            latestVersionIndex = versionIndex;
-
-            // re-constitute the version number ourselves
-            const verNums = ver.split(".");
-
-            latestVerStr =
-              verNums[0] + "." + verNums[1] + "." + verNums[2] + "." + Utilities.frontPadToLength(verNums[3], 2, "0");
-          }
-        }
-      }
-    } catch (e: any) {
-      Log.error("Could not process Minecraft version details." + e);
-      throw new Error(e.toString());
-    }
-
-    if (latestVerStr && latestVerStr.length > 0) {
-      if (track === MinecraftTrack.preview) {
-        Database.latestPreviewVersion = latestVerStr;
-      } else {
-        Database.latestVersion = latestVerStr;
+      const ver = entry.version;
+      const isPreview = Database.getVersionEntryIsPreview(entry as { version?: string; type?: string });
+      const versionIndex = Database.getVersionIndexFromVersionStr(ver);
+      if (versionIndex > latestVersionIndex && isPreview === (track === MinecraftTrack.preview)) {
+        latestVersionIndex = versionIndex;
+        const verNums = ver.split(".");
+        latestVerStr =
+          verNums[0] + "." + verNums[1] + "." + verNums[2] + "." + Utilities.frontPadToLength(verNums[3], 2, "0");
       }
     }
-
+    if (!latestVerStr) {
+      throw new Error(
+        `No valid ${track === MinecraftTrack.preview ? "preview" : "retail"} Minecraft version in metadata.`
+      );
+    }
     return latestVerStr;
   }
 
+  /**
+   * Determines whether a bedrock-samples version.json entry is a preview build. Prefers the
+   * explicit `type` field (present in the preview branch); falls back to the version-number
+   * heuristic in getVersionIsPreview when `type` is absent.
+   */
+  static getVersionEntryIsPreview(entry: { version?: string; type?: string } | undefined) {
+    if (!entry) {
+      return false;
+    }
+
+    if (typeof entry.type === "string" && entry.type.length > 0) {
+      return entry.type.toLowerCase() === "preview";
+    }
+
+    return entry.version ? Database.getVersionIsPreview(entry.version) : false;
+  }
+
+  /**
+   * Heuristic: preview builds use a 4th version component of 20 or higher (e.g. 1.26.60.28),
+   * while retail builds use a small hotfix number (e.g. 1.26.50.4).
+   */
   static getVersionIsPreview(ver: string) {
     const verNums = ver.split(".");
 
@@ -1565,8 +1592,9 @@ export default class Database {
     for (const formName in componentForms) {
       const form = componentForms[formName];
 
-      if (form === undefined) {
-        break;
+      // The catalog caches every loaded form, and some forms define no top-level fields.
+      if (!form || !Array.isArray(form.fields)) {
+        continue;
       }
 
       for (let i = 0; i < form.fields.length; i++) {
@@ -1867,6 +1895,64 @@ export default class Database {
     }
 
     return false;
+  }
+
+  /**
+   * Whether an ID names a vanilla item or block, for checks like recipe ingredients where an ID
+   * found in another vanilla category (an entity, a particle, a recipe) isn't valid. Many built-in
+   * items have no item JSON, so the content index alone misses them; the shipped item catalog
+   * covers those, and the index's item and block categories cover most legacy IDs the catalog
+   * lacks. The rest are legacy item names that vanilla recipes still use as ingredients.
+   */
+  static async isVanillaItemOrBlock(id: string) {
+    const itemIds = await Database.loadVanillaItemIds();
+
+    if (itemIds.has(id) || Database.legacyIngredientItemIds.has(id)) {
+      return true;
+    }
+
+    if (!Database.vanillaContentIndex) {
+      await this.loadVanillaInfoData();
+    }
+
+    const matches = await Database.vanillaContentIndex?.getExactKeyMatches(id, [
+      AnnotationCategory.itemTypeSource,
+      AnnotationCategory.blockTypeSource,
+    ]);
+
+    return !!matches && matches.length > 0;
+  }
+
+  private static readonly legacyIngredientItemIds = new Set(["minecraft:boat", "minecraft:speckled_melon"]);
+
+  static async loadVanillaItemIds(): Promise<Set<string>> {
+    if (Database.vanillaItemIds) {
+      return Database.vanillaItemIds;
+    }
+
+    if (!Database._vanillaItemIdsLoad) {
+      Database._vanillaItemIdsLoad = (async () => {
+        let catalog: { items?: { id: string }[] } | null = null;
+
+        try {
+          // @ts-ignore
+          if (typeof window !== "undefined") {
+            const response = await axios.get(CreatorToolsHost.contentWebRoot + "data/recipe-item-catalog.json");
+            catalog = response?.data;
+          } else if (Database.local) {
+            catalog = (await Database.local.readJsonFile("data/recipe-item-catalog.json")) as any;
+          }
+        } catch (e) {
+          Log.debug("Could not load the vanilla item catalog: " + e);
+        }
+
+        Database.vanillaItemIds = new Set((catalog?.items ?? []).map((item) => item.id));
+
+        return Database.vanillaItemIds;
+      })();
+    }
+
+    return await Database._vanillaItemIdsLoad;
   }
 
   static async getVanillaAll(withAnnotation?: AnnotationCategory[]) {

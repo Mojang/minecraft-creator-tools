@@ -66,7 +66,7 @@ import { getLogoWidth, renderLogo } from "./CliLogo";
 
 /** The subset of command metadata that affects help. */
 export type CommandHelpMetadata = Partial<
-  Pick<ICommandMetadata, "category" | "examples" | "learnMore" | "globalOptionGroups" | "internal">
+  Pick<ICommandMetadata, "category" | "examples" | "learnMore" | "globalOptionGroups" | "internal" | "route">
 > & {
   /**
    * Leave out the `process` options (logging, network). Only for commands handled before
@@ -325,10 +325,17 @@ function closestMatch(word: string, candidates: string[]): string | undefined {
 function renderRootHelp(root: Command, context: IHelpRenderContext): string[] {
   const cli = root.name();
   const visible = getSubcommands(root, false);
-  const listed = context.showAllCommands ? getSubcommands(root, true) : visible;
+  const listed = context.showAllCommands
+    ? getSubcommands(root, true)
+    : visible.filter((command) => !context.getMetadata(command)?.route);
   const hiddenCount = root.commands.length - visible.length;
+  const compatibilityCount = root.commands.filter((command) => context.getMetadata(command)?.route).length;
+  const compatibility = listed.filter((command) => context.getMetadata(command)?.route);
 
-  const commandSections = groupByCategory(listed, context).map(([category, commands]) => ({
+  const commandSections = groupByCategory(
+    listed.filter((command) => !compatibility.includes(command)),
+    context
+  ).map(([category, commands]) => ({
     title: `${category.toUpperCase()} COMMANDS`,
     rows: commands.map((sub) => commandRow(sub)),
   }));
@@ -356,6 +363,22 @@ function renderRootHelp(root: Command, context: IHelpRenderContext): string[] {
     lines.push(...rowsSection(section.title, section.rows, context, commandLabelWidth));
   }
 
+  if (compatibility.length > 0) {
+    lines.push(
+      ...rowsSection(
+        "COMPATIBILITY COMMANDS",
+        compatibility.map((command) => ({
+          label: `${command.name()}:`,
+          description:
+            `Same as \`${cli} ${context.getMetadata(command)?.route?.join(" ")}\`.` +
+            (command.aliases().length > 0 ? ` Aliases: ${command.aliases().join(", ")}.` : ""),
+        })),
+        context,
+        commandLabelWidth
+      )
+    );
+  }
+
   for (const extra of context.getRootSections?.() ?? []) {
     lines.push(...proseSection(extra.title, extra.paragraphs, context));
   }
@@ -372,10 +395,16 @@ function renderRootHelp(root: Command, context: IHelpRenderContext): string[] {
 
   const learnMore = [`Use \`${cli} help <command>\` for more information about a command, including all of its flags.`];
 
-  if (hiddenCount > 0 && !context.showAllCommands) {
-    learnMore.push(
-      `Use \`${cli} --all-commands\` to also list ${hiddenCount} content-production command${hiddenCount === 1 ? "" : "s"}.`
-    );
+  if ((hiddenCount > 0 || compatibilityCount > 0) && !context.showAllCommands) {
+    const internalCount = hiddenCount;
+    const kinds = [];
+    if (internalCount > 0) {
+      kinds.push(`${internalCount} content-production command${internalCount === 1 ? "" : "s"}`);
+    }
+    if (compatibilityCount > 0) {
+      kinds.push(`${compatibilityCount} compatibility command${compatibilityCount === 1 ? "" : "s"}`);
+    }
+    learnMore.push(`Use \`${cli} --all-commands\` to also list ${kinds.join(" and ")}.`);
   }
 
   learnMore.push(`Read the documentation at ${context.documentationUrl}`);

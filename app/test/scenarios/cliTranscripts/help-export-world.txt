@@ -1,0 +1,65 @@
+$ mct help export world
+cwd: <work>
+exit code: 0
+
+stdout:
+Export a flat GameTest world with your project's packs.
+
+USAGE
+  mct export world [flags]
+
+INHERITED FLAGS
+  -i, --input-folder [path]   Path to the input folder. If not specified, the
+                              current working directory is used.
+  --if, --input-file <path>   Path to the input MCWorld, MCTemplate, MCPack,
+                              MCAddon or other zip file.
+  --single                    When pointed at a folder via -i, force that folder
+                              to be processed as a single project.
+  --psw, --project-starts-with <prefix>
+                              Only process a project if it starts with the
+                              starter term; this can be used to subdivide
+                              processing.
+  --afs, --additional-files [paths]
+                              Comma-separated list of additional files to add to
+                              projects.
+
+  -o, --output-folder <path>  Path to the output project folder. If not
+                              specified, the current working directory + 'out'
+                              is used. (default: out)
+  --of, --output-file [path]  Path to the export file, if applicable for the
+                              command you are using.
+
+  --json                      Output results in JSON format for machine parsing.
+
+  --bp, --base-path <path>    Path, relative to the current working folder,
+                              where common data files and folders are found.
+  --isolated                  Do not load vanilla Minecraft resources (e.g.,
+                              textures, ground blocks) from the web
+  --offline                   Same as --isolated. Useful in CI where the network
+                              is unreliable; some checks (e.g. latest version)
+                              may still use the network.
+  -d, --debug                 Add debug logging, options, and even more
+                              experimental commands.
+  --verbose                   Show verbose log messages.
+  -q, --quiet                 Suppress non-essential output. Only show errors
+                              and final results.
+
+  -h, --help                  Show help for the command.
+
+EXAMPLES
+  $ mct export world -i "./My Addon" -o ./packages
+  $ mct export world -i "./My Addon" -o ./packages --of ./packages/demo.mcworld --json
+
+LEARN MORE
+  JSON results retain the command name exportworld, with one record per project.
+  Use `mct help` to see all commands.
+  Read the documentation at
+  https://learn.microsoft.com/minecraft/creator/documents/mctoolsoverview
+
+stderr: (empty)
+
+files under <work>: (none)
+
+files under <data-dir>: (none)
+
+network requests: (none)

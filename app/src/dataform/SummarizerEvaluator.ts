@@ -67,11 +67,26 @@ import {
  *
  * It does NOT maintain a catalog of reference values - comparisons are
  * baked into the summarizer definition as literal text.
+ *
+ * ## Malformed definitions
+ *
+ * Summarizers arrive as hand-authored JSON inside form files, most of them
+ * from the `@minecraft/bedrock-schemas` package, and the evaluator runs
+ * inside React render paths (DataForm's summary card, component slots, the
+ * overview panels). A definition that strays from `ISummarizerToken` must
+ * therefore never throw: the shooter form shipped its `exists` token with
+ * `tokens`/`elseTokens` instead of `whenDefined`/`whenUndefined`, and
+ * iterating the missing property ("tokens is not iterable") took the whole
+ * entity editor down. Every list the evaluator walks goes through
+ * `arrayOrEmpty`, which substitutes an empty list and records what was
+ * missing on the result's `issues`, so callers can show that the summary is
+ * unavailable rather than a mangled phrase.
  */
 export default class SummarizerEvaluator {
   private formDefinition?: IFormDefinition;
   private currentData?: object;
   private options: ISummarizerOptions;
+  private issues: string[] = [];
 
   /**
    * Create a new SummarizerEvaluator.
@@ -107,6 +122,7 @@ export default class SummarizerEvaluator {
     this.formDefinition = formDefinition;
     this.currentData = data;
     this.options = options || {};
+    this.issues = [];
 
     const debug = this.options.debug
       ? {
@@ -119,7 +135,7 @@ export default class SummarizerEvaluator {
     // Evaluate all phrases
     const evaluatedPhrases: { text: string; priority: number; id?: string }[] = [];
 
-    for (const phrase of summarizer.phrases) {
+    for (const phrase of this.arrayOrEmpty(summarizer.phrases, "The summarizer's phrase list")) {
       const phraseId = phrase.id || `phrase_${evaluatedPhrases.length}`;
 
       // Check category filters
@@ -185,6 +201,7 @@ export default class SummarizerEvaluator {
       phrases,
       asSentence,
       asCompleteSentence,
+      issues: this.issues.length > 0 ? this.issues : undefined,
       debug,
     };
   }
@@ -224,6 +241,7 @@ export default class SummarizerEvaluator {
     this.formDefinition = formDefinition;
     this.currentData = data;
     this.options = options || {};
+    this.issues = [];
 
     const debug = this.options.debug
       ? {
@@ -236,7 +254,7 @@ export default class SummarizerEvaluator {
     // Evaluate all phrases with structured output
     const evaluatedPhrases: ISummarizerEvaluatedPhrase[] = [];
 
-    for (const phrase of summarizer.phrases) {
+    for (const phrase of this.arrayOrEmpty(summarizer.phrases, "The summarizer's phrase list")) {
       const phraseId = phrase.id || `phrase_${evaluatedPhrases.length}`;
 
       // Check category filters
@@ -306,6 +324,7 @@ export default class SummarizerEvaluator {
       phrases,
       asSentence,
       asCompleteSentence,
+      issues: this.issues.length > 0 ? this.issues : undefined,
       debug,
     };
   }
@@ -336,7 +355,7 @@ export default class SummarizerEvaluator {
   private evaluateTokensWithEffects(tokens: ISummarizerToken[], data: object): ISummarizerEvaluatedToken[] {
     const result: ISummarizerEvaluatedToken[] = [];
 
-    for (const token of tokens) {
+    for (const token of this.arrayOrEmpty(tokens, "A token list")) {
       // Check token visibility
       if (token.visibility && !this.checkConditions(token.visibility, data)) {
         continue;
@@ -382,7 +401,7 @@ export default class SummarizerEvaluator {
       case SummarizerTokenType.switch:
       case "switch": {
         const switchToken = token as ISwitchToken;
-        for (const switchCase of switchToken.cases) {
+        for (const switchCase of this.arrayOrEmpty(switchToken.cases, "The cases of a switch token")) {
           if (this.checkConditions(switchCase.conditions, data)) {
             const childTokens = this.evaluateTokensWithEffects(switchCase.tokens, data);
             // Apply parent effects to children that don't have their own
@@ -401,7 +420,7 @@ export default class SummarizerEvaluator {
         const listToken = token as IListToken;
         const visibleItems: ISummarizerEvaluatedToken[][] = [];
 
-        for (const item of listToken.items) {
+        for (const item of this.arrayOrEmpty(listToken.items, "The items of a list token")) {
           if (item.visibility && !this.checkConditions(item.visibility, data)) {
             continue;
           }
@@ -519,11 +538,15 @@ export default class SummarizerEvaluator {
           }
         }
 
+        // The contract requires whenDefined whatever the data holds, so a
+        // definition without it is reported even on the undefined side.
+        const whenDefined = this.existsBranch(existsToken, "whenDefined");
+
         if (isDefined) {
-          const childTokens = this.evaluateTokensWithEffects(existsToken.whenDefined, data);
+          const childTokens = this.evaluateTokensWithEffects(whenDefined, data);
           return this.applyEffectsToChildren(childTokens, baseEffects);
-        } else if (existsToken.whenUndefined) {
-          const childTokens = this.evaluateTokensWithEffects(existsToken.whenUndefined, data);
+        } else if (existsToken.whenUndefined !== undefined) {
+          const childTokens = this.evaluateTokensWithEffects(this.existsBranch(existsToken, "whenUndefined"), data);
           return this.applyEffectsToChildren(childTokens, baseEffects);
         }
         return [];
@@ -540,7 +563,7 @@ export default class SummarizerEvaluator {
         const conjunctionToken = token as IConjunctionToken;
         const visibleItems: ISummarizerEvaluatedToken[][] = [];
 
-        for (const item of conjunctionToken.items) {
+        for (const item of this.arrayOrEmpty(conjunctionToken.items, "The items of a conjunction token")) {
           if (item.visibility && !this.checkConditions(item.visibility, data)) {
             continue;
           }
@@ -608,7 +631,7 @@ export default class SummarizerEvaluator {
   private evaluateTokens(tokens: ISummarizerToken[], data: object): string {
     const parts: string[] = [];
 
-    for (const token of tokens) {
+    for (const token of this.arrayOrEmpty(tokens, "A token list")) {
       // Check token visibility
       if (token.visibility && !this.checkConditions(token.visibility, data)) {
         continue;
@@ -709,7 +732,7 @@ export default class SummarizerEvaluator {
    * Evaluate a switch token: select tokens based on conditions.
    */
   private evaluateSwitchToken(token: ISwitchToken, data: object): string | undefined {
-    for (const switchCase of token.cases) {
+    for (const switchCase of this.arrayOrEmpty(token.cases, "The cases of a switch token")) {
       if (this.checkConditions(switchCase.conditions, data)) {
         return this.evaluateTokens(switchCase.tokens, data);
       }
@@ -728,7 +751,7 @@ export default class SummarizerEvaluator {
   private evaluateListToken(token: IListToken, data: object): string {
     const visibleItems: string[] = [];
 
-    for (const item of token.items) {
+    for (const item of this.arrayOrEmpty(token.items, "The items of a list token")) {
       // Check item visibility
       if (item.visibility && !this.checkConditions(item.visibility, data)) {
         continue;
@@ -918,13 +941,29 @@ export default class SummarizerEvaluator {
       }
     }
 
+    // The contract requires whenDefined whatever the data holds, so a
+    // definition without it is reported even on the undefined side.
+    const whenDefined = this.existsBranch(token, "whenDefined");
+
     if (isDefined) {
-      return this.evaluateTokens(token.whenDefined, data);
-    } else if (token.whenUndefined) {
-      return this.evaluateTokens(token.whenUndefined, data);
+      return this.evaluateTokens(whenDefined, data);
+    } else if (token.whenUndefined !== undefined) {
+      return this.evaluateTokens(this.existsBranch(token, "whenUndefined"), data);
     }
 
     return "";
+  }
+
+  /**
+   * The token list an exists token outputs for one of its two outcomes.
+   * `whenDefined` is required by the contract; `whenUndefined` is optional and
+   * only consulted when the definition names it.
+   */
+  private existsBranch(token: IExistsToken, branch: "whenDefined" | "whenUndefined"): ISummarizerToken[] {
+    return this.arrayOrEmpty(
+      token[branch],
+      `The "${branch}" token list of the exists token for field "${token.field}"`
+    );
   }
 
   /**
@@ -933,7 +972,7 @@ export default class SummarizerEvaluator {
   private evaluateConjunctionToken(token: IConjunctionToken, data: object): string {
     const visibleItems: string[] = [];
 
-    for (const item of token.items) {
+    for (const item of this.arrayOrEmpty(token.items, "The items of a conjunction token")) {
       if (item.visibility && !this.checkConditions(item.visibility, data)) {
         continue;
       }
@@ -1026,10 +1065,30 @@ export default class SummarizerEvaluator {
   }
 
   /**
+   * Returns `value` when it is an array, or an empty array when the definition
+   * has nothing usable there, recording the gap on the current result's
+   * `issues` (once per distinct message). See "Malformed definitions" in the
+   * class documentation for why this never throws.
+   */
+  private arrayOrEmpty<T>(value: T[] | undefined, what: string): T[] {
+    if (Array.isArray(value)) {
+      return value;
+    }
+
+    const issue = `${what} is missing or is not an array`;
+    if (!this.issues.includes(issue)) {
+      this.issues.push(issue);
+      Log.debug(`Summarizer definition problem: ${issue}`);
+    }
+
+    return [];
+  }
+
+  /**
    * Check if all conditions are met.
    */
   private checkConditions(conditions: ICondition[], data: object): boolean {
-    for (const condition of conditions) {
+    for (const condition of this.arrayOrEmpty(conditions, "A condition list")) {
       if (!this.checkCondition(condition, data)) {
         return false;
       }

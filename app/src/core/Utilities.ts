@@ -39,6 +39,16 @@ export default class Utilities {
   static defaultEncoding = "UTF-8";
   static replacementChar = 0xfffd;
 
+  /** Render untrusted C0/C1 controls visibly; preserve layout only for already formatted help text. */
+  static escapeControlCharacters(text: string, preserveWhitespace = false): string {
+    // eslint-disable-next-line no-control-regex
+    return text.replace(/[\x00-\x1f\x7f-\x9f]/g, (character) =>
+      preserveWhitespace && (character === "\n" || character === "\t")
+        ? character
+        : `\\u${character.charCodeAt(0).toString(16).padStart(4, "0")}`
+    );
+  }
+
   // note that if the stringToSplit is well formed, it should return untilCount+1 items items in the string[]
   static splitUntil(stringToSplit: string, splitChar: string, untilCount: number): string[] {
     const results: string[] = [];

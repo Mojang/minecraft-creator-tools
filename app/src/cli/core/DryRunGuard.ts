@@ -57,13 +57,13 @@ export function installDryRunGuard(program: Command, registry: CommandRegistry):
       return;
     }
 
-    const command = registry.get(actionCommand.name());
+    const command = registry.getForCommand(actionCommand);
 
     if (command === undefined || isDryRunSupported(command.metadata.name)) {
       return;
     }
 
-    program.error(formatDryRunNotSupportedError(`${program.name()} ${getTypedName(program, actionCommand)}`), {
+    program.error(formatDryRunNotSupportedError(getTypedPath(program, actionCommand)), {
       exitCode: ErrorCodes.INIT_ERROR,
       code: DRY_RUN_NOT_SUPPORTED_CODE,
     });
@@ -71,9 +71,14 @@ export function installDryRunGuard(program: Command, registry: CommandRegistry):
 }
 
 /** The command name as typed, so `mct eula` isn't reported as `mct minecrafteulaandprivacystatement`. */
-function getTypedName(program: Command, command: Command): string {
-  // Commander sets the program's args, starting with the command name or alias, before it dispatches.
-  const typed = program.args[0];
-
-  return typed !== undefined && command.aliases().includes(typed) ? typed : command.name();
+function getTypedPath(program: Command, command: Command): string {
+  const segments: string[] = [];
+  let current = command;
+  while (current !== program && current.parent) {
+    // The parent's operands retain the actual alias without inspecting or rewriting raw argv.
+    const typed = current.parent.args[0];
+    segments.unshift(typed !== undefined && current.aliases().includes(typed) ? typed : current.name());
+    current = current.parent;
+  }
+  return [program.name(), ...segments].join(" ");
 }

@@ -7,6 +7,7 @@
 
 import { CompletionItemKind, ICompletionItem } from "../json/JsonCompletionItems";
 import { MOLANG_QUERIES, MOLANG_MATH } from "./MolangParser";
+import { DEFAULT_MOLANG_QUERY_SET, isMolangQueryAvailable } from "../../knowledge/BedrockKnowledge";
 
 /**
  * Context for Molang completions
@@ -26,6 +27,8 @@ export interface IMolangCompletionContext {
   existingVariables?: string[];
   /** Existing temp variables */
   existingTemps?: string[];
+  /** Query set the expression is evaluated in ("default", "world_gen", or "tags"). Defaults to "default". */
+  querySet?: string;
 }
 
 /**
@@ -43,7 +46,7 @@ export class MolangCompletionGenerator {
 
     // Query completions
     if (prefixLower.startsWith("q") || prefixLower.startsWith("query")) {
-      items.push(...this.generateQueryCompletions(prefixLower));
+      items.push(...this.generateQueryCompletions(context.querySet ?? DEFAULT_MOLANG_QUERY_SET));
     }
 
     // Math completions
@@ -75,12 +78,15 @@ export class MolangCompletionGenerator {
   }
 
   /**
-   * Generate query completions
+   * Generate completions for the queries available in a query set
    */
-  private generateQueryCompletions(prefix: string): ICompletionItem[] {
+  private generateQueryCompletions(querySet: string): ICompletionItem[] {
     const items: ICompletionItem[] = [];
 
     for (const query of MOLANG_QUERIES) {
+      if (!isMolangQueryAvailable(query, undefined, querySet)) {
+        continue;
+      }
       const shortName = query.name.replace("query.", "q.");
 
       items.push({

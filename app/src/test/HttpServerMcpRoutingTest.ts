@@ -185,7 +185,7 @@ describe("HttpServer MCP endpoint routing", function () {
     // uses CreatorTools once a request reaches the MCP handler, which these tests replace.
     serverManager = new ServerManager(localEnv, {} as CreatorTools);
     serverManager.features = ServerManagerFeatures.all;
-    httpServer = serverManager.ensureHttpServer();
+    httpServer = await serverManager.ensureHttpServer();
     await httpServer.waitForReady(10000);
 
     // Like the real handler, the probe applies the CORS headers routing passes to it.

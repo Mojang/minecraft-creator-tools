@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import { assert } from "chai";
-import JsonSchemaItemInfoGenerator from "./JsonSchemaItemInfoGenerator";
+import JsonSchemaItemInfoGenerator, { isStringSoundEntryMismatch } from "./JsonSchemaItemInfoGenerator";
 import { OfficialSchemaItemTypes } from "./JsonSchemaItemInfoData";
 import ProjectItemUtilities from "../../../app/ProjectItemUtilities";
 import { ProjectItemType } from "../../../app/IProjectItemData";
@@ -47,6 +47,28 @@ describe("JsonSchemaItemInfoGenerator", () => {
     });
     const results = await gen.generate(item, noOpContentIndex);
     assert.deepEqual(results, []);
+  });
+
+  it("suppresses only the object-required error for string sound entries", () => {
+    // "mob" is also an event, so the dotted event name must be matched whole, not by prefix.
+    const content = {
+      sound_definitions: {
+        mob: { sounds: [{ name: "sounds/m" }] },
+        "mob.a": { sounds: ["sounds/a", { name: "sounds/b" }] },
+      },
+    };
+    const sound = ProjectItemType.soundDefinitionCatalog;
+    const path = "sound_definitions.mob.a.sounds[0]";
+
+    assert.isTrue(isStringSoundEntryMismatch(sound, path, "an object is required", content));
+    assert.isTrue(isStringSoundEntryMismatch(sound, "instance." + path, "an object is required", content));
+    assert.isFalse(
+      isStringSoundEntryMismatch(sound, "sound_definitions.mob.a.sounds[1]", "an object is required", content)
+    );
+    assert.isFalse(isStringSoundEntryMismatch(sound, path, "does not match the regex pattern", content));
+    assert.isFalse(
+      isStringSoundEntryMismatch(ProjectItemType.entityTypeBehavior, path, "an object is required", content)
+    );
   });
 
   // The rule inventory is a leaf data module that cannot import

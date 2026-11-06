@@ -21,6 +21,11 @@
  * missing input, and says to pass a gallery template id and a name. With --yes, or with a
  * template id and a name, add never prompts.
  *
+ * DOWNLOADS: entity templates come from Minecraft's vanilla packs, which the CLI downloads (it
+ * stores only the samples). Before adding a template, add checks that its files can be loaded, and
+ * fails with INIT_ERROR without writing anything when they can't, as without a network or with
+ * --offline. Copying them would otherwise add nothing and still report success.
+ *
  * USAGE:
  * npx mct add [type] [name] -i <project-folder>
  */
@@ -31,8 +36,12 @@ import { ICommandContext, ErrorCodes } from "../../core/ICommandContext";
 import { TaskType } from "../../ClUtils";
 import { IPromptRequest, prompt, PromptQuestion, reportPromptUnavailable } from "../../core/Prompt";
 import { GalleryItemType } from "../../../app/IGalleryItem";
+import type IGalleryItem from "../../../app/IGalleryItem";
 import Project from "../../../app/Project";
+import ProjectCreateManager from "../../../app/ProjectCreateManager";
 import ProjectItemCreateManager from "../../../app/ProjectItemCreateManager";
+import ProjectUtilities from "../../../app/ProjectUtilities";
+import { GeneratedWithTools } from "../../../minecraft/ManifestGeneratedWith";
 import LocalUtilities from "../../../local/LocalUtilities";
 
 /** The request for a prompt that a gallery template id and a name replace. */
@@ -157,11 +166,7 @@ export class AddCommand extends CommandBase {
       !isTestMode
     ) {
       if (!LocalUtilities.eulaAcceptedViaEnvironment) {
-        context.log.error(
-          "EULA not accepted. Accept it via:\n" +
-            "  Interactive:    mct eula\n" +
-            "  Non-interactive: mct eula --accept   (or set MCTOOLS_I_ACCEPT_EULA_AT_MINECRAFTDOTNETSLASHEULA=true)"
-        );
+        context.log.error(LocalUtilities.eulaNotAcceptedMessage);
         context.setExitCode(ErrorCodes.INIT_ERROR);
         return;
       }
@@ -201,6 +206,26 @@ export class AddCommand extends CommandBase {
     return /^[a-z0-9_]{1,50}$/.test(name);
   }
 
+  /**
+   * Checks that a gallery template's files can be loaded before anything is added: a downloaded
+   * template can't be without a network, and adding it would write nothing. Otherwise reports why and
+   * sets the exit code.
+   */
+  private async canAddFromGallery(context: ICommandContext, galleryItem: IGalleryItem): Promise<boolean> {
+    if (await ProjectCreateManager.canLoadGalleryTemplateFiles(galleryItem)) {
+      return true;
+    }
+
+    context.log.error(
+      context.isolated
+        ? `Couldn't download the '${galleryItem.title}' template, because --offline and --isolated turn off downloads. Run the command without them.`
+        : ProjectCreateManager.getGalleryTemplateUnavailableMessage(galleryItem)
+    );
+    context.setExitCode(ErrorCodes.INIT_ERROR);
+
+    return false;
+  }
+
   private async addToProject(context: ICommandContext, project: Project, type: string | undefined): Promise<void> {
     // If type is specified directly, try to find matching gallery item
     if (type) {
@@ -232,8 +257,12 @@ export class AddCommand extends CommandBase {
               `Item name '${this.newName}' contains invalid characters. Minecraft identifiers should use lowercase letters, numbers, and underscores only.`
             );
           }
+          if (!(await this.canAddFromGallery(context, galleryItem))) {
+            return;
+          }
           context.log.info(`Adding item '${this.newName}' from template '${galleryItem.title}'`);
           await ProjectItemCreateManager.addFromGallery(project, this.newName, galleryItem);
+          await ProjectUtilities.ensureGeneratedWith(project, GeneratedWithTools.cli);
           await project.save();
           if (context.json) {
             context.log.data(JSON.stringify({ success: true, added: this.newName, type: type }));
@@ -306,8 +335,6 @@ export class AddCommand extends CommandBase {
     } else if (type === "singlefiles") {
       await this.handleSingleFiles(context, project);
     }
-
-    await project.save();
   }
 
   private async handleSingleFiles(context: ICommandContext, project: Project): Promise<void> {
@@ -412,7 +439,13 @@ export class AddCommand extends CommandBase {
     if (templateType && this.newName) {
       for (const galItem of gallery.items) {
         if (galItem.id === templateType && galItem.type === itemType) {
+          if (!(await this.canAddFromGallery(context, galItem))) {
+            return;
+          }
+          // Save only after the add, as the template id path does, so a failed add saves nothing.
           await ProjectItemCreateManager.addFromGallery(project, this.newName, galItem);
+          await ProjectUtilities.ensureGeneratedWith(project, GeneratedWithTools.cli);
+          await project.save();
           context.log.success(`Added ${this.newName} from template '${galItem.title}'.`);
         }
       }

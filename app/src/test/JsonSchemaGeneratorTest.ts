@@ -230,6 +230,20 @@ describe("JsonSchemaGenerator", () => {
       expect(acceptedBy(mutationValues.items, ["warm", "cold"]), "enum values").to.equal(true);
       expect(acceptedBy(mutationValues.items, [{}]), "objects are not scalar values").to.equal(false);
     });
+
+    it("omits removed placeholder fields from the generated schema", async () => {
+      const formDef: IFormDefinition = {
+        id: "test_removed",
+        fields: [
+          { id: "attack_interval|attack_interval_min", isRemoved: true } as any,
+          { id: "attack_interval", dataType: FieldDataType.intRange },
+        ],
+      };
+
+      const schema = await JsonSchemaGenerator.convertFormDefinitionToJsonSchema(formDef);
+
+      expect(Object.keys(schema.properties as object)).to.deep.equal(["attack_interval"]);
+    });
   });
 
   describe("Range Type Mappings", () => {

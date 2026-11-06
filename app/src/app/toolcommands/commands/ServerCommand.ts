@@ -115,7 +115,7 @@ export class ServerCommand extends ToolCommandBase {
         name: "project",
         shortName: "p",
         description: "Path to project to deploy (default: current project if available)",
-        type: "string",
+        type: "path",
         required: false,
       },
       {

@@ -215,7 +215,7 @@ const formatVersionCases: readonly IVersionCase[] = [
     // Families that read a missing format_version as 0.0.0 never reach the +0
     // slot by omission (the lower-major check flags the 0.0.0 instead), but a
     // version with the wrong number of components still trips it. A fourth
-    // component ("1.26.20.1") is the boundary the missing case cannot cover.
+    // component ("1.26.50.1") is the boundary the missing case cannot cover.
     delta: 0,
     slug: "malformed-fv",
     suite: ProjectInfoSuite.currentPlatformVersions,

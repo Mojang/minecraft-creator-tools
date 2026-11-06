@@ -13,6 +13,10 @@ export enum VanillaProtectedAssetsInfoGeneratorTest {
 
 export type ProtectedVanillaAssetEntry = {
   packType: PackType;
+  /**
+   * Pack-relative path. A folder path ends with "/" and protects everything under it
+   * ("structures/sulfur_spring/"); any other path protects only that file ("ui/example.json").
+   */
   protectedPath: string;
   displayPath: string;
 };
@@ -22,6 +26,11 @@ export const ProtectedVanillaAssetEntries: readonly ProtectedVanillaAssetEntry[]
     packType: PackType.behavior,
     protectedPath: "structures/sulfur_spring/",
     displayPath: "behavior/structures/sulfur_spring",
+  },
+  {
+    packType: PackType.resource,
+    protectedPath: "ui/data_driven_container_screen.json",
+    displayPath: "resource/ui/data_driven_container_screen.json",
   },
 ];
 

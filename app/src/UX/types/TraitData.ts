@@ -235,6 +235,14 @@ export function toggleEntityTrait(currentTraits: EntityTraitId[], traitId: Entit
   const idx = traits.indexOf(traitId);
 
   if (idx >= 0) {
+    // Body shape is a required, radio-style choice: clicking the selected
+    // shape again keeps it rather than leaving the mob with no shape. The
+    // caller sees an unchanged list and applies nothing.
+    const traitInfo = ENTITY_TRAITS.find((t) => t.id === traitId);
+    if (traitInfo?.exclusiveGroup === "bodyShape") {
+      return traits;
+    }
+
     // Deselect
     traits.splice(idx, 1);
   } else {

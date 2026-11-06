@@ -2834,11 +2834,6 @@ describe("MCP Model Design Export Baselines", function () {
     testFolders.ensureResultFolder(SCENARIO_NAME);
   });
 
-  after(async function () {
-    // Clean up cached browser to avoid hanging
-    await ImageGenerationUtilities.closeCachedBrowser();
-  });
-
   /**
    * Helper to export a model design to files and return the paths.
    */

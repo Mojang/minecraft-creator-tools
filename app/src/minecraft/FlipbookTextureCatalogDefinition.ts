@@ -7,7 +7,6 @@ import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
 import { IFlipbookTexture } from "./IFlipbookTexture";
 import { ProjectItemType } from "../app/IProjectItemData";
-import Utilities from "../core/Utilities";
 import Database from "./Database";
 import IProjectItemRelationship from "../app/IProjectItemRelationship";
 import Project from "../app/Project";
@@ -167,14 +166,14 @@ export default class FlipbookTextureCatalogDefinition implements IDefinition {
         await rel.childItem.loadContent();
       }
 
-      if (rel.childItem.primaryFile && packRootFolder) {
-        let relativePath = StorageUtilities.getBaseRelativePath(rel.childItem.primaryFile, packRootFolder);
+      if (packRootFolder) {
+        const relativePaths = await StorageUtilities.getItemBaseRelativePaths(rel.childItem, packRootFolder);
 
-        if (relativePath) {
+        if (relativePaths.length > 0) {
           let newFlipbookTextures: IFlipbookTexture[] = [];
 
           for (const flipbookTexture of this._data) {
-            if (flipbookTexture.flipbook_texture !== relativePath) {
+            if (!relativePaths.includes(flipbookTexture.flipbook_texture)) {
               newFlipbookTextures.push(flipbookTexture);
             }
           }
@@ -220,24 +219,19 @@ export default class FlipbookTextureCatalogDefinition implements IDefinition {
 
     let textureList = this.texturesList;
 
-    for (const candItem of textureItems) {
-      if (packRootFolder && textureList) {
-        if (!candItem.isContentLoaded) {
-          await candItem.loadContent();
-        }
+    if (packRootFolder && textureList) {
+      const resolved = await StorageUtilities.resolvePackPathCandidates(
+        textureItems,
+        packRootFolder,
+        textureList,
+        (file) => StorageUtilities.getBaseRelativePath(file, packRootFolder)
+      );
 
-        if (candItem.primaryFile) {
-          let relativePath = StorageUtilities.getBaseRelativePath(candItem.primaryFile, packRootFolder);
-
-          if (relativePath) {
-            if (textureList && textureList.includes(relativePath)) {
-              item.addChildItem(candItem);
-
-              textureList = Utilities.removeItemInArray(relativePath, textureList);
-            }
-          }
-        }
+      for (const candItem of resolved.matches) {
+        item.addChildItem(candItem);
       }
+
+      textureList = resolved.unmatched;
     }
 
     if (textureList) {

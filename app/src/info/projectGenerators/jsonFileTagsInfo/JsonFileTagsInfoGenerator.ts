@@ -25,10 +25,31 @@ const inspectTagList: string[] = [
   "minecraft:behavior.tempt",
 ];
 
+const REPLACE_BIOMES_COMPONENT = "minecraft:replace_biomes";
+
 /**
  * Extracts and aggregates content tags from JSON definition files.
  *
+ * The per-file feature sets (`fs.entityComponents`, `fs.biomeComponents`,
+ * ...) and the summary lists built from them in `summarize`
+ * (`info.entityTypeComponents`, `info.biomeBehaviorTypeComponents`, ...)
+ * are part of the report contract downstream consumers index. Auger
+ * reads the summary lists only, as facets on its Offers search index, so
+ * a token that appears there is what makes a feature searchable across
+ * published content. Tokens are the component ids as JSON keys
+ * (`minecraft:replace_biomes` becomes `minecraftReplaceBiomes`), and
+ * renaming one would orphan every stored report, so the `minecraft:`
+ * prefix is never stripped in practice even where `summarize` tries to.
+ *
+ * Usage versus declaration: a biome that declares `minecraft:replace_biomes`
+ * with nothing to replace (no `replacements`, an empty list, or entries
+ * with no `targets`) is not reported as using the feature; it is counted
+ * under `biomeComponentsDeclaredWithoutUse` on the file instead so the
+ * declaration is still visible. The schema rejects such content anyway,
+ * so published packs are not expected to hit this path.
+ *
  * @see {@link ../../../../public/data/forms/mctoolsval/jsontags.form.json} for topic definitions
+ * @see {@link ../../../../public/data/forms/info_set/info.form.json} for the summary fields
  */
 export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator {
   id = "JSONTAGS";
@@ -524,7 +545,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
             "biomeComponents",
             index,
             AnnotationCategory.biomeBehaviorComponentDependent,
-            biomeNode["components"]
+            this.getBiomeComponentsInUse(pi, biomeNode["components"])
           );
 
           items.push(pi);
@@ -778,6 +799,65 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
 
       items.push(pi);
     }
+  }
+
+  /**
+   * The components of a behavior-pack biome that count as used. Every
+   * component counts by its presence, except `minecraft:replace_biomes`,
+   * which only counts when it actually replaces something: at least one
+   * entry in `replacements` that names a target biome. A declaration with
+   * nothing to replace is left out of the returned object (so it reaches
+   * neither the file's `biomeComponents` nor the report's summary list)
+   * and recorded under `biomeComponentsDeclaredWithoutUse` instead.
+   */
+  getBiomeComponentsInUse(pi: ProjectInfoItem, components: any): any {
+    if (!components || typeof components !== "object") {
+      return components;
+    }
+
+    if (!(REPLACE_BIOMES_COMPONENT in components) || this.isReplaceBiomesInUse(components[REPLACE_BIOMES_COMPONENT])) {
+      return components;
+    }
+
+    pi.incrementFeature("biomeComponentsDeclaredWithoutUse", REPLACE_BIOMES_COMPONENT);
+
+    const inUse: any = {};
+
+    for (const name in components) {
+      if (name !== REPLACE_BIOMES_COMPONENT) {
+        inUse[name] = components[name];
+      }
+    }
+
+    return inUse;
+  }
+
+  /** Whether a `minecraft:replace_biomes` component value has at least one replacement with a target biome. */
+  isReplaceBiomesInUse(component: any): boolean {
+    if (!component || typeof component !== "object") {
+      return false;
+    }
+
+    const replacements = component["replacements"];
+
+    if (!Array.isArray(replacements)) {
+      return false;
+    }
+
+    for (const replacement of replacements) {
+      if (replacement && typeof replacement === "object") {
+        const targets = replacement["targets"];
+
+        if (
+          Array.isArray(targets) &&
+          targets.some((target: unknown) => typeof target === "string" && target.length > 0)
+        ) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 
   async addSubTags(

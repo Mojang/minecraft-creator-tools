@@ -81,6 +81,13 @@ export interface IToolCommandFlag {
   isBoolean?: boolean;
 
   /**
+   * Whether the value is free text, such as a description, rather than a name. Through the server
+   * API, other flag values of write commands can't look like paths, because they can become file
+   * and folder names (see ToolCommandRequestGuard).
+   */
+  freeText?: boolean;
+
+  /**
    * Provider for autocomplete suggestions.
    */
   autocompleteProvider?: AutocompleteProvider;

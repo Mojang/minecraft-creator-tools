@@ -4,6 +4,7 @@
 import * as os from "os";
 import * as path from "path";
 import * as crypto from "crypto";
+import * as https from "https";
 import { v4 as uuidv4 } from "uuid";
 import NodeStorage from "./NodeStorage";
 import IStorage from "./../storage/IStorage";
@@ -11,6 +12,7 @@ import ILocalUtilities, { Platform } from "../core/ILocalUtilities";
 import Log from "../core/Log";
 import IConversionSettings from "../core/IConversionSettings";
 import ImageCodecNode from "./ImageCodecNode";
+import { requestMetadata } from "../core/MetadataRequest";
 
 /**
  * Ports that should never be used for MCTools HTTP servers.
@@ -112,6 +114,19 @@ export const UNSAFE_PORTS: ReadonlySet<number> = new Set([
 ]);
 
 export default class LocalUtilities implements ILocalUtilities {
+  async getMetadataJson<T>(url: string): Promise<T> {
+    const controller = new AbortController();
+    // Axios forwards agent options to its CONNECT agent. The signal must reach the
+    // proxy socket too: before CONNECT completes, it is not yet owned by the request.
+    const socketOptions = { keepAlive: false, signal: controller.signal };
+    const agent = new https.Agent(socketOptions);
+    try {
+      return await requestMetadata<T>(url, { httpsAgent: agent }, controller);
+    } finally {
+      agent.destroy();
+    }
+  }
+
   #productNameSeed = "mctools";
 
   #basePathAdjust: string | undefined = undefined;
@@ -157,6 +172,15 @@ export default class LocalUtilities implements ILocalUtilities {
     const value = process.env.MCTOOLS_I_ACCEPT_EULA_AT_MINECRAFTDOTNETSLASHEULA;
     return value?.toLowerCase() === "true";
   }
+
+  /**
+   * The error that create, add, dedicatedserve, and the server API's write commands report when the
+   * Minecraft EULA hasn't been accepted, naming every way to accept it.
+   */
+  static readonly eulaNotAcceptedMessage =
+    "EULA not accepted. Accept it via:\n" +
+    "  Interactive:    mct eula\n" +
+    "  Non-interactive: mct eula --accept   (or set MCTOOLS_I_ACCEPT_EULA_AT_MINECRAFTDOTNETSLASHEULA=true)";
 
   get basePathAdjust() {
     return this.#basePathAdjust;
@@ -221,6 +245,7 @@ export default class LocalUtilities implements ILocalUtilities {
     }
   }
 
+  /** The Minecraft client's content log folder, or "" where there's no client (off Windows). */
   get localReleaseServerLogPath() {
     if (this.platform === Platform.windows) {
       return (
@@ -236,10 +261,11 @@ export default class LocalUtilities implements ILocalUtilities {
         NodeStorage.platformFolderDelimiter
       );
     } else {
-      return "." + NodeStorage.platformFolderDelimiter;
+      return "";
     }
   }
 
+  /** The Minecraft Preview client's content log folder, or "" where there's no client (off Windows). */
   get localPreviewServerLogPath() {
     if (this.platform === Platform.windows) {
       return (
@@ -255,7 +281,7 @@ export default class LocalUtilities implements ILocalUtilities {
         NodeStorage.platformFolderDelimiter
       );
     } else {
-      return "." + NodeStorage.platformFolderDelimiter;
+      return "";
     }
   }
 
@@ -267,7 +293,7 @@ export default class LocalUtilities implements ILocalUtilities {
       NodeStorage.platformFolderDelimiter +
       "Roaming" +
       NodeStorage.platformFolderDelimiter +
-      "Microsoft Bedrock" +
+      "Minecraft Bedrock" +
       NodeStorage.platformFolderDelimiter +
       "Users" +
       NodeStorage.platformFolderDelimiter +
@@ -288,7 +314,7 @@ export default class LocalUtilities implements ILocalUtilities {
       NodeStorage.platformFolderDelimiter +
       "Roaming" +
       NodeStorage.platformFolderDelimiter +
-      "Microsoft Bedrock Preview" +
+      "Minecraft Bedrock Preview" +
       NodeStorage.platformFolderDelimiter +
       "Users" +
       NodeStorage.platformFolderDelimiter +

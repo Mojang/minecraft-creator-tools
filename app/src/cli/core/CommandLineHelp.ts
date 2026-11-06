@@ -19,12 +19,15 @@
 
 import * as tty from "tty";
 import { Command, Help } from "commander";
+import Utilities from "../../core/Utilities";
 import { INVALID_INPUT_FILE_OPTION_MESSAGE, isValidInputFileOption } from "./InputFileOption";
+import { INVALID_PROJECT_PREFIX_OPTION_MESSAGE, isValidProjectPrefixOption } from "./ProjectPrefixOption";
 import {
   CommandHelpMetadata,
   IHelpSection,
   HELP_DESCRIPTION,
   HELP_FLAGS,
+  formatCommandPath,
   formatUnknownCommandError,
   renderCommandHelp,
   resolveCommandPath,
@@ -57,11 +60,16 @@ export function configureCommandLineHelp(program: Command, options: ICommandLine
   const getMetadata = (command: Command) =>
     command === helpCommand ? helpCommandMetadata : options.getMetadata(command);
 
-  // The root has no action, so Commander emits this for operands that match no command
-  // (including ones after `--`) instead of printing its own terse error.
-  program.on("command:*", (operands: string[]) => failUnknownCommand(program, program, operands[0]));
-
   forEachCommand(program, (command) => {
+    // Groups have no action: bare groups print help with exit 1 before CLI startup, and
+    // unknown children get contextual recovery even when leaf-specific flags follow them.
+    if (command.commands.length > 0) {
+      command.helpCommand(false);
+      command.on("command:*", (operands: string[]) => failUnknownCommand(program, command, operands[0]));
+    } else if (command.parent && command.parent !== program) {
+      const helpPath = formatCommandPath(program, command).split(" ").slice(1).join(" ");
+      command.showHelpAfterError(`Run \`${program.name()} help ${helpPath}\` for more information.`);
+    }
     // Commander echoes argv into errors (unknown option, invalid choice). Escape control characters
     // so an argument can't inject terminal escape sequences. Set per command: each command copied
     // the output settings when it was created.
@@ -109,12 +117,14 @@ export function parseCommandLine(program: Command, argv: string[]): void {
   if (!isValidInputFileOption(program.opts().inputFile)) {
     program.error(INVALID_INPUT_FILE_OPTION_MESSAGE);
   }
+  if (!isValidProjectPrefixOption(program.opts().projectStartsWith)) {
+    program.error(INVALID_PROJECT_PREFIX_OPTION_MESSAGE);
+  }
 }
 
 /** Replaces control characters other than newline and tab with `\uXXXX` escapes. */
 export function escapeControlCharacters(text: string): string {
-  // eslint-disable-next-line no-control-regex
-  return text.replace(/[\x00-\x08\x0b-\x1f\x7f-\x9f]/g, (c) => `\\u${c.charCodeAt(0).toString(16).padStart(4, "0")}`);
+  return Utilities.escapeControlCharacters(text, true);
 }
 
 interface IOutputAwareHelp extends Help {

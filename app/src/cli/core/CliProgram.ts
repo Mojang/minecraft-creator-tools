@@ -52,7 +52,7 @@ export function createCliProgram(options: ICliProgramOptions): Command {
     documentationUrl: CLI_DOCUMENTATION_URL,
     reportIssueUrl: CLI_REPORT_ISSUE_URL,
     showAllCommands: options.showAllCommands,
-    getMetadata: (command) => options.registry.get(command.name())?.metadata,
+    getMetadata: (command) => options.registry.getHelpMetadata(command),
     rootHelpSections: options.rootHelpSections,
   });
 

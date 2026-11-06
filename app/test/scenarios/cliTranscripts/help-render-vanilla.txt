@@ -1,0 +1,88 @@
+$ mct help render vanilla
+cwd: <work>
+exit code: 0
+
+stdout:
+Render vanilla blocks, entities, or items to images. Use comma-separated
+identifiers or @filename to render several at once.
+
+USAGE
+  mct render vanilla <type> <identifier> [outputPath] [flags]
+
+ARGUMENTS
+  <type>        Type of vanilla content to render (block, mob, entity, item,
+                attachable)
+  <identifier>  Identifier(s) to render (e.g., 'oak_stairs', 'pig,cow,sheep',
+                '@blocks.txt')
+  [outputPath]  Output path: file for single item, directory for batch
+
+FLAGS
+  --gpu                   Prefer hardware GPU rendering instead of SwiftShader
+                          software WebGL
+  --no-gpu                Use software WebGL and skip hardware detection, for
+                          repeatable images
+  --appearance <mode>     Choose how to show the model (choices: textured, clay,
+                          wireframe, bones; default: textured)
+  --view <view>           Choose a camera view (default: three-quarter)
+                          (choices: three-quarter, front, side, back)
+  --all-views             Combine three-quarter, front, side, and back in one
+                          labeled 2x2 image
+  --no-grid               Hide the ground grid while keeping the ground plane
+                          and shadows
+  --skeleton              Overlay bone pivots and their parent connections on
+                          named model geometry
+  --environment <preset>  Choose neutral or biome-inspired lighting, sky, and
+                          ground (choices: neutral, plains, desert, snowy;
+                          default: neutral)
+  --time-of-day <time>    Choose the time for a biome environment (default:
+                          noon) (choices: noon, sunset, night)
+  --width <pixels>        Set each view's width in pixels; a four-view sheet is
+                          twice as wide (default: 1024)
+  --height <pixels>       Set each view's height in pixels, including sheet
+                          labels; scaled canvases are limited to 4096 pixels per
+                          side and 32 Mi pixels combined (default: 1024)
+
+INHERITED FLAGS
+  -n, --dry-run             Show what would be done without making changes or
+                            writing files. Commands that don't support it exit
+                            with an error before doing anything.
+
+  --bp, --base-path <path>  Path, relative to the current working folder, where
+                            common data files and folders are found.
+  --isolated                Do not load vanilla Minecraft resources (e.g.,
+                            textures, ground blocks) from the web
+  --offline                 Same as --isolated. Useful in CI where the network
+                            is unreliable; some checks (e.g. latest version) may
+                            still use the network.
+  -d, --debug               Add debug logging, options, and even more
+                            experimental commands.
+  --verbose                 Show verbose log messages.
+  -q, --quiet               Suppress non-essential output. Only show errors and
+                            final results.
+
+  -h, --help                Show help for the command.
+
+EXAMPLES
+  # Render one block to a PNG
+  $ mct render vanilla block oak_stairs oak_stairs.png
+
+  # Render several mobs into a folder
+  $ mct render vanilla mob pig,cow,sheep ./renders
+
+  # Preview biome-inspired sunset lighting
+  $ mct render vanilla mob pig pig.png --environment plains --time-of-day sunset
+
+LEARN MORE
+  Bones requires geometry-backed entities or attachables; vanilla blocks reject
+  this appearance.
+  Use `mct help` to see all commands.
+  Read the documentation at
+  https://learn.microsoft.com/minecraft/creator/documents/mctoolsoverview
+
+stderr: (empty)
+
+files under <work>: (none)
+
+files under <data-dir>: (none)
+
+network requests: (none)

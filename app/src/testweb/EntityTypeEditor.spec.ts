@@ -1030,6 +1030,74 @@ test.describe("Entity Type Editor - Deep Tab Interaction @full", () => {
     await expect(addStateButton).toBeInViewport({ ratio: 1 });
   });
 
+  // Issue #142: a state could be added with one click but never removed, so
+  // creators edited the JSON by hand. Remove state asks first, then drops the
+  // selected state and goes back to the default state.
+  test("Remove state asks first and then drops the selected state", async ({ page }, testInfo) => {
+    testInfo.setTimeout(90000);
+    const projectCreated = await createFullAddOnProject(page);
+
+    if (!projectCreated) {
+      test.skip();
+      return;
+    }
+
+    const entitySelected = await selectEntityType(page, "biceson");
+    if (!entitySelected) {
+      test.skip();
+      return;
+    }
+
+    await clickEditorTab(page, "Components");
+    await page.waitForTimeout(1500);
+
+    const groupsPanel = page.locator(".ete-groupsPanel").first();
+    const panelContent = groupsPanel.locator(".editor-panel-content").first();
+    const addStateButton = groupsPanel.locator(".ete-addStateRow button").first();
+    const removeStateButton = groupsPanel.locator(".ete-addStateRow .ete-removeStateBtn").first();
+    await expect(addStateButton).toBeVisible({ timeout: 5000 });
+    await expect(removeStateButton).toBeVisible();
+
+    const groupList = page.locator('[aria-label="List of components"]').first();
+    const before = await groupList.locator('[role="button"]').count();
+
+    // Adding a state selects it, which is what Remove state acts on.
+    await addStateButton.click();
+    await page.waitForTimeout(300);
+    expect(await groupList.locator('[role="button"]').count()).toBe(before + 1);
+    await expect(removeStateButton).toBeEnabled();
+
+    await removeStateButton.click();
+    const dialog = page.locator(".ete-removeDialog");
+    await expect(dialog).toBeVisible({ timeout: 5000 });
+
+    // Cancel keeps the state.
+    await dialog.getByRole("button", { name: "Cancel" }).click();
+    await expect(dialog).toBeHidden({ timeout: 5000 });
+    expect(await groupList.locator('[role="button"]').count()).toBe(before + 1);
+
+    await removeStateButton.click();
+    await expect(dialog).toBeVisible({ timeout: 5000 });
+    await dialog.locator(".ete-removeConfirmBtn").click();
+    await expect(dialog).toBeHidden({ timeout: 5000 });
+
+    await page.screenshot({
+      path: "debugoutput/screenshots/entity-deep-components-remove-state.png",
+      fullPage: true,
+    });
+
+    const after = await groupList.locator('[role="button"]').count();
+    console.log(`Component groups: ${before} -> ${before + 1} -> ${after}`);
+    expect(after).toBe(before);
+
+    // The default state is selected again, so there is nothing left to remove.
+    await expect(removeStateButton).toBeDisabled();
+
+    // Both buttons share the row without pushing the panel into a sideways scroll.
+    const overflowsX = await panelContent.evaluate((el) => el.scrollWidth > el.clientWidth);
+    expect(overflowsX).toBe(false);
+  });
+
   test("should expand and display individual component form editor", async ({ page }, testInfo) => {
     testInfo.setTimeout(60000);
     const projectCreated = await createFullAddOnProject(page);

@@ -258,7 +258,7 @@ export const minecraftScriptModules: {
   {
     id: "@minecraft/server",
     module_name: "@minecraft/server",
-    preferredVersion: ScriptModuleInfoProvider.getLatestVersion("server", true) || "1.17.0-beta",
+    preferredVersion: ScriptModuleInfoProvider.getLatestVersion("server", true) || "2.12.0-beta",
   },
   {
     id: "@minecraft/server-gametest",
@@ -268,7 +268,7 @@ export const minecraftScriptModules: {
   {
     id: "@minecraft/server-ui",
     module_name: "@minecraft/server-ui",
-    preferredVersion: ScriptModuleInfoProvider.getLatestVersion("server-ui", true) || "1.5.0-beta",
+    preferredVersion: ScriptModuleInfoProvider.getLatestVersion("server-ui", true) || "2.4.0-beta",
   },
   {
     id: "@minecraft/server-admin",
@@ -412,6 +412,12 @@ export default class Project {
   private _onInflated = new EventDispatcher<Project, Project>();
   private _onSaved = new EventDispatcher<Project, Project>();
   private _onNeedsSaveChanged = new EventDispatcher<Project, Project>();
+
+  /** Work awaited at the start of every save, before any item is written; see `addSaveParticipant`. */
+  #saveParticipants: (() => Promise<void> | void)[] = [];
+  /** Set while the participants run, so a save a participant triggers does not run them again. */
+  #isRunningSaveParticipants = false;
+
   private _onItemChanged = new EventDispatcher<Project, ProjectItem>();
   private _onItemContentChanged = new EventDispatcher<Project, IProjectItemContentUpdateEvent>();
   private _onItemAdded = new EventDispatcher<Project, ProjectItem>();
@@ -802,6 +808,35 @@ export default class Project {
 
   public get onSaved() {
     return this._onSaved.asEvent();
+  }
+
+  /**
+   * Registers work to run first on every save of this project, whichever
+   * path asks for the save: the Save button, creating a variant, a settings
+   * change, an import. The project editor registers its active editor's
+   * persist here, so a definition edited in memory reaches its file before
+   * the items are written instead of only on the paths that remember to
+   * persist it first. Registering the same participant twice is a no-op.
+   *
+   * The contract for a participant: it runs inside the save, so it must not
+   * save the project (a nested save skips the participants) or reload the
+   * package; it must be idempotent, since most call sites still persist the
+   * active editor themselves before saving; and one that throws is logged
+   * and skipped rather than stopping the save, so a broken editor cannot
+   * make the whole project unsaveable.
+   */
+  addSaveParticipant(participant: () => Promise<void> | void) {
+    if (!this.#saveParticipants.includes(participant)) {
+      this.#saveParticipants.push(participant);
+    }
+  }
+
+  removeSaveParticipant(participant: () => Promise<void> | void) {
+    const index = this.#saveParticipants.indexOf(participant);
+
+    if (index >= 0) {
+      this.#saveParticipants.splice(index, 1);
+    }
   }
 
   public get onNeedsSaveChanged() {
@@ -1578,32 +1613,6 @@ export default class Project {
       this.#data.description = newDescription;
 
       this._onPropertyChanged.dispatch(this, "description");
-    }
-  }
-
-  public async applyDescription(newTitle: string) {
-    this.title = newTitle;
-
-    if (this.editPreference === ProjectEditPreference.summarized && this.defaultBehaviorPackUniqueId) {
-      for (const projectItem of this.items) {
-        const itemFile = projectItem.primaryFile;
-
-        if (itemFile && projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
-          const manifestJson = await BehaviorManifestDefinition.ensureOnFile(itemFile);
-
-          if (
-            manifestJson &&
-            manifestJson.definition &&
-            Utilities.uuidEqual(manifestJson.definition.header.uuid, this.defaultBehaviorPackUniqueId)
-          ) {
-            const header = manifestJson.ensureHeader(this.title, this.description);
-
-            header.name = newTitle;
-
-            await manifestJson.save();
-          }
-        }
-      }
     }
   }
 
@@ -3809,6 +3818,22 @@ export default class Project {
           ? `Can't save project '${this.name}': ${this.#readOnlyReason}`
           : "Attempting to save project in read-only mode."
       );
+    }
+
+    if (!this.#isRunningSaveParticipants) {
+      this.#isRunningSaveParticipants = true;
+
+      try {
+        for (const participant of this.#saveParticipants.slice()) {
+          try {
+            await participant();
+          } catch (e) {
+            Log.error("A save participant of project '" + this.name + "' failed; saving without it: " + e);
+          }
+        }
+      } finally {
+        this.#isRunningSaveParticipants = false;
+      }
     }
 
     await this.ensureProjectFolder();

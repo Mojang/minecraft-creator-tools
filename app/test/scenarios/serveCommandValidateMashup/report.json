@@ -50,7 +50,7 @@
     "completedWorldDataProcessing": true,
     "contentFileCounts": 80,
     "contentFolderCounts": 37,
-    "contentSize": 2269539,
+    "contentSize": 2269215,
     "defaultBehaviorPackDescription": "Adds a set of mobs you can use in your worlds - (pack.description)",
     "defaultBehaviorPackMinEngineVersion": "1.20.0",
     "defaultBehaviorPackName": "Add-on Pack More Mobs Resources - (pack.name)",
@@ -123,7 +123,7 @@
     "entityTypeManifestCount": 3,
     "entityTypeResourceCount": 6,
     "errorCount": 2,
-    "errorSummary": "ERROR: [CHKMANIF134] (/Content/resource_packs/aop_mobmwrp/manifest.json) Packs that support PBR must have a minimum min_engine_version of at least 1.21.120: 1.21.100\nERROR: [TEXTUREIMAGE462] Content seems like a mashup pack, but the resource pack does not override >60% of vanilla textures.: 0.001959247648902821",
+    "errorSummary": "ERROR: [CHKMANIF134] (/Content/resource_packs/aop_mobmwrp/manifest.json) Packs that support PBR must have a minimum min_engine_version of at least 1.21.120: 1.21.100\nERROR: [TEXTUREIMAGE462] Content seems like a mashup pack, but the resource pack does not override >60% of vanilla textures.: 0.001903311762466692",
     "experimentalFlagIsOrWasTrue": 0,
     "featureSets": {
       "animation.lines": {
@@ -696,11 +696,11 @@
         "total": 2
       },
       "javaScriptMap.size": {
-        "average": 4804,
+        "average": 4642,
         "instanceCount": 2,
-        "max": 6145,
-        "min": 3462,
-        "total": 9607
+        "max": 5933,
+        "min": 3350,
+        "total": 9283
       },
       "languageCatalog.lines": {
         "average": 2,
@@ -1319,7 +1319,7 @@
       },
       "textureImages.vanillaGameTextureCoverage": {
         "overrideCount": 5,
-        "percent": 0.001959247648902821
+        "percent": 0.001903311762466692
       },
       "textureImages.vanillaOverrideHeight": {
         "average": 16,
@@ -1600,6 +1600,7 @@
         "total": 310
       }
     },
+    "fileCount": 96,
     "fileCounts": 96,
     "folderCounts": 44,
     "internalProcessingErrorCount": 0,
@@ -1659,7 +1660,7 @@
     "missingResourcePackDependencies": 0,
     "missingWorldPackReferencesFile": 0,
     "multipleSoundsManifests": 0,
-    "overallSize": 9407360,
+    "overallSize": 9407036,
     "packReferencesNotFound": 0,
     "partialVanillaCopy": 0,
     "particleEmitterTypeComponents": [
@@ -1825,7 +1826,7 @@
           "recommendations": 3
         },
         "296": {
-          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version",
+          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the expected version (1.26.60) or its previous minor version",
           "recommendations": 6
         },
         "619": {
@@ -2220,12 +2221,12 @@
           "title": "Min Engine Version"
         },
         "120": {
-          "defaultMessage": "Behavior pack manifest (1.20.0) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version",
+          "defaultMessage": "Behavior pack manifest (1.20.0) has a lower minor version number compared to the expected version (1.26.60) or its previous minor version",
           "recommendations": 1,
           "title": "BP Minor Low"
         },
         "220": {
-          "defaultMessage": "Resource pack manifest (1.20.0) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version",
+          "defaultMessage": "Resource pack manifest (1.20.0) has a lower minor version number compared to the expected version (1.26.60) or its previous minor version",
           "recommendations": 1,
           "title": "RP Minor Low"
         },
@@ -2306,6 +2307,15 @@
         "245": {
           "defaultMessage": "Entity Geometry",
           "title": "Subpack Tiers"
+        }
+      },
+      "PACKFILECOUNT": {
+        "1": {
+          "defaultMessage": "Pack File Count completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "defaultMessage": "File Count"
         }
       },
       "PACKMETADATA": {
@@ -2649,12 +2659,12 @@
     "testFailCount": 2,
     "testFailSummary": "TESTFAIL: [CHKMANIF000] Found 1 error in Manifest Validation check\nTESTFAIL: [TEXTUREIMAGE000] Found 1 error in Texture Image Validation check",
     "testNotApplicableCount": 11,
-    "testSuccessCount": 40,
+    "testSuccessCount": 41,
     "textureCount": 14,
     "textureTexelSize": 2654208,
     "unknownJsonCount": 0,
     "vanillaGameTextureCount": 5,
-    "vanillaGameTextureCoverage": 0.001959247648902821,
+    "vanillaGameTextureCoverage": 0.001903311762466692,
     "warningCount": 17,
     "warningSummary": "WARNING: [JSON192] (/Content/resource_packs/aop_mobmwrp/textures/item_texture.json) Structure issue: In \"texture_data.elixir.textures\": textures/items/elixir - string value found, but a array is required\nWARNING: [JSON192] (/Content/resource_packs/aop_mobmwrp/textures/item_texture.json) Structure issue: In \"texture_data.hard_biscuit.textures\": textures/items/hard_biscuit - string value found, but a array is required\nWARNING: [JSON192] (/Content/resource_packs/aop_mobmwrp/textures/item_texture.json) Structure issue: In \"texture_data.key.textures\": textures/items/key - string value found, but a array is required\nWARNING: [JSON192] (/Content/resource_packs/aop_mobmwrp/textures/item_texture.json) Structure issue: In \"texture_data.pear.textures\": textures/items/pear - string value found, but a array is required\nWARNING: [JSON192] (/Content/resource_packs/aop_mobmwrp/textures/item_texture.json) Structure issue: In \"texture_data.rod.textures\": textures/items/rod - string value found, but a array is required\nWARNING: [JSONF110] (/Content/resource_packs/aop_mobmwrp/models/entity/nardolphle.geometry.json) At geometry.aop_mobs.nardolphle.visible_bounds_offset, data does not match expected type. Data '0,0.75,0' is of type number array, which does not match type 'Array of strings'.\nWARNING: [JSONF110] (/Content/world_templates/aop_mobwt/behavior_packs/aop_mobwbp/entities/nardolphle.behavior.json) At minecraft:entity.component_groups.minecraft:pregnant.minecraft:behavior.go_home.on_home, data does not match expected type. Data '{\"event\":\"minecraft:go_lay_egg\",\"target\":\"self\"}' is an object, which does not match type 'Array of objects'.\nWARNING: [JSONF110] (/Content/world_templates/aop_mobwt/behavior_packs/aop_mobwbp/entities/sheepomelon.behavior.json) At minecraft:entity.components.minecraft:behavior.eat_block.success_chance, data does not match any one of the expected types: Data 'query.is_baby ? 0.02 : 0.001' is of type string, which does not match type 'Keyed set of strings'.Data 'query.is_baby ? 0.02 : 0.001' is of type string, which does not match type 'Named set of objects'.Data 'query.is_baby ? 0.02 : 0.001' is of type string, which does not match type 'Decimal number'.\nWARNING: [JSONF110] (/Content/world_templates/aop_mobwt/resource_packs/aop_mobwrp/models/entity/nardolphle.geometry.json) At geometry.aop_mobw.nardolphle.visible_bounds_offset, data does not match expected type. Data '0,0.75,0' is of type number array, which does not match type 'Array of strings'.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobmwrp/textures/aop/moremobs/a_biceson_1024hd.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobmwrp/textures/aop/moremobs/b_nardolphle_1024hd.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobmwrp/textures/aop/moremobs/c_sheepomelon_1024hd.png) Texture does not have any items in this pack that are using this.\nWARNING: [UNLINK399] (/Content/resource_packs/aop_mobmwrp/textures/item_texture.json) Link to texture is not found in this pack: /Content/resource_packs/aop_mobmwrp/textures/item_texture.json to `textures/items/elixir`\nWARNING: [UNLINK399] (/Content/resource_packs/aop_mobmwrp/textures/item_texture.json) Link to texture is not found in this pack: /Content/resource_packs/aop_mobmwrp/textures/item_texture.json to `textures/items/hard_biscuit`\nWARNING: [UNLINK399] (/Content/resource_packs/aop_mobmwrp/textures/item_texture.json) Link to texture is not found in this pack: /Content/resource_packs/aop_mobmwrp/textures/item_texture.json to `textures/items/key`",
     "worldCount": 1,
@@ -2930,7 +2940,7 @@
       "gId": "FORMATVER",
       "gIx": 296,
       "iTp": 6,
-      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version",
+      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the expected version (1.26.60) or its previous minor version",
       "p": "/Content/resource_packs/aop_mobmwrp/entity/sheepomelon.entity.json"
     },
     {
@@ -2949,7 +2959,7 @@
       "gId": "FORMATVER",
       "gIx": 296,
       "iTp": 6,
-      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version",
+      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the expected version (1.26.60) or its previous minor version",
       "p": "/Content/world_templates/aop_mobwt/resource_packs/aop_mobwrp/entity/sheepomelon.entity.json"
     },
     {
@@ -4376,11 +4386,11 @@
           "total": 2
         },
         "size": {
-          "average": 4804,
+          "average": 4642,
           "instanceCount": 2,
-          "max": 6145,
-          "min": 3462,
-          "total": 9607
+          "max": 5933,
+          "min": 3350,
+          "total": 9283
         }
       },
       "gId": "LINESIZE",
@@ -4599,6 +4609,17 @@
       "iTp": 7
     },
     {
+      "gId": "PACKFILECOUNT",
+      "gIx": 1,
+      "iTp": 1
+    },
+    {
+      "d": 96,
+      "gId": "PACKFILECOUNT",
+      "gIx": 101,
+      "iTp": 7
+    },
+    {
       "gId": "PACKMETADATA",
       "gIx": 1,
       "iTp": 1
@@ -4609,7 +4630,7 @@
       "iTp": 1
     },
     {
-      "d": 9407360,
+      "d": 9407036,
       "gId": "PACKSIZE",
       "gIx": 101,
       "iTp": 7
@@ -4627,7 +4648,7 @@
       "iTp": 7
     },
     {
-      "d": 2269539,
+      "d": 2269215,
       "gId": "PACKSIZE",
       "gIx": 104,
       "iTp": 7
@@ -5031,7 +5052,7 @@
         },
         "vanillaGameTextureCoverage": {
           "overrideCount": 5,
-          "percent": 0.001959247648902821
+          "percent": 0.001903311762466692
         },
         "vanillaOverrideHeight": {
           "average": 16,
@@ -5287,7 +5308,7 @@
       "iTp": 7
     },
     {
-      "d": 0.001959247648902821,
+      "d": 0.001903311762466692,
       "gId": "TEXTUREIMAGE",
       "gIx": 462,
       "iTp": 3

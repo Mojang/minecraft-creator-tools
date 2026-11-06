@@ -83,6 +83,7 @@ describe("renderStructureCommandCannon", async () => {
     const process = spawn("node", [
       "./toolbuild/jsn/cli/index.mjs",
       "renderstructure",
+      "--no-gpu",
       "cannon.mcstructure",
       "./test/results/renderStructureCommandCannon/cannon.png",
       "-i",
@@ -172,6 +173,7 @@ describe("renderStructureCommandDoubleExtender", () => {
     const process = spawn("node", [
       "./toolbuild/jsn/cli/index.mjs",
       "renderstructure",
+      "--no-gpu",
       "double_extender.mcstructure",
       "./test/results/renderStructureCommandDoubleExtender/double_extender.png",
       "-i",
@@ -250,6 +252,7 @@ describe("renderStructureCommandRepeaterClock", () => {
     const process = spawn("node", [
       "./toolbuild/jsn/cli/index.mjs",
       "renderstructure",
+      "--no-gpu",
       "repeater_clock.mcstructure",
       "./test/results/renderStructureCommandRepeaterClock/repeater_clock.png",
       "-i",

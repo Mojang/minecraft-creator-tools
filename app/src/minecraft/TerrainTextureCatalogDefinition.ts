@@ -9,7 +9,6 @@ import { ITerrainTextureCatalog, ITerrainTextureDataItem } from "./ITerrainTextu
 import Project, { FolderContext } from "../app/Project";
 import ProjectItem from "../app/ProjectItem";
 import { ProjectItemType } from "../app/IProjectItemData";
-import Utilities from "../core/Utilities";
 import Database from "./Database";
 import IDefinition from "./IDefinition";
 
@@ -311,26 +310,20 @@ export default class TerrainTextureCatalogDefinition implements IDefinition {
 
     let texturePathList = this.getTexturePathList();
 
-    for (const candItem of textureItems) {
-      if (packRootFolder && texturePathList) {
-        if (!candItem.isContentLoaded) {
-          await candItem.loadContent();
-        }
+    if (packRootFolder && texturePathList) {
+      // texturePathList is lowercased, so compare case-insensitively
+      const resolved = await StorageUtilities.resolvePackPathCandidates(
+        textureItems,
+        packRootFolder,
+        texturePathList,
+        (file) => StorageUtilities.getBaseRelativePath(file, packRootFolder)?.toLowerCase()
+      );
 
-        if (candItem.primaryFile) {
-          let relativePath = StorageUtilities.getBaseRelativePath(candItem.primaryFile, packRootFolder);
-
-          if (relativePath) {
-            // texturePathList is lowercased, so we need to compare case-insensitively
-            const relativePathLower = relativePath.toLowerCase();
-            if (texturePathList && texturePathList.includes(relativePathLower)) {
-              item.addChildItem(candItem);
-
-              texturePathList = Utilities.removeItemInArray(relativePathLower, texturePathList);
-            }
-          }
-        }
+      for (const candItem of resolved.matches) {
+        item.addChildItem(candItem);
       }
+
+      texturePathList = resolved.unmatched;
     }
 
     if (texturePathList) {

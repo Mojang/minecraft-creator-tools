@@ -15,6 +15,7 @@ import {
   DependenciesDefault,
   SetupRequiredDependencies,
   PackageJsonDefault,
+  OverridesDefault,
   pinVersion,
   pinDependencies,
 } from "../devproject/NpmPackageDefinition";
@@ -265,6 +266,129 @@ describe("ensureStandardContent-pinning", () => {
           }
         }
       }
+    }
+  });
+});
+
+describe("package-overrides", () => {
+  const editorOverride = { "@minecraft/server": "$@minecraft/server" };
+  const stubProject = { name: "override-test", description: "Override test", versionAsString: "1.0.0" } as any;
+
+  it("ensureMinContent on a new package.json emits the server-editor override", async function () {
+    this.timeout(10000);
+
+    const zipStorage = new ZipStorage();
+    const file = zipStorage.rootFolder.ensureFile("package.json");
+
+    const npmPkg = await NpmPackageDefinition.ensureOnFile(file);
+    expect(npmPkg).to.not.be.undefined;
+
+    if (npmPkg) {
+      await npmPkg.ensureMinContent(stubProject);
+
+      const def = npmPkg.definition as any;
+      expect(def.dependencies["@minecraft/server-editor"]).to.equal(DependenciesDefault["@minecraft/server-editor"]);
+      expect(def.overrides).to.deep.equal(OverridesDefault);
+      expect(def.overrides["@minecraft/server-editor"]).to.deep.equal(editorOverride);
+      expect(def.name).to.equal("override-test");
+
+      // the shared defaults must not be mutated by per-project edits
+      expect(PackageJsonDefault.name).to.equal("my-project");
+      expect(def.overrides).to.not.equal(OverridesDefault);
+    }
+  });
+
+  it("ensureStandardContent adds the missing override without changing other metadata", async function () {
+    this.timeout(10000);
+
+    const zipStorage = new ZipStorage();
+    const file = zipStorage.rootFolder.ensureFile("package.json");
+    file.setContent(
+      JSON.stringify({
+        name: "existing-project",
+        version: "2.3.4",
+        description: "Existing project",
+        private: true,
+        dependencies: {
+          "@minecraft/server": "2.10.0",
+          "@minecraft/server-editor": "0.1.0-beta.1.26.50-stable",
+        },
+      })
+    );
+    await file.saveContent();
+
+    const npmPkg = await NpmPackageDefinition.ensureOnFile(file);
+    expect(npmPkg).to.not.be.undefined;
+
+    if (npmPkg) {
+      await npmPkg.ensureStandardContent();
+
+      const def = npmPkg.definition as any;
+      expect(def.overrides).to.deep.equal({ "@minecraft/server-editor": editorOverride });
+      expect(def.name).to.equal("existing-project");
+      expect(def.version).to.equal("2.3.4");
+      expect(def.description).to.equal("Existing project");
+      expect(def.private).to.equal(true);
+      expect(def.dependencies).to.deep.equal({
+        "@minecraft/server": "2.10.0",
+        "@minecraft/server-editor": "0.1.0-beta.1.26.50-stable",
+      });
+    }
+  });
+
+  it("ensureStandardContent keeps existing known overrides when adding a missing one", async function () {
+    this.timeout(10000);
+
+    const zipStorage = new ZipStorage();
+    const file = zipStorage.rootFolder.ensureFile("package.json");
+    file.setContent(
+      JSON.stringify({
+        name: "existing-project",
+        version: "1.0.0",
+        dependencies: {
+          "@minecraft/math": "2.4.0",
+          "@minecraft/server": "2.10.0",
+          "@minecraft/server-editor": "0.1.0-beta.1.26.50-stable",
+        },
+        overrides: {
+          "@minecraft/math": { "@minecraft/server": "$@minecraft/server" },
+        },
+      })
+    );
+    await file.saveContent();
+
+    const npmPkg = await NpmPackageDefinition.ensureOnFile(file);
+
+    if (npmPkg) {
+      await npmPkg.ensureStandardContent();
+
+      const def = npmPkg.definition as any;
+      expect(def.overrides).to.deep.equal({
+        "@minecraft/math": { "@minecraft/server": "$@minecraft/server" },
+        "@minecraft/server-editor": editorOverride,
+      });
+    }
+  });
+
+  it("does not add overrides when @minecraft/server is not a root dependency", async function () {
+    this.timeout(10000);
+
+    const zipStorage = new ZipStorage();
+    const file = zipStorage.rootFolder.ensureFile("package.json");
+    file.setContent(
+      JSON.stringify({
+        name: "math-only",
+        version: "1.0.0",
+        dependencies: { "@minecraft/math": "2.4.0" },
+      })
+    );
+    await file.saveContent();
+
+    const npmPkg = await NpmPackageDefinition.ensureOnFile(file);
+
+    if (npmPkg) {
+      await npmPkg.ensureStandardContent();
+      expect((npmPkg.definition as any).overrides).to.be.undefined;
     }
   });
 });

@@ -352,7 +352,8 @@ export default class NbtBinary implements IErrorable {
           stringLength = DataUtilities.getUnsignedShort(data[i++], data[i++], littleEndian);
         }
 
-        const view = new DataView(data.buffer);
+        // Respect byteOffset: Node Buffers are often views into a shared pool.
+        const view = new DataView(data.buffer, data.byteOffset, data.byteLength);
         let str: string | undefined;
 
         if (stringsAreASCII) {

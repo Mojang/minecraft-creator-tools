@@ -39,8 +39,8 @@ FEATUREAGGREGATION: [ENTITYTYPE053] Entity Type Identifier
 FEATUREAGGREGATION: [ENTITYTYPE054] Entity Type Metadata
 RECOMMENDATION: [ENTITYTYPE120] (/behavior_packs/test_bp/entities/old_entity.json) Behavior pack entity type format version (1.16.0) has a lower minor version number compared to the current version or the previous current minor version
 UNKNOWN: [EXPFLAG002] No applicable items found for test Experimental Flags (EXPFLAG)
-RECOMMENDATION: [FORMATVER116] (/behavior_packs/test_bp/blocks/old_block.json) Block type version (1.16.0) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version
-RECOMMENDATION: [FORMATVER136] (/behavior_packs/test_bp/items/old_item.json) Item type version (1.16.0) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version
+RECOMMENDATION: [FORMATVER116] (/behavior_packs/test_bp/blocks/old_block.json) Block type version (1.16.0) has a lower minor version number compared to the expected version (1.26.60) or its previous minor version
+RECOMMENDATION: [FORMATVER136] (/behavior_packs/test_bp/items/old_item.json) Item type version (1.16.0) has a lower minor version number compared to the expected version (1.26.60) or its previous minor version
 WARNING: [FORMATVER258] (/behavior_packs/test_bp/spawn_rules/old_entity.json) Spawn rules version (1.16.0) has a higher minor version number compared to the expected version (1.12.0)
 INFO: [FORMATVER621] (/behavior_packs/test_bp/blocks/old_block.json) Block type format_version: 1,16,0
 INFO: [FORMATVER623] (/behavior_packs/test_bp/items/old_item.json) Item type format_version: 1,16,0
@@ -77,9 +77,9 @@ FEATUREAGGREGATION: [LINESIZE144] Spawn rule file lines
 FEATUREAGGREGATION: [LINESIZE209] Behavior pack folder file lines
 FEATUREAGGREGATION: [LINESIZE210] Resource pack folder file lines
 UNKNOWN: [MCFUNCTION002] No applicable items found for test MC Function Validation (MCFUNCTION)
-RECOMMENDATION: [MINENGINEVER120] (/behavior_pack/manifest.json) Behavior pack manifest (1.12.0) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version
-RECOMMENDATION: [MINENGINEVER120] (/behavior_packs/test_bp/manifest.json) Behavior pack manifest (1.19.0) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version
-RECOMMENDATION: [MINENGINEVER220] (/resource_packs/test_rp/manifest.json) Resource pack manifest (1.19.0) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version
+RECOMMENDATION: [MINENGINEVER120] (/behavior_pack/manifest.json) Behavior pack manifest (1.12.0) has a lower minor version number compared to the expected version (1.26.60) or its previous minor version
+RECOMMENDATION: [MINENGINEVER120] (/behavior_packs/test_bp/manifest.json) Behavior pack manifest (1.19.0) has a lower minor version number compared to the expected version (1.26.60) or its previous minor version
+RECOMMENDATION: [MINENGINEVER220] (/resource_packs/test_rp/manifest.json) Resource pack manifest (1.19.0) has a lower minor version number compared to the expected version (1.26.60) or its previous minor version
 INFO: [MINENGINEVER605] (/behavior_pack/manifest.json) Behavior pack manifest min_engine_version: 1,12,0
 INFO: [MINENGINEVER605] (/behavior_packs/test_bp/manifest.json) Behavior pack manifest min_engine_version: 1,19,0
 INFO: [MINENGINEVER614] (/resource_packs/test_rp/manifest.json) Resource pack manifest format_version: 1,19,0

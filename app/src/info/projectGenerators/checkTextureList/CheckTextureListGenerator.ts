@@ -6,8 +6,10 @@ import { ProjectItemType } from "../../../app/IProjectItemData";
 import { InfoItemType } from "../../IInfoItemData";
 import IProjectInfoGenerator from "../../IProjectInfoGenerator";
 import Project from "../../../app/Project";
+import Pack from "../../../minecraft/Pack";
 import ContentIndex from "../../../core/ContentIndex";
 import ProjectItemUtilities from "../../../app/ProjectItemUtilities";
+import ProjectItem from "../../../app/ProjectItem";
 import TextureDefinition from "../../../minecraft/TextureDefinition";
 import StorageUtilities from "../../../storage/StorageUtilities";
 import { CheckTextureListGeneratorTest, TextureListValidationRules } from "./CheckTextureListData";
@@ -52,6 +54,44 @@ export default class CheckTextureListGenerator implements IProjectInfoGenerator,
     return TextureDefinition.canonicalizeTexturePath(forwardSlashed) ?? forwardSlashed.toLowerCase();
   }
 
+  /**
+   * Finds the pack a texture belongs to and its path within that pack. A texture that exists only
+   * in subpacks has no default file, so its pack and path come from a variant file, with the
+   * `subpacks/<name>/` prefix removed (the path it overrides in the pack). Items rebuilt from saved
+   * project data can name files that were since deleted, so only available files (see
+   * StorageUtilities.isFileAvailable) give a location.
+   */
+  static async getTextureLocation(
+    project: Project,
+    projectItem: ProjectItem
+  ): Promise<{ pack: Pack; path: string } | undefined> {
+    const pack = await projectItem.getPack();
+    const packRelativePath = pack ? await projectItem.getPackRelativePath() : undefined;
+    const defaultFile = projectItem.defaultFile;
+
+    if (pack && packRelativePath && (!defaultFile || (await StorageUtilities.isFileAvailable(defaultFile)))) {
+      return { pack, path: packRelativePath };
+    }
+
+    await project.ensurePacks();
+
+    for (const file of await projectItem.ensureAllFiles()) {
+      if (!(await StorageUtilities.isFileAvailable(file))) {
+        continue;
+      }
+
+      for (const candidatePack of project.packs) {
+        const path = StorageUtilities.getBaseRelativePath(file, candidatePack.folder);
+
+        if (path && file.getFolderRelativePath(candidatePack.folder) !== undefined) {
+          return { pack: candidatePack, path };
+        }
+      }
+    }
+
+    return undefined;
+  }
+
   async generate(project: Project, _contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
 
@@ -62,12 +102,27 @@ export default class CheckTextureListGenerator implements IProjectInfoGenerator,
       return items;
     }
 
-    // Collect every texture path referenced across all texture_list.json files.
-    const referencedPaths = new Set<string>();
+    // texture_list.json only describes the pack it ships in, so entries are tracked per pack
+    // and only textures in a pack that has a texture_list.json are checked. Without this,
+    // a list in one resource pack flags every image in other packs (including skin packs).
+    const referencedPathsByPack = new Map<Pack, Set<string>>();
 
     for (const textureListItem of textureListItems) {
       if (!textureListItem.isContentLoaded) {
         await textureListItem.loadContent();
+      }
+
+      const pack = await textureListItem.getPack();
+
+      if (!pack) {
+        continue;
+      }
+
+      let packPaths = referencedPathsByPack.get(pack);
+
+      if (!packPaths) {
+        packPaths = new Set<string>();
+        referencedPathsByPack.set(pack, packPaths);
       }
 
       const json = await textureListItem.getJsonObject();
@@ -75,7 +130,7 @@ export default class CheckTextureListGenerator implements IProjectInfoGenerator,
       if (Array.isArray(json)) {
         for (const entry of json) {
           if (typeof entry === "string") {
-            referencedPaths.add(CheckTextureListGenerator.normalizeTexturePath(entry));
+            packPaths.add(CheckTextureListGenerator.normalizeTexturePath(entry));
           }
         }
       }
@@ -84,25 +139,34 @@ export default class CheckTextureListGenerator implements IProjectInfoGenerator,
     const textureItems = project.getItemsByType(ProjectItemType.texture);
 
     // Paths of images that belong to a texture_set.json — these must NOT appear in texture_list.json.
-    const textureSetImagePaths = new Set<string>();
+    const textureSetImagePathsByPack = new Map<Pack, Set<string>>();
 
     for (const projectItem of textureItems) {
       if (!projectItem.isContentLoaded) {
         await projectItem.loadContent();
       }
 
-      const packRelativePath = await projectItem.getPackRelativePath();
+      const location = await CheckTextureListGenerator.getTextureLocation(project, projectItem);
+      const pack = location?.pack;
+      const referencedPaths = pack ? referencedPathsByPack.get(pack) : undefined;
 
-      if (!packRelativePath) {
+      if (!location || !pack || !referencedPaths) {
         continue;
       }
 
-      const normalizedPath = CheckTextureListGenerator.normalizeTexturePath(packRelativePath);
+      const normalizedPath = CheckTextureListGenerator.normalizeTexturePath(location.path);
 
       // Images that are part of a texture_set.json are tracked for rule #3 below and are
       // not subject to the "must be listed" rule.
       if (ProjectItemUtilities.isTextureSetTexture(projectItem)) {
-        textureSetImagePaths.add(normalizedPath);
+        let packSetPaths = textureSetImagePathsByPack.get(pack);
+
+        if (!packSetPaths) {
+          packSetPaths = new Set<string>();
+          textureSetImagePathsByPack.set(pack, packSetPaths);
+        }
+
+        packSetPaths.add(normalizedPath);
         continue;
       }
 
@@ -128,8 +192,18 @@ export default class CheckTextureListGenerator implements IProjectInfoGenerator,
     }
 
     // Rule #3: images that belong to a texture_set.json must not be referenced in texture_list.json.
-    for (const referencedPath of referencedPaths) {
-      if (textureSetImagePaths.has(referencedPath)) {
+    for (const [pack, referencedPaths] of referencedPathsByPack) {
+      const textureSetImagePaths = textureSetImagePathsByPack.get(pack);
+
+      if (!textureSetImagePaths) {
+        continue;
+      }
+
+      for (const referencedPath of referencedPaths) {
+        if (!textureSetImagePaths.has(referencedPath)) {
+          continue;
+        }
+
         items.push(
           new ProjectInfoItem(
             InfoItemType.error,

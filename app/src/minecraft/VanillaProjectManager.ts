@@ -8,6 +8,7 @@ import AttachableResourceDefinition from "./AttachableResourceDefinition";
 import ModelGeometryDefinition from "./ModelGeometryDefinition";
 import { IGeometry, IGeometryBone } from "./IModelGeometry";
 import Log from "../core/Log";
+import StorageUtilities from "../storage/StorageUtilities";
 import { applyGeometryTransforms } from "./VanillaGeometryTransforms";
 import CreatorToolsHost from "../app/CreatorToolsHost";
 import RenderControllerSetDefinition from "./RenderControllerSetDefinition";
@@ -20,6 +21,8 @@ export interface IVanillaEntityModelData {
   texturePath?: string;
   textureUrl?: string;
   geometry?: IGeometry;
+  /** Exact geometry selected from the file, retained before rendering corrections. */
+  authoredGeometry?: IGeometry;
   textureData?: Uint8Array;
   modelDefinition?: ModelGeometryDefinition;
   /** Optional tint color for entities with colored overlays (e.g., sheep wool). RGBA 0-1 range. */
@@ -149,7 +152,10 @@ export default class VanillaProjectManager {
     };
 
     // Try render controller-based resolution first
-    let rcResolved: { geometryId?: string; textureLayers: { texturePath: string; tintColor?: { r: number; g: number; b: number; a: number } }[] } | null = null;
+    let rcResolved: {
+      geometryId?: string;
+      textureLayers: { texturePath: string; tintColor?: { r: number; g: number; b: number; a: number } }[];
+    } | null = null;
     try {
       rcResolved = await this._resolveViaRenderController(shortId, entityResource);
     } catch {
@@ -186,8 +192,8 @@ export default class VanillaProjectManager {
     const defaultMaterial = materials?.["default"];
 
     const opaqueMaterials = new Set([
-      "enderman",  // Head texture has alpha=0 pixels that should render as opaque black
-      "sheep",     // Wool overlay texture has near-zero alpha body pixels
+      "enderman", // Head texture has alpha=0 pixels that should render as opaque black
+      "sheep", // Wool overlay texture has near-zero alpha body pixels
     ]);
 
     if (defaultMaterial && opaqueMaterials.has(defaultMaterial)) {
@@ -208,6 +214,7 @@ export default class VanillaProjectManager {
       if (geometry) {
         // Apply VanillaGeometryTransforms to correct for Minecraft's hardcoded renderer quirks
         // (e.g., cow and sheep body bone rotation corrections)
+        modelData.authoredGeometry = geometry.geometry;
         modelData.geometry = applyGeometryTransforms(geometry.geometry, geometryId);
         modelData.modelDefinition = geometry.definition;
       } else {
@@ -248,7 +255,10 @@ export default class VanillaProjectManager {
   private static async _resolveViaRenderController(
     shortId: string,
     entityResource: EntityTypeResourceDefinition
-  ): Promise<{ geometryId?: string; textureLayers: { texturePath: string; tintColor?: { r: number; g: number; b: number; a: number } }[] } | null> {
+  ): Promise<{
+    geometryId?: string;
+    textureLayers: { texturePath: string; tintColor?: { r: number; g: number; b: number; a: number } }[];
+  } | null> {
     try {
       const rcIds = entityResource.renderControllerIdList;
       if (!rcIds || rcIds.length === 0) return null;
@@ -885,6 +895,43 @@ export default class VanillaProjectManager {
     return this.terrainTextureCatalog;
   }
 
+  /**
+   * Some preview drops ship sparse texture maps that list only the entries new to that preview.
+   * Fill in the remaining vanilla entries from the release pack; preview entries win for shared keys.
+   */
+  private static async addMissingReleaseTextureEntries(
+    filePath: string,
+    textureData: { [id: string]: any } | undefined
+  ) {
+    if (!textureData) {
+      return;
+    }
+
+    const releaseFolder = await Database.getReleaseVanillaFolder();
+    const releaseFile = releaseFolder ? await releaseFolder.getFileFromRelativePath(filePath) : undefined;
+
+    if (!releaseFile) {
+      return;
+    }
+
+    if (!releaseFile.isContentLoaded) {
+      await releaseFile.loadContent();
+    }
+
+    const releaseData = (StorageUtilities.getJsonObject(releaseFile) as { texture_data?: { [id: string]: any } })
+      ?.texture_data;
+
+    if (!releaseData) {
+      return;
+    }
+
+    for (const key in releaseData) {
+      if (textureData[key] === undefined) {
+        textureData[key] = releaseData[key];
+      }
+    }
+  }
+
   static async getTerrainTexturesCatalog() {
     if (!VanillaProjectManager.terrainTextureCatalog) {
       const file = await Database.getPreviewVanillaFile("/resource_pack/textures/terrain_texture.json");
@@ -894,6 +941,10 @@ export default class VanillaProjectManager {
         terrainCat.file = file;
 
         await terrainCat.load();
+        await VanillaProjectManager.addMissingReleaseTextureEntries(
+          "/resource_pack/textures/terrain_texture.json",
+          terrainCat.textureData
+        );
 
         VanillaProjectManager.terrainTextureCatalog = terrainCat;
       }
@@ -911,6 +962,10 @@ export default class VanillaProjectManager {
         itemCat.file = file;
 
         await itemCat.load();
+        await VanillaProjectManager.addMissingReleaseTextureEntries(
+          "/resource_pack/textures/item_texture.json",
+          itemCat.textureData
+        );
 
         VanillaProjectManager.itemTextureCatalog = itemCat;
       }

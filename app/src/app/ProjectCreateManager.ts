@@ -7,6 +7,7 @@ import BlockTypeDefinition from "../minecraft/BlockTypeDefinition";
 import Database from "../minecraft/Database";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import MinecraftDefinitions from "../minecraft/MinecraftDefinitions";
+import MinecraftUtilities from "../minecraft/MinecraftUtilities";
 import ModelDesignUtilities from "../minecraft/ModelDesignUtilities";
 import HttpStorage from "../storage/HttpStorage";
 import IFile from "../storage/IFile";
@@ -22,6 +23,12 @@ import ProjectItemUtilities from "./ProjectItemUtilities";
 import { NewEntityTypeAddMode } from "./ProjectUtilities";
 
 export const STANDARD_NAME_TOKEN = "_name_";
+
+/** The behavior and resource packs that a gallery template's files are copied from. */
+export interface IGalleryTemplateSourcePacks {
+  behaviorPack: IFolder;
+  resourcePack: IFolder;
+}
 
 // Pack-wide catalog files. A gallery item ships its own copy of these, but they belong to the whole
 // resource pack rather than to the thing being added, so copying one over the top of the project's
@@ -565,9 +572,6 @@ export default class ProjectCreateManager {
       return newTypeName;
     }
 
-    let sourceBpFolder = undefined;
-    let sourceRpFolder = undefined;
-
     // Project-local source: filePaths are project-relative, read from project's own folders.
     // Rebuild the file list fresh from the relationship graph since it may have been
     // stale when the gallery item was constructed (processRelations uses setTimeout batching
@@ -584,95 +588,21 @@ export default class ProjectCreateManager {
         messagerUpdater,
         dontOverwriteExistingFiles
       );
-    } else if (galleryProject.gitHubRepoName === "bedrock-samples") {
-      sourceBpFolder = await Database.getReleaseVanillaBehaviorPackFolder();
-      sourceRpFolder = await Database.getReleaseVanillaResourcePackFolder();
-    } else {
-      // Map GitHub repo names to local folder names. When samples are downloaded
-      // during preparedevenv, the zip's root folder is renamed via the
-      // "replaceFirstFolderWith" field in reslist/*.resources.json. The local
-      // folder name doesn't match the "{repoName}-{branch}" pattern that GitHub
-      // uses, so we need an explicit mapping here.
-      const repoFolderMap: Record<string, string> = {
-        "minecraft-samples": "samples",
-        "minecraft-gametests": "gametests",
-        "minecraft-scripting-samples": "script-samples",
-      };
-
-      const repoFolder =
-        repoFolderMap[galleryProject.gitHubRepoName] ||
-        galleryProject.gitHubRepoName + "-" + (galleryProject.gitHubBranch ? galleryProject.gitHubBranch : "main");
-
-      const relativePath =
-        "res/samples/" +
-        Utilities.ensureEndsWithSlash(galleryProject.gitHubOwner) +
-        Utilities.ensureEndsWithSlash(repoFolder) +
-        (galleryProject.gitHubFolder ? Utilities.ensureNotStartsWithSlash(galleryProject.gitHubFolder) : "");
-
-      let rootFolder: IFolder | undefined;
-
-      // Prefer local storage (CLI/Electron) over HTTP to avoid 404s on static hosts
-      // that don't serve directory indexes.
-      if (Database.local) {
-        const storage = Database.local.createStorage(relativePath);
-        if (storage) {
-          const candidateFolder = storage.rootFolder;
-          await candidateFolder.load();
-
-          // Only use local storage if it actually contains the expected content;
-          // otherwise fall back to HTTP.
-          if (candidateFolder.folders["behavior_packs"] && candidateFolder.folders["resource_packs"]) {
-            rootFolder = candidateFolder;
-          }
-        }
-      }
-
-      if (!rootFolder) {
-        const url = Utilities.ensureEndsWithSlash(CreatorToolsHost.getVanillaContentRoot()) + relativePath;
-        const gh = HttpStorage.get(url);
-        rootFolder = gh.rootFolder;
-      }
-
-      if (!rootFolder.isLoaded) {
-        await rootFolder.load();
-      }
-
-      const bps = rootFolder.folders["behavior_packs"];
-      const rps = rootFolder.folders["resource_packs"];
-
-      if (!bps || !rps) {
-        Log.unexpectedUndefined("AETFLT");
-        return newTypeName;
-      }
-
-      if (!rps.isLoaded) {
-        await rps.load();
-      }
-
-      if (!bps.isLoaded) {
-        await bps.load();
-      }
-
-      if (rps.folderCount < 1 || bps.folderCount < 1) {
-        Log.unexpectedUndefined("AETFLY");
-        return newTypeName;
-      }
-
-      sourceBpFolder = bps.getFolderByIndex(0);
-      sourceRpFolder = rps.getFolderByIndex(0);
     }
+
+    const sourceFolders = await ProjectCreateManager._getGallerySourcePackFolders(galleryProject);
+
+    if (!sourceFolders) {
+      return newTypeName;
+    }
+
+    const sourceBpFolder = sourceFolders.behaviorPack;
+    const sourceRpFolder = sourceFolders.resourcePack;
 
     const targetBpFolder = await project.ensureDefaultBehaviorPackFolder();
     const targetRpFolder = await project.ensureDefaultResourcePackFolder();
 
-    if (
-      !sourceBpFolder ||
-      !sourceRpFolder ||
-      !sourceBpFolder ||
-      !sourceRpFolder ||
-      !targetBpFolder ||
-      !targetRpFolder
-    ) {
+    if (!targetBpFolder || !targetRpFolder) {
       Log.unexpectedUndefined("AETVA");
       return newTypeName;
     }
@@ -682,19 +612,11 @@ export default class ProjectCreateManager {
 
     for (const filePath of files) {
       if (filePath.startsWith("/behavior_pack")) {
-        let subPath = undefined;
+        const subPath = ProjectCreateManager._getPackRelativePath(filePath);
 
-        if (filePath.startsWith("/behavior_pack/")) {
-          subPath = filePath.substring(14);
-        } else {
-          const nextSlash = filePath.indexOf("/", 16);
-
-          if (nextSlash < 0) {
-            Log.unexpectedUndefined("AETVB");
-            return newTypeName;
-          }
-
-          subPath = filePath.substring(nextSlash);
+        if (subPath === undefined) {
+          Log.unexpectedUndefined("AETVB");
+          return newTypeName;
         }
 
         const targetPath = ProjectCreateManager.replaceNamesInPath(subPath, project, galleryProject, newTypeName);
@@ -732,6 +654,10 @@ export default class ProjectCreateManager {
               );
             }
 
+            if (typeof content === "string" && ProjectCreateManager.isClientEntityPath(targetPath)) {
+              content = ProjectCreateManager.fixupCopiedClientEntity(sourceFile.content as string, content);
+            }
+
             if (content !== null) {
               if (messagerUpdater) {
                 messagerUpdater("Updating '" + targetFile.fullPath + "'");
@@ -742,26 +668,16 @@ export default class ProjectCreateManager {
           }
         }
       } else if (filePath.startsWith("/resource_pack")) {
-        let subPath = undefined;
+        let subPath = ProjectCreateManager._getPackRelativePath(filePath);
 
-        if (filePath.startsWith("/resource_pack/")) {
-          subPath = filePath.substring(14);
-        } else {
-          const nextSlash = filePath.indexOf("/", 16);
-
-          if (nextSlash < 0) {
-            Log.unexpectedUndefined("AETVC");
-            return newTypeName;
-          }
-
-          subPath = filePath.substring(nextSlash);
+        if (subPath === undefined) {
+          Log.unexpectedUndefined("AETVC");
+          return newTypeName;
         }
 
         const targetPath = ProjectCreateManager.replaceNamesInPath(subPath, project, galleryProject, newTypeName);
 
-        if (subPath.indexOf("cow.v2.render_controllers") >= 0) {
-          subPath = subPath.replace("cow.v2.render_controllers", "cow.v2.render_controllres"); // misspelling in source
-        }
+        subPath = ProjectCreateManager._getSourceResourcePackPath(subPath);
 
         const sourceFile = await sourceRpFolder.getFileFromRelativePath(subPath);
 
@@ -796,6 +712,10 @@ export default class ProjectCreateManager {
               );
             }
 
+            if (typeof content === "string" && ProjectCreateManager.isClientEntityPath(targetPath)) {
+              content = ProjectCreateManager.fixupCopiedClientEntity(sourceFile.content as string, content);
+            }
+
             if (content !== null) {
               if (messagerUpdater) {
                 messagerUpdater("Updating '" + targetFile.fullPath + "'");
@@ -809,6 +729,249 @@ export default class ProjectCreateManager {
     }
 
     return newTypeName;
+  }
+
+  /**
+   * Whether the files a gallery template copies into a project can be loaded, checked without changing
+   * any project. Entity, block, and item templates copy files from Minecraft's vanilla packs or from a
+   * sample, which are downloaded unless they're stored locally: the CLI stores the samples, but not the
+   * vanilla packs. Copying logs a file it can't download instead of throwing, so without a network it
+   * adds nothing or only part of the template, and add checks this first to fail instead. Templates
+   * that don't copy pack files, such as loot tables, return true.
+   *
+   * Copying skips a listed file that its pack doesn't have (some templates list files that the current
+   * vanilla packs dropped), so this does too. But every listed file it finds must load, each pack the
+   * list names must have at least one of them, and a listed file it doesn't find mustn't be in an empty
+   * folder, which is what a folder whose download failed looks like. So a pack, a folder, or a file that
+   * can't be downloaded fails. The loaded files stay cached, so the copy that follows doesn't download
+   * them again.
+   *
+   * @param sourcePacks The packs to load from. Defaults to the template's own (see _getGallerySourcePackFolders).
+   */
+  static async canLoadGalleryTemplateFiles(
+    galleryProject: IGalleryItem,
+    sourcePacks?: IGalleryTemplateSourcePacks
+  ): Promise<boolean> {
+    const copiesPackFiles =
+      galleryProject.type === GalleryItemType.entityType ||
+      galleryProject.type === GalleryItemType.blockType ||
+      galleryProject.type === GalleryItemType.itemType;
+
+    if (!copiesPackFiles || galleryProject.isProjectItem) {
+      return true;
+    }
+
+    const packs = sourcePacks ?? (await ProjectCreateManager._getGallerySourcePackFolders(galleryProject));
+
+    if (!packs || !galleryProject.fileList) {
+      return false;
+    }
+
+    // For each pack the list names, whether any of its listed files was found.
+    const packHasFile = new Map<IFolder, boolean>();
+
+    for (const filePath of galleryProject.fileList) {
+      const source = ProjectCreateManager._getGallerySourcePath(filePath);
+
+      if (source) {
+        const pack = source.isBehaviorPack ? packs.behaviorPack : packs.resourcePack;
+        const sourceFile = await pack.getFileFromRelativePath(source.path);
+
+        if (sourceFile) {
+          if (!sourceFile.isContentLoaded) {
+            await sourceFile.loadContent();
+          }
+
+          if (sourceFile.content === null) {
+            return false;
+          }
+        } else if (ProjectCreateManager._isInEmptyFolder(pack, source.path)) {
+          return false;
+        }
+
+        packHasFile.set(pack, packHasFile.get(pack) === true || sourceFile !== undefined);
+      }
+    }
+
+    return packHasFile.size > 0 && Array.from(packHasFile.values()).every((hasFile) => hasFile);
+  }
+
+  /** What to tell the user when canLoadGalleryTemplateFiles finds that a template's files can't be loaded. */
+  static getGalleryTemplateUnavailableMessage(galleryProject: IGalleryItem) {
+    return `Couldn't download the '${galleryProject.title}' template. Check your internet connection.`;
+  }
+
+  /**
+   * Finds the behavior and resource packs a gallery template's files are copied from: Minecraft's
+   * vanilla packs for templates from bedrock-samples, and otherwise the first packs in the template's
+   * sample. Returns undefined when they can't be found.
+   */
+  private static async _getGallerySourcePackFolders(
+    galleryProject: IGalleryItem
+  ): Promise<IGalleryTemplateSourcePacks | undefined> {
+    if (galleryProject.gitHubRepoName === "bedrock-samples") {
+      const behaviorPack = await Database.getReleaseVanillaBehaviorPackFolder();
+      const resourcePack = await Database.getReleaseVanillaResourcePackFolder();
+
+      if (!behaviorPack || !resourcePack) {
+        Log.unexpectedUndefined("AETVA");
+        return undefined;
+      }
+
+      return { behaviorPack, resourcePack };
+    }
+
+    // Map GitHub repo names to local folder names. When samples are downloaded
+    // during preparedevenv, the zip's root folder is renamed via the
+    // "replaceFirstFolderWith" field in reslist/*.resources.json. The local
+    // folder name doesn't match the "{repoName}-{branch}" pattern that GitHub
+    // uses, so we need an explicit mapping here.
+    const repoFolderMap: Record<string, string> = {
+      "minecraft-samples": "samples",
+      "minecraft-gametests": "gametests",
+      "minecraft-scripting-samples": "script-samples",
+    };
+
+    const repoFolder =
+      repoFolderMap[galleryProject.gitHubRepoName] ||
+      galleryProject.gitHubRepoName + "-" + (galleryProject.gitHubBranch ? galleryProject.gitHubBranch : "main");
+
+    const relativePath =
+      "res/samples/" +
+      Utilities.ensureEndsWithSlash(galleryProject.gitHubOwner) +
+      Utilities.ensureEndsWithSlash(repoFolder) +
+      (galleryProject.gitHubFolder ? Utilities.ensureNotStartsWithSlash(galleryProject.gitHubFolder) : "");
+
+    let rootFolder: IFolder | undefined;
+
+    // Prefer local storage (CLI/Electron) over HTTP to avoid 404s on static hosts
+    // that don't serve directory indexes.
+    if (Database.local) {
+      const storage = Database.local.createStorage(relativePath);
+      if (storage) {
+        const candidateFolder = storage.rootFolder;
+        await candidateFolder.load();
+
+        // Only use local storage if it actually contains the expected content;
+        // otherwise fall back to HTTP.
+        if (candidateFolder.folders["behavior_packs"] && candidateFolder.folders["resource_packs"]) {
+          rootFolder = candidateFolder;
+        }
+      }
+    }
+
+    if (!rootFolder) {
+      const url = Utilities.ensureEndsWithSlash(CreatorToolsHost.getVanillaContentRoot()) + relativePath;
+      const gh = HttpStorage.get(url);
+      rootFolder = gh.rootFolder;
+    }
+
+    if (!rootFolder.isLoaded) {
+      await rootFolder.load();
+    }
+
+    const bps = rootFolder.folders["behavior_packs"];
+    const rps = rootFolder.folders["resource_packs"];
+
+    if (!bps || !rps) {
+      Log.unexpectedUndefined("AETFLT");
+      return undefined;
+    }
+
+    if (!rps.isLoaded) {
+      await rps.load();
+    }
+
+    if (!bps.isLoaded) {
+      await bps.load();
+    }
+
+    if (rps.folderCount < 1 || bps.folderCount < 1) {
+      Log.unexpectedUndefined("AETFLY");
+      return undefined;
+    }
+
+    const behaviorPack = bps.getFolderByIndex(0);
+    const resourcePack = rps.getFolderByIndex(0);
+
+    if (!behaviorPack || !resourcePack) {
+      Log.unexpectedUndefined("AETVA");
+      return undefined;
+    }
+
+    return { behaviorPack, resourcePack };
+  }
+
+  /**
+   * The path inside its pack of a file in a gallery template's file list, which starts with the pack's
+   * folder: /behavior_pack/entities/allay.json in the vanilla packs is /entities/allay.json, and
+   * /resource_packs/starter_blocks/blocks.json in a sample is /blocks.json. Returns undefined when
+   * nothing follows the pack's folder.
+   */
+  private static _getPackRelativePath(filePath: string): string | undefined {
+    // "/behavior_pack" and "/resource_pack" are both 14 characters long.
+    if (filePath.charAt(14) === "/") {
+      return filePath.substring(14);
+    }
+
+    const nextSlash = filePath.indexOf("/", 16);
+
+    return nextSlash < 0 ? undefined : filePath.substring(nextSlash);
+  }
+
+  /**
+   * Which source pack a file in a gallery template's file list is in, and the path to look it up at
+   * there, as copyGalleryPackFilesAndFixupIds looks it up. Returns undefined for a path in neither pack.
+   */
+  private static _getGallerySourcePath(filePath: string): { isBehaviorPack: boolean; path: string } | undefined {
+    const isBehaviorPack = filePath.startsWith("/behavior_pack");
+
+    if (!isBehaviorPack && !filePath.startsWith("/resource_pack")) {
+      return undefined;
+    }
+
+    const subPath = ProjectCreateManager._getPackRelativePath(filePath);
+
+    if (subPath === undefined) {
+      return undefined;
+    }
+
+    return {
+      isBehaviorPack,
+      path: isBehaviorPack ? subPath : ProjectCreateManager._getSourceResourcePackPath(subPath),
+    };
+  }
+
+  /** The vanilla resource pack misspells one file name, so a resource pack file is looked up under that name. */
+  private static _getSourceResourcePackPath(subPath: string) {
+    return subPath.replace("cow.v2.render_controllers", "cow.v2.render_controllres");
+  }
+
+  /**
+   * Whether a folder on the way to a file in a pack, starting with the pack itself, is loaded but empty.
+   * Folders in the vanilla packs and the samples aren't empty, but a folder whose download failed is:
+   * HttpFolder logs the failure and marks the folder loaded with nothing in it. Call it after looking
+   * the file up, which loads the folders on its way.
+   */
+  private static _isInEmptyFolder(pack: IFolder, path: string): boolean {
+    const isLoadedAndEmpty = (folder: IFolder) => folder.isLoaded && folder.fileCount === 0 && folder.folderCount === 0;
+    let folder = pack;
+
+    for (const folderName of path.split("/").slice(1, -1)) {
+      if (isLoadedAndEmpty(folder)) {
+        return true;
+      }
+
+      const childFolder = folder.folders[StorageUtilities.canonicalizeName(folderName)];
+
+      if (!childFolder) {
+        return false;
+      }
+
+      folder = childFolder;
+    }
+
+    return isLoadedAndEmpty(folder);
   }
 
   /**
@@ -1071,6 +1234,10 @@ export default class ProjectCreateManager {
           );
         }
 
+        if (typeof content === "string" && ProjectCreateManager.isClientEntityPath(targetPath)) {
+          content = ProjectCreateManager.fixupCopiedClientEntity(sourceFile.content as string, content);
+        }
+
         if (content !== null) {
           if (messagerUpdater) {
             messagerUpdater("Updating '" + targetFile.fullPath + "'");
@@ -1082,6 +1249,130 @@ export default class ProjectCreateManager {
     }
 
     return newTypeName;
+  }
+
+  /** Whether a pack-relative path is a client entity definition, which fixupCopiedClientEntity post-processes. */
+  static isClientEntityPath(path: string) {
+    return path.toLowerCase().endsWith(".entity.json");
+  }
+
+  /**
+   * Repairs the two things that renaming a copied client entity breaks.
+   *
+   * Material names refer to the game's material definitions (materials/entity.material), not to the
+   * mob, so they have to survive renaming untouched. replaceNamesInContent only shields the first lines
+   * of the materials block, so a mob named like its material ("cow", "creeper") can end up referencing
+   * a material that does not exist and renders invisible. The materials are restored from the source.
+   *
+   * Format 1.10.0+ client entities animate through the animations map and scripts.animate; the
+   * pre-1.10.0 animation_controllers list that some vanilla entities still carry next to the map is
+   * reported as invalid by the game. Entries the map does not already cover are moved into it (and
+   * into scripts.animate) and the list is dropped.
+   *
+   * Returns the content unchanged when either side does not parse as a client entity.
+   */
+  static fixupCopiedClientEntity(sourceContent: string, content: string): string {
+    let source: any;
+    let target: any;
+
+    try {
+      source = JSON.parse(Utilities.fixJsonContent(sourceContent));
+      target = JSON.parse(Utilities.fixJsonContent(content));
+    } catch (e) {
+      return content;
+    }
+
+    const sourceDescription = source?.["minecraft:client_entity"]?.description;
+    const description = target?.["minecraft:client_entity"]?.description;
+
+    if (
+      !sourceDescription ||
+      typeof sourceDescription !== "object" ||
+      !description ||
+      typeof description !== "object"
+    ) {
+      return content;
+    }
+
+    let changed = false;
+
+    if (
+      sourceDescription.materials &&
+      typeof sourceDescription.materials === "object" &&
+      JSON.stringify(description.materials) !== JSON.stringify(sourceDescription.materials)
+    ) {
+      description.materials = sourceDescription.materials;
+      changed = true;
+    }
+
+    const formatVersion = MinecraftUtilities.getVersionArrayFrom(target.format_version);
+    const usesAnimationsMap =
+      formatVersion !== undefined && (formatVersion[0] > 1 || (formatVersion[0] === 1 && formatVersion[1] >= 10));
+
+    if (usesAnimationsMap && Array.isArray(description.animation_controllers)) {
+      if (!description.animations || typeof description.animations !== "object") {
+        description.animations = {};
+      }
+
+      if (!description.scripts || typeof description.scripts !== "object") {
+        description.scripts = {};
+      }
+
+      if (!Array.isArray(description.scripts.animate)) {
+        description.scripts.animate = [];
+      }
+
+      const coveredControllers = new Set<string>(
+        Object.values(description.animations).filter((id): id is string => typeof id === "string")
+      );
+
+      for (const entry of description.animation_controllers) {
+        if (!entry || typeof entry !== "object") {
+          continue;
+        }
+
+        for (const key in entry) {
+          const controllerId = entry[key];
+
+          if (typeof controllerId !== "string" || coveredControllers.has(controllerId)) {
+            continue;
+          }
+
+          const animationKey = ProjectCreateManager.unusedAnimationAlias(description.animations, key);
+
+          description.animations[animationKey] = controllerId;
+          description.scripts.animate.push(animationKey);
+          coveredControllers.add(controllerId);
+        }
+      }
+
+      delete description.animation_controllers;
+      changed = true;
+    }
+
+    if (!changed) {
+      return content;
+    }
+
+    return JSON.stringify(target, null, 2);
+  }
+
+  /**
+   * The first of `key`, `key_controller`, `key_controller2`, ... that the animations map does not already
+   * use, so a migrated legacy entry never overwrites a mapping that scripts.animate already relies on.
+   */
+  private static unusedAnimationAlias(animations: { [alias: string]: unknown }, key: string): string {
+    if (animations[key] === undefined) {
+      return key;
+    }
+
+    let alias = key + "_controller";
+
+    for (let suffix = 2; animations[alias] !== undefined; suffix++) {
+      alias = key + "_controller" + suffix;
+    }
+
+    return alias;
   }
 
   static replaceNamesInPath(path: string, project: Project, galleryProject: IGalleryItem, newName: string) {

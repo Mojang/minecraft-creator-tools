@@ -328,6 +328,7 @@ class StructureEditor extends Component<IStructureEditorProps, IStructureEditorS
             const block = this.state.blockCube.x(update.location.x).y(update.location.y).z(update.location.z);
 
             block.typeName = update.newTypeId;
+            this.state.structure?.clearVoidAt(update.location.x, update.location.y, update.location.z);
           }
         }
         break;
@@ -544,7 +545,9 @@ class StructureEditor extends Component<IStructureEditorProps, IStructureEditorS
               displayEmpty
               onChange={this._handleEntitySelect}
               renderValue={(value) => (value ? value : entitySummary)}
-              SelectDisplayProps={{ "aria-label": this.props.intl.formatMessage({ id: "project_editor.struct_ed.select_entity_aria" }) }}
+              SelectDisplayProps={{
+                "aria-label": this.props.intl.formatMessage({ id: "project_editor.struct_ed.select_entity_aria" }),
+              }}
             >
               {entityTitles.map((item: string) => (
                 <MenuItem key={item} value={item}>

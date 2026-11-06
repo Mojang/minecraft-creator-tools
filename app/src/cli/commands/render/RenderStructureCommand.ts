@@ -9,6 +9,12 @@ import ProjectItem from "../../../app/ProjectItem";
 import * as fs from "fs";
 import * as path from "path";
 import LocalUtilities from "../../../local/LocalUtilities";
+import { configureRenderGpuOptions, getRenderGpuOptions } from "./RenderGpuOptions";
+import {
+  configureRenderPresentationOptions,
+  getRenderPresentationOptions,
+  renderDimension,
+} from "./RenderPresentationOptions";
 
 const MIN_RENDER_PORT = 6500;
 const MAX_RENDER_PORT = 6999;
@@ -20,7 +26,7 @@ function getRandomRenderPort(): number {
 /**
  * Renders a .mcstructure file to a PNG image using the structure viewer.
  *
- * Usage: mct renderstructure <structureName> [outputPath] -i <projectPath> [--isolated]
+ * Usage: mct render structure <structureName> [outputPath] -i <projectPath> [--isolated]
  *
  * ARCHITECTURE:
  * - structureName (context.mode): The name of the .mcstructure file to find within the project
@@ -33,7 +39,8 @@ function getRandomRenderPort(): number {
 export class RenderStructureCommand extends CommandBase implements ICommand {
   public readonly metadata: ICommandMetadata = {
     name: "renderstructure",
-    description: "Render a .mcstructure file to a PNG image",
+    route: ["render", "structure"],
+    description: "Render a structure from your project to an image.",
     taskType: TaskType.renderStructure,
     aliases: ["renstruct", "renderst"],
     requiresProjects: true,
@@ -42,6 +49,14 @@ export class RenderStructureCommand extends CommandBase implements ICommand {
     isLongRunning: false,
     category: "Render",
     globalOptionGroups: ["input", "projects"],
+    examples: [
+      { command: 'mct render structure tower.mcstructure tower.png -i "./My Addon"' },
+      { command: 'mct render structure tower.mcstructure tower.png -i "./My Addon" --no-gpu' },
+      { command: 'mct render structure tower.mcstructure study.png -i "./My Addon" --appearance clay --all-views' },
+    ],
+    learnMore: [
+      "Structures support textured, clay, and wireframe; Bones and skeleton overlays require model geometry.",
+    ],
     arguments: [
       {
         name: "structureName",
@@ -59,12 +74,18 @@ export class RenderStructureCommand extends CommandBase implements ICommand {
   };
 
   public configure(cmd: Commander): void {
+    configureRenderGpuOptions(cmd);
+    configureRenderPresentationOptions(cmd, false);
     // Add command-specific options (the command itself is created by CommandRegistry)
     cmd.option("--isolated", "Use isolated mode (skip vanilla resources)");
   }
 
   public async execute(context: ICommandContext): Promise<void> {
     const { creatorTools, localEnv, log } = context;
+    const presentation = getRenderPresentationOptions(context, false);
+    if (!presentation) return;
+    const width = renderDimension(context.commandOptions?.width ?? 1024, "--width");
+    const height = renderDimension(context.commandOptions?.height ?? 1024, "--height");
 
     if (!creatorTools || !localEnv) {
       log.error("Not properly configured for rendering.");
@@ -79,7 +100,7 @@ export class RenderStructureCommand extends CommandBase implements ICommand {
 
     if (!structurePath) {
       log.error(
-        "No structure path specified. Usage: mct renderstructure <structurePath> [outputPath] -i <projectPath>"
+        "No structure path specified. Usage: mct render structure <structurePath> [outputPath] -i <projectPath>"
       );
       context.setExitCode(ErrorCodes.INIT_ERROR);
       return;
@@ -193,79 +214,82 @@ export class RenderStructureCommand extends CommandBase implements ICommand {
     const sm = new ServerManager(localEnv, creatorTools);
     sm.features = ServerManagerFeatures.all;
 
-    const httpServer = sm.ensureHttpServer();
-
-    // Register the structure as temporary content
-    httpServer.registerTempContent("/temp/structure.mcstructure", structureData, "application/octet-stream");
-
-    // Wait for server to be listening before navigating the browser
-    await httpServer.waitForReady(30000);
-
+    const httpServer = await sm.ensureHttpServer();
     const baseUrl = `http://localhost:${port}`;
+    const renderer = new PlaywrightPageRenderer(baseUrl, getRenderGpuOptions(context.commandOptions));
 
-    Log.verbose(`Server started at ${baseUrl}`);
+    try {
+      // Register the structure as temporary content
+      httpServer.registerTempContent("/temp/structure.mcstructure", structureData, "application/octet-stream");
 
-    // Initialize the headless renderer
-    const renderer = new PlaywrightPageRenderer(baseUrl);
-    const initialized = await renderer.initialize();
+      // Wait for server to be listening before navigating the browser
+      await httpServer.waitForReady(30000);
 
-    if (!initialized) {
-      log.error(
-        "Could not initialize headless renderer. Ensure Chrome/Edge is available or run: npx playwright install chromium"
-      );
-      context.setExitCode(ErrorCodes.INIT_ERROR);
-      return;
-    }
+      Log.verbose(`Server started at ${baseUrl}`);
 
-    Log.verbose(`Using browser: ${renderer.getBrowserInfo()}`);
-    Log.verbose(`Rendering structure...`);
+      // Initialize the headless renderer
+      const initialized = await renderer.initialize();
 
-    // Use the structureViewer mode with structure URL and hideChrome for clean screenshots
-    let structureViewerUrl = `/?mode=structureviewer&structure=${encodeURIComponent(
-      "/temp/structure.mcstructure"
-    )}&hideChrome=true`;
-
-    // Pass skipVanilla=false to load vanilla resources for block textures
-    if (!isIsolated) {
-      structureViewerUrl += `&skipVanilla=false`;
-      structureViewerUrl += `&contentRoot=${encodeURIComponent("https://mctools.dev/")}`;
-    } else {
-      structureViewerUrl += `&skipVanilla=true`;
-    }
-
-    const result = await renderer.renderModel(structureViewerUrl, {
-      width: 800,
-      height: 600,
-      renderWaitTime: isIsolated ? 15000 : 20000, // Longer wait for vanilla resource loading
-      canvasTimeout: 30000, // Generous timeout for canvas screenshot on CI with SwiftShader
-    });
-
-    await renderer.close();
-
-    // Clean up temporary content and stop the server
-    httpServer.clearTempContent();
-    await httpServer.stop("rendering complete");
-
-    if (result.error) {
-      log.error(`Rendering failed: ${result.error}`);
-      context.setExitCode(ErrorCodes.INIT_ERROR);
-    }
-
-    if (result.imageData) {
-      // Write the image to disk
-      const absoluteOutputPath = path.isAbsolute(outputPath) ? outputPath : path.join(process.cwd(), outputPath);
-
-      // Ensure directory exists
-      const outputDir = path.dirname(absoluteOutputPath);
-      if (!fs.existsSync(outputDir)) {
-        fs.mkdirSync(outputDir, { recursive: true });
+      if (!initialized) {
+        log.error(
+          "Could not initialize headless renderer. Ensure Chrome/Edge is available or run: npx playwright install chromium"
+        );
+        context.setExitCode(ErrorCodes.INIT_ERROR);
+        return;
       }
 
-      fs.writeFileSync(absoluteOutputPath, result.imageData);
-      log.info(`Rendered image saved to: ${absoluteOutputPath}`);
-    } else {
-      log.info("No image data was generated. The structure may not be renderable.");
-      context.setExitCode(ErrorCodes.INIT_ERROR);
+      Log.verbose(`Using browser: ${renderer.getBrowserInfo()}`);
+      Log.verbose(`Rendering structure...`);
+
+      // Use the structureViewer mode with structure URL and hideChrome for clean screenshots
+      let structureViewerUrl = `/?mode=structureviewer&structure=${encodeURIComponent(
+        "/temp/structure.mcstructure"
+      )}&hideChrome=true`;
+
+      // Pass skipVanilla=false to load vanilla resources for block textures
+      if (!isIsolated) {
+        structureViewerUrl += `&skipVanilla=false`;
+        structureViewerUrl += `&contentRoot=${encodeURIComponent("https://mctools.dev/")}`;
+      } else {
+        structureViewerUrl += `&skipVanilla=true`;
+      }
+
+      const result = await renderer.renderModel(structureViewerUrl, {
+        presentation,
+        width,
+        height,
+        renderWaitTime: isIsolated ? 15000 : 20000, // Longer wait for vanilla resource loading
+        canvasTimeout: 30000, // Generous timeout for canvas screenshot on CI with SwiftShader
+      });
+
+      if (result.error) {
+        log.error(`Rendering failed: ${result.error}`);
+        context.setExitCode(ErrorCodes.INIT_ERROR);
+      }
+
+      if (result.imageData) {
+        // Write the image to disk
+        const absoluteOutputPath = path.isAbsolute(outputPath) ? outputPath : path.join(process.cwd(), outputPath);
+
+        // Ensure directory exists
+        const outputDir = path.dirname(absoluteOutputPath);
+        if (!fs.existsSync(outputDir)) {
+          fs.mkdirSync(outputDir, { recursive: true });
+        }
+
+        fs.writeFileSync(absoluteOutputPath, result.imageData);
+        log.info(`Rendered image saved to: ${absoluteOutputPath}`);
+      } else {
+        log.info("No image data was generated. The structure may not be renderable.");
+        context.setExitCode(ErrorCodes.INIT_ERROR);
+      }
+    } finally {
+      try {
+        await renderer.close();
+      } finally {
+        httpServer.clearTempContent();
+        await httpServer.stop("rendering complete");
+      }
     }
   }
 }

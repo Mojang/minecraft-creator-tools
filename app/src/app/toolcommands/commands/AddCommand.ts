@@ -14,13 +14,18 @@
  *    Activated when `--traits` or any wizard flag is provided.
  *    Example: `/add entity my_orc --traits hostile,melee_attacker,humanoid --health 30`
  *
+ * With no project open, add creates an Add-On Starter project to add to. Each mode first
+ * validates its input and generates or finds the content, and only then creates that project,
+ * so an add that fails (an out-of-range --health, an unknown type, or a gallery template whose
+ * files can't be downloaded) leaves no new project behind.
+ *
  * @see ContentGenerator.ts for the procedural generation engine
  * @see ContentWriter.ts for writing generated files to a project
  * @see ContentWizard.tsx for the web UI equivalent
  */
 
 import type { IToolCommandMetadata, IToolCommandResult } from "../IToolCommand";
-import { ToolCommandBase } from "../IToolCommand";
+import { ToolCommandBase, ToolCommandScope } from "../IToolCommand";
 import type { IToolCommandContext } from "../IToolCommandContext";
 import {
   contentTypeProvider,
@@ -32,6 +37,8 @@ import {
   ITEM_TRAITS,
 } from "../AutocompleteProviders";
 import ProjectItemCreateManager from "../../ProjectItemCreateManager";
+import ProjectCreateManager from "../../ProjectCreateManager";
+import ProjectUtilities from "../../ProjectUtilities";
 import { ProjectFocus } from "../../IProjectData";
 import { ProjectItemType } from "../../IProjectItemData";
 import type {
@@ -40,6 +47,8 @@ import type {
   BlockTraitId,
   ItemTraitId,
 } from "../../../minecraft/IContentMetaSchema";
+import type { IGeneratedContent } from "../../../minecraft/ContentGenerator";
+import type IGalleryItem from "../../IGalleryItem";
 
 // ============================================================================
 // CONSTANTS
@@ -319,6 +328,7 @@ export class AddCommand extends ToolCommandBase {
         name: "display-name",
         description: "Display name shown in-game (defaults to formatted version of name)",
         type: "string",
+        freeText: true,
       },
       {
         name: "namespace",
@@ -382,6 +392,15 @@ export class AddCommand extends ToolCommandBase {
       },
     ],
     isWriteCommand: true,
+    // Every scope, including the opt-in serverApi, where HttpServer requires the Minecraft EULA and
+    // refuses path-like names.
+    scopes: [
+      ToolCommandScope.ui,
+      ToolCommandScope.mcp,
+      ToolCommandScope.serveTerminal,
+      ToolCommandScope.cli,
+      ToolCommandScope.serverApi,
+    ],
     examples: [
       "/add entity my_mob",
       "/add entity my_orc --traits hostile,melee_attacker,humanoid --health 30 --damage 5",
@@ -412,6 +431,16 @@ export class AddCommand extends ToolCommandBase {
     }
 
     const creatorTools = context.creatorTools;
+
+    // Work out what to add before creating anything, so a request that fails, such as one with an
+    // out-of-range --health or an unknown type, doesn't leave a new starter project behind.
+    const prepared = shouldUseWizardMode(typeOrTemplate, traits, flags)
+      ? await this._generateWizardContent(typeOrTemplate, name, traits, flags)
+      : await this._findGalleryItem(context, typeOrTemplate, explicitTemplate);
+
+    if ("failure" in prepared) {
+      return prepared.failure;
+    }
 
     // If no project is open, auto-create an addon starter project first
     if (!context.project) {
@@ -466,31 +495,31 @@ export class AddCommand extends ToolCommandBase {
     // ================================================================
     // WIZARD MODE — procedural generation via ContentGenerator
     // ================================================================
-    if (shouldUseWizardMode(typeOrTemplate, traits, flags)) {
-      return this._executeWizardMode(context, typeOrTemplate, name, traits, flags);
+    if ("content" in prepared) {
+      return this._writeWizardContent(context, typeOrTemplate, name, traits, prepared.content);
     }
 
     // ================================================================
     // GALLERY MODE — add from pre-built templates
     // ================================================================
-    return this._executeGalleryMode(context, typeOrTemplate, name, explicitTemplate, flags);
+    return this._addFromGallery(context, typeOrTemplate, name, prepared.galleryItem);
   }
 
   /**
-   * Wizard mode: build an IMinecraftContentDefinition → ContentGenerator → ContentWriter.
+   * Wizard mode, first step: validate the flags, then build an IMinecraftContentDefinition and
+   * generate its content with ContentGenerator. Writes nothing.
    */
-  private async _executeWizardMode(
-    context: IToolCommandContext,
+  private async _generateWizardContent(
     contentType: string,
     name: string,
     traits: string[] | undefined,
     flags: Record<string, WizardFlagValue>
-  ): Promise<IToolCommandResult> {
+  ): Promise<{ content: IGeneratedContent } | { failure: IToolCommandResult }> {
     // Validate inputs
     const validationErrors = validateWizardFlags(contentType, flags);
     if (validationErrors.length > 0) {
       const messages = validationErrors.map((e) => e.message).join("; ");
-      return this.error("VALIDATION_ERROR", messages);
+      return { failure: this.error("VALIDATION_ERROR", messages) };
     }
 
     // Build the content definition
@@ -498,21 +527,42 @@ export class AddCommand extends ToolCommandBase {
 
     // Generate content
     const { ContentGenerator } = await import("../../../minecraft/ContentGenerator");
-    const { ContentWriter } = await import("../../../minecraft/ContentWriter");
 
     const generator = new ContentGenerator(definition);
     const content = await generator.generate();
 
     // Check for generation errors
     if (content.summary.errors.length > 0) {
-      return this.error("GENERATION_ERROR", `Content generation failed: ${content.summary.errors.join("; ")}`);
+      return {
+        failure: this.error("GENERATION_ERROR", `Content generation failed: ${content.summary.errors.join("; ")}`),
+      };
     }
+
+    return { content };
+  }
+
+  /**
+   * Wizard mode, second step: write the generated content to the project with ContentWriter.
+   */
+  private async _writeWizardContent(
+    context: IToolCommandContext,
+    contentType: string,
+    name: string,
+    traits: string[] | undefined,
+    content: IGeneratedContent
+  ): Promise<IToolCommandResult> {
+    const { ContentWriter } = await import("../../../minecraft/ContentWriter");
 
     // Write to project
     await ContentWriter.writeGeneratedContent(context.project!, content);
 
     // Re-infer project items so the new files are tracked
     await context.project!.inferProjectItemsFromFiles(true);
+
+    await ProjectUtilities.ensureGeneratedWith(
+      context.project!,
+      ProjectUtilities.getGeneratedWithToolForScope(context.scope)
+    );
 
     // Report warnings
     for (const warning of content.summary.warnings) {
@@ -544,22 +594,21 @@ export class AddCommand extends ToolCommandBase {
   }
 
   /**
-   * Gallery mode: add from a pre-built gallery template.
+   * Gallery mode, first step: find the pre-built gallery template to add, and check that its files
+   * can be downloaded. Writes nothing.
    */
-  private async _executeGalleryMode(
+  private async _findGalleryItem(
     context: IToolCommandContext,
     typeOrTemplate: string,
-    name: string,
-    explicitTemplate: string | undefined,
-    flags: Record<string, WizardFlagValue>
-  ): Promise<IToolCommandResult> {
+    explicitTemplate: string | undefined
+  ): Promise<{ galleryItem: IGalleryItem } | { failure: IToolCommandResult }> {
     const creatorTools = context.creatorTools!;
 
     // Load gallery
     await creatorTools.loadGallery();
 
     if (!creatorTools.gallery) {
-      return this.error("GALLERY_ERROR", "Could not load project gallery");
+      return { failure: this.error("GALLERY_ERROR", "Could not load project gallery") };
     }
 
     // Try to find as direct gallery item first
@@ -599,16 +648,45 @@ export class AddCommand extends ToolCommandBase {
         .slice(0, 10)
         .map((i) => i.id)
         .join(", ");
-      return this.error(
-        "TYPE_NOT_FOUND",
-        `Unknown type or template '${typeOrTemplate}'. Valid types: ${types}. Example templates: ${templates}...`
-      );
+      return {
+        failure: this.error(
+          "TYPE_NOT_FOUND",
+          `Unknown type or template '${typeOrTemplate}'. Valid types: ${types}. Example templates: ${templates}...`
+        ),
+      };
     }
 
+    // Without a network, copying a downloaded template adds nothing, so fail before anything is written.
+    if (!(await ProjectCreateManager.canLoadGalleryTemplateFiles(galleryItem))) {
+      return {
+        failure: this.error(
+          "TEMPLATE_UNAVAILABLE",
+          ProjectCreateManager.getGalleryTemplateUnavailableMessage(galleryItem)
+        ),
+      };
+    }
+
+    return { galleryItem };
+  }
+
+  /**
+   * Gallery mode, second step: add the gallery template to the project.
+   */
+  private async _addFromGallery(
+    context: IToolCommandContext,
+    typeOrTemplate: string,
+    name: string,
+    galleryItem: IGalleryItem
+  ): Promise<IToolCommandResult> {
     context.output.info(`Adding '${name}' from template '${galleryItem.title}'...`);
 
     try {
       await ProjectItemCreateManager.addFromGallery(context.project!, name, galleryItem);
+
+      await ProjectUtilities.ensureGeneratedWith(
+        context.project!,
+        ProjectUtilities.getGeneratedWithToolForScope(context.scope)
+      );
 
       await context.project!.save();
 

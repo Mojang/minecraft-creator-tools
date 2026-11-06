@@ -62,6 +62,9 @@ export default interface ILocalUtilities {
   /** Reads a JSON file without awaiting, where the host can (Node); absent on hosts that cannot. */
   readJsonFileSync?(path: string): object | null;
 
+  /** Bounded metadata transport, including cancellation of Node proxy handshakes. */
+  getMetadataJson?<T>(url: string): Promise<T>;
+
   /**
    * The checked-in override shipped for a `data/forms/` file (a path such as
    * `entity/minecraft_offspring.form.json`), when the host carries one; see

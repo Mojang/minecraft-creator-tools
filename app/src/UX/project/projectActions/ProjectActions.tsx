@@ -37,6 +37,7 @@ import NewEntityType from "../../editors/entityType/NewEntityType";
 import NewBlockType from "../../editors/blockType/NewBlockType";
 import NewItemType from "../../editors/itemType/NewItemType";
 import { NewEntityTypeAddMode, NewItemTypeAddMode } from "../../../app/ProjectUtilities";
+import { isDirectoryPickerSupported } from "../../utils/DirectoryPicker";
 import IGalleryItem from "../../../app/IGalleryItem";
 import ProjectCreateManager from "../../../app/ProjectCreateManager";
 import ProjectItem from "../../../app/ProjectItem";
@@ -571,7 +572,7 @@ class ProjectActions extends Component<IProjectActionsProps, IProjectActionsStat
             label: intl.formatMessage({ id: "project_editor.actions.save_to_folder" }),
             shortLabel: intl.formatMessage({ id: "project_editor.actions.compact_folder_short" }),
             onClick: this._exportLocal,
-            hidden: typeof window === "undefined" || (window as any).showDirectoryPicker === undefined,
+            hidden: typeof window === "undefined" || !isDirectoryPickerSupported(window),
           },
           {
             key: "flatWorld",
@@ -855,7 +856,7 @@ class ProjectActions extends Component<IProjectActionsProps, IProjectActionsStat
                   </div>
                 </MinecraftButton>
 
-                {window.showDirectoryPicker !== undefined && (
+                {isDirectoryPickerSupported(window) && (
                   <MinecraftButton
                     className="pact-actionCard"
                     key="pact-exportLocalFolder"

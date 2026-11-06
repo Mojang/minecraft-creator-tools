@@ -11,9 +11,20 @@
  * Architecture:
  * - Reads traits from TraitData.ts (shared definitions)
  * - Renders the same Minecraft-style beveled card grid with grouped sections
- * - Detects current traits via TraitDetector.detectEntityTraits() when an
- *   EntityTypeDefinition is provided
- * - Calls onTraitsChanged when the user toggles a trait
+ * - Resolves current traits via resolveEntityTraits() when an
+ *   EntityTypeDefinition is provided: component-based detection with the
+ *   item's tool-only choices (body shape) applied on top
+ * - Calls onTraitsChanged when the user toggles a trait, then re-detects from
+ *   the entity so the cards always show what is really in the JSON (the
+ *   editor applies the toggle synchronously). Showing the optimistic toggle
+ *   result instead let the picker drift from the file: a temperament that
+ *   the entity's own component groups kept re-asserting looked selected
+ *   alongside the one the user just picked, and reverted on the next visit.
+ * - Shows the editor's IEntityTraitChangeReport for the last toggle when it
+ *   touched the mob's own hand-written content (an authored anger timer
+ *   that went when Hostile replaced Neutral, entries put back, entries that
+ *   could not be), so a creator is told what changed rather than finding
+ *   out from a diff.
  *
  * Related files:
  * - TraitData.ts — Shared trait definitions, grouping, toggle logic
@@ -24,15 +35,23 @@
  */
 
 import { Component } from "react";
+import { Alert, AlertTitle } from "@mui/material";
 import "../../home/ContentWizard.css";
 import { EntityTraitId } from "../../../minecraft/IContentMetaSchema";
 import EntityTypeDefinition from "../../../minecraft/EntityTypeDefinition";
-import TraitDetector from "../../../minecraft/TraitDetector";
 import { ITraitDetectionResult } from "../../../minecraft/TraitDetector";
+import {
+  IAuthoredEdit,
+  IEntityTraitChangeReport,
+  IEntityTraitOverrides,
+  resolveEntityTraits,
+  traitChangeTouchedAuthoredContent,
+} from "../../../minecraft/EntityTraitApplier";
 import { renderEntityTraitIcon } from "../../shared/components/icons/TraitIcons";
 import SectionHeading from "../../shared/components/feedback/sectionHeading/SectionHeading";
 import {
   ITraitInfo,
+  ENTITY_TRAITS,
   EXCLUSIVE_GROUP_LABELS,
   EXCLUSIVE_GROUP_ICONS,
   getTraitIconColor,
@@ -51,11 +70,28 @@ interface IEntityTraitPickerProps {
   /** Entity type definition to detect current traits from. */
   entityType?: EntityTypeDefinition;
 
+  /**
+   * Tool-only trait choices kept outside the entity file (the body shape the
+   * creator picked); the project item carries them. Applied on top of
+   * detection so the cards show what the creator chose.
+   */
+  traitOverrides?: IEntityTraitOverrides;
+
   /** Externally managed trait list (e.g., from wizard state). */
   traits?: EntityTraitId[];
 
   /** Called when traits are toggled by the user. */
   onTraitsChanged?: (traits: EntityTraitId[]) => void;
+
+  /**
+   * What the last toggle did to the mob's own content, as returned by
+   * applyEntityTraitChanges. Shown above the cards until dismissed or
+   * replaced by the next toggle.
+   */
+  changeReport?: IEntityTraitChangeReport;
+
+  /** Called when the user closes the change report. */
+  onChangeReportDismissed?: () => void;
 
   /** Theme for styling. */
   theme: IProjectTheme;
@@ -112,18 +148,7 @@ export default class EntityTraitPicker extends Component<IEntityTraitPickerProps
       return;
     }
 
-    const components = et._data.components || {};
-    const componentGroups = et._data.component_groups || {};
-
-    // Build raw component group map for TraitDetector
-    const rawComponentGroups: Record<string, Record<string, any>> = {};
-    for (const [groupName, groupData] of Object.entries(componentGroups)) {
-      if (groupData && typeof groupData === "object") {
-        rawComponentGroups[groupName] = groupData as Record<string, any>;
-      }
-    }
-
-    const results = TraitDetector.detectEntityTraits(components, rawComponentGroups, 0.6);
+    const results = resolveEntityTraits(et, this.props.traitOverrides, 0.6);
     const detectedIds = results.map((r) => r.traitId);
 
     this.setState({
@@ -148,12 +173,101 @@ export default class EntityTraitPicker extends Component<IEntityTraitPickerProps
     if (this.props.readOnly) return;
 
     const newTraits = toggleEntityTrait(this.state.activeTraits, trait.id as EntityTraitId);
+
+    // A rejected toggle (clicking the selected body shape) changes nothing,
+    // so nothing may be applied to the entity either.
+    if (
+      newTraits.length === this.state.activeTraits.length &&
+      newTraits.every((t, i) => t === this.state.activeTraits[i])
+    ) {
+      return;
+    }
+
     this.setState({ activeTraits: newTraits });
 
     if (this.props.onTraitsChanged) {
       this.props.onTraitsChanged(newTraits);
     }
+
+    if (this.props.entityType) {
+      this._detectTraits();
+    }
   };
+
+  private static _traitLabel(traitId: string): string {
+    return ENTITY_TRAITS.find((t) => t.id === traitId)?.label || traitId;
+  }
+
+  private static _describeEdit(edit: IAuthoredEdit): string {
+    if (edit.kind === "componentGroup") {
+      return "component group " + edit.id;
+    }
+    if (edit.kind === "eventGroup") {
+      return (edit.action === "remove" ? "removal of " : "") + edit.id + " in event " + edit.event;
+    }
+    if (edit.kind === "family") {
+      return edit.id + " family" + (edit.group ? " in " + edit.group : "");
+    }
+    return edit.group ? edit.id + " in " + edit.group : edit.id;
+  }
+
+  private static _joinTraitLabels(traitIds: string[]): string {
+    return traitIds.map((t) => EntityTraitPicker._traitLabel(t)).join(", ");
+  }
+
+  /**
+   * One line per thing the last toggle did to the mob's own content.
+   * Canonical trait data coming and going is routine and not reported.
+   */
+  private _renderChangeReport(): JSX.Element | undefined {
+    const report = this.props.changeReport;
+    if (!report || !traitChangeTouchedAuthoredContent(report)) {
+      return undefined;
+    }
+
+    const lines: JSX.Element[] = [];
+    const list = (edits: IAuthoredEdit[]) => edits.map((e) => EntityTraitPicker._describeEdit(e)).join(", ");
+    const cause =
+      report.added.length > 0
+        ? "Selecting " + EntityTraitPicker._joinTraitLabels(report.added)
+        : "Deselecting " + EntityTraitPicker._joinTraitLabels(report.removed);
+
+    if (report.removedAuthored.length > 0) {
+      const restoreWith = report.removed.length > 0 ? EntityTraitPicker._joinTraitLabels(report.removed) : undefined;
+      lines.push(
+        <div key="removed">
+          {cause} removed this mob's own {list(report.removedAuthored)}.
+          {restoreWith ? " Select " + restoreWith + " again to put it back." : ""}
+        </div>
+      );
+    }
+
+    if (report.restoredAuthored.length > 0) {
+      lines.push(
+        <div key="restored">
+          {cause} put back this mob's own {list(report.restoredAuthored)}.
+        </div>
+      );
+    }
+
+    if (report.unrestoredAuthored.length > 0) {
+      lines.push(
+        <div key="unrestored">
+          Could not put back {list(report.unrestoredAuthored)}: something else is there now. It stays saved with the
+          project and comes back once that slot is free.
+        </div>
+      );
+    }
+
+    const severity = report.removedAuthored.length > 0 || report.unrestoredAuthored.length > 0 ? "warning" : "info";
+
+    return (
+      <Alert severity={severity} onClose={this.props.onChangeReportDismissed} sx={{ mb: 2 }}>
+        <AlertTitle>This mob's own content changed</AlertTitle>
+        {lines}
+      </Alert>
+    );
+  }
 
   render(): JSX.Element {
     const groupedTraits = groupEntityTraits();
@@ -166,6 +280,7 @@ export default class EntityTraitPicker extends Component<IEntityTraitPickerProps
             ? "Traits detected from this mob's components. Toggle traits to change behaviors."
             : "Traits are pre-packaged bundles of behaviors. Select the ones that match your mob."}
         </div>
+        {this._renderChangeReport()}
         {groupedTraits.map((section) => (
           <div key={section.group || "other"} className="cwiz-trait-section">
             {section.group && (

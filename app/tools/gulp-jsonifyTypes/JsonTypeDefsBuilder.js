@@ -73,8 +73,8 @@ class JsonTypeDefsBuilder {
       }
 
       content += "{";
-      content += '"name":"' + td.name + '",';
-      content += '"content":["' + this.getQuoteSafeContent(modcontent) + '"]';
+      content += '"name":' + JSON.stringify(td.name) + ",";
+      content += '"content":[' + this.getContentLines(modcontent).join(",\n") + "]";
       content += "}";
     }
 
@@ -83,22 +83,12 @@ class JsonTypeDefsBuilder {
     this.writeFile(this._targetFilePath, content);
   }
 
-  getQuoteSafeContent(content) {
-    var newContent = "";
-
-    for (const chr of content) {
-      if (chr === "\\") {
-        newContent += "/";
-      } else if (chr === '"') {
-        newContent += "'";
-      } else {
-        newContent += chr;
-      }
-    }
-
+  // Returns the source as JSON-encoded lines. Content must be preserved verbatim (backslashes and
+  // double quotes included): typings contain sequences like `*\/` inside doc comments, and altering
+  // them corrupts the source for Monaco and for script-token analysis.
+  getContentLines(content) {
     // eslint-disable-next-line no-control-regex
-    content = newContent.replace(/[\r\n\x0B\x0C\u0085\u2028\u2029]+/g, '",\n"');
-    return content;
+    return content.split(/\r\n|[\r\n\x0B\x0C\u0085\u2028\u2029]/).map((line) => JSON.stringify(line));
   }
 
   writeFile(relativePath, contents) {

@@ -3,7 +3,7 @@
   "description": "Content Wizard Templates - Pre-built templates for Minecraft content creation",
 
   "modelTemplates": {
-    "description": "3D model geometry templates. These reference designs from ModelDesignTemplates.ts and can be used with previewModelDesign/exportModelDesign MCP tools.",
+    "description": "3D model geometry templates. These reference designs from ModelDesignTemplates.ts and can be used with the designModel MCP tool.",
     "categories": {
       "humanoids": {
         "displayName": "Humanoid Characters",

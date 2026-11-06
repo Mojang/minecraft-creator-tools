@@ -1374,6 +1374,16 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
           !formDef.scalarField.tags.includes("presence"))
       ) {
         formDef.scalarField.id = "__scalar";
+
+        // Alternates of the scalar field are rendered and edited through the same
+        // property, so they must carry the same id or the editor they render
+        // (e.g. the string textbox) sends edits under an id no backing store knows.
+        if (formDef.scalarField.alternates) {
+          for (const alternate of formDef.scalarField.alternates) {
+            alternate.id = "__scalar";
+          }
+        }
+
         allFields.push(formDef.scalarField);
       }
 
@@ -1424,7 +1434,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         if (
           (!field.visibility || FieldUtilities.evaluate(formDef, field.visibility, this.props)) &&
           !field.isDeprecated &&
-          !field.isInternal
+          !field.isInternal &&
+          !field.isRemoved
         ) {
           let curVal = this._getProperty(field.id, field.defaultValue);
 

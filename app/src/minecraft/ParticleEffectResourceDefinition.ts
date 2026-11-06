@@ -12,7 +12,6 @@ import ProjectItem from "../app/ProjectItem";
 import Project from "../app/Project";
 import RelationsIndex from "../app/RelationsIndex";
 import Database from "./Database";
-import Utilities from "../core/Utilities";
 import IProjectItemRelationship from "../app/IProjectItemRelationship";
 import TextureDefinition from "./TextureDefinition";
 
@@ -214,13 +213,11 @@ export default class ParticleEffectResourceDefinition {
         await rel.childItem.loadContent();
       }
 
-      if (rel.childItem.primaryFile && packRootFolder) {
-        let relativePath = StorageUtilities.getBaseRelativePath(rel.childItem.primaryFile, packRootFolder);
+      if (packRootFolder) {
+        const relativePaths = await StorageUtilities.getItemBaseRelativePaths(rel.childItem, packRootFolder);
 
-        if (relativePath) {
-          if (basicTexture === relativePath) {
-            this.description.basic_render_parameters.texture = undefined;
-          }
+        if (relativePaths.includes(basicTexture)) {
+          this.description.basic_render_parameters.texture = undefined;
         }
       }
     }
@@ -245,19 +242,18 @@ export default class ParticleEffectResourceDefinition {
 
     // Textures still need path-based matching (no ID-based index possible)
     if (packRootFolder && textureList && textureList.length > 0) {
-      const textureItems = project.getItemsByType(ProjectItemType.texture);
-      for (const candItem of textureItems) {
-        if (candItem.primaryFile) {
-          let relativePath = StorageUtilities.getBaseRelativePath(candItem.primaryFile, packRootFolder);
+      const resolved = await StorageUtilities.resolvePackPathCandidates(
+        project.getItemsByType(ProjectItemType.texture),
+        packRootFolder,
+        textureList,
+        (file) => StorageUtilities.getBaseRelativePath(file, packRootFolder)
+      );
 
-          if (relativePath) {
-            if (textureList && textureList.includes(relativePath)) {
-              item.addChildItem(candItem);
-              textureList = Utilities.removeItemInArray(relativePath, textureList);
-            }
-          }
-        }
+      for (const candItem of resolved.matches) {
+        item.addChildItem(candItem);
       }
+
+      textureList = resolved.unmatched;
     }
 
     if (textureList) {

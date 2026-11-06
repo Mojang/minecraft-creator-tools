@@ -8,6 +8,7 @@ import { CircularProgress, Theme, useMediaQuery } from "@mui/material";
 import { constants } from "../../../core/Constants";
 import Utilities from "../../../core/Utilities";
 import CreatorToolsHost from "../../../app/CreatorToolsHost";
+import { isDirectoryPickerSupported } from "../../utils/DirectoryPicker";
 import { useState } from "react";
 import { useIntl } from "react-intl";
 
@@ -58,7 +59,7 @@ export default function Footer({ isApp, onSaveBackups }: FooterProps) {
   const trademarkUrl = domWindow.creatorToolsSite?.trademarksUrl;
   // Only show browser storage warning when the Web File System API is NOT available,
   // meaning the user is genuinely limited to browser-only storage.
-  const isBrowserOnly = !isApp && typeof (window as any).showDirectoryPicker !== "function";
+  const isBrowserOnly = !isApp && !isDirectoryPickerSupported(window);
   const storageMessage = isBrowserOnly
     ? intl.formatMessage({ id: "home.footer.storage_message_browser" })
     : isApp

@@ -8,7 +8,19 @@ import EntityTypeComponentSetEditor from "./EntityTypeComponentSetEditor";
 import McSelectableList, {
   McSelectableListItem,
 } from "../../shared/components/inputs/mcSelectableList/McSelectableList";
-import { Stack, Button, Menu, MenuItem, Alert, Box } from "@mui/material";
+import {
+  Stack,
+  Button,
+  Menu,
+  MenuItem,
+  Alert,
+  Box,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 import ManagedComponentGroup from "../../../minecraft/ManagedComponentGroup";
 import { CustomTabLabel } from "../../shared/components/feedback/labels/Labels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -26,6 +38,7 @@ import {
   faPlus,
   faPuzzlePiece,
   faSliders,
+  faTrash,
   faVolumeUp,
 } from "@fortawesome/free-solid-svg-icons";
 import WebUtilities from "../../utils/WebUtilities";
@@ -51,8 +64,11 @@ import { getThemeColors, getThemedColor, ThemeColors } from "../../hooks/theme/u
 import IProjectTheme from "../../types/IProjectTheme";
 import { getFriendlyComponentGroupName } from "../../utils/ComponentFriendlyNames";
 import EntityTraitPicker from "./EntityTraitPicker";
-import { applyEntityTraitChanges } from "../../../minecraft/EntityTraitApplier";
-import TraitDetector from "../../../minecraft/TraitDetector";
+import {
+  applyEntityTraitChanges,
+  IEntityTraitChangeReport,
+  resolveEntityTraits,
+} from "../../../minecraft/EntityTraitApplier";
 import { EntityTraitId } from "../../../minecraft/IContentMetaSchema";
 import SpawnRulesEditorWrapper from "../../components/fileEditors/SpawnRulesEditor/SpawnRulesEditorWrapper";
 import LootTableVisualEditor from "../lootTable/LootTableVisualEditor";
@@ -104,6 +120,10 @@ interface IEntityTypeEditorState {
   loadTimedOut: boolean;
   advancedMenuAnchorEl: HTMLElement | null;
   statesCollapsed: boolean;
+  /** Which removal the confirmation dialog is asking about, while it is open. */
+  removalPrompt?: "state" | "action";
+  /** What the last Traits tab change did to the mob's own content, until dismissed. */
+  traitChangeReport?: IEntityTraitChangeReport;
 }
 
 class EntityTypeEditor extends Component<IEntityTypeEditorProps, IEntityTypeEditorState> {
@@ -121,6 +141,7 @@ class EntityTypeEditor extends Component<IEntityTypeEditorProps, IEntityTypeEdit
     this._setOverviewMode = this._setOverviewMode.bind(this);
     this._setStateDiagramsMode = this._setStateDiagramsMode.bind(this);
     this._doUpdate = this._doUpdate.bind(this);
+    this._handleTraitChangeReportDismissed = this._handleTraitChangeReportDismissed.bind(this);
     this._handleNavigateToComponent = this._handleNavigateToComponent.bind(this);
 
     this._setAudioMode = this._setAudioMode.bind(this);
@@ -263,24 +284,31 @@ class EntityTypeEditor extends Component<IEntityTypeEditorProps, IEntityTypeEdit
     const et = file?.manager as EntityTypeDefinition | undefined;
     if (!et || !et._data) {
       return;
-    } // Re-detect the current trait state from the entity itself so the diff
-    // is computed against ground truth rather than stale picker state.
-    const components = et._data.components || {};
-    const componentGroups: Record<string, Record<string, any>> = {};
-    if (et._data.component_groups) {
-      for (const [name, group] of Object.entries(et._data.component_groups)) {
-        if (group && typeof group === "object") {
-          componentGroups[name] = group as Record<string, any>;
-        }
-      }
     }
-    const detected = TraitDetector.detectEntityTraits(components, componentGroups, 0.6).map(
-      (r) => r.traitId
-    ) as EntityTraitId[];
 
-    applyEntityTraitChanges(et, detected, newTraits);
+    // Re-resolve the current trait state from the entity itself (plus the
+    // item's tool-only choices) so the diff is computed against ground truth
+    // rather than stale picker state.
+    const current = resolveEntityTraits(et, this.props.item, 0.6).map((r) => r.traitId);
 
+    // The applier also writes the definition back to the file's content, so
+    // the entity bytes and the item's bodyShape/traitJournal reach the next
+    // project save together, whichever path triggers it.
+    const report = applyEntityTraitChanges(et, current, newTraits, this.props.item);
+
+    if (report.staleDefinition) {
+      // The file held newer text than the definition; nothing was changed
+      // and the definition was parsed again. Show what the file holds.
+      this._doUpdate();
+      return;
+    }
+
+    this.setState({ traitChangeReport: report });
     this._doUpdate();
+  }
+
+  _handleTraitChangeReportDismissed() {
+    this.setState({ traitChangeReport: undefined });
   }
 
   _setComponentsMode() {
@@ -365,6 +393,64 @@ class EntityTypeEditor extends Component<IEntityTypeEditorProps, IEntityTypeEdit
     et.addEvent();
     this.forceUpdate();
   };
+
+  _handleRemoveState = () => {
+    if (this.state.selectedItem instanceof ManagedComponentGroup) {
+      this.setState({ removalPrompt: "state" });
+    }
+  };
+
+  _handleRemoveAction = () => {
+    if (this._getSelectedEvent()) {
+      this.setState({ removalPrompt: "action" });
+    }
+  };
+
+  _handleRemovalCancel = () => {
+    this.setState({ removalPrompt: undefined });
+  };
+
+  /**
+   * Removes the state or action the open dialog asked about, along with the
+   * references the definition cleans up with it, and writes the definition
+   * back the way the Traits tab does so the change reaches the next save.
+   */
+  _handleRemovalConfirm = () => {
+    const et = this.state.fileToEdit?.manager as EntityTypeDefinition | undefined;
+    const selectedItem = this.state.selectedItem;
+    const selectedEvent = this._getSelectedEvent();
+
+    if (et && this.state.removalPrompt === "state" && selectedItem instanceof ManagedComponentGroup) {
+      et.removeComponentGroup(selectedItem.id);
+      et.persist();
+
+      this.setState({ selectedItem: et, initialComponentId: undefined, removalPrompt: undefined });
+    } else if (et && this.state.removalPrompt === "action" && selectedEvent) {
+      et.removeEvent(selectedEvent.id);
+      et.persist();
+
+      this.setState({ selectedItem: undefined, removalPrompt: undefined });
+    } else {
+      this.setState({ removalPrompt: undefined });
+    }
+
+    this.forceUpdate();
+  };
+
+  /** The selected action, when the selection is an action rather than a state. */
+  _getSelectedEvent(): IEventWrapper | undefined {
+    const selectedItem = this.state.selectedItem;
+
+    if (
+      selectedItem === undefined ||
+      selectedItem instanceof EntityTypeDefinition ||
+      selectedItem instanceof ManagedComponentGroup
+    ) {
+      return undefined;
+    }
+
+    return selectedItem;
+  }
 
   _generateSpawnRulesJson = (entityId: string) => {
     return {
@@ -729,9 +815,12 @@ class EntityTypeEditor extends Component<IEntityTypeEditorProps, IEntityTypeEdit
         >
           <EntityTraitPicker
             entityType={et}
+            traitOverrides={this.props.item}
             theme={this.props.theme}
             readOnly={this.props.readOnly}
             onTraitsChanged={this._handleTraitsChanged}
+            changeReport={this.state.traitChangeReport}
+            onChangeReportDismissed={this._handleTraitChangeReportDismissed}
           />
         </div>
       );
@@ -918,6 +1007,15 @@ class EntityTypeEditor extends Component<IEntityTypeEditorProps, IEntityTypeEdit
                   >
                     {this.props.intl.formatMessage({ id: "project_editor.entity.add_state" })}
                   </Button>
+                  <Button
+                    className="eat-mcBtn ete-removeStateBtn"
+                    size="small"
+                    disabled={this.props.readOnly || !(this.state.selectedItem instanceof ManagedComponentGroup)}
+                    onClick={this._handleRemoveState}
+                    startIcon={<FontAwesomeIcon icon={faTrash} />}
+                  >
+                    {this.props.intl.formatMessage({ id: "project_editor.entity.remove_state" })}
+                  </Button>
                 </div>
               </div>
             </EditorContentPanel>
@@ -934,6 +1032,9 @@ class EntityTypeEditor extends Component<IEntityTypeEditorProps, IEntityTypeEdit
       );
     } else if (this.state.mode === EntityTypeEditorMode.actions) {
       const items = this.getEventListings();
+      const selectedEvent = this._getSelectedEvent();
+
+      selectedIndex = selectedEvent ? items.findIndex((item) => item.key === "evt." + selectedEvent.id) : -1;
 
       let itemInterior = <></>;
 
@@ -1008,10 +1109,20 @@ class EntityTypeEditor extends Component<IEntityTypeEditorProps, IEntityTypeEdit
                 <FontAwesomeIcon icon={faPlus} style={{ marginRight: "6px" }} />
                 {this.props.intl.formatMessage({ id: "project_editor.entity.add_action_btn" })}
               </button>
+              <Button
+                className="eat-mcBtn ete-removeActionBtn"
+                size="small"
+                disabled={this.props.readOnly || selectedEvent === undefined}
+                onClick={this._handleRemoveAction}
+                startIcon={<FontAwesomeIcon icon={faTrash} />}
+              >
+                {this.props.intl.formatMessage({ id: "project_editor.entity.remove_action" })}
+              </Button>
             </div>
             <div className="ete-listInterior">
               <McSelectableList
                 aria-label={this.props.intl.formatMessage({ id: "project_editor.entity.aria_actions_list" })}
+                selectedIndex={selectedIndex}
                 items={items}
                 onSelectedIndexChange={this._handleItemSelected}
               />
@@ -1274,6 +1385,76 @@ class EntityTypeEditor extends Component<IEntityTypeEditorProps, IEntityTypeEdit
           {this.props.intl.formatMessage({ id: "project_editor.entity.add_spawn_rules" })}
         </Button>
       </div>
+    );
+  }
+
+  /**
+   * The confirmation asked before a state or action is removed, naming what
+   * goes with it: the actions a state is taken out of, or the components an
+   * action's triggers are removed from.
+   */
+  buildRemovalDialog(et: EntityTypeDefinition): ReactNode {
+    const prompt = this.state.removalPrompt;
+    const selectedItem = this.state.selectedItem;
+    const selectedEvent = this._getSelectedEvent();
+    let title: string;
+    let message: string;
+    let referencesMessage: string | undefined;
+
+    if (prompt === "state" && selectedItem instanceof ManagedComponentGroup) {
+      const references = et.getComponentGroupReferences(selectedItem.id);
+
+      title = this.props.intl.formatMessage({ id: "project_editor.entity.remove_state_title" });
+      message = this.props.intl.formatMessage(
+        { id: "project_editor.entity.remove_state_message" },
+        { stateName: getFriendlyComponentGroupName(selectedItem.id), stateId: selectedItem.id }
+      );
+
+      if (references.length > 0) {
+        referencesMessage = this.props.intl.formatMessage(
+          { id: "project_editor.entity.remove_state_references" },
+          { actions: references.map((eventId) => Utilities.humanifyMinecraftName(eventId)).join(", ") }
+        );
+      }
+    } else if (prompt === "action" && selectedEvent) {
+      const references = et.getEventReferences(selectedEvent.id);
+
+      title = this.props.intl.formatMessage({ id: "project_editor.entity.remove_action_title" });
+      message = this.props.intl.formatMessage(
+        { id: "project_editor.entity.remove_action_message" },
+        { actionName: Utilities.humanifyMinecraftName(selectedEvent.id), actionId: selectedEvent.id }
+      );
+
+      if (references.length > 0) {
+        referencesMessage = this.props.intl.formatMessage(
+          { id: "project_editor.entity.remove_action_references" },
+          { components: references.join(", ") }
+        );
+      }
+    } else {
+      return <></>;
+    }
+
+    return (
+      <Dialog open={true} onClose={this._handleRemovalCancel} className="ete-removeDialog">
+        <DialogTitle>{title}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>{message}</DialogContentText>
+          {referencesMessage ? <DialogContentText sx={{ mt: 1 }}>{referencesMessage}</DialogContentText> : undefined}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={this._handleRemovalCancel}>{this.props.intl.formatMessage({ id: "common.cancel" })}</Button>
+          <Button
+            className="ete-removeConfirmBtn"
+            variant="contained"
+            color="error"
+            onClick={this._handleRemovalConfirm}
+            startIcon={<FontAwesomeIcon icon={faTrash} />}
+          >
+            {this.props.intl.formatMessage({ id: "common.remove" })}
+          </Button>
+        </DialogActions>
+      </Dialog>
     );
   }
 
@@ -1565,6 +1746,7 @@ class EntityTypeEditor extends Component<IEntityTypeEditorProps, IEntityTypeEdit
         </EditorHeaderChip>
 
         <div className="ete-mainArea">{modeArea}</div>
+        {this.buildRemovalDialog(et)}
       </div>
     );
   }

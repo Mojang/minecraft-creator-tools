@@ -17,12 +17,13 @@
     "entityTypeResourceCount": 1,
     "behaviorPackAnimationCount": 1,
     "behaviorPackAnimationControllerCount": 1,
-    "overallSize": 11189,
+    "overallSize": 11190,
     "fileCounts": 27,
     "folderCounts": 25,
-    "contentSize": 11189,
+    "contentSize": 11190,
     "contentFileCounts": 27,
     "contentFolderCounts": 21,
+    "fileCount": 27,
     "defaultBehaviorPackUuid": "85c5e4b8-8b93-4e3f-9a5b-7c8d9e0f1a2b",
     "defaultBehaviorPackMinEngineVersion": "1.20.10",
     "minBehaviorPackMinEngineVersionString": "1.20.10",
@@ -90,6 +91,7 @@
       "addItem",
       "afterEvents",
       "container",
+      "current",
       "entity",
       "entitySpawn",
       "getAllPlayers",
@@ -271,10 +273,10 @@
       },
       "behaviorPackManifest.size": {
         "instanceCount": 1,
-        "total": 515,
-        "max": 515,
-        "min": 515,
-        "average": 515
+        "total": 516,
+        "max": 516,
+        "min": 516,
+        "average": 516
       },
       "behaviorPackManifest.lines": {
         "instanceCount": 1,
@@ -616,6 +618,9 @@
       "apisUsed.getComponent": {
         "count": 1
       },
+      "apisUsed.current": {
+        "count": 1
+      },
       "apisUsed.inventory": {
         "count": 1
       },
@@ -890,13 +895,13 @@
     },
     "errorCount": 2,
     "internalProcessingErrorCount": 0,
-    "warningCount": 15,
-    "testSuccessCount": 40,
+    "warningCount": 11,
+    "testSuccessCount": 41,
     "testFailCount": 1,
     "testNotApplicableCount": 12,
     "errorSummary": "ERROR: [CPACKICON101] pack_icon image file not found for comprehensive_bp. It must use the .png extension.\nERROR: [CPACKICON101] pack_icon image file not found for comprehensive_rp. It must use the .png extension.",
     "internalProcessingErrorSummary": "",
-    "warningSummary": "WARNING: [COMJSON134] (/resource_packs/comprehensive_rp/render_controllers/sample_entity.json) JSON structure error: (format_version) does not have a value in the enumeration 1.8.0, 1.10.0\nWARNING: [COMJSON134] (/resource_packs/comprehensive_rp/render_controllers/sample_entity.json) JSON structure error: (render_controllers.controller.render.sample_entity.uv_anim) is missing and it is required\nWARNING: [COMJSON139] (/behavior_packs/comprehensive_bp/dialogue/sample_dialogue.json) JSON structure error: () The property minecraft:dialogue is not defined in the schema and the schema does not allow additional properties\nWARNING: [COMJSON144] (/behavior_packs/comprehensive_bp/spawn_rules/sample_entity.json) JSON structure error: (format_version) does not have a value in the enumeration 1.8.0, 1.10.0, 1.12.0\nWARNING: [COMJSON145] (/behavior_packs/comprehensive_bp/trading/sample_trading.json) JSON structure error: () The property minecraft:trading is not defined in the schema and the schema does not allow additional properties\nWARNING: [FORMATVER178] (/behavior_packs/comprehensive_bp/animations/sample_entity_animations.json) Behavior animation version (1.20.10) has a higher minor version number compared to the expected version (1.10.0)\nWARNING: [FORMATVER198] (/behavior_packs/comprehensive_bp/animation_controllers/sample_entity_controller.json) Behavior animation controller version (1.20.10) has a higher minor version number compared to the expected version (1.10.0)\nWARNING: [FORMATVER218] (/resource_packs/comprehensive_rp/animations/sample_entity_resource.json) Resource animation version (1.20.10) has a higher minor version number compared to the expected version (1.10.0)\nWARNING: [FORMATVER238] (/resource_packs/comprehensive_rp/animation_controllers/sample_entity_resource.json) Resource animation controller version (1.20.10) has a higher minor version number compared to the expected version (1.10.0)\nWARNING: [FORMATVER258] (/behavior_packs/comprehensive_bp/spawn_rules/sample_entity.json) Spawn rules version (1.20.10) has a higher minor version number compared to the expected version (1.12.0)\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/recipes/sample_recipe.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/recipes/sample_recipe.json to `minecraft:stick`\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json to `minecraft:dirt`\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json to `minecraft:stick`\nWARNING: [UNLINK399] (/resource_packs/comprehensive_rp/entity/sample_entity.json) Link to texture is not found in this pack: /resource_packs/comprehensive_rp/entity/sample_entity.json to `textures/entity/sample_entity`\nWARNING: [UNLINK399] (/resource_packs/comprehensive_rp/particles/sample_particle.json) Link to texture is not found in this pack: /resource_packs/comprehensive_rp/particles/sample_particle.json to `textures/particle/sample_particle`",
+    "warningSummary": "WARNING: [COMJSON134] (/resource_packs/comprehensive_rp/render_controllers/sample_entity.json) JSON structure error: (format_version) does not have a value in the enumeration 1.8.0, 1.10.0\nWARNING: [COMJSON139] (/behavior_packs/comprehensive_bp/dialogue/sample_dialogue.json) JSON structure error: () The property minecraft:dialogue is not defined in the schema and the schema does not allow additional properties\nWARNING: [COMJSON144] (/behavior_packs/comprehensive_bp/spawn_rules/sample_entity.json) JSON structure error: (format_version) does not have a value in the enumeration 1.8.0, 1.10.0, 1.12.0\nWARNING: [COMJSON145] (/behavior_packs/comprehensive_bp/trading/sample_trading.json) JSON structure error: () The property minecraft:trading is not defined in the schema and the schema does not allow additional properties\nWARNING: [FORMATVER178] (/behavior_packs/comprehensive_bp/animations/sample_entity_animations.json) Behavior animation version (1.20.10) has a higher minor version number compared to the expected version (1.10.0)\nWARNING: [FORMATVER198] (/behavior_packs/comprehensive_bp/animation_controllers/sample_entity_controller.json) Behavior animation controller version (1.20.10) has a higher minor version number compared to the expected version (1.10.0)\nWARNING: [FORMATVER218] (/resource_packs/comprehensive_rp/animations/sample_entity_resource.json) Resource animation version (1.20.10) has a higher minor version number compared to the expected version (1.10.0)\nWARNING: [FORMATVER238] (/resource_packs/comprehensive_rp/animation_controllers/sample_entity_resource.json) Resource animation controller version (1.20.10) has a higher minor version number compared to the expected version (1.10.0)\nWARNING: [FORMATVER258] (/behavior_packs/comprehensive_bp/spawn_rules/sample_entity.json) Spawn rules version (1.20.10) has a higher minor version number compared to the expected version (1.12.0)\nWARNING: [UNLINK399] (/resource_packs/comprehensive_rp/entity/sample_entity.json) Link to texture is not found in this pack: /resource_packs/comprehensive_rp/entity/sample_entity.json to `textures/entity/sample_entity`\nWARNING: [UNLINK399] (/resource_packs/comprehensive_rp/particles/sample_particle.json) Link to texture is not found in this pack: /resource_packs/comprehensive_rp/particles/sample_particle.json to `textures/particle/sample_particle`",
     "testFailSummary": "TESTFAIL: [CPACKICON000] Found 2 errors in Pack Icon check",
     "reds": 11004,
     "summary": {
@@ -942,7 +947,7 @@
         },
         "134": {
           "defaultMessage": "JSON structure error",
-          "warnings": 2
+          "warnings": 1
         },
         "139": {
           "defaultMessage": "JSON structure error",
@@ -1057,17 +1062,17 @@
         },
         "116": {
           "title": "Block Minor High",
-          "defaultMessage": "Block type version (1.20.10) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version",
+          "defaultMessage": "Block type version (1.20.10) has a lower minor version number compared to the expected version (1.26.50) or its previous minor version",
           "recommendations": 1
         },
         "136": {
           "title": "Item Minor High",
-          "defaultMessage": "Item type version (1.20.10) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version",
+          "defaultMessage": "Item type version (1.20.10) has a lower minor version number compared to the expected version (1.26.50) or its previous minor version",
           "recommendations": 2
         },
         "156": {
           "title": "Recipe Minor High",
-          "defaultMessage": "Recipe version (1.20.10) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version",
+          "defaultMessage": "Recipe version (1.20.10) has a lower minor version number compared to the expected version (1.26.50) or its previous minor version",
           "recommendations": 2
         },
         "178": {
@@ -1095,7 +1100,7 @@
           "warnings": 1
         },
         "296": {
-          "defaultMessage": "Entity type resource version (1.20.10) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version",
+          "defaultMessage": "Entity type resource version (1.20.10) has a lower minor version number compared to the expected version (1.26.50) or its previous minor version",
           "recommendations": 1
         },
         "619": {
@@ -1463,12 +1468,12 @@
         },
         "120": {
           "title": "BP Minor Low",
-          "defaultMessage": "Behavior pack manifest (1.20.10) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version",
+          "defaultMessage": "Behavior pack manifest (1.20.10) has a lower minor version number compared to the expected version (1.26.50) or its previous minor version",
           "recommendations": 1
         },
         "220": {
           "title": "RP Minor Low",
-          "defaultMessage": "Resource pack manifest (1.20.10) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version",
+          "defaultMessage": "Resource pack manifest (1.20.10) has a lower minor version number compared to the expected version (1.26.50) or its previous minor version",
           "recommendations": 1
         },
         "605": {
@@ -1548,6 +1553,15 @@
         "245": {
           "title": "Subpack Tiers",
           "defaultMessage": "Entity Geometry"
+        }
+      },
+      "PACKFILECOUNT": {
+        "1": {
+          "defaultMessage": "Pack File Count completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "defaultMessage": "File Count"
         }
       },
       "PACKMETADATA": {
@@ -1639,7 +1653,7 @@
         },
         "100": {
           "title": "BP Module Dependency",
-          "defaultMessage": "Behavior pack dependency on 2.9.0-beta at @minecraft/server"
+          "defaultMessage": "Behavior pack dependency on 2.11.0-beta at @minecraft/server"
         }
       },
       "SNDSDEF": {
@@ -1765,10 +1779,6 @@
           "defaultMessage": "Link to vanilla item type item; avoid if possible",
           "recommendations": 4
         },
-        "323": {
-          "defaultMessage": "Link to item type is not found in this pack",
-          "warnings": 3
-        },
         "399": {
           "defaultMessage": "Link to texture is not found in this pack",
           "warnings": 2
@@ -1860,13 +1870,6 @@
       "gIx": 134,
       "p": "/resource_packs/comprehensive_rp/render_controllers/sample_entity.json",
       "d": "(format_version) does not have a value in the enumeration 1.8.0, 1.10.0"
-    },
-    {
-      "iTp": 4,
-      "gId": "COMJSON",
-      "gIx": 134,
-      "p": "/resource_packs/comprehensive_rp/render_controllers/sample_entity.json",
-      "d": "(render_controllers.controller.render.sample_entity.uv_anim) is missing and it is required"
     },
     {
       "iTp": 4,
@@ -2646,10 +2649,10 @@
       "fs": {
         "size": {
           "instanceCount": 1,
-          "total": 515,
-          "max": 515,
-          "min": 515,
-          "average": 515
+          "total": 516,
+          "max": 516,
+          "min": 516,
+          "average": 516
         },
         "lines": {
           "instanceCount": 1,
@@ -3276,6 +3279,17 @@
     },
     {
       "iTp": 1,
+      "gId": "PACKFILECOUNT",
+      "gIx": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKFILECOUNT",
+      "gIx": 101,
+      "d": 27
+    },
+    {
+      "iTp": 1,
       "gId": "PACKMETADATA",
       "gIx": 1
     },
@@ -3288,7 +3302,7 @@
       "iTp": 7,
       "gId": "PACKSIZE",
       "gIx": 101,
-      "d": 11189
+      "d": 11190
     },
     {
       "iTp": 7,
@@ -3306,7 +3320,7 @@
       "iTp": 7,
       "gId": "PACKSIZE",
       "gIx": 104,
-      "d": 11189
+      "d": 11190
     },
     {
       "iTp": 7,
@@ -3401,6 +3415,9 @@
           "count": 1
         },
         "getComponent": {
+          "count": 1
+        },
+        "current": {
           "count": 1
         },
         "inventory": {
@@ -3811,27 +3828,6 @@
       "gIx": 205,
       "p": "/behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json",
       "d": "minecraft:gold_ingot"
-    },
-    {
-      "iTp": 4,
-      "gId": "UNLINK",
-      "gIx": 323,
-      "p": "/behavior_packs/comprehensive_bp/recipes/sample_recipe.json",
-      "d": "/behavior_packs/comprehensive_bp/recipes/sample_recipe.json to `minecraft:stick`"
-    },
-    {
-      "iTp": 4,
-      "gId": "UNLINK",
-      "gIx": 323,
-      "p": "/behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json",
-      "d": "/behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json to `minecraft:dirt`"
-    },
-    {
-      "iTp": 4,
-      "gId": "UNLINK",
-      "gIx": 323,
-      "p": "/behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json",
-      "d": "/behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json to `minecraft:stick`"
     },
     {
       "iTp": 4,

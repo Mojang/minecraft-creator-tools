@@ -34,15 +34,18 @@ export const ScriptsDefault: Record<string, string> = {
 };
 
 export const DependenciesDefault: Record<string, string> = {
-  "@minecraft/math": "2.4.0",
-  "@minecraft/server": "2.0.0",
-  "@minecraft/server-editor": "0.1.0-beta.1.21.30-preview.24",
-  "@minecraft/server-ui": "2.0.0",
-  "@minecraft/vanilla-data": "1.26.13",
+  "@minecraft/math": "2.4.1",
+  "@minecraft/server": "2.11.0",
+  "@minecraft/server-editor": "0.1.0-beta.1.26.60-stable",
+  "@minecraft/server-ui": "2.3.0",
+  "@minecraft/vanilla-data": "1.26.60",
 };
 
 export const OverridesDefault: { [name: string]: any } = {
   "@minecraft/math": {
+    "@minecraft/server": "$@minecraft/server",
+  },
+  "@minecraft/server-editor": {
     "@minecraft/server": "$@minecraft/server",
   },
   "@minecraft/server-gametest": {
@@ -61,7 +64,8 @@ export const PackageJsonDefault: PackageJSON = {
   devDependencies: DevDependenciesDefault,
   scripts: ScriptsDefault,
   dependencies: DependenciesDefault,
-};
+  overrides: OverridesDefault,
+} as PackageJSON;
 
 export const SetupRequiredScripts: Record<string, string> = {
   lint: "just-scripts lint",
@@ -215,7 +219,8 @@ export default class NpmPackageDefinition {
     await this.load();
 
     if (!this.definition) {
-      this.definition = PackageJsonDefault;
+      // clone so later edits to this project's definition never mutate the shared defaults
+      this.definition = JSON.parse(JSON.stringify(PackageJsonDefault)) as PackageJSON;
     }
 
     await this.updateContent(project);
@@ -296,9 +301,11 @@ export default class NpmPackageDefinition {
       }
 
       if (!isOverrideValid) {
-        (this.definition as any).overrides = OverridesDefault;
+        (this.definition as any).overrides = JSON.parse(JSON.stringify(OverridesDefault));
       }
     }
+
+    this.ensureRequiredOverrides();
 
     if (this.definition.scripts) {
       let isValidScripts = true;
@@ -324,6 +331,40 @@ export default class NpmPackageDefinition {
         Log.debugAlert("Unexpected setting '" + key + "' found in package.json.");
       }
     }
+  }
+
+  /**
+   * Adds any OverridesDefault entry whose package is a dependency but is missing from
+   * "overrides". These packages peer-depend on prerelease @minecraft/server builds; the
+   * override makes npm accept the stable @minecraft/server pinned at the root. Existing
+   * overrides are left alone. Only added when @minecraft/server is itself a root
+   * dependency, because "$@minecraft/server" refers to that root entry.
+   */
+  ensureRequiredOverrides(): boolean {
+    const deps = this.definition?.dependencies;
+
+    if (!this.definition || !deps || deps["@minecraft/server"] === undefined) {
+      return false;
+    }
+
+    let overrides: { [name: string]: any } | undefined = (this.definition as any).overrides;
+    let changed = false;
+
+    for (const depName in deps) {
+      const defaultOverride = OverridesDefault[depName];
+
+      if (defaultOverride !== undefined && (overrides === undefined || overrides[depName] === undefined)) {
+        if (overrides === undefined) {
+          overrides = {};
+          (this.definition as any).overrides = overrides;
+        }
+
+        overrides[depName] = JSON.parse(JSON.stringify(defaultOverride));
+        changed = true;
+      }
+    }
+
+    return changed;
   }
 
   async ensureSetupContent(bpTitle?: string): Promise<boolean> {

@@ -33,7 +33,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@minecraft/bedrock-schemas": "1.26.20-beta.21",
+    "@minecraft/bedrock-schemas": "1.26.60",
     "@octokit/rest": "22.0.1",
     "@lunapaint/tga-codec": "0.1.0",
     "@modelcontextprotocol/sdk": "1.28.0",

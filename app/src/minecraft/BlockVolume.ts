@@ -284,7 +284,8 @@ export default class BlockVolume implements IDimension {
           }
           const oldBlock = oldLine.blocks[zI];
 
-          if (oldBlock && !oldBlock.isEmpty) {
+          // Air is copied too: Structure tells explicit air (typed) from void (untyped) cells.
+          if (oldBlock && oldBlock.typeName !== undefined) {
             const newBlock = this.x(xI).y(yI).z(zI);
             newBlock.typeName = oldBlock.typeName;
 

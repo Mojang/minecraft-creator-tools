@@ -67,7 +67,7 @@ export default function NewProjectDialog({ template, open, close, onNewProject }
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [dirErrorMessage, setDirErrorMessage] = useState<string | null>(null);
   const [electronFolderPath, setElectronFolderPath] = useState<string | null>(null);
-  const [directory, pickDirectory, directoryError] = useDirectoryPicker(window, {
+  const [directory, pickDirectory, directoryError, isFolderPickerSupported] = useDirectoryPicker(window, {
     onDirectoryPicked: () => setDirErrorMessage(null),
     checkEmptyDir: true,
   });
@@ -574,6 +574,7 @@ export default function NewProjectDialog({ template, open, close, onNewProject }
                 <FormControlLabel
                   key={opt.value}
                   value={opt.value}
+                  disabled={opt.value === "device" && !isFolderPickerSupported}
                   control={
                     <Radio
                       sx={(theme) => ({
@@ -593,6 +594,14 @@ export default function NewProjectDialog({ template, open, close, onNewProject }
                 />
               ))}
             </RadioGroup>
+            {!isElectron && !isFolderPickerSupported && (
+              <FormHelperText
+                data-testid="storage-device-unavailable"
+                sx={(theme) => ({ mt: 0, mb: 1, color: theme.palette.text.secondary })}
+              >
+                {intl.formatMessage({ id: "home.new_project.storage_device_unavailable" })}
+              </FormHelperText>
+            )}
 
             <Box
               sx={(theme) => {

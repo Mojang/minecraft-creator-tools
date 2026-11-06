@@ -3,6 +3,7 @@
 
 import { expect } from "chai";
 import "mocha";
+import * as fs from "fs";
 import TraitDetector from "../minecraft/TraitDetector";
 import ContentSchemaInferrer from "../minecraft/ContentSchemaInferrer";
 import Project, { ProjectAutoDeploymentMode } from "../app/Project";
@@ -195,6 +196,77 @@ describe("TraitDetector", () => {
       // With attack and targeting, hostile should win
       expect(hasHostile).to.be.true;
       expect(hasPassive).to.be.false;
+    });
+
+    it("should detect quadruped from a bear-like type_family", () => {
+      const components = {
+        "minecraft:type_family": { family: ["polarbear", "mob"] },
+        "minecraft:navigation.walk": {},
+      };
+
+      const results = TraitDetector.detectEntityTraits(components);
+
+      expect(results.some((r) => r.traitId === "quadruped")).to.be.true;
+      expect(results.some((r) => r.traitId === "humanoid")).to.be.false;
+    });
+
+    // Walking plus an animal life cycle (baby, ageable, follow_parent,
+    // breedable) is not evidence of four legs: vanilla chickens and striders
+    // have all of it and are bipeds. Without a family clue or an explicit
+    // body-shape marker the shape must stay undetermined.
+    for (const biped of ["chicken", "strider"]) {
+      it(`should not infer a body shape for the vanilla ${biped}`, () => {
+        const entityPath = TestPaths.publicRoot + "res/latest/van/release/behavior_pack/entities/" + biped + ".json";
+        const entity = JSON.parse(fs.readFileSync(entityPath, "utf8"))["minecraft:entity"];
+
+        const results = TraitDetector.detectEntityTraits(entity.components, entity.component_groups, 0.6);
+
+        const bodyShapes = results.filter((r) => r.traitId === "quadruped" || r.traitId === "humanoid");
+        expect(bodyShapes.map((r) => r.traitId + "@" + r.confidence)).to.deep.equal([]);
+      });
+    }
+
+    it("should not detect quadruped from a walking mob with an animal life cycle but no family clue", () => {
+      const components = {
+        "minecraft:type_family": { family: ["biceson", "mob"] },
+        "minecraft:navigation.walk": {},
+        "minecraft:movement.basic": {},
+      };
+      const componentGroups = {
+        "minecraft:baby": {
+          "minecraft:is_baby": {},
+          "minecraft:ageable": { duration: 1200 },
+          "minecraft:behavior.follow_parent": { priority: 5 },
+        },
+      };
+
+      const results = TraitDetector.detectEntityTraits(components, componentGroups, 0.6);
+
+      expect(results.some((r) => r.traitId === "quadruped")).to.be.false;
+    });
+
+    it("should not detect quadruped for a humanoid family that also breeds", () => {
+      const components = {
+        "minecraft:type_family": { family: ["villager", "mob"] },
+        "minecraft:navigation.walk": {},
+        "minecraft:breedable": {},
+      };
+
+      const results = TraitDetector.detectEntityTraits(components);
+
+      expect(results.some((r) => r.traitId === "humanoid")).to.be.true;
+      expect(results.some((r) => r.traitId === "quadruped")).to.be.false;
+    });
+
+    it("should never report both body shapes at once", () => {
+      const components = {
+        "minecraft:type_family": { family: ["zombie", "animal"] },
+      };
+
+      const results = TraitDetector.detectEntityTraits(components);
+
+      const bodyShapes = results.filter((r) => r.traitId === "humanoid" || r.traitId === "quadruped");
+      expect(bodyShapes).to.have.length(1);
     });
 
     it("should detect multiple non-conflicting traits", () => {

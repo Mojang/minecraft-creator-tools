@@ -131,6 +131,38 @@ describe("cliYesFlag", () => {
     assert(found.rp, "Expected a 'resource_packs/' folder somewhere in the created project");
     assert(found.manifest, "Expected at least one manifest.json in the created project");
   }).timeout(120000);
+
+  it("should record the CLI in each pack manifest's generated_with metadata", () => {
+    const manifests: string[] = [];
+
+    const walk = (dir: string, depth = 0) => {
+      if (depth > 6) return;
+      for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+        const full = path.join(dir, entry.name);
+        if (entry.isDirectory() && entry.name !== "node_modules") {
+          walk(full, depth + 1);
+        } else if (
+          entry.isFile() &&
+          entry.name === "manifest.json" &&
+          ["behavior_packs", "resource_packs"].includes(path.basename(path.dirname(dir)))
+        ) {
+          manifests.push(full);
+        }
+      }
+    };
+
+    walk(RESULT_DIR_ABS);
+
+    assert.isAbove(manifests.length, 0, "Expected pack manifests in the created project");
+
+    for (const manifestPath of manifests) {
+      const content = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+      assert.isArray(
+        content.metadata?.generated_with?.mctoolscli,
+        manifestPath + " should have metadata.generated_with.mctoolscli: " + JSON.stringify(content.metadata)
+      );
+    }
+  }).timeout(120000);
 });
 
 interface ICliRun {

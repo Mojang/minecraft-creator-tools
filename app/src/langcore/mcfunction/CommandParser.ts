@@ -7,6 +7,13 @@
  * Provides parsing and analysis of mcfunction command syntax.
  */
 
+import { IBedrockKnowledge, IKnowledgeCommandOverload } from "../../knowledge/IBedrockKnowledge";
+import {
+  formatCommandOverloads,
+  getBedrockKnowledge,
+  onDidChangeBedrockKnowledge,
+} from "../../knowledge/BedrockKnowledge";
+
 /**
  * A parsed command with its parts
  */
@@ -63,7 +70,7 @@ export type ArgumentType =
  * A parsed selector (@a, @e, etc.)
  */
 export interface IParsedSelector {
-  /** Selector type (a, e, p, r, s, initiator) */
+  /** Selector type (a, e, p, r, s, n, initiator) */
   type: string;
   /** Full selector text */
   fullText: string;
@@ -79,209 +86,99 @@ export interface IParsedSelector {
  * Command information
  */
 export interface ICommandInfo {
-  /** Command name */
+  /** Command name (or alias) */
   name: string;
   /** Short description */
   description: string;
-  /** Usage syntax */
+  /** Usage syntax of the first overload */
   syntax: string;
+  /** Usage syntax of every overload, as reported by the engine */
+  usages?: string[];
   /** Example usage */
   examples?: string[];
   /** Permission level required */
   permissionLevel?: number;
   /** Whether this is operator-only */
   operatorOnly?: boolean;
+  /** Whether cheats must be enabled for the command to run */
+  requiresCheats?: boolean;
+  /** Other names the engine accepts for this command */
+  aliases?: string[];
+  /** When this entry is an alias, the canonical command name */
+  aliasOf?: string;
+  /** Engine overload data, for argument-aware completions and diagnostics */
+  overloads?: IKnowledgeCommandOverload[];
 }
 
 /**
- * Known Minecraft commands with metadata
+ * Hand-curated examples layered on top of engine command data.
  */
-export const MINECRAFT_COMMANDS: ICommandInfo[] = [
-  // World commands
-  {
-    name: "setblock",
-    description: "Places a block",
-    syntax: "setblock <position> <block> [replace|destroy|keep]",
-    examples: ["setblock ~ ~1 ~ stone", "setblock 0 64 0 air destroy"],
-  },
-  {
-    name: "fill",
-    description: "Fills a region with blocks",
-    syntax: "fill <from> <to> <block> [replace|hollow|outline|destroy|keep]",
-    examples: ["fill ~-5 ~ ~-5 ~5 ~5 ~5 stone hollow"],
-  },
-  {
-    name: "clone",
-    description: "Copies blocks from one region to another",
-    syntax: "clone <begin> <end> <destination> [replace|masked] [force|move|normal]",
-  },
-  { name: "structure", description: "Manages structures", syntax: "structure save|load|delete <name> ..." },
+export const COMMAND_EXAMPLES: { [command: string]: string[] } = {
+  setblock: ["setblock ~ ~1 ~ stone", "setblock 0 64 0 air destroy"],
+  fill: ["fill ~-5 ~ ~-5 ~5 ~5 ~5 stone hollow"],
+  summon: ["summon pig", "summon minecraft:zombie ~ ~ ~"],
+  kill: ["kill @e[type=zombie]", "kill @s"],
+  teleport: ["tp @s 0 64 0", "tp @a @p"],
+  effect: ["effect @a speed 30 2"],
+  execute: ["execute as @a at @s run say Hello"],
+  gamemode: ["gamemode creative", "gamemode 0 @a"],
+  give: ["give @s diamond 64"],
+  xp: ["xp 100L @s", "xp -5 @a"],
+  say: ["say Hello World!"],
+  title: ["title @a title Welcome!"],
+  tag: ["tag @s add vip", "tag @e remove temp"],
+  time: ["time set day", "time add 1000"],
+  gamerule: ["gamerule keepInventory true"],
+  function: ["function myaddon/setup"],
+  event: ["event entity @s minecraft:ageable_grow_up"],
+};
 
-  // Entity commands
-  {
-    name: "summon",
-    description: "Summons an entity",
-    syntax: "summon <entity> [position] [facing|spawnEvent] [nameTag]",
-    examples: ["summon pig", "summon minecraft:zombie ~ ~ ~"],
-  },
-  {
-    name: "kill",
-    description: "Kills entities",
-    syntax: "kill [target]",
-    examples: ["kill @e[type=zombie]", "kill @s"],
-  },
-  {
-    name: "tp",
-    description: "Teleports entities",
-    syntax: "tp <target> <destination>|<x y z> [facing]",
-    examples: ["tp @s 0 64 0", "tp @a @p"],
-  },
-  {
-    name: "teleport",
-    description: "Teleports entities (alias for tp)",
-    syntax: "teleport <target> <destination>|<x y z> [facing]",
-  },
-  {
-    name: "effect",
-    description: "Manages status effects",
-    syntax: "effect <target> <effect> [seconds] [amplifier] [hideParticles]",
-    examples: ["effect @a speed 30 2"],
-  },
-  {
-    name: "execute",
-    description: "Executes commands with modified context",
-    syntax: "execute <subcommand> ...",
-    examples: ["execute as @a at @s run say Hello"],
-  },
+/** Commands that only operators/hosts may run (engine permission level above game directors). */
+const OPERATOR_PERMISSION_LEVEL = 2;
 
-  // Player commands
-  {
-    name: "gamemode",
-    description: "Sets a player's game mode",
-    syntax: "gamemode <mode> [player]",
-    examples: ["gamemode creative", "gamemode 0 @a"],
-  },
-  {
-    name: "give",
-    description: "Gives items to players",
-    syntax: "give <player> <item> [amount] [data] [components]",
-    examples: ["give @s diamond 64"],
-  },
-  { name: "clear", description: "Clears items from inventory", syntax: "clear [player] [item] [data] [maxCount]" },
-  {
-    name: "xp",
-    description: "Manages experience",
-    syntax: "xp <amount>[L] [player]",
-    examples: ["xp 100L @s", "xp -5 @a"],
-  },
-  { name: "spawnpoint", description: "Sets spawn point", syntax: "spawnpoint [player] [position]" },
-  {
-    name: "spreadplayers",
-    description: "Spreads players randomly",
-    syntax: "spreadplayers <x> <z> <spreadDistance> <maxRange> <target>",
-  },
+/**
+ * Build command info entries (canonical commands plus one entry per alias) from engine knowledge.
+ */
+export function buildCommandInfos(knowledge: IBedrockKnowledge = getBedrockKnowledge()): ICommandInfo[] {
+  const infos: ICommandInfo[] = [];
+  for (const cmd of knowledge.commands) {
+    const usages = formatCommandOverloads(cmd);
+    const base: ICommandInfo = {
+      name: cmd.name,
+      description: cmd.description,
+      syntax: usages[0] ?? cmd.name,
+      usages,
+      examples: COMMAND_EXAMPLES[cmd.name],
+      permissionLevel: cmd.permissionLevel,
+      operatorOnly: cmd.permissionLevel >= OPERATOR_PERMISSION_LEVEL,
+      requiresCheats: cmd.requiresCheats,
+      aliases: cmd.aliases,
+      overloads: cmd.overloads,
+    };
+    infos.push(base);
+    for (const alias of cmd.aliases) {
+      infos.push({
+        ...base,
+        name: alias,
+        aliasOf: cmd.name,
+        description: `${cmd.description} (alias of /${cmd.name})`,
+        syntax: base.syntax.replace(cmd.name, alias),
+        usages: usages.map((u) => u.replace(cmd.name, alias)),
+      });
+    }
+  }
+  return infos.sort((a, b) => a.name.localeCompare(b.name));
+}
 
-  // Communication commands
-  { name: "say", description: "Sends a message", syntax: "say <message>", examples: ["say Hello World!"] },
-  { name: "tell", description: "Sends a private message", syntax: "tell <player> <message>" },
-  { name: "msg", description: "Sends a private message (alias)", syntax: "msg <player> <message>" },
-  { name: "w", description: "Whispers a message (alias)", syntax: "w <player> <message>" },
-  { name: "me", description: "Displays an action message", syntax: "me <message>" },
-  {
-    name: "title",
-    description: "Manages screen titles",
-    syntax: "title <player> <title|subtitle|actionbar|clear|reset|times> ...",
-    examples: ["title @a title Welcome!"],
-  },
-  { name: "tellraw", description: "Sends a JSON message", syntax: "tellraw <player> <rawJsonMessage>" },
-  { name: "titleraw", description: "Displays a JSON title", syntax: "titleraw <player> <type> <rawJsonMessage>" },
+/**
+ * Known Minecraft commands, derived from engine metadata for the active Bedrock channel.
+ * The array instance is stable; its contents are refreshed in place when the knowledge changes.
+ */
+export const MINECRAFT_COMMANDS: ICommandInfo[] = buildCommandInfos();
 
-  // Scoreboard commands
-  { name: "scoreboard", description: "Manages scoreboards", syntax: "scoreboard objectives|players <subcommand> ..." },
-  {
-    name: "tag",
-    description: "Manages entity tags",
-    syntax: "tag <target> add|remove|list <tagName>",
-    examples: ["tag @s add vip", "tag @e remove temp"],
-  },
-
-  // World state
-  {
-    name: "time",
-    description: "Changes world time",
-    syntax: "time add|query|set <value>",
-    examples: ["time set day", "time add 1000"],
-  },
-  { name: "weather", description: "Changes weather", syntax: "weather <clear|rain|thunder> [duration]" },
-  { name: "difficulty", description: "Sets difficulty", syntax: "difficulty <peaceful|easy|normal|hard>" },
-  {
-    name: "gamerule",
-    description: "Manages game rules",
-    syntax: "gamerule <rule> [value]",
-    examples: ["gamerule keepInventory true"],
-  },
-  { name: "setworldspawn", description: "Sets world spawn", syntax: "setworldspawn [position]" },
-  { name: "worldborder", description: "Manages world border", syntax: "worldborder <subcommand> ..." },
-
-  // Functions and logic
-  {
-    name: "function",
-    description: "Runs a function file",
-    syntax: "function <name>",
-    examples: ["function myaddon:setup"],
-  },
-  { name: "schedule", description: "Schedules a function", syntax: "schedule on_area_loaded add ..." },
-  {
-    name: "event",
-    description: "Triggers an entity event",
-    syntax: "event entity <target> <eventName>",
-    examples: ["event entity @s minecraft:ageable_grow_up"],
-  },
-
-  // Technical commands
-  { name: "testfor", description: "Tests for entities", syntax: "testfor <target>" },
-  { name: "testforblock", description: "Tests for a block", syntax: "testforblock <position> <block> [dataValue]" },
-  {
-    name: "testforblocks",
-    description: "Compares block regions",
-    syntax: "testforblocks <begin> <end> <destination> [all|masked]",
-  },
-  { name: "locate", description: "Locates structures/biomes", syntax: "locate structure|biome <name>" },
-
-  // Particle and sound
-  { name: "particle", description: "Creates particles", syntax: "particle <effect> <position>" },
-  {
-    name: "playsound",
-    description: "Plays a sound",
-    syntax: "playsound <sound> [player] [position] [volume] [pitch] [minVolume]",
-  },
-  { name: "stopsound", description: "Stops sounds", syntax: "stopsound <player> [sound]" },
-  { name: "music", description: "Controls music", syntax: "music play|queue|stop|volume <trackName> ..." },
-
-  // Camera
-  { name: "camera", description: "Controls camera", syntax: "camera <player> set|clear|fade ..." },
-  { name: "fog", description: "Manages fog settings", syntax: "fog <player> push|pop|remove <fogId>" },
-
-  // Misc
-  { name: "dialogue", description: "Controls NPC dialogue", syntax: "dialogue open|change <npc> <player> [sceneName]" },
-  {
-    name: "ride",
-    description: "Manages riding",
-    syntax: "ride <rider> start_riding|stop_riding|summon_ride|summon_rider ...",
-  },
-  {
-    name: "replaceitem",
-    description: "Replaces items in slots",
-    syntax: "replaceitem block|entity <target> slot.<slotType> <slotId> <item> [amount] [data] [components]",
-  },
-  { name: "loot", description: "Spawns loot", syntax: "loot spawn|give|insert|replace ..." },
-  { name: "tickingarea", description: "Manages ticking areas", syntax: "tickingarea add|remove|list ..." },
-  {
-    name: "inputpermission",
-    description: "Controls input permissions",
-    syntax: "inputpermission query|set <player> <permission> ...",
-  },
-];
+onDidChangeBedrockKnowledge((knowledge) => {
+  MINECRAFT_COMMANDS.splice(0, MINECRAFT_COMMANDS.length, ...buildCommandInfos(knowledge));
+});
 
 /**
  * Selector types and their meanings
@@ -292,6 +189,7 @@ export const SELECTOR_TYPES: { [key: string]: { description: string; example: st
   p: { description: "Nearest player", example: "@p" },
   r: { description: "Random player(s)", example: "@r[c=3]" },
   s: { description: "Executing entity (self)", example: "@s" },
+  n: { description: "Nearest entity", example: "@n[type=minecraft:cow]" },
   initiator: { description: "Player who triggered NPC dialogue", example: "@initiator" },
 };
 
@@ -391,8 +289,9 @@ export class CommandParser {
         continue;
       }
 
-      // Track string state
-      if ((char === '"' || char === "'") && text[i - 1] !== "\\") {
+      // Track string state. A quote is escaped only by an odd run of backslashes; an even run is
+      // a sequence of escaped backslashes, so the quote after it still opens or closes the string.
+      if ((char === '"' || char === "'") && countBackslashesBefore(text, i) % 2 === 0) {
         if (!inString) {
           inString = true;
           stringChar = char;
@@ -445,7 +344,7 @@ export class CommandParser {
    * Parse a selector (@a[...])
    */
   public parseSelector(text: string, offset: number = 0): IParsedSelector {
-    const match = text.match(/^@([aeprs]|initiator)(?:\[(.*)\])?$/);
+    const match = text.match(/^@([aeprsn]|initiator)(?:\[(.*)\])?$/);
 
     if (!match) {
       return {
@@ -483,7 +382,8 @@ export class CommandParser {
    * Get command info by name
    */
   public getCommandInfo(name: string): ICommandInfo | undefined {
-    return MINECRAFT_COMMANDS.find((cmd) => cmd.name === name.toLowerCase());
+    const lower = name.toLowerCase();
+    return MINECRAFT_COMMANDS.find((cmd) => cmd.name === lower);
   }
 
   /**
@@ -533,6 +433,14 @@ export class CommandParser {
       selectorContext,
     };
   }
+}
+
+function countBackslashesBefore(text: string, index: number): number {
+  let count = 0;
+  while (index - count - 1 >= 0 && text[index - count - 1] === "\\") {
+    count++;
+  }
+  return count;
 }
 
 // Singleton instance

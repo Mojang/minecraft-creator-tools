@@ -17,9 +17,9 @@
  * - File input: "@blocks.txt" (one identifier per line)
  *
  * USAGE:
- * npx mct rendervanilla <type> <identifier> [outputPath]
- * npx mct rv block oak_stairs output.png
- * npx mct rv mob pig,cow,sheep ./mobs/
+ * npx mct render vanilla <type> <identifier> [outputPath]
+ * npx mct render vanilla block oak_stairs output.png
+ * npx mct render vanilla mob pig,cow,sheep ./mobs/
  */
 
 import { Command } from "commander";
@@ -32,6 +32,12 @@ import LocalUtilities from "../../../local/LocalUtilities";
 import Log from "../../../core/Log";
 import * as path from "path";
 import * as fs from "fs";
+import { configureRenderGpuOptions, getRenderGpuOptions } from "./RenderGpuOptions";
+import {
+  configureRenderPresentationOptions,
+  getRenderPresentationOptions,
+  renderDimension,
+} from "./RenderPresentationOptions";
 
 export class RenderVanillaCommand extends CommandBase {
   private static readonly invalidFileNameCharsRegex = /[<>:"/\\|?*\x00-\x1F]/g;
@@ -55,9 +61,10 @@ export class RenderVanillaCommand extends CommandBase {
 
   readonly metadata: ICommandMetadata = {
     name: "rendervanilla",
+    route: ["render", "vanilla"],
     description:
-      "Renders vanilla Minecraft block(s) or mob(s) to PNG image(s). " +
-      "Use comma-separated identifiers or @filename for batch mode.",
+      "Render vanilla blocks, entities, or items to images. " +
+      "Use comma-separated identifiers or @filename to render several at once.",
     taskType: TaskType.renderVanilla,
     aliases: ["rv"],
     requiresProjects: false,
@@ -67,9 +74,14 @@ export class RenderVanillaCommand extends CommandBase {
     category: "Render",
     globalOptionGroups: ["dryRun"],
     examples: [
-      { description: "Render one block to a PNG", command: "mct rendervanilla block oak_stairs oak_stairs.png" },
-      { description: "Render several mobs into a folder", command: "mct rendervanilla mob pig,cow,sheep ./renders" },
+      { description: "Render one block to a PNG", command: "mct render vanilla block oak_stairs oak_stairs.png" },
+      { description: "Render several mobs into a folder", command: "mct render vanilla mob pig,cow,sheep ./renders" },
+      {
+        description: "Preview biome-inspired sunset lighting",
+        command: "mct render vanilla mob pig pig.png --environment plains --time-of-day sunset",
+      },
     ],
+    learnMore: ["Bones requires geometry-backed entities or attachables; vanilla blocks reject this appearance."],
     arguments: [
       {
         name: "type",
@@ -94,7 +106,8 @@ export class RenderVanillaCommand extends CommandBase {
   };
 
   configure(cmd: Command): void {
-    // Arguments are configured via metadata.arguments
+    configureRenderGpuOptions(cmd);
+    configureRenderPresentationOptions(cmd, true, true);
   }
 
   async execute(context: ICommandContext): Promise<void> {
@@ -105,7 +118,7 @@ export class RenderVanillaCommand extends CommandBase {
     let outputPath = context.newName;
 
     if (!contentType || !identifierInput) {
-      context.log.error("Usage: mct rendervanilla <type> <identifier(s)> [outputPath]");
+      context.log.error("Usage: mct render vanilla <type> <identifier(s)> [outputPath]");
       context.setExitCode(ErrorCodes.INIT_ERROR);
       return;
     }
@@ -113,6 +126,7 @@ export class RenderVanillaCommand extends CommandBase {
     const isBlock = contentType === "block";
     const isMob = contentType === "mob" || contentType === "entity";
     const isItem = contentType === "item" || contentType === "attachable";
+    if (!getRenderPresentationOptions(context, !isBlock)) return;
 
     if (!isBlock && !isMob && !isItem) {
       context.log.error(`Unknown type: ${contentType}. Use 'block', 'mob', 'entity', 'item', or 'attachable'.`);
@@ -167,37 +181,40 @@ export class RenderVanillaCommand extends CommandBase {
 
     const sm = new ServerManager(context.localEnv, context.creatorTools);
     sm.features = ServerManagerFeatures.all;
-    const httpServer = sm.ensureHttpServer();
-
-    // Wait for server to be listening before navigating the browser
-    await httpServer.waitForReady(30000);
-
+    const httpServer = await sm.ensureHttpServer();
     const baseUrl = `http://localhost:${port}`;
-    Log.verbose(`Server started at ${baseUrl}`);
-
-    const renderer = new PlaywrightPageRenderer(baseUrl);
-    const initialized = await renderer.initialize();
-
-    if (!initialized) {
-      context.log.error("Could not initialize headless renderer. Run: npx playwright install chromium");
-      context.setExitCode(ErrorCodes.INIT_ERROR);
-      return;
-    }
-
-    Log.verbose(`Using browser: ${renderer.getBrowserInfo()}`);
-
-    const prefix = isBlock ? "block" : isItem ? "item" : "mob";
-    const isBatchMode = identifiers.length > 1;
+    const renderer = new PlaywrightPageRenderer(baseUrl, getRenderGpuOptions(context.commandOptions));
 
     try {
+      // Wait for server to be listening before navigating the browser
+      await httpServer.waitForReady(30000);
+
+      Log.verbose(`Server started at ${baseUrl}`);
+
+      const initialized = await renderer.initialize();
+
+      if (!initialized) {
+        context.log.error("Could not initialize headless renderer. Run: npx playwright install chromium");
+        context.setExitCode(ErrorCodes.INIT_ERROR);
+        return;
+      }
+
+      Log.verbose(`Using browser: ${renderer.getBrowserInfo()}`);
+
+      const prefix = isBlock ? "block" : isItem ? "item" : "mob";
+      const isBatchMode = identifiers.length > 1;
+
       if (isBatchMode) {
         await this.renderBatch(context, renderer, identifiers, isBlock, isMob, isItem, prefix, outputPath);
       } else {
         await this.renderSingle(context, renderer, identifiers[0], isBlock, isMob, isItem, prefix, outputPath);
       }
     } finally {
-      await renderer.close();
-      await httpServer.stop("rendering complete");
+      try {
+        await renderer.close();
+      } finally {
+        await httpServer.stop("rendering complete");
+      }
     }
 
     this.logComplete(context);
@@ -241,19 +258,19 @@ export class RenderVanillaCommand extends CommandBase {
     if (isBlock) {
       results = await renderer.renderBlocks(
         items,
-        { width: 512, height: 512, renderWaitTime, fastMode: true, flatBackground: true },
+        { ...this.renderOptions(context), renderWaitTime, fastMode: true },
         progressCb
       );
     } else if (isItem) {
       results = await renderer.renderItems(
         items,
-        { width: 512, height: 512, renderWaitTime, canvasTimeout, fastMode: true },
+        { ...this.renderOptions(context), renderWaitTime, canvasTimeout, fastMode: true },
         progressCb
       );
     } else if (isMob) {
       results = await renderer.renderMobs(
         items,
-        { width: 512, height: 512, renderWaitTime, fastMode: true },
+        { ...this.renderOptions(context), renderWaitTime, fastMode: true },
         progressCb
       );
     } else {
@@ -300,15 +317,13 @@ export class RenderVanillaCommand extends CommandBase {
     let result;
     if (isBlock) {
       result = await renderer.renderBlock(identifier, {
-        width: 512,
-        height: 512,
+        ...this.renderOptions(context),
         renderWaitTime: 5000,
-        flatBackground: true,
       });
     } else if (isItem) {
-      result = await renderer.renderItem(identifier, { width: 512, height: 512, renderWaitTime: 8000 });
+      result = await renderer.renderItem(identifier, { ...this.renderOptions(context), renderWaitTime: 8000 });
     } else if (isMob) {
-      result = await renderer.renderMob(identifier, { width: 512, height: 512, renderWaitTime: 8000 });
+      result = await renderer.renderMob(identifier, { ...this.renderOptions(context), renderWaitTime: 8000 });
     } else {
       context.log.error(`Unsupported content type for single rendering`);
       return;
@@ -340,6 +355,14 @@ export class RenderVanillaCommand extends CommandBase {
       context.log.error(`No image data was generated for: ${identifier}`);
       context.setExitCode(ErrorCodes.INIT_ERROR);
     }
+  }
+
+  private renderOptions(context: ICommandContext) {
+    return {
+      presentation: getRenderPresentationOptions(context),
+      width: renderDimension(context.commandOptions?.width ?? 1024, "--width"),
+      height: renderDimension(context.commandOptions?.height ?? 1024, "--height"),
+    };
   }
 }
 

@@ -1692,6 +1692,50 @@ describe("DataFormValidator", () => {
     expect(issues.length).to.equal(1);
     expect(issues[0].type).to.equal(DataFormIssueType.dataTypeMismatch);
   });
+
+  it("should ignore removed placeholder fields", async () => {
+    const DataFormValidator = (await import("../dataform/DataFormValidator")).default;
+    const { FieldDataType } = await import("../dataform/IField");
+
+    // Mirrors minecraft:behavior.nearest_attackable_target, where the upstream form keeps a
+    // typeless "attack_interval|attack_interval_min" placeholder next to the real range field.
+    const form = {
+      id: "test",
+      fields: [
+        { id: "attack_interval|attack_interval_min", isRemoved: true } as any,
+        {
+          id: "attack_interval",
+          dataType: FieldDataType.intRange,
+          alternates: [{ id: "attack_interval", dataType: FieldDataType.int }],
+        },
+      ],
+    };
+
+    expect(await DataFormValidator.validate({ attack_interval: { min: 1, max: 2 } }, form)).to.deep.equal([]);
+    expect(await DataFormValidator.validate({ attack_interval: 5 }, form)).to.deep.equal([]);
+    expect(await DataFormValidator.validate({ attack_interval: [1, 2] }, form)).to.deep.equal([]);
+  });
+
+  it("should anchor every alternative of an alternation field id", async () => {
+    const DataFormValidator = (await import("../dataform/DataFormValidator")).default;
+    const { DataFormIssueType } = await import("../dataform/DataFormValidator");
+    const { FieldDataType } = await import("../dataform/IField");
+
+    const form = {
+      id: "test",
+      fields: [{ id: "block_allowlist|block_whitelist", dataType: FieldDataType.stringArray }],
+    };
+
+    expect(await DataFormValidator.validate({ block_allowlist: ["minecraft:stone"] }, form)).to.deep.equal([]);
+    expect(await DataFormValidator.validate({ block_whitelist: ["minecraft:stone"] }, form)).to.deep.equal([]);
+
+    // A key that merely starts with one alternative is not a match for the field.
+    expect(await DataFormValidator.validate({ block_allowlist_extra: 7 }, form)).to.deep.equal([]);
+
+    const issues = await DataFormValidator.validate({ block_whitelist: 7 }, form);
+    expect(issues.length).to.equal(1);
+    expect(issues[0].type).to.equal(DataFormIssueType.dataTypeMismatch);
+  });
 });
 
 describe("SummarizerEvaluator", () => {
@@ -2041,6 +2085,112 @@ describe("SummarizerEvaluator", () => {
     const valueToken = tokens.find((t) => t.text === "500");
     expect(valueToken).to.not.be.undefined;
     expect(valueToken?.effects?.icon).to.equal("❤️");
+  });
+
+  // The shooter form's ranged-attack phrase, with its exists token written the
+  // way ISummarizerToken documents it. The checked-in override of the
+  // bedrock-schemas form is the source of truth for that shape.
+  it("should evaluate exists tokens through whenDefined and whenUndefined", async () => {
+    const SummarizerEvaluator = (await import("../dataform/SummarizerEvaluator")).default;
+
+    const shooterForm = JSON.parse(
+      fs.readFileSync(
+        TestPaths.appRoot + "public_supplemental/data/local_forms/entity/minecraft_shooter.form.json",
+        "utf8"
+      )
+    );
+    const evaluator = new SummarizerEvaluator();
+
+    const withoutProjectile = evaluator.evaluate(shooterForm.summarizer, {}, shooterForm);
+    expect(withoutProjectile.phrases).to.deep.equal(["shoots projectiles for ranged attacks"]);
+    expect(withoutProjectile.issues).to.equal(undefined);
+
+    const data = { def: "minecraft:arrow", magic: true, aux_val: 26 };
+    const withProjectile = evaluator.evaluate(shooterForm.summarizer, data, shooterForm);
+    expect(withProjectile.phrases).to.deep.equal([
+      "shoots minecraft:arrow for ranged attacks",
+      "uses magic projectiles",
+      "applies potion effect 26 on hit",
+    ]);
+    expect(withProjectile.issues).to.equal(undefined);
+
+    const rich = evaluator.evaluateWithEffects(shooterForm.summarizer, data, shooterForm);
+    expect(rich.phrases).to.deep.equal(withProjectile.phrases);
+    expect(rich.evaluatedPhrases[0].tokens.map((t) => t.text)).to.deep.equal([
+      "shoots ",
+      "minecraft:arrow",
+      " for ranged attacks",
+    ]);
+    expect(rich.issues).to.equal(undefined);
+  });
+
+  // @minecraft/bedrock-schemas 1.26.50 ships the shooter form's exists token
+  // with `tokens`/`elseTokens` in place of `whenDefined`/`whenUndefined`.
+  // Iterating the list that is not there used to throw "tokens is not
+  // iterable" out of DataForm's render (public issue #159); the token now
+  // contributes nothing and the result says what is wrong with the definition.
+  it("should report instead of throwing when an exists token uses an unsupported shape", async () => {
+    const SummarizerEvaluator = (await import("../dataform/SummarizerEvaluator")).default;
+
+    const summarizer: any = {
+      phrases: [
+        {
+          tokens: [
+            { type: "literal", text: "shoots " },
+            {
+              type: "exists",
+              field: "def",
+              tokens: [{ type: "value", field: "def" }],
+              elseTokens: [{ type: "literal", text: "projectiles" }],
+            },
+            { type: "literal", text: " for ranged attacks" },
+          ],
+        },
+      ],
+    };
+    const expectedIssue =
+      'The "whenDefined" token list of the exists token for field "def" is missing or is not an array';
+    const evaluator = new SummarizerEvaluator();
+
+    const defined = evaluator.evaluate(summarizer, { def: "minecraft:arrow" });
+    expect(defined.issues).to.deep.equal([expectedIssue]);
+    expect(defined.phrases[0]).to.not.include("minecraft:arrow");
+
+    // The definition is wrong whatever the data holds, so the undefined side reports it too.
+    const notDefined = evaluator.evaluate(summarizer, {});
+    expect(notDefined.issues).to.deep.equal([expectedIssue]);
+    expect(notDefined.phrases[0]).to.not.include("projectiles");
+
+    const rich = evaluator.evaluateWithEffects(summarizer, { def: "minecraft:arrow" });
+    expect(rich.issues).to.deep.equal([expectedIssue]);
+    expect(rich.evaluatedPhrases[0].tokens.map((t) => t.text)).to.deep.equal(["shoots ", " for ranged attacks"]);
+
+    // A later evaluation of a sound definition starts with a clean slate.
+    const healthy = evaluator.evaluate({ phrases: [{ tokens: [{ type: "literal", text: "has something" }] }] }, {});
+    expect(healthy.issues).to.equal(undefined);
+  });
+
+  it("should treat other missing lists in a definition as empty and report them", async () => {
+    const SummarizerEvaluator = (await import("../dataform/SummarizerEvaluator")).default;
+    const evaluator = new SummarizerEvaluator();
+
+    const noPhrases = evaluator.evaluate({ id: "broken" } as any, {});
+    expect(noPhrases.phrases).to.deep.equal([]);
+    expect(noPhrases.issues).to.deep.equal(["The summarizer's phrase list is missing or is not an array"]);
+
+    const switchWithoutCases: any = {
+      phrases: [
+        {
+          tokens: [
+            { type: "literal", text: "has " },
+            { type: "switch", default: [{ type: "literal", text: "normal health" }] },
+          ],
+        },
+      ],
+    };
+    const result = evaluator.evaluate(switchWithoutCases, { max: 1 });
+    expect(result.phrases).to.deep.equal(["has normal health"]);
+    expect(result.issues).to.deep.equal(["The cases of a switch token is missing or is not an array"]);
   });
 });
 
@@ -2572,6 +2722,43 @@ describe("Phantom Edit Prevention", async () => {
       "File should NOT be marked modified when content with comments is semantically the same"
     );
     expect(file!.needsSave).to.equal(false, "File should NOT need save for no-op on commented JSON");
+  }).timeout(30000);
+
+  it("setObjectContentIfSemanticallyDifferent writes in-place edits to the cached comment-json object", async () => {
+    const project = await _loadProject("comprehensive");
+
+    const entityItem = project.items.find((item) => item.itemType === ProjectItemType.entityTypeBehavior);
+    assert.isDefined(entityItem, "Should find an entity type item");
+
+    const file = entityItem!.primaryFile;
+    assert.isDefined(file, "Entity type item should have a primary file");
+
+    const contentWithComments = `// leading comment keeps comment metadata on the root object
+{
+  "format_version": "1.20.0",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "test:entity"
+    }
+  }
+}`;
+
+    file!.setContent(contentWithComments);
+    file!.lastLoadedOrSaved = new Date();
+    file!.modified = null;
+
+    // Definition managers parse once, keep the cached object, and mutate it in place.
+    const StorageUtilities = (await import("../storage/StorageUtilities")).default;
+    const parsed = StorageUtilities.getJsonObjectWithComments(file!);
+    assert.strictEqual(parsed, file!.commentJsonCache, "parsed object is the file's cache");
+
+    parsed["minecraft:entity"].description.is_spawnable = true;
+
+    const wasModified = file!.setObjectContentIfSemanticallyDifferent(parsed);
+
+    expect(wasModified).to.equal(true, "An in-place edit of the cached object must be written");
+    expect(file!.content).to.include('"is_spawnable": true');
+    expect(file!.content).to.include("leading comment");
   }).timeout(30000);
 
   it("setObjectContentIfSemanticallyDifferent handles files with trailing commas", async () => {

@@ -41,7 +41,8 @@ import type { IToolCommandContext } from "./IToolCommandContext";
 
 /**
  * Scopes where a ToolCommand can be invoked.
- * By default, commands are available in all scopes.
+ * A command that doesn't declare scopes is available in every scope except serverApi, which
+ * commands opt into (see ToolCommandRegistry.isAvailableIn).
  */
 export enum ToolCommandScope {
   /** Available in web/Electron UI (SearchCommandEditor, Home page) */
@@ -53,7 +54,11 @@ export enum ToolCommandScope {
   /** Available in serve mode interactive terminal */
   serveTerminal = "serveTerminal",
 
-  /** Available in server management HTTP API */
+  /**
+   * Available in the server's HTTP API (/api/commands), for clients with the updateState or admin
+   * passcode. Opt-in: a command runs there only when its scopes list this one. HttpServer also
+   * requires the Minecraft EULA for write commands and rejects file and folder paths there.
+   */
   serverApi = "serverApi",
 
   /** Available as CLI command (via adapter) */
@@ -134,10 +139,10 @@ export interface IToolCommandMetadata {
   /** Whether this command requires an active Minecraft server connection */
   requiresMinecraft?: boolean;
 
-  /** Whether this command modifies content (vs read-only) */
+  /** Whether this command modifies content (vs read-only). Through serverApi, these need the Minecraft EULA. */
   isWriteCommand?: boolean;
 
-  /** Scopes where this command is available (default: all) */
+  /** Scopes where this command is available (default: every scope except serverApi, which is opt-in) */
   scopes?: ToolCommandScope[];
 
   /** Example usages for help text */

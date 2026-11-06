@@ -129,6 +129,35 @@ describe("VanillaProtectedAssetsInfoGenerator", () => {
     expect(getVanproResults(results).length).to.equal(1);
   });
 
+  it("should flag the data-driven container screen in resource packs", async () => {
+    const item = createUiItem("/resource_packs/test_rp/ui/data_driven_container_screen.json");
+    const pack = createStubPack({
+      items: [item],
+      packType: PackType.resource,
+      projectPath: "/resource_packs/test_rp",
+    });
+
+    const results = await generator.generate(createStubProject([item], [pack]));
+
+    expect(getVanproResults(results).length).to.equal(1);
+    expect(results[0].data).to.equal("resource/ui/data_driven_container_screen.json");
+  });
+
+  it("should match a protected file only at its exact path", async () => {
+    const sameNameElsewhere = createUiItem("/resource_packs/test_rp/ui/custom/data_driven_container_screen.json");
+    // A folder can have the protected file's name; files inside it don't override the file.
+    const inSameNamedFolder = createUiItem("/resource_packs/test_rp/ui/data_driven_container_screen.json/custom.json");
+    const pack = createStubPack({
+      items: [sameNameElsewhere, inSameNamedFolder],
+      packType: PackType.resource,
+      projectPath: "/resource_packs/test_rp",
+    });
+
+    const results = await generator.generate(createStubProject([sameNameElsewhere, inSameNamedFolder], [pack]));
+
+    expect(getVanproResults(results).length).to.equal(0);
+  });
+
   it("should only add summary counts when protected asset overrides are present", () => {
     const emptyInfo: { vanillaProtectedAssetOverrides?: number } = {};
     generator.summarize(emptyInfo, createCountingInfoSet(0));
@@ -146,6 +175,14 @@ function createStructureItem(projectPath: string) {
   return createStubProjectItem({
     itemType: ProjectItemType.structure,
     name: "foo.mcstructure",
+    projectPath,
+  });
+}
+
+function createUiItem(projectPath: string) {
+  return createStubProjectItem({
+    itemType: ProjectItemType.uiJson,
+    name: projectPath.substring(projectPath.lastIndexOf("/") + 1),
     projectPath,
   });
 }

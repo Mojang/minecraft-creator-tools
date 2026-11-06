@@ -11,6 +11,7 @@
 
 const path = require("path");
 const webpack = require("webpack");
+const knowledgeJsonRule = require("./webpack.knowledgeJsonRule");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 // Read version from package.json
@@ -124,6 +125,7 @@ const webExtensionConfig = {
   // Directory patterns use [\\/] so every platform excludes the same files (Windows paths use "\").
   module: {
     rules: [
+      knowledgeJsonRule,
       {
         test: /\.js$/,
         exclude: [

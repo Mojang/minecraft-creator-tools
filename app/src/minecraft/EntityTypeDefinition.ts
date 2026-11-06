@@ -105,6 +105,12 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
   private _loadedWithComments: boolean = false;
   /** Set during persist() so the resulting onFileContentUpdated event doesn't wipe our already-current in-memory state. */
   private _isSelfPersisting: boolean = false;
+  /**
+   * The file content this definition was parsed from (or last wrote). `persist()`
+   * refuses to write while the file holds something else: that is newer text this
+   * definition has not seen, and writing would put the older data back over it.
+   */
+  private _loadedFromContent?: string | Uint8Array | null;
 
   private _managedComponents: { [id: string]: IManagedComponent | undefined } = {};
 
@@ -303,6 +309,7 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
     this._data = undefined;
     this._isLoaded = false;
     this._wrapper = undefined;
+    this._loadedFromContent = undefined;
     this._managedComponents = {};
   }
 
@@ -730,6 +737,118 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
   }
 
   /**
+   * Ids of the events that add or remove the component group, including
+   * entries nested in `sequence` and `randomize` lists.
+   */
+  getComponentGroupReferences(id: string): string[] {
+    const eventIds: string[] = [];
+
+    if (this._data === undefined || !this._data.events) {
+      return eventIds;
+    }
+
+    for (const eventName in this._data.events) {
+      if (
+        Utilities.isUsableAsObjectKey(eventName) &&
+        EntityTypeDefinition._pruneComponentGroupFromAction(this._data.events[eventName], id, false)
+      ) {
+        eventIds.push(eventName);
+      }
+    }
+
+    return eventIds;
+  }
+
+  /**
+   * Removes the component group and every add/remove reference to it in the
+   * events, so no event is left naming a group that no longer exists. Lists
+   * and `add`/`remove` objects left empty are dropped. Returns the ids of the
+   * events that changed; the base components are not touched.
+   */
+  removeComponentGroup(id: string): string[] {
+    const eventIds: string[] = [];
+
+    if (
+      this._data === undefined ||
+      !this._data.component_groups ||
+      !Utilities.isUsableAsObjectKey(id) ||
+      !(id in this._data.component_groups)
+    ) {
+      return eventIds;
+    }
+
+    delete this._data.component_groups[id];
+    delete this._componentGroups[id];
+
+    if (this._data.events) {
+      for (const eventName in this._data.events) {
+        if (
+          Utilities.isUsableAsObjectKey(eventName) &&
+          EntityTypeDefinition._pruneComponentGroupFromAction(this._data.events[eventName], id, true)
+        ) {
+          eventIds.push(eventName);
+        }
+      }
+    }
+
+    return eventIds;
+  }
+
+  /**
+   * Whether the action, or any action nested in its `sequence`/`randomize`
+   * lists, adds or removes the component group. With `remove` set the group
+   * is also taken out of those lists, and an `add`/`remove` left with nothing
+   * in it is deleted.
+   */
+  private static _pruneComponentGroupFromAction(
+    action: IEventAction | IEventActionSet | undefined,
+    id: string,
+    remove: boolean
+  ): boolean {
+    if (!action || typeof action !== "object") {
+      return false;
+    }
+
+    let found = false;
+    const singleAction = action as IEventAction;
+    const addRemoveKeys: ("add" | "remove")[] = ["add", "remove"];
+
+    for (const key of addRemoveKeys) {
+      const groupSet = singleAction[key];
+
+      if (groupSet && Array.isArray(groupSet.component_groups) && groupSet.component_groups.includes(id)) {
+        found = true;
+
+        if (remove) {
+          groupSet.component_groups = groupSet.component_groups.filter((groupId) => groupId !== id);
+
+          if (groupSet.component_groups.length === 0) {
+            delete (groupSet as { component_groups?: string[] }).component_groups;
+          }
+
+          if (Object.keys(groupSet).length === 0) {
+            delete singleAction[key];
+          }
+        }
+      }
+    }
+
+    const actionSet = action as IEventActionSet;
+
+    for (const nestedActions of [actionSet.sequence, actionSet.randomize]) {
+      if (Array.isArray(nestedActions)) {
+        for (const nestedAction of nestedActions) {
+          if (EntityTypeDefinition._pruneComponentGroupFromAction(nestedAction, id, remove)) {
+            found = true;
+          }
+        }
+      }
+    }
+
+    return found;
+  }
+
+  /**
    * Snapshot of the current set of entity traits inferred from this
    * entity's components and component groups. Used by the Traits tab to
    * compute the diff against the user's new selection without round-tripping
@@ -987,6 +1106,232 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
     this._data.events[eventName] = {};
   }
 
+  /**
+   * Where this entity fires the event on itself, as readable descriptions:
+   * `minecraft:interact` for a base component, `group minecraft:cow_baby >
+   * minecraft:timer` for a component inside a group, and `action
+   * minecraft:entity_born` for another event that triggers it. Triggers
+   * aimed at another entity (`target: "other"` and the like) refer to that
+   * entity's event, not this one, and are not counted.
+   */
+  getEventReferences(id: string): string[] {
+    return this._pruneEventTriggers(id, false);
+  }
+
+  /**
+   * Removes the event and every local invocation of it, so nothing is left
+   * pointing at an event that no longer exists: triggers in the base
+   * components and the component groups, and `trigger` responses in the
+   * other events (at the root and under `sequence`/`randomize`). Only the
+   * invocation goes; a trigger's `filters` and its sibling settings stay (an
+   * `on_interact` that only filters is a valid shape), as do the sibling
+   * responses of an action and triggers aimed at another entity. A trigger
+   * held in a list is taken out of the list, and a component that is itself
+   * the trigger (`minecraft:on_hurt`) is dropped. Returns the descriptions
+   * of what changed; see `getEventReferences`.
+   */
+  removeEvent(id: string): string[] {
+    if (
+      this._data === undefined ||
+      !this._data.events ||
+      !Utilities.isUsableAsObjectKey(id) ||
+      !(id in this._data.events)
+    ) {
+      return [];
+    }
+
+    delete this._data.events[id];
+    delete this._events[id];
+
+    return this._pruneEventTriggers(id, true);
+  }
+
+  private _pruneEventTriggers(eventId: string, remove: boolean): string[] {
+    const descriptions: string[] = [];
+
+    if (this._data === undefined) {
+      return descriptions;
+    }
+
+    if (this._data.components) {
+      const components = this._data.components;
+
+      for (const componentId of EntityTypeDefinition._triggerComponents(components, eventId, remove)) {
+        if (remove && EntityTypeDefinition._isTriggerFor(components[componentId], eventId)) {
+          this.removeComponent(componentId);
+        }
+
+        descriptions.push(componentId);
+      }
+    }
+
+    if (this._data.component_groups) {
+      for (const groupId in this._data.component_groups) {
+        const groupData = this._data.component_groups[groupId];
+
+        if (!groupData || !Utilities.isUsableAsObjectKey(groupId)) {
+          continue;
+        }
+
+        for (const componentId of EntityTypeDefinition._triggerComponents(groupData, eventId, remove)) {
+          if (remove && EntityTypeDefinition._isTriggerFor(groupData[componentId], eventId)) {
+            this.getComponentGroup(groupId)?.removeComponent(componentId);
+            delete groupData[componentId];
+          }
+
+          descriptions.push("group " + groupId + " > " + componentId);
+        }
+      }
+    }
+
+    if (this._data.events) {
+      for (const eventName in this._data.events) {
+        if (
+          eventName !== eventId &&
+          Utilities.isUsableAsObjectKey(eventName) &&
+          EntityTypeDefinition._pruneTriggerFromAction(this._data.events[eventName], eventId, remove)
+        ) {
+          descriptions.push("action " + eventName);
+        }
+      }
+    }
+
+    return descriptions;
+  }
+
+  /**
+   * Whether the action, or any action nested in its `sequence`/`randomize`
+   * lists, triggers the event on this entity. With `remove` set, that
+   * `trigger` response is deleted; the action's other responses and the
+   * other branches of the lists are kept.
+   */
+  private static _pruneTriggerFromAction(
+    action: IEventAction | IEventActionSet | undefined,
+    eventId: string,
+    remove: boolean
+  ): boolean {
+    if (!action || typeof action !== "object") {
+      return false;
+    }
+
+    let found = false;
+    const singleAction = action as IEventAction;
+
+    if (singleAction.trigger === eventId || EntityTypeDefinition._isTriggerFor(singleAction.trigger, eventId)) {
+      found = true;
+
+      if (remove) {
+        delete singleAction.trigger;
+      }
+    }
+
+    const actionSet = action as IEventActionSet;
+
+    for (const nestedActions of [actionSet.sequence, actionSet.randomize]) {
+      if (Array.isArray(nestedActions)) {
+        for (const nestedAction of nestedActions) {
+          if (EntityTypeDefinition._pruneTriggerFromAction(nestedAction, eventId, remove)) {
+            found = true;
+          }
+        }
+      }
+    }
+
+    return found;
+  }
+
+  /**
+   * Ids of the components in the set that fire the event. With `remove` set
+   * the triggers nested inside a component are taken out of it; a component
+   * that is itself the trigger (`minecraft:on_hurt` and the like) is only
+   * reported, for the caller to drop from the set.
+   */
+  private static _triggerComponents(
+    componentSet: { [name: string]: unknown },
+    eventId: string,
+    remove: boolean
+  ): string[] {
+    const componentIds: string[] = [];
+
+    for (const componentId of Object.keys(componentSet)) {
+      const componentData = componentSet[componentId];
+
+      if (
+        EntityTypeDefinition._isTriggerFor(componentData, eventId) ||
+        EntityTypeDefinition._pruneNestedTriggers(componentData, eventId, remove)
+      ) {
+        componentIds.push(componentId);
+      }
+    }
+
+    return componentIds;
+  }
+
+  /**
+   * Whether the value is a trigger that fires the event on this entity: the
+   * target is omitted (which defaults to self) or `self`. A trigger with
+   * another target fires the event of that other entity.
+   */
+  private static _isTriggerFor(value: unknown, eventId: string): boolean {
+    if (value === null || typeof value !== "object" || Array.isArray(value)) {
+      return false;
+    }
+
+    const trigger = value as { event?: unknown; target?: unknown };
+
+    return trigger.event === eventId && (trigger.target === undefined || trigger.target === "self");
+  }
+
+  /**
+   * Takes the event invocation out of the trigger held at `record[key]`,
+   * keeping its `filters` and anything else it carries. A trigger left with
+   * nothing in it is deleted along with its property.
+   */
+  private static _stripTriggerInvocation(record: { [name: string]: unknown }, key: string) {
+    const trigger = record[key] as { [name: string]: unknown };
+
+    delete trigger.event;
+    delete trigger.target;
+
+    if (Object.keys(trigger).length === 0) {
+      delete record[key];
+    }
+  }
+
+  private static _pruneNestedTriggers(node: unknown, eventId: string, remove: boolean): boolean {
+    let found = false;
+
+    if (Array.isArray(node)) {
+      for (let i = node.length - 1; i >= 0; i--) {
+        if (EntityTypeDefinition._isTriggerFor(node[i], eventId)) {
+          found = true;
+
+          if (remove) {
+            node.splice(i, 1);
+          }
+        } else if (EntityTypeDefinition._pruneNestedTriggers(node[i], eventId, remove)) {
+          found = true;
+        }
+      }
+    } else if (node !== null && typeof node === "object") {
+      const record = node as { [name: string]: unknown };
+
+      for (const key of Object.keys(record)) {
+        if (EntityTypeDefinition._isTriggerFor(record[key], eventId)) {
+          found = true;
+
+          if (remove) {
+            EntityTypeDefinition._stripTriggerInvocation(record, key);
+          }
+        } else if (EntityTypeDefinition._pruneNestedTriggers(record[key], eventId, remove)) {
+          found = true;
+        }
+      }
+    }
+
+    return found;
+  }
+
   async addChildItems(project: Project, item: ProjectItem, index?: RelationsIndex) {
     let lootTablePaths: string[] = [];
 
@@ -1096,7 +1441,7 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
     if (behaviorPackFile.manager !== undefined && behaviorPackFile.manager instanceof EntityTypeDefinition) {
       et = behaviorPackFile.manager as EntityTypeDefinition;
 
-      if (!et.isLoaded || (preserveComments && !et._loadedWithComments)) {
+      if (!et.isLoaded || et.isOlderThanFile || (preserveComments && !et._loadedWithComments)) {
         if (loadHandler) {
           et.onLoaded.subscribe(loadHandler);
         }
@@ -1203,12 +1548,56 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
       return false;
     }
 
+    // What is in memory is older than the file (see `isOlderThanFile`), so
+    // writing it would put the older data back over the newer text. The
+    // edits made against the older text are dropped, the file's current
+    // text is parsed in their place and `onLoaded` fires so an editor
+    // re-renders what the file holds.
+    if (this.isOlderThanFile) {
+      Log.error(
+        "Unsaved edits to the entity definition in '" +
+          this._file.fullPath +
+          "' were made against text the file no longer holds and are discarded; the file's current text is loaded instead."
+      );
+      this.reloadIfOlderThanFile();
+      return false;
+    }
+
     this._isSelfPersisting = true;
     try {
       return this._file.setObjectContentIfSemanticallyDifferent(this._wrapper);
     } finally {
       this._isSelfPersisting = false;
+      this._loadedFromContent = this._file.content;
     }
+  }
+
+  /**
+   * Whether the file's content has been replaced since this definition was
+   * parsed from it (or last wrote it) without the content-updated event that
+   * would have reset the definition: a forced `loadContent(true)` from disk
+   * does that. What is in memory is then older than the file, so it must be
+   * neither edited nor written; see `reloadIfOlderThanFile`.
+   */
+  public get isOlderThanFile(): boolean {
+    return this._file !== undefined && this._isLoaded && this._file.content !== this._loadedFromContent;
+  }
+
+  /**
+   * When this definition is older than its file, drops it and parses the
+   * file's current content again, in the same comment mode as before, and
+   * fires `onLoaded`. Returns whether that happened. Synchronous, so a
+   * caller can check and then edit without the file changing in between.
+   */
+  public reloadIfOlderThanFile(): boolean {
+    if (!this._file || !this.isOlderThanFile) {
+      return false;
+    }
+
+    this._handleFileUpdated(this._file, this._file);
+    this._parseFromFile(this._loadedWithComments);
+
+    return true;
   }
 
   /**
@@ -1218,6 +1607,10 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
    *                         Can be called again with true to "upgrade" a read-only load to read/write.
    */
   async load(preserveComments: boolean = false) {
+    // A definition that is older than its file is parsed again whichever way
+    // it was loaded, so a reader never keeps working on the previous text.
+    this.reloadIfOlderThanFile();
+
     // If already loaded with comments, we have the "best" version - nothing more to do
     if (this._isLoaded && this._loadedWithComments) {
       return;
@@ -1239,6 +1632,18 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
     if (!this._file.isContentLoaded) {
       await this._file.loadContent();
     }
+
+    this._parseFromFile(preserveComments);
+  }
+
+  /** Parses the file's current content into this definition and fires `onLoaded`. */
+  private _parseFromFile(preserveComments: boolean) {
+    if (this._file === undefined) {
+      Log.unexpectedUndefined("ETBPFP");
+      return;
+    }
+
+    this._loadedFromContent = this._file.content;
 
     if (!this._file.content || this._file.content instanceof Uint8Array) {
       this._isLoaded = true;

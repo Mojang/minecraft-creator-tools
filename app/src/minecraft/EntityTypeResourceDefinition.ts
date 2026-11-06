@@ -628,14 +628,14 @@ export default class EntityTypeResourceDefinition {
         await rel.childItem.loadContent();
       }
 
-      if (rel.childItem.primaryFile && packRootFolder) {
-        let relativePath = StorageUtilities.getBaseRelativePath(rel.childItem.primaryFile, packRootFolder);
+      if (packRootFolder) {
+        const relativePaths = await StorageUtilities.getItemBaseRelativePaths(rel.childItem, packRootFolder);
 
-        if (relativePath) {
+        if (relativePaths.length > 0) {
           for (const key in this._data.textures) {
             const texturePath = this._data.textures[key];
 
-            if (texturePath === relativePath) {
+            if (texturePath !== undefined && relativePaths.includes(texturePath)) {
               this._data.textures[key] = undefined;
 
               if (etrChildItems) {
@@ -704,21 +704,19 @@ export default class EntityTypeResourceDefinition {
 
       // Textures — still need path-based matching since paths depend on pack root
       if (packRootFolder && textureList && textureList.length > 0) {
-        const textureItems = project.getItemsByType(ProjectItemType.texture);
-        for (const candItem of textureItems) {
-          if (candItem.primaryFile) {
-            let relativePath = TextureDefinition.canonicalizeTexturePath(
-              StorageUtilities.getBaseRelativePath(candItem.primaryFile, packRootFolder)
-            );
+        const resolved = await StorageUtilities.resolvePackPathCandidates(
+          project.getItemsByType(ProjectItemType.texture),
+          packRootFolder,
+          textureList,
+          (file) =>
+            TextureDefinition.canonicalizeTexturePath(StorageUtilities.getBaseRelativePath(file, packRootFolder))
+        );
 
-            if (relativePath) {
-              if (textureList && textureList.includes(relativePath)) {
-                item.addChildItem(candItem);
-                textureList = Utilities.removeItemInArray(relativePath, textureList);
-              }
-            }
-          }
+        for (const candItem of resolved.matches) {
+          item.addChildItem(candItem);
         }
+
+        textureList = resolved.unmatched;
       }
     } else {
       // Fallback: original scanning behavior when index is not available
@@ -799,25 +797,19 @@ export default class EntityTypeResourceDefinition {
 
       // Check textures
       if (packRootFolder && textureList && textureList.length > 0) {
-        const textureItems = project.getItemsByType(ProjectItemType.texture);
-        for (const candItem of textureItems) {
-          if (!candItem.isContentLoaded) {
-            await candItem.loadContent();
-          }
+        const resolved = await StorageUtilities.resolvePackPathCandidates(
+          project.getItemsByType(ProjectItemType.texture),
+          packRootFolder,
+          textureList,
+          (file) =>
+            TextureDefinition.canonicalizeTexturePath(StorageUtilities.getBaseRelativePath(file, packRootFolder))
+        );
 
-          if (candItem.primaryFile) {
-            let relativePath = TextureDefinition.canonicalizeTexturePath(
-              StorageUtilities.getBaseRelativePath(candItem.primaryFile, packRootFolder)
-            );
-
-            if (relativePath) {
-              if (textureList && textureList.includes(relativePath)) {
-                item.addChildItem(candItem);
-                textureList = Utilities.removeItemInArray(relativePath, textureList);
-              }
-            }
-          }
+        for (const candItem of resolved.matches) {
+          item.addChildItem(candItem);
         }
+
+        textureList = resolved.unmatched;
       }
 
       // Check model geometries

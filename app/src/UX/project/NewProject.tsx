@@ -15,6 +15,7 @@ import { faChrome, faEdge, faFirefoxBrowser, faSafari } from "@fortawesome/free-
 import { faComputer } from "@fortawesome/free-solid-svg-icons";
 import { faWindowRestore } from "@fortawesome/free-regular-svg-icons";
 import WebUtilities, { BrowserType } from "../utils/WebUtilities";
+import { pickDirectory } from "../utils/DirectoryPicker";
 import IFolder from "../../storage/IFolder";
 import FileSystemStorage from "../../storage/FileSystemStorage";
 import FileSystemFolder from "../../storage/FileSystemFolder";
@@ -236,49 +237,69 @@ export default class NewProject extends Component<INewProjectProps, INewProjectS
     this._updateSeed(newState);
   }
 
+  private _setFolderError(errorMessage: string) {
+    this.setState((prevState) => ({
+      errorMessage,
+      newProjectName: prevState.newProjectName,
+      newProjectPath: undefined,
+      newProjectFolder: undefined,
+      newProjectFolderTitle: undefined,
+      newProjectShortName: prevState.newProjectShortName,
+      newProjectCreator: prevState.newProjectCreator,
+      newProjectDescription: prevState.newProjectDescription,
+      newProjectTrack: prevState.newProjectTrack,
+    }));
+  }
+
   private async _useLocalStorage() {
+    const outcome = await pickDirectory(window, { mode: "readwrite" });
+
+    switch (outcome.status) {
+      case "cancelled":
+      case "busy":
+        return;
+
+      case "unsupported":
+      case "failed":
+        this._setFolderError(outcome.message);
+        return;
+
+      case "picked":
+        break;
+    }
+
+    const dirHandle = outcome.handle;
+
     try {
-      const dirHandle = (await window.showDirectoryPicker({
-        mode: "readwrite",
-      })) as FileSystemDirectoryHandle | undefined;
+      let fss = new FileSystemStorage(dirHandle as FileSystemDirectoryHandle, dirHandle.name);
 
-      if (dirHandle) {
-        let fss = new FileSystemStorage(dirHandle as FileSystemDirectoryHandle, dirHandle.name);
+      const safeMessage = await (fss.rootFolder as FileSystemFolder).getIsEmptyError();
 
-        const safeMessage = await (fss.rootFolder as FileSystemFolder).getIsEmptyError();
-
-        if (safeMessage !== undefined) {
-          this.setState({
-            errorMessage: "You can only create new projects in empty folders.\n\n" + safeMessage,
-            newProjectName: this.state.newProjectName,
-            newProjectPath: undefined,
-            newProjectFolder: undefined,
-            newProjectFolderTitle: undefined,
-            newProjectShortName: this.state.newProjectShortName,
-            newProjectCreator: this.state.newProjectCreator,
-            newProjectDescription: this.state.newProjectDescription,
-            newProjectTrack: this.state.newProjectTrack,
-          });
-          return;
-        }
-
-        const newState = {
-          errorMessage: undefined,
-          newProjectFolder: fss.rootFolder,
-          newProjectName: this.state.newProjectName,
-          newProjectFolderTitle: dirHandle.name,
-          newProjectPath: undefined,
-          newProjectShortName: this.state.newProjectShortName,
-          newProjectCreator: this.state.newProjectCreator,
-          newProjectDescription: this.state.newProjectDescription,
-          newProjectTrack: this.state.newProjectTrack,
-        };
-
-        this.setState(newState);
-        this._updateSeed(newState);
+      if (safeMessage !== undefined) {
+        this._setFolderError("You can only create new projects in empty folders.\n\n" + safeMessage);
+        return;
       }
+
+      const newState = {
+        errorMessage: undefined,
+        newProjectFolder: fss.rootFolder,
+        newProjectName: this.state.newProjectName,
+        newProjectFolderTitle: dirHandle.name,
+        newProjectPath: undefined,
+        newProjectShortName: this.state.newProjectShortName,
+        newProjectCreator: this.state.newProjectCreator,
+        newProjectDescription: this.state.newProjectDescription,
+        newProjectTrack: this.state.newProjectTrack,
+      };
+
+      this.setState(newState);
+      this._updateSeed(newState);
     } catch (e) {
-      // likely an AbortError, which is the user canceling the dialog.
+      const message = e instanceof Error ? e.message : String(e);
+
+      Log.error("Could not use folder '" + dirHandle.name + "' for a new project: " + message);
+
+      this._setFolderError("Could not use the folder '" + dirHandle.name + "': " + message);
     }
   }
 

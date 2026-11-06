@@ -446,6 +446,59 @@ function getDiffDetail(scenarioStr: string, resultStr: string): string {
   );
 }
 
+export interface IReportComparison {
+  isEqual: boolean;
+
+  /** The first lines that differ after normalization, or an empty string when the reports match. */
+  diffDetail: string;
+}
+
+/**
+ * Compares a validation report with its scenario the way ensureReportJsonMatchesScenario does:
+ * after removing volatile attributes, applying the volatile patterns and test exclusions, and
+ * snapping sizes and vanilla coverage that are within tolerance. Neither input is changed.
+ */
+export function compareReportWithScenario(
+  scenario: object,
+  result: object,
+  excludeTestIds?: string[]
+): IReportComparison {
+  let scenarioObj = StorageUtilities.removeAttributesFromObject(scenario, volatileAttributes);
+  let resultObj = StorageUtilities.removeAttributesFromObject(result, volatileAttributes);
+
+  scenarioObj = StorageUtilities.applyVolatilePatternsToObject(scenarioObj, volatilePatterns);
+  resultObj = StorageUtilities.applyVolatilePatternsToObject(resultObj, volatilePatterns);
+
+  // Exclude items BEFORE size/coverage normalization. normalizeSizeValues and
+  // normalizeVanillaCoverageValues match result<->scenario items by array position,
+  // so an excluded generator that only exists on one side (e.g. PACKFILECOUNT, which
+  // is absent from older baselines) would shift every following item and break the
+  // positional match — silently disabling the tolerant snapping and surfacing
+  // spurious 1-2 byte size drifts. Removing excluded items first keeps the two arrays
+  // aligned so the snapping still applies.
+  if (excludeTestIds && excludeTestIds.length > 0) {
+    scenarioObj = removeExcludedTestItems(scenarioObj, excludeTestIds);
+    resultObj = removeExcludedTestItems(resultObj, excludeTestIds);
+  }
+
+  // Snap result size values to scenario values when within tolerance, so trivial
+  // 1-2 byte drifts (a character changed somewhere) don't fail the test while
+  // larger drifts (meaningful content regressions) still surface.
+  resultObj = normalizeSizeValues(scenarioObj, resultObj);
+
+  // Snap vanilla game-texture coverage ratios within tolerance, so the ratio's
+  // denominator (the vanilla texture count, which grows version-over-version)
+  // doesn't fail the test on small drift while order-of-magnitude changes do.
+  resultObj = normalizeVanillaCoverageValues(scenarioObj, resultObj);
+
+  const scenarioStr = Utilities.consistentStringifyTrimmed(scenarioObj);
+  const resultStr = Utilities.consistentStringifyTrimmed(resultObj);
+
+  const isEqual = scenarioStr === resultStr;
+
+  return { isEqual, diffDetail: isEqual ? "" : getDiffDetail(scenarioStr, resultStr) };
+}
+
 export async function ensureReportJsonMatchesScenario(
   scenariosFolder: IFolder | undefined,
   resultsFolder: IFolder | undefined,
@@ -481,42 +534,11 @@ export async function ensureReportJsonMatchesScenario(
   const scenarioContent = scenarioFile.content;
   assert(typeof scenarioContent === "string", "Scenario file content is not a string");
 
-  let scenarioObj = JSON.parse(scenarioContent as string);
-  let resultObj = JSON.parse(dataObjectStr);
-
-  scenarioObj = StorageUtilities.removeAttributesFromObject(scenarioObj, volatileAttributes);
-  resultObj = StorageUtilities.removeAttributesFromObject(resultObj, volatileAttributes);
-
-  scenarioObj = StorageUtilities.applyVolatilePatternsToObject(scenarioObj, volatilePatterns);
-  resultObj = StorageUtilities.applyVolatilePatternsToObject(resultObj, volatilePatterns);
-
-  // Exclude items BEFORE size/coverage normalization. normalizeSizeValues and
-  // normalizeVanillaCoverageValues match result<->scenario items by array position,
-  // so an excluded generator that only exists on one side (e.g. PACKFILECOUNT, which
-  // is absent from older baselines) would shift every following item and break the
-  // positional match — silently disabling the tolerant snapping and surfacing
-  // spurious 1-2 byte size drifts. Removing excluded items first keeps the two arrays
-  // aligned so the snapping still applies.
-  if (excludeTestIds && excludeTestIds.length > 0) {
-    scenarioObj = removeExcludedTestItems(scenarioObj, excludeTestIds);
-    resultObj = removeExcludedTestItems(resultObj, excludeTestIds);
-  }
-
-  // Snap result size values to scenario values when within tolerance, so trivial
-  // 1-2 byte drifts (a character changed somewhere) don't fail the test while
-  // larger drifts (meaningful content regressions) still surface.
-  resultObj = normalizeSizeValues(scenarioObj, resultObj);
-
-  // Snap vanilla game-texture coverage ratios within tolerance, so the ratio's
-  // denominator (the vanilla texture count, which grows version-over-version)
-  // doesn't fail the test on small drift while order-of-magnitude changes do.
-  resultObj = normalizeVanillaCoverageValues(scenarioObj, resultObj);
-
-  const scenarioStr = Utilities.consistentStringifyTrimmed(scenarioObj);
-  const resultStr = Utilities.consistentStringifyTrimmed(resultObj);
-
-  const isEqual = scenarioStr === resultStr;
-  const diffDetail = isEqual ? "" : getDiffDetail(scenarioStr, resultStr);
+  const { isEqual, diffDetail } = compareReportWithScenario(
+    JSON.parse(scenarioContent as string),
+    JSON.parse(dataObjectStr),
+    excludeTestIds
+  );
 
   assert(
     isEqual,
