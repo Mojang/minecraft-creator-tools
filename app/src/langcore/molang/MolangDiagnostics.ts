@@ -6,7 +6,24 @@
  */
 
 import { DiagnosticSeverity, IDiagnostic } from "../json/JsonDiagnostics";
-import { molangParser, MOLANG_QUERIES, MOLANG_MATH } from "./MolangParser";
+import { molangParser, IMolangToken } from "./MolangParser";
+import {
+  DEFAULT_MOLANG_QUERY_SET,
+  findMolangMath,
+  findMolangQuery,
+  isMolangQueryAvailable,
+} from "../../knowledge/BedrockKnowledge";
+
+export interface IMolangDiagnosticOptions {
+  /** The owning pack's header.min_engine_version; enables query availability checks. */
+  minEngineVersion?: string;
+  /**
+   * Query set the expression is evaluated in: "default" (entities, animations, render
+   * controllers), "world_gen", or "tags". Defaults to "default".
+   */
+  querySet?: string;
+}
+import { getRangeQuerySets, IKnowledgeMolangFunction } from "../../knowledge/IBedrockKnowledge";
 
 /**
  * Generate Molang diagnostics
@@ -15,7 +32,12 @@ export class MolangDiagnosticGenerator {
   /**
    * Analyze a Molang expression and generate diagnostics
    */
-  public analyze(expression: string, lineNumber: number = 1, columnOffset: number = 0): IDiagnostic[] {
+  public analyze(
+    expression: string,
+    lineNumber: number = 1,
+    columnOffset: number = 0,
+    options: IMolangDiagnosticOptions = {}
+  ): IDiagnostic[] {
     const diagnostics: IDiagnostic[] = [];
     const parsed = molangParser.parse(expression);
 
@@ -34,20 +56,50 @@ export class MolangDiagnosticGenerator {
     }
 
     // Check for unknown queries
-    for (const query of parsed.queries) {
-      const normalized = query.startsWith("q.") ? query.replace("q.", "query.") : query;
+    const querySet = options.querySet ?? DEFAULT_MOLANG_QUERY_SET;
+    // Driven by the tokens, so each use of a repeated query is diagnosed at its own range.
+    for (const token of parsed.tokens) {
+      if (token.type !== "query" || !token.fullIdentifier) {
+        continue;
+      }
+      const query = token.fullIdentifier;
+      const lower = query.toLowerCase();
+      const knownQuery = findMolangQuery(query);
+      const isKnown = knownQuery !== undefined;
 
-      const isKnown = MOLANG_QUERIES.some((q) => normalized.startsWith(q.name));
-
-      if (!isKnown && normalized !== "query." && normalized !== "q.") {
-        // Find token position
-        const token = parsed.tokens.find((t) => t.fullIdentifier === query);
-
+      let unavailableMessage: string | undefined;
+      if (knownQuery && !isMolangQueryAvailable(knownQuery, undefined, querySet)) {
+        const sets = [...new Set(knownQuery.availability.flatMap(getRangeQuerySets))].join(", ");
+        unavailableMessage = `"${knownQuery.name}" is only available in ${sets} expressions, not ${querySet} ones.`;
+      } else if (
+        knownQuery &&
+        options.minEngineVersion &&
+        !isMolangQueryAvailable(knownQuery, options.minEngineVersion, querySet)
+      ) {
+        const ranges = knownQuery.availability
+          .map((r) => (r.lastVersion ? `${r.firstVersion}-${r.lastVersion}` : `${r.firstVersion} and later`))
+          .join(", ");
+        unavailableMessage = `"${knownQuery.name}" is not available for packs with min_engine_version ${options.minEngineVersion} (available: ${ranges}).`;
+      }
+      if (unavailableMessage) {
         diagnostics.push({
           startLine: lineNumber,
-          startColumn: columnOffset + (token?.start || 0) + 1,
+          startColumn: columnOffset + token.start + 1,
           endLine: lineNumber,
-          endColumn: columnOffset + (token?.end || query.length) + 1,
+          endColumn: columnOffset + token.end + 1,
+          message: unavailableMessage,
+          severity: DiagnosticSeverity.Warning,
+          source: "MCTools-Molang",
+          code: "MOLANG_QUERY_UNAVAILABLE",
+        });
+      }
+
+      if (!isKnown && lower !== "query" && lower !== "q") {
+        diagnostics.push({
+          startLine: lineNumber,
+          startColumn: columnOffset + token.start + 1,
+          endLine: lineNumber,
+          endColumn: columnOffset + token.end + 1,
           message: `Unknown query: "${query}". Check spelling or this may be a custom query.`,
           severity: DiagnosticSeverity.Warning,
           source: "MCTools-Molang",
@@ -58,9 +110,9 @@ export class MolangDiagnosticGenerator {
 
     // Check for unknown math functions
     for (const func of parsed.mathFunctions) {
-      const isKnown = MOLANG_MATH.some((m) => func.startsWith(m.name));
+      const isKnown = findMolangMath(func) !== undefined;
 
-      if (!isKnown && func !== "math.") {
+      if (!isKnown && func.toLowerCase() !== "math") {
         const token = parsed.tokens.find((t) => t.fullIdentifier === func);
 
         diagnostics.push({
@@ -76,8 +128,60 @@ export class MolangDiagnosticGenerator {
       }
     }
 
+    // Check argument counts against engine signatures
+    diagnostics.push(...this.checkArgumentCounts(parsed.tokens, lineNumber, columnOffset));
+
     // Check for common mistakes
     diagnostics.push(...this.checkCommonMistakes(expression, parsed, lineNumber, columnOffset));
+
+    return diagnostics;
+  }
+
+  /**
+   * Validate the number of arguments passed to known queries and math functions.
+   */
+  private checkArgumentCounts(tokens: IMolangToken[], lineNumber: number, columnOffset: number): IDiagnostic[] {
+    const diagnostics: IDiagnostic[] = [];
+
+    for (let i = 0; i < tokens.length; i++) {
+      const token = tokens[i];
+      if ((token.type !== "query" && token.type !== "math") || !token.fullIdentifier) {
+        continue;
+      }
+
+      const signature: IKnowledgeMolangFunction | undefined =
+        token.type === "query" ? findMolangQuery(token.fullIdentifier) : findMolangMath(token.fullIdentifier);
+      if (!signature) {
+        continue;
+      }
+
+      const argCount = countCallArguments(tokens, i + 1);
+      const tooFew = argCount < signature.minArgs;
+      // Query metadata undercounts optional arguments (vanilla calls "query.anger_level(this)",
+      // listed as taking none), so only math functions are checked for too many.
+      const tooMany = token.type === "math" && signature.maxArgs !== undefined && argCount > signature.maxArgs;
+      if (!tooFew && !tooMany) {
+        continue;
+      }
+
+      const expected =
+        signature.maxArgs === undefined
+          ? `at least ${signature.minArgs}`
+          : signature.minArgs === signature.maxArgs
+            ? `${signature.minArgs}`
+            : `${signature.minArgs}-${signature.maxArgs}`;
+
+      diagnostics.push({
+        startLine: lineNumber,
+        startColumn: columnOffset + token.start + 1,
+        endLine: lineNumber,
+        endColumn: columnOffset + token.end + 1,
+        message: `"${token.fullIdentifier}" expects ${expected} argument(s) but got ${argCount}.`,
+        severity: token.type === "math" ? DiagnosticSeverity.Error : DiagnosticSeverity.Warning,
+        source: "MCTools-Molang",
+        code: "MOLANG_ARGUMENT_COUNT",
+      });
+    }
 
     return diagnostics;
   }
@@ -93,32 +197,41 @@ export class MolangDiagnosticGenerator {
   ): IDiagnostic[] {
     const diagnostics: IDiagnostic[] = [];
 
-    // Check for = instead of == in comparisons
-    // Look for pattern: value = value where context suggests comparison
-    const singleEqualsPattern = /([^=!<>])=([^=])/g;
-    let match;
-    while ((match = singleEqualsPattern.exec(expression)) !== null) {
-      // Check if this might be an assignment in a conditional context
-      const before = expression.slice(0, match.index + 1);
-      const after = expression.slice(match.index + match[0].length);
+    // Check for = instead of == in a ternary condition, e.g. "q.health = 0 ? 1 : 2".
+    // Each statement is checked on its own, and a statement's leading "v.x = ..."
+    // is an assignment to a variable, so "v.x = q.a > 1 ? 1 : 0;" isn't flagged.
+    const statementPattern = /[^;{}]+/g;
+    let statement;
+    while ((statement = statementPattern.exec(expression)) !== null) {
+      const text = statement[0];
+      const singleEqualsPattern = /([^=!<>])=([^=])/g;
+      let match;
+      while ((match = singleEqualsPattern.exec(text)) !== null) {
+        const equalsIndex = match.index + 1;
+        const before = text.slice(0, equalsIndex);
+        const after = text.slice(equalsIndex + 1);
 
-      // If there's a ? after, it's likely a comparison mistake
-      if (after.includes("?") && !before.includes("=")) {
-        diagnostics.push({
-          startLine: lineNumber,
-          startColumn: columnOffset + match.index + 2,
-          endLine: lineNumber,
-          endColumn: columnOffset + match.index + 3,
-          message: "Did you mean '==' for comparison? Single '=' is assignment.",
-          severity: DiagnosticSeverity.Warning,
-          source: "MCTools-Molang",
-          code: "MOLANG_POSSIBLE_COMPARISON",
-        });
+        const isLeadingAssignment = /^\s*(?:v|variable|t|temp)\.[\w.]+\s*$/i.test(before);
+        const hasTernary = after.replace(/\?\?/g, "").includes("?");
+
+        if (!isLeadingAssignment && hasTernary) {
+          const column = columnOffset + statement.index + equalsIndex + 1;
+          diagnostics.push({
+            startLine: lineNumber,
+            startColumn: column,
+            endLine: lineNumber,
+            endColumn: column + 1,
+            message: "Did you mean '==' for comparison? Single '=' is assignment.",
+            severity: DiagnosticSeverity.Warning,
+            source: "MCTools-Molang",
+            code: "MOLANG_POSSIBLE_COMPARISON",
+          });
+        }
       }
     }
 
-    // Check for division by zero potential
-    if (expression.includes("/ 0") || expression.includes("/0")) {
+    // Check for division by a literal zero ("x / 0", "x/0.0"), but not "1 / 0.6".
+    if (/\/\s*0+(?:\.0*)?(?![\w.])/.test(expression)) {
       diagnostics.push({
         startLine: lineNumber,
         startColumn: columnOffset + 1,
@@ -201,3 +314,34 @@ export class MolangDiagnosticGenerator {
 
 // Singleton instance
 export const molangDiagnosticGenerator = new MolangDiagnosticGenerator();
+
+/**
+ * Count the top-level arguments of a call whose "(" is expected at tokens[openIndex].
+ * Returns 0 when the identifier is not followed by a call.
+ */
+function countCallArguments(tokens: IMolangToken[], openIndex: number): number {
+  const open = tokens[openIndex];
+  if (!open || open.type !== "parenthesis" || open.value !== "(") {
+    return 0;
+  }
+
+  let depth = 0;
+  let commas = 0;
+  let sawContent = false;
+  for (let j = openIndex; j < tokens.length; j++) {
+    const t = tokens[j];
+    if (t.value === "(" || t.value === "[" || t.value === "{") {
+      depth++;
+      if (depth === 1) continue;
+    } else if (t.value === ")" || t.value === "]" || t.value === "}") {
+      depth--;
+      if (depth === 0) break;
+    } else if (depth === 1 && t.type === "comma") {
+      commas++;
+      continue;
+    }
+    if (depth >= 1) sawContent = true;
+  }
+
+  return sawContent ? commas + 1 : 0;
+}

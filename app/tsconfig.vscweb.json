@@ -57,6 +57,7 @@
 		"toolbuild/**/*",
 		"archive/**/*",
 		"scriptlibs/**/*",
+		"scripts/**/*",
 		"test/results/**/*",
 		"test/scenarios/**/*",
 		"test-scripts/**/*",

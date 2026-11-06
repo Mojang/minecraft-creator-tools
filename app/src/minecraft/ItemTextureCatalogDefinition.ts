@@ -9,7 +9,6 @@ import { IItemTexture, IItemTextureNode } from "./IItemTexture";
 import Project from "../app/Project";
 import ProjectItem from "../app/ProjectItem";
 import { ProjectItemType } from "../app/IProjectItemData";
-import Utilities from "../core/Utilities";
 import Database from "./Database";
 import TextureDefinition from "./TextureDefinition";
 
@@ -220,26 +219,19 @@ export default class ItemTextureCatalogDefinition {
 
     let texturePathList = this.getCanonicalizedTexturePathList();
 
-    for (const candItem of textureItems) {
-      if (packRootFolder && texturePathList) {
-        if (!candItem.isContentLoaded) {
-          await candItem.loadContent();
-        }
+    if (packRootFolder && texturePathList) {
+      const resolved = await StorageUtilities.resolvePackPathCandidates(
+        textureItems,
+        packRootFolder,
+        texturePathList,
+        (file) => TextureDefinition.canonicalizeTexturePath(StorageUtilities.getBaseRelativePath(file, packRootFolder))
+      );
 
-        if (candItem.primaryFile) {
-          let relativePath = TextureDefinition.canonicalizeTexturePath(
-            StorageUtilities.getBaseRelativePath(candItem.primaryFile, packRootFolder)
-          );
-
-          if (relativePath) {
-            if (texturePathList && texturePathList.includes(relativePath)) {
-              item.addChildItem(candItem);
-
-              texturePathList = Utilities.removeItemInArray(relativePath, texturePathList);
-            }
-          }
-        }
+      for (const candItem of resolved.matches) {
+        item.addChildItem(candItem);
       }
+
+      texturePathList = resolved.unmatched;
     }
 
     if (texturePathList) {

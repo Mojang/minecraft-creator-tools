@@ -1,11 +1,65 @@
 $ mct validate -i simple
 cwd: <work>
 exit code: 0
-note: The per-check lines that validate prints from its worker thread are left out. The CLI stops the worker as soon as it returns its results, so how many of those lines get through varies from run to run.
 
 stdout:
 [<timestamp>] [MESSAGE ] [##] mct v<version>  in (-i): <work>/simple  out (-o): <work>/out
 Processing project 1/1: simple
+[<timestamp>] [MESSAGE ] UNKNOWN: [BASEGAMEVER002] No applicable items found for test Base Game Version (BASEGAMEVER)
+[<timestamp>] [MESSAGE ] UNKNOWN: [BLOCKSCAT002] No applicable items found for test Blocks Catalog (BLOCKSCAT)
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [CBFG001] Beta Features completed successfully
+[<timestamp>] [MESSAGE ] UNKNOWN: [CDWORLDDATA002] No applicable items found for test Custom Dimension World Data Validation (CDWORLDDATA)
+[<timestamp>] [MESSAGE ] UNKNOWN: [CHECKFEATUREDEPRECATION002] No applicable items found for test Feature Deprecation (CHECKFEATUREDEPRECATION)
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [CHKMANIF001] Manifest Validation completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [COMJSON001] Community JSON Schema Validation completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [CPACKICON001] Pack Icon completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [CPARTI001] Particle Identifiers completed successfully
+[<timestamp>] [MESSAGE ] UNKNOWN: [CROSSREFINDEX002] No applicable items found for test Cross-Reference Index (CROSSREFINDEX)
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [CSPJ001] Skin Pack Validation completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [CWI001] World Icons completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [ENTITYTYPE001] Entity Type completed successfully
+[<timestamp>] [MESSAGE ] UNKNOWN: [EXPFLAG002] No applicable items found for test Experimental Flags (EXPFLAG)
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [FORBFILE001] Forbidden Files completed successfully
+[<timestamp>] [MESSAGE ] UNKNOWN: [FORMATVER002] No applicable items found for test Format Version (FORMATVER)
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [GEOFMT001] Geometry Format completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [GEOMETRY001] Model Geometry Validation completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [ITEMS001] Minimum Definition of a Pack completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [ITEMTYPE001] Item Type completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [JSON001] JSON Schema Validation completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [JSONF001] JSON Structure completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [JSONTAGS001] JSON Tags completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [LINESIZE001] File Line/Size Information completed successfully
+[<timestamp>] [MESSAGE ] UNKNOWN: [MCFUNCTION002] No applicable items found for test MC Function Validation (MCFUNCTION)
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [MINENGINEVER001] Min Engine Version completed successfully
+[<timestamp>] [MESSAGE ] RECOMMENDATION: [MINENGINEVER120] (/behavior_packs/StarterTestsTutorial/manifest.json) Behavior pack manifest (1.20.10) has a lower minor version number compared to the expected version (1.26.60) or its previous minor version
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [NOBOM001] No Byte Order Mark allowed in json file. completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [PACK001] General info completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [PACKFILECOUNT001] Pack File Count completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [PACKMETADATA001] General info completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [PACKSIZE001] Pack Size Information completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [PATHLENGTH001] Path Length completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [PRJINT001] Project Integrity completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [RESOURCEANIMATION001] Resource Animation completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [RPDEPENDS001] Resource Pack Dependencies completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [SCRIPT001] Script completed successfully
+[<timestamp>] [MESSAGE ] UNKNOWN: [SCRIPTMODULE002] No applicable items found for test Script Modules (SCRIPTMODULE)
+[<timestamp>] [MESSAGE ] UNKNOWN: [SNDSDEF002] No applicable items found for test Sound Definitions (SNDSDEF)
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [STRICT001] Strict Platform completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [SUMMARY001] Summary Information completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [TEXTURE001] Texture Validation completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [TEXTUREIMAGE001] Texture Image Validation completed successfully
+[<timestamp>] [MESSAGE ] UNKNOWN: [TEXTURELIST002] No applicable items found for test Texture List Validation (TEXTURELIST)
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [TEXTUREREF001] Texture References completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [TYPES001] Types Info Aggregation completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [UNKFILE001] Unknown files completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [UNKJSON001] Unknown JSON completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [UNLINK001] Unlinked Items completed successfully
+[<timestamp>] [MESSAGE ] UNKNOWN: [VALFILE002] No applicable items found for test Valid files (VALFILE)
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [VANPRO001] Vanilla Protected Assets completed successfully
+[<timestamp>] [MESSAGE ] UNKNOWN: [VSCODEFILE002] No applicable items found for test VSCode Files (VSCODEFILE)
+[<timestamp>] [MESSAGE ] UNKNOWN: [WORLD002] No applicable items found for test World Validation (WORLD)
+[<timestamp>] [MESSAGE ] UNKNOWN: [WORLDDATA002] No applicable items found for test World Data Validation (WORLDDATA)
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [WPACKREFS001] World Pack References completed successfully
 
 stderr: (empty)
 

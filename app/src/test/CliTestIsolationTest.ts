@@ -109,9 +109,14 @@ const ISOLATING_FILES = ["TestDataDir.ts", "CommandLineTestHelpers.ts"];
 
 /**
  * Test files that start processes but never the CLI, so they don't need a temporary data folder.
- * McpSkillLibraryTest runs `node --check` on the skills' bundled scripts.
+ * McpSkillLibraryTest runs `node --check` on the skills' bundled scripts. PlaywrightPageRendererTest
+ * runs a fake browser with `node`.
  */
-const RUNS_OTHER_PROGRAMS_ONLY = ["McpSkillLibraryTest.ts", "ValidationFixtureSizeAuditTest.ts"];
+const RUNS_OTHER_PROGRAMS_ONLY = [
+  "McpSkillLibraryTest.ts",
+  "PlaywrightPageRendererTest.ts",
+  "ValidationFixtureSizeAuditTest.ts",
+];
 
 /**
  * Lists the files that can start a process, such as the CLI, without a temporary data folder. See

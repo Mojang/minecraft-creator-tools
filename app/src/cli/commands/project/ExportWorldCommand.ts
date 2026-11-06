@@ -24,7 +24,8 @@ import * as path from "path";
 export class ExportWorldCommand extends CommandBase {
   readonly metadata: ICommandMetadata = {
     name: "exportworld",
-    description: "Exports a flat GameTest world for the behavior packs in the project folder.",
+    route: ["export", "world"],
+    description: "Export a flat GameTest world with your project's packs.",
     taskType: TaskType.exportWorld,
     aliases: [],
     requiresProjects: true,
@@ -33,6 +34,11 @@ export class ExportWorldCommand extends CommandBase {
     isLongRunning: false,
     category: "Project",
     globalOptionGroups: ["input", "projects", "outputFolder", "outputFile", "json"],
+    examples: [
+      { command: 'mct export world -i "./My Addon" -o ./packages' },
+      { command: 'mct export world -i "./My Addon" -o ./packages --of ./packages/demo.mcworld --json' },
+    ],
+    learnMore: ["JSON results retain the command name exportworld, with one record per project."],
   };
 
   configure(cmd: Command): void {

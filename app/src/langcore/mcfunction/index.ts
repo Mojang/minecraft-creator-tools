@@ -15,3 +15,4 @@ export * from "./CommandParser";
 export * from "./CommandCompletions";
 export * from "./CommandHover";
 export * from "./CommandDiagnostics";
+export * from "./CommandOverloadMatcher";

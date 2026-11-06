@@ -20,6 +20,7 @@
  * - Entity behaviors by ID (minecraft:pig → ProjectItem)
  * - Attachable resources by ID
  * - Item types by ID
+ * - Block types by ID
  * - Animations by animation ID (one file → multiple IDs)
  * - Animation controllers by controller ID
  * - Render controllers by controller ID
@@ -39,6 +40,7 @@
 import AnimationControllerResourceDefinition from "../minecraft/AnimationControllerResourceDefinition";
 import AnimationResourceDefinition from "../minecraft/AnimationResourceDefinition";
 import AttachableResourceDefinition from "../minecraft/AttachableResourceDefinition";
+import BlockTypeDefinition from "../minecraft/BlockTypeDefinition";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import EntityTypeResourceDefinition from "../minecraft/EntityTypeResourceDefinition";
 import FeatureDefinition from "../minecraft/FeatureDefinition";
@@ -68,6 +70,9 @@ export default class RelationsIndex {
 
   /** Item type behaviors indexed by their ID */
   itemTypesById = new Map<string, ProjectItem[]>();
+
+  /** Block type behaviors indexed by their ID */
+  blockTypesById = new Map<string, ProjectItem[]>();
 
   /** Feature behaviors indexed by their ID */
   featureBehaviorsById = new Map<string, ProjectItem[]>();
@@ -103,6 +108,7 @@ export default class RelationsIndex {
       ProjectItemType.spawnRuleBehavior,
       ProjectItemType.attachableResourceJson,
       ProjectItemType.itemTypeBehavior,
+      ProjectItemType.blockTypeBehavior,
       ProjectItemType.featureBehavior,
       ProjectItemType.animationResourceJson,
       ProjectItemType.animationControllerResourceJson,
@@ -153,6 +159,7 @@ export default class RelationsIndex {
       this._indexEntityBehaviors(project),
       this._indexAttachables(project),
       this._indexItemTypes(project),
+      this._indexBlockTypes(project),
       this._indexFeatureBehaviors(project),
       this._indexAnimations(project),
       this._indexAnimationControllers(project),
@@ -261,6 +268,18 @@ export default class RelationsIndex {
         const def = await ItemTypeDefinition.ensureOnFile(item.primaryFile);
         if (def?.id) {
           this._addToIndex(this.itemTypesById, def.id, item);
+        }
+      }
+    }
+  }
+
+  private async _indexBlockTypes(project: Project): Promise<void> {
+    const items = project.getItemsByType(ProjectItemType.blockTypeBehavior);
+    for (const item of items) {
+      if (item.primaryFile) {
+        const def = await BlockTypeDefinition.ensureOnFile(item.primaryFile);
+        if (def?.id) {
+          this._addToIndex(this.blockTypesById, def.id, item);
         }
       }
     }

@@ -43,11 +43,7 @@
  *   script module versions print a DEBUG line per failed lookup, which a user with a network doesn't
  *   see (a successful lookup prints nothing). Those lines are dropped so the transcript shows what
  *   most users see; the "network requests" section still lists the host.
- * - Validation worker lines (WORKER_CHECK_LINE, for steps with omitWorkerCheckLines). validate
- *   prints one line per check from a worker thread, and the CLI terminates the worker as soon as it
- *   returns its results. Lines the worker hasn't flushed by then are lost, so how many get through
- *   depends on timing: the first line on each stream, or all of them. The main thread's output,
- *   including the error list and the exit code, is kept.
+ * Validation worker lines are kept, including the final check on each stream.
  *
  * COMMON PITFALLS
  * - MCTOOLS_I_ACCEPT_EULA_AT_MINECRAFTDOTNETSLASHEULA must not reach these runs, or the EULA checks
@@ -87,9 +83,6 @@ export interface ITranscriptStep {
 
   /** Folder to run in, relative to <work>. Defaults to <work>. */
   cwd?: string;
-
-  /** Leave out the per-check lines that validate prints from its worker thread. See the file header. */
-  omitWorkerCheckLines?: boolean;
 
   /** Shown at the top of the transcript, for context a reviewer needs. */
   note?: string;
@@ -204,13 +197,6 @@ export const NETWORK_LINE_PATTERNS: RegExp[] = [
   // raw.githubusercontent.com, for the latest Minecraft version. The version pin normally skips it.
   /Could not load version info from '/,
 ];
-
-/** A check result printed by the validation worker, after normalization. See the file header. */
-export const WORKER_CHECK_LINE = /^(?:␛\[[0-9;]*m)*\[<timestamp>\] \[[A-Z]+ *\] [A-Z]+: \[[A-Za-z0-9_]+\]/;
-
-export const WORKER_CHECK_NOTE =
-  "The per-check lines that validate prints from its worker thread are left out. The CLI stops the " +
-  "worker as soon as it returns its results, so how many of those lines get through varies from run to run.";
 
 const PATH_PLACEHOLDERS = ["<work>", "<data-dir>", "<cli>", "<repo>", "<tmp>", "<home>"];
 
@@ -330,20 +316,11 @@ export function normalizeOutput(text: string, options: INormalizeOptions): strin
   return text;
 }
 
-/**
- * Drops lines whose content depends on the network or on thread timing. Run it on normalized text,
- * since WORKER_CHECK_LINE expects the <timestamp> placeholder. See OMITTED LINES in the file header.
- */
-export function omitVolatileLines(text: string, options: { omitWorkerCheckLines?: boolean }): string {
+/** Drops failed network lookup lines. See OMITTED LINES in the file header. */
+export function omitVolatileLines(text: string): string {
   return text
     .split("\n")
-    .filter((line) => {
-      if (NETWORK_LINE_PATTERNS.some((pattern) => pattern.test(line))) {
-        return false;
-      }
-
-      return !(options.omitWorkerCheckLines && WORKER_CHECK_LINE.test(line));
-    })
+    .filter((line) => !NETWORK_LINE_PATTERNS.some((pattern) => pattern.test(line)))
     .join("\n");
 }
 
@@ -617,10 +594,6 @@ export function renderTranscript(
     lines.push("note: " + step.note);
   }
 
-  if (step.omitWorkerCheckLines) {
-    lines.push("note: " + WORKER_CHECK_NOTE);
-  }
-
   lines.push(
     "",
     ...renderStream("stdout", stdout),
@@ -786,7 +759,7 @@ export default class CliTranscriptHarness {
   /** The normalized transcript of a run. */
   render(step: ITranscriptStep, run: ITranscriptRun): string {
     const options: INormalizeOptions = { roots: this.roots, version: this.version };
-    const clean = (output: Buffer) => omitVolatileLines(normalizeOutput(output.toString("utf8"), options), step);
+    const clean = (output: Buffer) => omitVolatileLines(normalizeOutput(output.toString("utf8"), options));
 
     return renderTranscript(step, run, clean(run.stdout), clean(run.stderr));
   }

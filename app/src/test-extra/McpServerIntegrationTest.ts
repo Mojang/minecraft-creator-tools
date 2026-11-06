@@ -1214,6 +1214,17 @@ describe("MCP Server Integration Tests", function () {
       const fileData = fs.readFileSync(mcstructureFiles[0]);
       assert(fileData.length > 100, "MCStructure file should have content");
       assert(fileData[0] === 0x0a || fileData[0] === 0x08, "File should have NBT-like header");
+
+      const readBack = await client.callTool({
+        name: "designStructure",
+        arguments: { structureId: "mcp_simple_structure", projectPath: projectPath },
+      });
+      expect(readBack.isError).to.not.equal(true);
+      const structured = readBack.structuredContent as any;
+      expect(structured.design).to.deep.equal(McpTestFixtures.SIMPLE_BLOCK_VOLUME);
+      expect(structured.edits).to.deep.equal([]);
+      const text = (readBack.content as any[]).find((c) => c.type === "text").text as string;
+      expect(text).to.contain("It was last made from this blockVolume design:");
     });
 
     it("should design structure with block properties", async function () {
@@ -1321,6 +1332,371 @@ describe("MCP Server Integration Tests", function () {
       } catch (e) {
         console.log("Structure design tool call failed (expected if no browser):", e);
       }
+    });
+
+    describe("with a structure program", function () {
+      const STRUCTURE_ID = "program_tower";
+      const TOWER_PROGRAM = `function build(api) {
+        api.declareSize(7, 6, 7);
+        api.fill(0, 0, 0, 6, 0, 6, "cobblestone");
+        api.walls(0, 1, 0, 6, 4, 6, "stone_bricks");
+        api.clear(3, 1, 0, 3, 2, 0);
+        api.set(3, 3, 3, "lantern");
+        console.log("tower");
+      }`;
+      let projectPath = "";
+
+      function designJson(): any {
+        const designFiles = findFilesRecursive(projectPath, "structure_design.json");
+        assert(designFiles.length === 1, "structure_design.json should exist in the accessory folder");
+        return JSON.parse(fs.readFileSync(designFiles[0], "utf-8"));
+      }
+
+      before(function () {
+        projectPath = createStructureTempProjectPath("program");
+      });
+
+      it("generates a new structure from a program", async function () {
+        if (!serverAvailable || !client) {
+          this.skip();
+          return;
+        }
+
+        const result = await client.callTool({
+          name: "designStructure",
+          arguments: { projectPath, structureId: STRUCTURE_ID, program: TOWER_PROGRAM, seed: 7 },
+        });
+
+        expect(result.isError).to.not.equal(true);
+        const structured = result.structuredContent as any;
+        expect(structured.mode).to.equal("generate");
+        expect(structured.size).to.deep.equal({ x: 7, y: 6, z: 7 });
+        expect(structured.airCount).to.equal(2);
+        expect(structured.seed).to.equal(7);
+        expect(structured.logs).to.deep.equal(["tower"]);
+
+        const mcstructureFiles = findFilesRecursive(projectPath, ".mcstructure");
+        assert(mcstructureFiles.length === 1, "one .mcstructure file should exist in the project");
+
+        const design = designJson();
+        expect(design.meta.schemaVersion).to.equal("1.1.0");
+        expect(design.program.seed).to.equal(7);
+        expect(design.program.code).to.contain("api.declareSize(7, 6, 7)");
+      });
+
+      it("edits the existing structure with a second program", async function () {
+        if (!serverAvailable || !client) {
+          this.skip();
+          return;
+        }
+
+        const result = await client.callTool({
+          name: "designStructure",
+          arguments: {
+            projectPath,
+            structureId: STRUCTURE_ID,
+            program: `function build(api) {
+              api.declareSize(99, 99, 99);
+              for (let x = 0; x < api.sizeX; x++)
+                for (let z = 0; z < api.sizeZ; z++)
+                  if (api.get(x, 0, z) === "minecraft:cobblestone") api.set(x, 0, z, "mossy_cobblestone");
+            }`,
+          },
+        });
+
+        expect(result.isError).to.not.equal(true);
+        const structured = result.structuredContent as any;
+        expect(structured.mode).to.equal("edit");
+        expect(structured.size).to.deep.equal({ x: 7, y: 6, z: 7 });
+        expect(structured.writeCount).to.equal(49);
+
+        const design = designJson();
+        expect(design.program.code).to.contain("api.declareSize(7, 6, 7)");
+        expect(design.edits).to.have.length(1);
+      });
+
+      it("reads the structure back when neither program nor blockVolume is passed", async function () {
+        if (!serverAvailable || !client) {
+          this.skip();
+          return;
+        }
+
+        const result = await client.callTool({
+          name: "designStructure",
+          arguments: { projectPath, structureId: STRUCTURE_ID },
+        });
+
+        expect(result.isError).to.not.equal(true);
+        const structured = result.structuredContent as any;
+        expect(structured.size).to.deep.equal({ x: 7, y: 6, z: 7 });
+        expect(structured.encodedContents).to.contain("= minecraft:mossy_cobblestone");
+        expect(structured.encodedContents).to.contain("= minecraft:lantern");
+        expect(structured.program).to.contain("api.declareSize(7, 6, 7)");
+        expect(structured.editCount).to.equal(1);
+        expect(structured.edits).to.have.length(1);
+        expect(structured.edits[0].code).to.contain("mossy_cobblestone");
+        expect(structured.editsTruncated).to.equal(false);
+        const text = (result.content as any[]).find((c) => c.type === "text").text as string;
+        expect(text).to.contain("Edits, oldest first:");
+        expect(text).to.contain('api.set(x, 0, z, "mossy_cobblestone")');
+      });
+
+      it("rejects a program that fails and writes nothing", async function () {
+        if (!serverAvailable || !client) {
+          this.skip();
+          return;
+        }
+
+        const failPath = createStructureTempProjectPath("program_failure");
+        const result = await client.callTool({
+          name: "designStructure",
+          arguments: {
+            projectPath: failPath,
+            structureId: "broken",
+            program: "function build(api) { api.declareSize(2, 2, 2); notDefined(); }",
+          },
+        });
+
+        expect(result.isError).to.equal(true);
+        expect((result.structuredContent as any).reason).to.equal("runtime");
+        expect(findFilesRecursive(failPath, ".mcstructure")).to.have.length(0);
+      });
+
+      it("rejects passing both program and blockVolume", async function () {
+        if (!serverAvailable || !client) {
+          this.skip();
+          return;
+        }
+
+        const result = await client.callTool({
+          name: "designStructure",
+          arguments: {
+            projectPath,
+            structureId: "both",
+            program: TOWER_PROGRAM,
+            blockVolume: McpTestFixtures.SIMPLE_BLOCK_VOLUME,
+          },
+        });
+
+        expect(result.isError).to.equal(true);
+        const text = (result.content as any[]).map((c) => c.text ?? "").join("");
+        expect(text).to.contain("not both");
+      });
+
+      describe("with an unreadable existing file", function () {
+        const CORRUPT_BYTES = Buffer.from("this is not an mcstructure file");
+        let corruptPath = "";
+        let corruptFile = "";
+        let designFile = "";
+        let designBytes: Buffer;
+
+        beforeEach(async function () {
+          if (!serverAvailable || !client) {
+            this.skip();
+            return;
+          }
+
+          corruptPath = createStructureTempProjectPath("program_unreadable");
+          const created = await client.callTool({
+            name: "designStructure",
+            arguments: { projectPath: corruptPath, structureId: "corrupt", program: TOWER_PROGRAM },
+          });
+          expect(created.isError).to.not.equal(true);
+
+          const mcstructureFiles = findFilesRecursive(corruptPath, ".mcstructure");
+          assert(mcstructureFiles.length === 1, "one .mcstructure file should exist in the project");
+          corruptFile = mcstructureFiles[0];
+          fs.writeFileSync(corruptFile, CORRUPT_BYTES);
+
+          const designFiles = findFilesRecursive(corruptPath, "structure_design.json");
+          assert(designFiles.length === 1, "structure_design.json should exist in the accessory folder");
+          designFile = designFiles[0];
+          designBytes = fs.readFileSync(designFile);
+        });
+
+        const refusingCases: { name: string; args: Record<string, unknown> }[] = [
+          { name: "read", args: {} },
+          { name: "auto", args: { program: TOWER_PROGRAM } },
+          { name: "edit", args: { program: TOWER_PROGRAM, programMode: "edit" } },
+        ];
+
+        for (const testCase of refusingCases) {
+          it(`refuses ${testCase.name} mode and leaves the file unchanged`, async function () {
+            if (!serverAvailable || !client) {
+              this.skip();
+              return;
+            }
+
+            const result = await client.callTool({
+              name: "designStructure",
+              arguments: { projectPath: corruptPath, structureId: "corrupt", ...testCase.args },
+            });
+
+            expect(result.isError).to.equal(true);
+            const text = (result.content as any[]).map((c) => c.text ?? "").join("");
+            expect(text).to.contain("couldn't be read");
+            expect(fs.readFileSync(corruptFile).equals(CORRUPT_BYTES)).to.equal(true);
+            expect(fs.readFileSync(designFile).equals(designBytes)).to.equal(true);
+          });
+        }
+
+        it("replaces it with an explicit generate", async function () {
+          if (!serverAvailable || !client) {
+            this.skip();
+            return;
+          }
+
+          const result = await client.callTool({
+            name: "designStructure",
+            arguments: {
+              projectPath: corruptPath,
+              structureId: "corrupt",
+              program: TOWER_PROGRAM,
+              programMode: "generate",
+            },
+          });
+
+          expect(result.isError).to.not.equal(true);
+          expect((result.structuredContent as any).mode).to.equal("generate");
+          expect(fs.readFileSync(corruptFile).equals(CORRUPT_BYTES)).to.equal(false);
+        });
+      });
+
+      it("keeps separate history for structure IDs that share a suffix", async function () {
+        if (!serverAvailable || !client) {
+          this.skip();
+          return;
+        }
+
+        const suffixPath = createStructureTempProjectPath("program_suffix");
+        const programFor = (block: string) =>
+          `function build(api) { api.declareSize(2, 1, 2); api.fill(0, 0, 0, 1, 0, 1, "${block}"); }`;
+
+        for (const [structureId, block] of [
+          ["watch_tower", "oak_planks"],
+          ["tower", "stone"],
+        ]) {
+          const result = await client.callTool({
+            name: "designStructure",
+            arguments: { projectPath: suffixPath, structureId, program: programFor(block) },
+          });
+          expect(result.isError).to.not.equal(true);
+        }
+
+        for (const [structureId, block] of [
+          ["watch_tower", "oak_planks"],
+          ["tower", "stone"],
+        ]) {
+          const result = await client.callTool({
+            name: "designStructure",
+            arguments: { projectPath: suffixPath, structureId },
+          });
+          expect(result.isError).to.not.equal(true);
+          const structured = result.structuredContent as any;
+          expect(structured.program).to.contain(`"${block}"`);
+          expect(structured.encodedContents).to.contain(`= minecraft:${block}`);
+        }
+
+        expect(findFilesRecursive(suffixPath, "structure_design.json")).to.have.length(2);
+      });
+
+      it("stores fenced program submissions as runnable code", async function () {
+        if (!serverAvailable || !client) {
+          this.skip();
+          return;
+        }
+
+        const fencedPath = createStructureTempProjectPath("program_fenced");
+        const body = `function build(api) { api.declareSize(3, 1, 3); api.fill(0, 0, 0, 2, 0, 2, "stone"); }`;
+
+        const generated = await client.callTool({
+          name: "designStructure",
+          arguments: { projectPath: fencedPath, structureId: "fenced", program: "```js\n" + body + "\n```" },
+        });
+        expect(generated.isError).to.not.equal(true);
+
+        const read = await client.callTool({
+          name: "designStructure",
+          arguments: { projectPath: fencedPath, structureId: "fenced" },
+        });
+        expect(read.isError).to.not.equal(true);
+        const storedProgram = (read.structuredContent as any).program as string;
+        expect(storedProgram).to.not.contain("```");
+        expect(storedProgram.trim()).to.equal(body);
+
+        const replayed = await client.callTool({
+          name: "designStructure",
+          arguments: {
+            projectPath: fencedPath,
+            structureId: "fenced",
+            program: storedProgram,
+            programMode: "generate",
+          },
+        });
+        expect(replayed.isError).to.not.equal(true);
+        expect((replayed.structuredContent as any).size).to.deep.equal({ x: 3, y: 1, z: 3 });
+      });
+
+      it("applies concurrent edits of one structure one after the other", async function () {
+        if (!serverAvailable || !client) {
+          this.skip();
+          return;
+        }
+
+        const racePath = createStructureTempProjectPath("program_race");
+        const base = `function build(api) { api.declareSize(3, 1, 1); api.fill(0, 0, 0, 2, 0, 0, "stone"); }`;
+        const editAt = (x: number, block: string) => `function build(api) { api.set(${x}, 0, 0, "${block}"); }`;
+
+        const generated = await client.callTool({
+          name: "designStructure",
+          arguments: { projectPath: racePath, structureId: "race", program: base },
+        });
+        expect(generated.isError).to.not.equal(true);
+
+        const edits = await Promise.all([
+          client.callTool({
+            name: "designStructure",
+            arguments: { projectPath: racePath, structureId: "race", program: editAt(0, "gold_block") },
+          }),
+          client.callTool({
+            name: "designStructure",
+            arguments: { projectPath: racePath, structureId: "race", program: editAt(2, "diamond_block") },
+          }),
+        ]);
+        for (const edit of edits) {
+          expect(edit.isError).to.not.equal(true);
+          expect((edit.structuredContent as any).mode).to.equal("edit");
+        }
+
+        const read = await client.callTool({
+          name: "designStructure",
+          arguments: { projectPath: racePath, structureId: "race" },
+        });
+        expect(read.isError).to.not.equal(true);
+        const saved = read.structuredContent as any;
+        expect(saved.encodedContents).to.contain("= minecraft:gold_block");
+        expect(saved.encodedContents).to.contain("= minecraft:diamond_block");
+        expect(saved.edits).to.have.length(2);
+
+        // Replaying the recorded history into a fresh structure gives the saved contents.
+        let replay = await client.callTool({
+          name: "designStructure",
+          arguments: { projectPath: racePath, structureId: "replay", program: saved.program, seed: saved.programSeed },
+        });
+        expect(replay.isError).to.not.equal(true);
+        for (const edit of saved.edits) {
+          replay = await client.callTool({
+            name: "designStructure",
+            arguments: { projectPath: racePath, structureId: "replay", program: edit.code, seed: edit.seed },
+          });
+          expect(replay.isError).to.not.equal(true);
+        }
+        const replayRead = await client.callTool({
+          name: "designStructure",
+          arguments: { projectPath: racePath, structureId: "replay" },
+        });
+        expect((replayRead.structuredContent as any).encodedContents).to.equal(saved.encodedContents);
+      });
     });
   });
 

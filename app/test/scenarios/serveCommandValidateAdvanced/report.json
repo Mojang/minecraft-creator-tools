@@ -892,6 +892,7 @@
         "total": 587
       }
     },
+    "fileCount": 61,
     "fileCounts": 61,
     "folderCounts": 31,
     "internalProcessingErrorCount": 0,
@@ -1114,7 +1115,7 @@
           "recommendations": 3
         },
         "296": {
-          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version",
+          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the expected version (1.26.60) or its previous minor version",
           "recommendations": 3
         },
         "619": {
@@ -1485,12 +1486,12 @@
           "title": "Min Engine Version"
         },
         "120": {
-          "defaultMessage": "Behavior pack manifest (1.20.0) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version",
+          "defaultMessage": "Behavior pack manifest (1.20.0) has a lower minor version number compared to the expected version (1.26.60) or its previous minor version",
           "recommendations": 1,
           "title": "BP Minor Low"
         },
         "220": {
-          "defaultMessage": "Resource pack manifest (1.20.0) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version",
+          "defaultMessage": "Resource pack manifest (1.20.0) has a lower minor version number compared to the expected version (1.26.60) or its previous minor version",
           "recommendations": 1,
           "title": "RP Minor Low"
         },
@@ -1571,6 +1572,15 @@
         "245": {
           "defaultMessage": "Entity Geometry",
           "title": "Subpack Tiers"
+        }
+      },
+      "PACKFILECOUNT": {
+        "1": {
+          "defaultMessage": "Pack File Count completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "defaultMessage": "File Count"
         }
       },
       "PACKMETADATA": {
@@ -1843,7 +1853,7 @@
     "testFailCount": 1,
     "testFailSummary": "TESTFAIL: [CHKMANIF000] Found 1 error in Manifest Validation check",
     "testNotApplicableCount": 12,
-    "testSuccessCount": 40,
+    "testSuccessCount": 41,
     "textureCount": 5,
     "textureTexelSize": 28672,
     "unknownJsonCount": 0,
@@ -2087,7 +2097,7 @@
       "gId": "FORMATVER",
       "gIx": 296,
       "iTp": 6,
-      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the expected version (1.26.20) or its previous minor version",
+      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the expected version (1.26.60) or its previous minor version",
       "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
     },
     {
@@ -3473,6 +3483,17 @@
       "iTp": 7
     },
     {
+      "gId": "PACKFILECOUNT",
+      "gIx": 1,
+      "iTp": 1
+    },
+    {
+      "d": 61,
+      "gId": "PACKFILECOUNT",
+      "gIx": 101,
+      "iTp": 7
+    },
+    {
       "gId": "PACKMETADATA",
       "gIx": 1,
       "iTp": 1
@@ -4441,6 +4462,7 @@
           "errorSummary": "",
           "experimentalFlagIsOrWasTrue": 0,
           "featureSets": {},
+          "fileCount": 0,
           "fileCounts": 0,
           "folderCounts": 0,
           "internalProcessingErrorCount": 0,

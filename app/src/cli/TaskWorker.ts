@@ -1,3 +1,12 @@
+/**
+ * Runs one CLI validation/profiling task per Node worker. The result travels over
+ * parentPort; logs use Node's separately forwarded stdout/stderr, with the task's
+ * JSON/MCP routing applied before logging. TaskWorkerResult explicitly tags
+ * success or failure; all task exceptions propagate to that single boundary.
+ * After posting it, close the port so its listener cannot keep the worker alive.
+ * Do not force an exit: Node must finish queued stream writes. WorkerPool waits
+ * for both exit and stream completion before handing the result to its caller.
+ */
 import ITask from "./ITask";
 import IProjectStartInfo from "./IProjectStartInfo";
 import Log from "../core/Log";
@@ -19,16 +28,16 @@ import ZipStorage from "../storage/ZipStorage";
 import ImageCodecNode from "../local/ImageCodecNode";
 import ProfilerWrapper from "./ProfilerWrapper";
 import { ProjectItemType } from "../app/IProjectItemData";
+import { TaskWorkerResult } from "./core/TaskWorkerResult";
 
 let creatorTools: CreatorTools | undefined;
 let localEnv: LocalEnvironment | undefined;
 let outputStorage: NodeStorage | undefined;
 let outputStoragePath: string | undefined;
 
-export async function executeTask(task: ITask) {
+export async function executeTask(task: ITask): Promise<IProjectMetaState[]> {
   if (!task.project) {
-    Log.error("Could not find an associated project for the associated task.");
-    return undefined;
+    throw new Error("Could not find an associated project for the associated task.");
   }
 
   if (localEnv === undefined) {
@@ -56,8 +65,7 @@ export async function executeTask(task: ITask) {
   }
 
   if (!localEnv || !creatorTools) {
-    Log.error("Could not instantiate a local environment for the associated task.");
-    return undefined;
+    throw new Error("Could not instantiate a local environment for the associated task.");
   }
 
   if (!task.outputFolder) {
@@ -67,36 +75,39 @@ export async function executeTask(task: ITask) {
     outputStorage = new NodeStorage(task.outputFolder, "");
   }
 
-  try {
-    switch (task.task) {
-      case TaskType.validate:
-        return validate(
-          creatorTools,
-          task.project,
-          task.arguments["suite"] as string | undefined,
-          task.arguments["exclusionList"] as string | undefined,
-          task.arguments["outputMci"] === true,
-          task.arguments["outputType"] as number | undefined,
-          task.displayInfo,
-          task.force
-        );
-    }
-  } catch (e: any) {
-    return e.toString();
+  switch (task.task) {
+    case TaskType.validate:
+      return validate(
+        creatorTools,
+        task.project,
+        task.arguments["suite"] as string | undefined,
+        task.arguments["exclusionList"] as string | undefined,
+        task.arguments["outputMci"] === true,
+        task.arguments["outputType"] as number | undefined,
+        task.displayInfo,
+        task.force
+      );
+    default:
+      throw new Error("Unsupported worker task.");
   }
-
-  return undefined;
 }
 
 if (!isMainThread) {
   if (parentPort) {
-    // Native Node.js worker_threads
-    parentPort.on("message", async (task: ITask) => {
+    const port = parentPort;
+    port.once("message", async (task: ITask) => {
       try {
         const result = await runTaskWithOptionalProfile(task);
-        parentPort!.postMessage(result);
-      } catch (error: any) {
-        parentPort!.postMessage(error.toString());
+        port.postMessage({ type: "task-result", success: true, result } satisfies TaskWorkerResult);
+      } catch (error: unknown) {
+        port.postMessage({
+          type: "task-result",
+          success: false,
+          error: String(error),
+          stack: error instanceof Error ? error.stack : undefined,
+        } satisfies TaskWorkerResult);
+      } finally {
+        port.close();
       }
     });
   }
@@ -110,7 +121,7 @@ if (!isMainThread) {
  * runs on a worker_thread, so a profile taken on the main thread would
  * miss the actual work.
  */
-async function runTaskWithOptionalProfile(task: ITask) {
+async function runTaskWithOptionalProfile(task: ITask): Promise<IProjectMetaState[]> {
   const mode = task.profileMode;
   if (!mode) {
     return await executeTask(task);
@@ -127,7 +138,7 @@ async function runTaskWithOptionalProfile(task: ITask) {
   // it goes to stderr, so stdout holds only the JSON document the main process writes.
   const report = task.logToStdError ? console.error : console.log;
 
-  let result: unknown;
+  let result: IProjectMetaState[] | undefined;
   if (mode === "cpu") {
     await ProfilerWrapper.generateCpuTrace(
       traceBase,
@@ -156,15 +167,14 @@ async function runTaskWithOptionalProfile(task: ITask) {
       },
       { report }
     );
-    try {
-      ProfilerWrapper.generateHeapSnapshot(traceBase + "-final", report);
-    } catch (e) {
-      console.warn("Failed to write final heap snapshot:", e);
-    }
+    ProfilerWrapper.generateHeapSnapshot(traceBase + "-final", report);
   } else {
     result = await executeTask(task);
   }
 
+  if (result === undefined) {
+    throw new Error("Worker task completed without returning a result.");
+  }
   return result;
 }
 
@@ -177,64 +187,50 @@ async function validate(
   outputType?: OutputType,
   displayInfo?: boolean,
   force?: boolean
-) {
+): Promise<IProjectMetaState[]> {
   const project = ClUtils.createProject(creatorTools, projectStart);
 
   project.readOnlySafety = true;
 
-  let jsonFile: NodeFile | undefined;
-  let jsonFileExists = false;
+  try {
+    let jsonFile: NodeFile | undefined;
 
-  if (outputStorage && outputType !== OutputType.noReports) {
-    jsonFile = outputStorage.rootFolder.ensureFile(
-      StorageUtilities.ensureFileNameIsSafe(StorageUtilities.getBaseFromName(project.containerName)) + ".mcr.json"
-    );
+    if (outputStorage && outputType !== OutputType.noReports) {
+      jsonFile = outputStorage.rootFolder.ensureFile(
+        StorageUtilities.ensureFileNameIsSafe(StorageUtilities.getBaseFromName(project.containerName)) + ".mcr.json"
+      );
 
-    jsonFileExists = await jsonFile.exists();
+      const jsonFileExists = await jsonFile.exists();
 
-    if (jsonFileExists && !force && !displayInfo) {
-      if (!jsonFile.isContentLoaded) {
-        await jsonFile.loadContent(false);
-      }
+      if (jsonFileExists && !force && !displayInfo) {
+        if (!jsonFile.isContentLoaded) {
+          await jsonFile.loadContent(false);
+        }
 
-      let projectInfoData = StorageUtilities.getJsonObject(jsonFile) as IProjectInfoData | undefined;
+        const projectInfoData = StorageUtilities.getJsonObject(jsonFile) as IProjectInfoData | undefined;
 
-      if (projectInfoData === undefined) {
-        jsonFileExists = false;
-      } else {
-        let metaState = {
-          projectContainerName: project.containerName,
-          projectPath: project.projectFolder?.storageRelativePath,
-          projectName: project.name,
-          projectTitle: project.title,
-          infoSetData: projectInfoData,
-        };
-
-        project.dispose();
-
-        return [metaState];
+        if (projectInfoData !== undefined) {
+          return [
+            {
+              projectContainerName: project.containerName,
+              projectPath: project.projectFolder?.storageRelativePath,
+              projectName: project.name,
+              projectTitle: project.title,
+              infoSetData: projectInfoData,
+              suite: undefined,
+            },
+          ];
+        }
       }
     }
-  }
 
-  if (!jsonFileExists || force || displayInfo || outputType === OutputType.noReports) {
-    return await validateAndDisposeProject(
-      project,
-      outputStorage,
-      jsonFile,
-      suite,
-      exclusionList,
-      outputMci,
-      outputType
-    );
-  } else {
-    Log.message("'" + project.name + "' has already been validated; skipping. Use --force to re-validate.");
+    return await validateProject(project, outputStorage, jsonFile, suite, exclusionList, outputMci, outputType);
+  } finally {
+    project.dispose();
   }
-
-  return undefined;
 }
 
-async function validateAndDisposeProject(
+async function validateProject(
   project: Project,
   outputStorage: NodeStorage | undefined,
   mcrJsonFile: NodeFile | undefined,
@@ -318,11 +314,7 @@ async function validateAndDisposeProject(
     }
   }
 
-  try {
-    await outputResults(projectSet, pis, "", outputStorage, mcrJsonFile, outputMci, outputType);
-  } catch (e: any) {
-    Log.error(e);
-  }
+  await outputResults(projectSet, pis, "", outputStorage, mcrJsonFile, outputMci, outputType);
 
   // run derivative suites if no specific suite specified
   if (!suite || suite === "all") {
@@ -413,8 +405,6 @@ async function validateAndDisposeProject(
   // (same memory class).
   releaseHeavyItemManagers(project);
 
-  project.dispose();
-
   return resultStates;
 }
 
@@ -457,11 +447,7 @@ function releaseHeavyItemManagers(project: Project) {
     // 1. Drop parsed world data (chunks, LevelDb keys, etc.).
     const manager = (folder && folder.manager) || (file && file.manager);
     if (manager && typeof (manager as { clearAllData?: () => void }).clearAllData === "function") {
-      try {
-        (manager as { clearAllData: () => void }).clearAllData();
-      } catch (e) {
-        Log.debug("releaseHeavyItemManagers: clearAllData failed: " + (e as Error).message);
-      }
+      (manager as { clearAllData: () => void }).clearAllData();
     }
 
     // 2. If the world's primary file is a container (e.g., a .mcworld /
@@ -474,11 +460,7 @@ function releaseHeavyItemManagers(project: Project) {
       const fileWithContainer = file as { fileContainerStorage?: { dispose?: () => void } | null };
       const inner = fileWithContainer.fileContainerStorage;
       if (inner && typeof inner.dispose === "function") {
-        try {
-          inner.dispose();
-        } catch (e) {
-          Log.debug("releaseHeavyItemManagers: inner storage dispose failed: " + (e as Error).message);
-        }
+        inner.dispose();
         fileWithContainer.fileContainerStorage = null;
       }
     }

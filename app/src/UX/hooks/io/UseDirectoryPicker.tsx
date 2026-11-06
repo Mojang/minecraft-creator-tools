@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import FileSystemStorage from "../../../storage/FileSystemStorage";
 import FileSystemFolder from "../../../storage/FileSystemFolder";
+import { isDirectoryPickerSupported, pickDirectory as pickNativeDirectory } from "../../utils/DirectoryPicker";
 
 export type Directory = {
   name: string;
@@ -16,11 +17,22 @@ type PickerConfig = {
 const UnsafeFileMessage =
   "Folder has unsupported files within it. Please choose a folder on your device that only has Minecraft asset files in it (.json, .png, .mcfunction, etc.)";
 
+/**
+ * React access to the device folder picker.
+ *
+ * Returns `[directory, pickDirectory, error, isSupported]`. `pickDirectory`
+ * opens the native dialog through the shared `DirectoryPicker` helper, so
+ * repeated activations while a dialog is open are ignored instead of
+ * launching a second picker, a cancelled dialog leaves state untouched, and
+ * unsupported browsers or real failures land in `error` for the component to
+ * display. `pickDirectory` never rejects.
+ */
 export function useDirectoryPicker(window: typeof globalThis, config: PickerConfig = {}) {
   const [directory, setDirectory] = useState<Directory>();
   const [error, setError] = useState<{ message: string } | null>();
   const { onDirectoryPicked, ...validation } = config;
   const prevDirectory = useRef<Directory>();
+  const isSupported = isDirectoryPickerSupported(window);
 
   const getError = useCallback(
     async (directoryHandle: FileSystemStorage) => {
@@ -45,60 +57,23 @@ export function useDirectoryPicker(window: typeof globalThis, config: PickerConf
   );
 
   const pickDirectory = useCallback(async () => {
-    if (typeof window.showDirectoryPicker !== "function") {
-      setError({
-        message:
-          "Your browser does not support folder selection. Please use a Chromium-based browser (Chrome, Edge) on desktop.",
-      });
-      return;
-    }
+    const outcome = await pickNativeDirectory(window, { mode: "readwrite" });
 
-    let handle;
-    try {
-      //show file dialog
-      handle = await window.showDirectoryPicker({ mode: "readwrite" });
-    } catch (err) {
-      //user cancelled - expected and safe to ignore
-      if (err instanceof DOMException && err.name === "AbortError") {
+    switch (outcome.status) {
+      case "cancelled":
+      case "busy":
         return;
-      }
 
-      //pass through errors we don't explictly handle
-      throw err;
-    }
-
-    // Even with mode: "readwrite", the browser may only grant prompt-level
-    // permission at picker time. Explicitly verify/request write access now so
-    // that failures surface here instead of silently later during save.
-    try {
-      const handleAny = handle as unknown as {
-        queryPermission?: (d: { mode: "readwrite" }) => Promise<PermissionState>;
-        requestPermission?: (d: { mode: "readwrite" }) => Promise<PermissionState>;
-      };
-
-      let state: PermissionState | undefined;
-      if (typeof handleAny.queryPermission === "function") {
-        state = await handleAny.queryPermission({ mode: "readwrite" });
-      }
-      if (state !== "granted" && typeof handleAny.requestPermission === "function") {
-        state = await handleAny.requestPermission({ mode: "readwrite" });
-      }
-      if (state && state !== "granted") {
-        setError({
-          message:
-            "Write permission to the selected folder was not granted. Please pick the folder again and allow editing.",
-        });
+      case "unsupported":
+      case "failed":
+        setError({ message: outcome.message });
         return;
-      }
-    } catch (permErr) {
-      setError({
-        message:
-          "Could not obtain write permission for the selected folder: " +
-          (permErr instanceof Error ? permErr.message : String(permErr)),
-      });
-      return;
+
+      case "picked":
+        break;
     }
 
+    const handle = outcome.handle;
     const storage = new FileSystemStorage(handle, handle.name);
 
     const error = await getError(storage);
@@ -121,5 +96,5 @@ export function useDirectoryPicker(window: typeof globalThis, config: PickerConf
     prevDirectory.current = directory;
   }, [directory, onDirectoryPicked]);
 
-  return [directory, pickDirectory, error] as const;
+  return [directory, pickDirectory, error, isSupported] as const;
 }

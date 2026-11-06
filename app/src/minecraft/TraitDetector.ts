@@ -90,6 +90,17 @@ interface ITraitSignature {
 }
 
 /**
+ * The mutually exclusive body shapes the Traits tab offers. Their components
+ * (walk navigation, basic movement, static jump) are shared by every land
+ * mob and cannot tell a biped from a quadruped apart, so detection below
+ * only guesses from `minecraft:type_family`. An explicit choice is kept as
+ * tool-only project item metadata (`IProjectItemData.bodyShape`) and applied
+ * on top of detection by `resolveEntityTraits` in EntityTraitApplier.ts,
+ * never written into the shipped behavior file.
+ */
+export const BODY_SHAPE_TRAIT_IDS: readonly EntityTraitId[] = ["humanoid", "quadruped"];
+
+/**
  * Entity trait signature definitions.
  */
 const ENTITY_TRAIT_SIGNATURES: Record<EntityTraitId, ITraitSignature> = {
@@ -98,6 +109,7 @@ const ENTITY_TRAIT_SIGNATURES: Record<EntityTraitId, ITraitSignature> = {
   // for clues but these are intentionally conservative.
   humanoid: {
     optionalComponents: ["minecraft:can_climb", "minecraft:type_family"],
+    conflictsWith: ["quadruped", "quadruped_small"],
     validator: (components) => {
       // Humanoid detection requires strong signals from type_family
       const typeFamily = components["minecraft:type_family"];
@@ -113,6 +125,7 @@ const ENTITY_TRAIT_SIGNATURES: Record<EntityTraitId, ITraitSignature> = {
 
   quadruped: {
     optionalComponents: ["minecraft:behavior.follow_parent", "minecraft:type_family"],
+    conflictsWith: ["humanoid"],
     validator: (components) => {
       // Quadruped detection uses type_family animal clues + follow_parent pattern
       const typeFamily = components["minecraft:type_family"];
@@ -132,10 +145,20 @@ const ENTITY_TRAIT_SIGNATURES: Record<EntityTraitId, ITraitSignature> = {
           "fox",
           "cat",
           "ocelot",
+          "bear",
+          "polarbear",
+          "panda",
+          "camel",
+          "sniffer",
           "animal",
         ];
         if (families.some((f) => quadrupedFamilies.includes(f.toLowerCase()))) return 0.9;
       }
+
+      // Walking plus an animal life cycle is deliberately not enough on its
+      // own: vanilla chickens and striders walk, grow up, follow their parent
+      // and breed, and both are bipeds. Without a family clue or an explicit
+      // body-shape marker the shape stays undetermined.
       // follow_parent + breedable suggests a land animal but not enough for body type
       const hasBreedable = "minecraft:breedable" in components;
       if (hasFollowParent && hasBreedable) return 0.5;
@@ -145,6 +168,7 @@ const ENTITY_TRAIT_SIGNATURES: Record<EntityTraitId, ITraitSignature> = {
 
   quadruped_small: {
     optionalComponents: ["minecraft:scale"],
+    conflictsWith: ["humanoid"],
     validator: (components) => {
       const scale = components["minecraft:scale"]?.value;
       if (scale && scale < 0.7) return 0.7;
@@ -1075,6 +1099,51 @@ export default class TraitDetector {
 
     // Handle conflicts
     return TraitDetector.resolveConflicts(results, ENTITY_TRAIT_SIGNATURES);
+  }
+
+  /**
+   * Components whose presence makes the detector report the given entity
+   * trait (its required and optional signature components). The Traits tab
+   * keeps these on the entity while the trait stays selected, so deselecting
+   * an overlapping trait cannot silently deselect this one as well.
+   */
+  static getEntityTraitDetectionComponents(traitId: EntityTraitId): string[] {
+    const signature = ENTITY_TRAIT_SIGNATURES[traitId];
+    if (!signature) {
+      return [];
+    }
+    return [...(signature.requiredComponents || []), ...(signature.optionalComponents || [])];
+  }
+
+  /**
+   * Whether a single `minecraft:type_family` membership is enough on its own
+   * for the detector to report the given entity trait. Undead is reported
+   * from the "undead" family alone but not from "monster", so removing
+   * Undead has to take "undead" away while "monster" can be left to whoever
+   * put it there.
+   */
+  static entityTraitDetectedFromFamily(traitId: EntityTraitId, family: string): boolean {
+    const signature = ENTITY_TRAIT_SIGNATURES[traitId];
+    if (!signature?.validator) {
+      return false;
+    }
+    const score = signature.validator({ "minecraft:type_family": { family: [family] } });
+    return score >= TraitDetector.DEFAULT_MIN_CONFIDENCE;
+  }
+
+  /**
+   * Whether two entity traits are mutually exclusive (either signature lists
+   * the other in `conflictsWith`), e.g. the temperaments hostile / passive /
+   * neutral. Selecting one of a conflicting pair replaces the other.
+   */
+  static entityTraitsConflict(a: EntityTraitId, b: EntityTraitId): boolean {
+    if (a === b) {
+      return false;
+    }
+    return (
+      ENTITY_TRAIT_SIGNATURES[a]?.conflictsWith?.includes(b) === true ||
+      ENTITY_TRAIT_SIGNATURES[b]?.conflictsWith?.includes(a) === true
+    );
   }
 
   /**

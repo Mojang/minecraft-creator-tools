@@ -161,6 +161,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import ConnectToGitHub from "../io/ConnectToGitHub";
 import Utilities from "../../core/Utilities";
+import Log from "../../core/Log";
 import AppServiceProxy from "../../core/AppServiceProxy";
 import { ProjectEditPreference, ProjectScriptLanguage, ProjectScriptVersion } from "../../app/IProjectData";
 import CreatorToolsHost, { CreatorToolsThemeStyle, HostType } from "../../app/CreatorToolsHost";
@@ -352,7 +353,7 @@ class ProjectPropertyEditor extends Component<IProjectPropertyEditorProps, IProj
       shortName: this.state.shortName,
     });
 
-    ProjectUtilities.applyTitle(this.props.project, data.value);
+    this._syncProjectProperty(ProjectUtilities.applyTitle(this.props.project, data.value));
   }
 
   _handleNameChanged(e: SyntheticEvent, data: { value: string } | undefined) {
@@ -365,7 +366,14 @@ class ProjectPropertyEditor extends Component<IProjectPropertyEditorProps, IProj
       title: this.state.title,
     });
 
-    ProjectUtilities.applyTitle(this.props.project, data.value);
+    this._syncProjectProperty(ProjectUtilities.applyTitle(this.props.project, data.value));
+  }
+
+  /** Change handlers don't wait for the manifest sync to finish, so log its failures instead of dropping them. */
+  _syncProjectProperty(sync: Promise<void>) {
+    sync.catch((e: unknown) => {
+      Log.error("Could not update the pack manifests: " + (e instanceof Error ? e.message : String(e)));
+    });
   }
 
   async _handleBehaviorPackUuidChanged(e: SyntheticEvent, data: { value: string } | undefined) {
@@ -416,12 +424,12 @@ class ProjectPropertyEditor extends Component<IProjectPropertyEditorProps, IProj
     }
   }
 
-  async _handleDescriptionChanged(e: SyntheticEvent<HTMLElement, Event>, data?: { value?: string } | undefined) {
+  _handleDescriptionChanged(e: SyntheticEvent<HTMLElement, Event>, data?: { value?: string } | undefined) {
     if (e === undefined || data === undefined || data.value === undefined) {
       return;
     }
 
-    await ProjectUtilities.applyDescription(this.props.project, data.value);
+    this._syncProjectProperty(ProjectUtilities.applyDescription(this.props.project, data.value));
   }
 
   _handleDefaultNamespaceChanged(e: SyntheticEvent, data: { value: string } | undefined) {
@@ -432,12 +440,12 @@ class ProjectPropertyEditor extends Component<IProjectPropertyEditorProps, IProj
     this.props.project.defaultNamespace = ProjectUtilities.canonicalizeNamespace(data.value);
   }
 
-  async _handleScriptEntryPointChanged(e: SyntheticEvent, data: { value: string } | undefined) {
+  _handleScriptEntryPointChanged(e: SyntheticEvent, data: { value: string } | undefined) {
     if (data === undefined || this.props === undefined) {
       return;
     }
 
-    await ProjectUtilities.applyScriptEntryPoint(this.props.project, data.value);
+    this._syncProjectProperty(ProjectUtilities.applyScriptEntryPoint(this.props.project, data.value));
   }
 
   _handleVersionMajorChanged(e: SyntheticEvent, data: { value: string } | undefined) {

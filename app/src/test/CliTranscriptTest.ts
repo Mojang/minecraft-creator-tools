@@ -50,7 +50,6 @@ import CliTranscriptHarness, {
   omitVolatileLines,
   renderTranscript,
   snapshotTree,
-  WORKER_CHECK_NOTE,
 } from "./CliTranscriptHarness";
 import TestPaths from "./TestPaths";
 import { TEST_PINNED_MC_PREVIEW_VERSION, TEST_PINNED_MC_VERSION } from "./TestVersionPin";
@@ -72,11 +71,11 @@ const FIXTURES: ITranscriptFixture[] = [
  * that the new snapshot is stable (run the test a few times) and free of machine-specific values.
  */
 const TRANSCRIPT_STEPS: ITranscriptStep[] = [
-  { id: "validate-clean", args: ["validate", "-i", "simple"], omitWorkerCheckLines: true },
+  { id: "validate-clean", args: ["validate", "-i", "simple"] },
   { id: "validate-clean-quiet", args: ["validate", "-i", "simple", "-q"] },
-  { id: "validate-errors", args: ["validate", "-i", "platform_version_errors"], omitWorkerCheckLines: true },
+  { id: "validate-errors", args: ["validate", "-i", "platform_version_errors"] },
   { id: "validate-errors-quiet", args: ["validate", "-i", "platform_version_errors", "-q"] },
-  { id: "validate-empty", args: ["validate", "-i", "empty"], omitWorkerCheckLines: true },
+  { id: "validate-empty", args: ["validate", "-i", "empty"] },
 
   { id: "fix-list", args: ["fix", "--list"], cwd: "simple" },
   { id: "fix-dry-run", args: ["fix", "setnewestminengineversion", "-i", "simple", "-n"] },
@@ -97,6 +96,13 @@ const TRANSCRIPT_STEPS: ITranscriptStep[] = [
     note: "The test-only names skip the EULA check, and the description is missing, so create needs to ask for it.",
   },
 
+  {
+    id: "add-template-offline",
+    args: ["add", "allay", "testerName", "-i", "simple"],
+    note:
+      "testerName is a test-only name that skips the EULA check without accepting it. The test refuses the " +
+      "download of the Allay template from Minecraft's vanilla packs, so add fails and changes nothing.",
+  },
   { id: "add-list-types", args: ["add", "--list-types"], cwd: "simple" },
 
   { id: "exportaddon", args: ["exportaddon", "-i", "simple", "-o", "exported"] },
@@ -110,6 +116,17 @@ const TRANSCRIPT_STEPS: ITranscriptStep[] = [
 
   { id: "help-root", args: ["--help"] },
   { id: "help-validate", args: ["help", "validate"] },
+  { id: "help-render", args: ["help", "render"] },
+  { id: "help-export", args: ["help", "export"] },
+  { id: "help-render-model", args: ["help", "render", "model"] },
+  { id: "help-render-structure", args: ["help", "render", "structure"] },
+  { id: "help-render-vanilla", args: ["help", "render", "vanilla"] },
+  { id: "help-render-batch", args: ["help", "render", "batch"] },
+  { id: "help-export-addon", args: ["help", "export", "addon"] },
+  { id: "help-export-world", args: ["help", "export", "world"] },
+  { id: "render-missing-subcommand", args: ["render"] },
+  { id: "render-unknown-subcommand", args: ["render", "modle", "--width", "256"] },
+  { id: "export-addon-group", args: ["export", "addon", "-i", "simple", "-o", "exported"] },
 ];
 
 /** What the CLI needs from the full build. jsncorebuild alone leaves out res/, which changes the output. */
@@ -303,35 +320,30 @@ describe("CLI transcript harness", () => {
       "Processing project 1/1: simple\n" +
       "␛[31mError: Test Fail: Found 4 errors in Manifest Validation check␛[0m\n";
 
-    const cases: { name: string; input: string; omitWorkerCheckLines: boolean; expected: string }[] = [
+    const cases: { name: string; input: string; expected: string }[] = [
       {
         name: "drops failed registry lookups",
         input:
           "Creating project\n" +
           "[<timestamp>] [DEBUG   ] Could not load registry for '@minecraft/server': Error: read ENOTCONN\n" +
           "Project created\n",
-        omitWorkerCheckLines: false,
         expected: "Creating project\nProject created\n",
       },
       {
-        name: "drops worker check lines when asked, keeping main-thread lines",
+        name: "keeps worker check lines alongside main-thread lines",
         input: workerLines + mainThreadLines,
-        omitWorkerCheckLines: true,
-        expected: mainThreadLines,
+        expected: workerLines + mainThreadLines,
       },
       {
-        name: "keeps worker check lines otherwise",
+        name: "keeps worker check lines on their own",
         input: workerLines,
-        omitWorkerCheckLines: false,
         expected: workerLines,
       },
     ];
 
     for (const testCase of cases) {
       it(testCase.name, () => {
-        expect(omitVolatileLines(testCase.input, { omitWorkerCheckLines: testCase.omitWorkerCheckLines })).to.equal(
-          testCase.expected
-        );
+        expect(omitVolatileLines(testCase.input)).to.equal(testCase.expected);
       });
     }
   });
@@ -344,7 +356,6 @@ describe("CLI transcript harness", () => {
           args: ["create", "My Add-on", 'C:\\Say "hi"'],
           cwd: "simple",
           note: "An example.",
-          omitWorkerCheckLines: true,
         },
         {
           exitCode: 1,
@@ -363,7 +374,6 @@ describe("CLI transcript harness", () => {
           "cwd: <work>/simple",
           "exit code: 1",
           "note: An example.",
-          "note: " + WORKER_CHECK_NOTE,
           "",
           "stdout:",
           "? Name? ␛[59G",

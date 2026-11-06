@@ -627,9 +627,10 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator,
 
                 if (textureDefinition.errorProcessing) {
                   if (variantFile.type === "tga") {
+                    // An undecodable TGA is a problem with the file, not with validation.
                     items.push(
                       new ProjectInfoItem(
-                        InfoItemType.internalProcessingError,
+                        InfoItemType.warning,
                         this.id,
                         TextureImageInfoGeneratorTest.tgaImageProcessingError,
                         `Error processing TGA image`,
@@ -672,7 +673,8 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator,
 
             if (imageWidth >= 0 && imageHeight >= 0) {
               const textureMem = imageWidth * imageHeight * 4;
-              const variantProjectPath = variant.projectPath ?? projectItem.projectPath ?? variantFile.storageRelativePath;
+              const variantProjectPath =
+                variant.projectPath ?? projectItem.projectPath ?? variantFile.storageRelativePath;
               let isAtlasTexture = false;
 
               textureImagePi.spectrumIntFeature("Width", imageWidth);

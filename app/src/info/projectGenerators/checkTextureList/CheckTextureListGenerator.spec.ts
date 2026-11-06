@@ -9,8 +9,16 @@ import { InfoItemType } from "../../IInfoItemData";
 import ProjectItem from "../../../app/ProjectItem";
 import { ProjectItemType } from "../../../app/IProjectItemData";
 
+// Generator results are keyed by Pack identity, so stubs share this object unless a test needs two packs.
+const defaultPack = {};
+
 /** Builds a minimal texture ProjectItem stub with the fields the generator reads. */
-function createTextureItem(opts: { packRelativePath: string; name?: string; isTextureSet?: boolean }): ProjectItem {
+function createTextureItem(opts: {
+  packRelativePath: string;
+  name?: string;
+  isTextureSet?: boolean;
+  pack?: object;
+}): ProjectItem {
   const parentItems = opts.isTextureSet ? [{ parentItem: { itemType: ProjectItemType.textureSetJson } }] : [];
 
   return {
@@ -20,16 +28,18 @@ function createTextureItem(opts: { packRelativePath: string; name?: string; isTe
     loadContent: async () => true,
     parentItems,
     getPackRelativePath: async () => opts.packRelativePath,
+    getPack: async () => opts.pack ?? defaultPack,
   } as unknown as ProjectItem;
 }
 
 /** Builds a minimal texture_list.json ProjectItem stub returning the given array. */
-function createTextureListItem(entries: unknown): ProjectItem {
+function createTextureListItem(entries: unknown, pack: object = defaultPack): ProjectItem {
   return {
     itemType: ProjectItemType.textureListJson,
     isContentLoaded: true,
     loadContent: async () => true,
     getJsonObject: async () => entries,
+    getPack: async () => pack,
   } as unknown as ProjectItem;
 }
 
@@ -110,6 +120,24 @@ describe("CheckTextureListGenerator", () => {
     const results = await gen.generate(project, new ContentIndex());
 
     expect(results.length).to.equal(0);
+  });
+
+  it("checks each pack's textures only against that pack's list", async () => {
+    const packA = {};
+    const packB = {};
+    const unlistedPack = {};
+    const project = createStubProject([
+      createTextureListItem(["textures/blocks/stone"], packA),
+      createTextureListItem(["textures/blocks/grass"], packB),
+      createTextureItem({ packRelativePath: "textures/blocks/dirt.png", name: "dirt.png", pack: packA }),
+      // listed only in pack A, so pack A's list must not satisfy it
+      createTextureItem({ packRelativePath: "textures/blocks/stone.png", pack: packB }),
+      createTextureItem({ packRelativePath: "textures/blocks/sand.png", name: "sand.png", pack: unlistedPack }),
+    ]);
+
+    const results = await gen.generate(project, new ContentIndex());
+
+    expect(results.map((r) => r.data)).to.deep.equal(["textures/blocks/dirt", "textures/blocks/stone"]);
   });
 
   it("normalizes path separators, casing, and extensions when comparing", async () => {

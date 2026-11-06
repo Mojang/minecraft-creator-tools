@@ -35,14 +35,14 @@ export const TEST_PINNED_SERVER_LATEST_VERSION = "2.10.0";
  */
 export const TEST_PINNED_SERVER_BETA_VERSION = "2.11.0";
 
-/** The preview triplet + build the pinned beta dist-tag advertises (e.g. "1.26.20-preview.27"). */
+/** The preview triplet + build the pinned beta dist-tag advertises (e.g. "1.26.60-preview.28"). */
 const pinnedBetaProductSuffix = (() => {
   const parts = TEST_PINNED_MC_PREVIEW_VERSION.split(".");
 
   return `${parts.slice(0, 3).join(".")}-preview.${parts[3] ?? "0"}`;
 })();
 
-/** Builds the full beta dist-tag NpmModule parses, e.g. "2.11.0-beta.1.26.20-preview.27". */
+/** Builds the full beta dist-tag NpmModule parses, e.g. "2.11.0-beta.1.26.60-preview.28". */
 export function betaDistTagFor(betaVersion: string): string {
   return `${betaVersion}-beta.${pinnedBetaProductSuffix}`;
 }

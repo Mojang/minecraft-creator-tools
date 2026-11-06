@@ -8,6 +8,7 @@ import IProperty from "../../../dataform/IProperty";
 import BehaviorManifestDefinition from "../../../minecraft/BehaviorManifestDefinition";
 import StorageUtilities from "../../../storage/StorageUtilities";
 import Utilities from "../../../core/Utilities";
+import { getDefaultMinEngineVersion } from "../../../minecraft/MinecraftVersionDefaults";
 import Project from "../../../app/Project";
 import IProjectTheme from "../../types/IProjectTheme";
 import { WithLocalizationProps, withLocalization } from "../../withLocalization";
@@ -267,7 +268,7 @@ class BehaviorPackManifestJsonEditor extends Component<
         description: baseName,
         uuid: Utilities.createUuid(),
         version: [0, 0, 1],
-        min_engine_version: [1, 20, 10],
+        min_engine_version: getDefaultMinEngineVersion(),
       };
     }
 

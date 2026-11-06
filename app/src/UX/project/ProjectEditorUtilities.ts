@@ -16,6 +16,7 @@ import IFolder from "../../storage/IFolder";
 import StorageUtilities from "../../storage/StorageUtilities";
 import ZipStorage from "../../storage/ZipStorage";
 import telemetryService from "../../analytics/Telemetry";
+import { pickDirectory } from "../utils/DirectoryPicker";
 import { TelemetryEvents, TelemetryProperties, WorldDownloadProperties } from "../../analytics/TelemetryConstants";
 import { ProjectEditPreference } from "../../app/IProjectData";
 
@@ -991,57 +992,65 @@ export default class ProjectEditorUtilities {
     if (project === null || project.projectFolder === null) {
       return;
     }
+    const outcome = await pickDirectory(window, { mode: "readwrite" });
+
+    switch (outcome.status) {
+      case "cancelled":
+      case "busy":
+        return;
+
+      case "unsupported":
+      case "failed":
+        await creatorTools.notifyStatusUpdate("Export to folder failed: " + outcome.message);
+        return;
+
+      case "picked":
+        break;
+    }
+
+    const result = outcome.handle;
     let operId: number | undefined;
     try {
-      const result = (await window.showDirectoryPicker({
-        mode: "readwrite",
-      })) as FileSystemDirectoryHandle | undefined;
+      const storage = new FileSystemStorage(result);
 
-      if (result) {
-        const storage = new FileSystemStorage(result);
+      operId = await creatorTools.notifyOperationStarted("Exporting project to  '" + result.name + "'");
 
-        operId = await creatorTools.notifyOperationStarted("Exporting project to  '" + result.name + "'");
+      const safeMessage = await (storage.rootFolder as FileSystemFolder).getFirstUnsafeError();
 
-        const safeMessage = await (storage.rootFolder as FileSystemFolder).getFirstUnsafeError();
+      if (safeMessage) {
+        await creatorTools.notifyOperationEnded(
+          operId,
+          "Could not export to a folder on your device: " + safeMessage,
+          undefined,
+          true
+        );
+      } else {
+        await StorageUtilities.syncFolderTo(
+          project.projectFolder,
+          storage.rootFolder,
+          true,
+          true,
+          false,
+          [],
+          undefined,
+          async (message: string) => {
+            await creatorTools.notifyStatusUpdate(message);
+          },
+          true
+        );
 
-        if (safeMessage) {
-          await creatorTools.notifyOperationEnded(
-            operId,
-            "Could not export to a folder on your device: " + safeMessage,
-            undefined,
-            true
-          );
-        } else {
-          await StorageUtilities.syncFolderTo(
-            project.projectFolder,
-            storage.rootFolder,
-            true,
-            true,
-            false,
-            [],
-            undefined,
-            async (message: string) => {
-              await creatorTools.notifyStatusUpdate(message);
-            },
-            true
-          );
+        await creatorTools.notifyStatusUpdate("Saving all files to '" + result.name + "'.");
+        await storage.rootFolder.saveAll();
+        await creatorTools.notifyOperationEnded(operId, "Export completed.");
 
-          await creatorTools.notifyStatusUpdate("Saving all files to '" + result.name + "'.");
-          await storage.rootFolder.saveAll();
-          await creatorTools.notifyOperationEnded(operId, "Export completed.");
-
-          telemetryService.trackEvent({
-            name: TelemetryEvents.PROJECT_EXPORTED,
-            properties: {
-              [TelemetryProperties.EXPORT_FORMAT]: "folder",
-            },
-          });
-        }
+        telemetryService.trackEvent({
+          name: TelemetryEvents.PROJECT_EXPORTED,
+          properties: {
+            [TelemetryProperties.EXPORT_FORMAT]: "folder",
+          },
+        });
       }
     } catch (e) {
-      if (e instanceof DOMException && e.name === "AbortError") {
-        return;
-      }
       const message = e instanceof Error ? e.message : String(e);
       if (operId !== undefined) {
         await creatorTools.notifyOperationEnded(operId, "Export to folder failed: " + message, undefined, true);

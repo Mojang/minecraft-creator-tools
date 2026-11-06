@@ -1,0 +1,119 @@
+$ mct help render model
+cwd: <work>
+exit code: 0
+
+stdout:
+Render a model from your project to an image. Uses a related texture when
+available.
+
+USAGE
+  mct render model <geometryPath> [outputPath] [flags]
+
+ARGUMENTS
+  <geometryPath>  Path to the .geo.json file within the project to render.
+  [outputPath]    Path to save the rendered PNG image. Defaults to
+                  <geometryName>.png
+
+FLAGS
+  --gpu                            Prefer hardware GPU rendering instead of
+                                   SwiftShader software WebGL
+  --no-gpu                         Use software WebGL and skip hardware
+                                   detection, for repeatable images
+  --appearance <mode>              Choose how to show the model (choices:
+                                   textured, clay, wireframe, bones; default:
+                                   textured)
+  --view <view>                    Choose a camera view (default: three-quarter)
+                                   (choices: three-quarter, front, side, back)
+  --all-views                      Combine three-quarter, front, side, and back
+                                   in one labeled 2x2 image
+  --no-grid                        Hide the ground grid while keeping the ground
+                                   plane and shadows
+  --skeleton                       Overlay bone pivots and their parent
+                                   connections on named model geometry
+  --environment <preset>           Choose neutral or biome-inspired lighting,
+                                   sky, and ground (choices: neutral, plains,
+                                   desert, snowy; default: neutral)
+  --time-of-day <time>             Choose the time for a biome environment
+                                   (default: noon) (choices: noon, sunset,
+                                   night)
+  --width <pixels>                 Set each view's width in pixels; a four-view
+                                   sheet is twice as wide (default: 1024)
+  --height <pixels>                Set each view's height in pixels, including
+                                   sheet labels; scaled canvases are limited to
+                                   4096 pixels per side and 32 Mi pixels
+                                   combined (default: 1024)
+  --vanilla                        Load vanilla Minecraft resources from
+                                   mctools.dev for fallback textures
+  --no-vanilla                     Skip the vanilla Minecraft texture fallback.
+                                   Useful when the project ships its own
+                                   textures; renders faster and avoids the
+                                   mctools.dev network fetch.
+  --port <port>                    Use a specific localhost port for the
+                                   temporary render server
+  --port-start <port>              First port in the random temporary render
+                                   server range (default: 6200)
+  --port-end <port>                Last port in the random temporary render
+                                   server range (default: 6299)
+  --render-wait-ms <milliseconds>  Milliseconds to wait after loading the model
+                                   before capture
+  --canvas-timeout-ms <milliseconds>
+                                   Milliseconds to wait for the viewer canvas
+                                   (default: 15000)
+
+INHERITED FLAGS
+  -i, --input-folder [path]  Path to the input folder. If not specified, the
+                             current working directory is used.
+  --if, --input-file <path>  Path to the input MCWorld, MCTemplate, MCPack,
+                             MCAddon or other zip file.
+  --single                   When pointed at a folder via -i, force that folder
+                             to be processed as a single project.
+  --psw, --project-starts-with <prefix>
+                             Only process a project if it starts with the
+                             starter term; this can be used to subdivide
+                             processing.
+  --afs, --additional-files [paths]
+                             Comma-separated list of additional files to add to
+                             projects.
+
+  --bp, --base-path <path>   Path, relative to the current working folder, where
+                             common data files and folders are found.
+  --isolated                 Do not load vanilla Minecraft resources (e.g.,
+                             textures, ground blocks) from the web
+  --offline                  Same as --isolated. Useful in CI where the network
+                             is unreliable; some checks (e.g. latest version)
+                             may still use the network.
+  -d, --debug                Add debug logging, options, and even more
+                             experimental commands.
+  --verbose                  Show verbose log messages.
+  -q, --quiet                Suppress non-essential output. Only show errors and
+                             final results.
+
+  -h, --help                 Show help for the command.
+
+EXAMPLES
+  $ mct render model mob.geo.json preview.png -i "./My Addon"
+
+  # Use project textures and software rendering for repeatable images
+  $ mct render model mob.geo.json preview.png -i "./My Addon" --no-vanilla --no-gpu
+
+  # Compare four cameras in one image
+  $ mct render model mob.geo.json study.png -i "./My Addon" --appearance clay --all-views
+
+  # Inspect pivots and parent connections
+  $ mct render model mob.geo.json rig.png -i "./My Addon" --skeleton --all-views
+
+LEARN MORE
+  Named views use matching orthographic scale; front faces negative Z and side
+  faces positive X.
+  A four-view sheet is twice --width by twice --height, including its labels.
+  Use `mct help` to see all commands.
+  Read the documentation at
+  https://learn.microsoft.com/minecraft/creator/documents/mctoolsoverview
+
+stderr: (empty)
+
+files under <work>: (none)
+
+files under <data-dir>: (none)
+
+network requests: (none)

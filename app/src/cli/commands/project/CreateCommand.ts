@@ -35,6 +35,7 @@ import IGalleryItem, { GalleryItemType } from "../../../app/IGalleryItem";
 import Project, { ProjectAutoDeploymentMode } from "../../../app/Project";
 import ProjectExporter from "../../../app/ProjectExporter";
 import ProjectUtilities from "../../../app/ProjectUtilities";
+import { GeneratedWithTools } from "../../../minecraft/ManifestGeneratedWith";
 import NodeStorage from "../../../local/NodeStorage";
 import LocalUtilities from "../../../local/LocalUtilities";
 
@@ -151,11 +152,7 @@ export class CreateCommand extends CommandBase {
       !isTestMode
     ) {
       if (!LocalUtilities.eulaAcceptedViaEnvironment) {
-        context.log.error(
-          "EULA not accepted. Accept it via:\n" +
-            "  Interactive:    mct eula\n" +
-            "  Non-interactive: mct eula --accept   (or set MCTOOLS_I_ACCEPT_EULA_AT_MINECRAFTDOTNETSLASHEULA=true)"
-        );
+        context.log.error(LocalUtilities.eulaNotAcceptedMessage);
         context.setExitCode(ErrorCodes.INIT_ERROR);
         return;
       }
@@ -457,7 +454,13 @@ export class CreateCommand extends CommandBase {
       await ProjectUtilities.applyCreator(project, creator);
     }
 
-    await ProjectUtilities.processNewProject(project, title, applyDescription, suggestedShortName, false);
+    await ProjectUtilities.processNewProject(
+      project,
+      title,
+      applyDescription,
+      suggestedShortName,
+      GeneratedWithTools.cli
+    );
 
     context.log.success(`Project created at: ${project.projectFolder?.fullPath}`);
     context.log.info("\nNow run npm i in the project folder to install dependencies, if any.");

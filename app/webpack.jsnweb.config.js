@@ -11,6 +11,7 @@
 
 const path = require("path");
 const webpack = require("webpack");
+const knowledgeJsonRule = require("./webpack.knowledgeJsonRule");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 // Read version from package.json
@@ -127,6 +128,7 @@ const webExtensionConfig = {
   // the web UI shares with Node-only folders such as src/local/ belongs in a shared folder (src/app/).
   module: {
     rules: [
+      knowledgeJsonRule,
       {
         test: /\.js$/,
         exclude: [

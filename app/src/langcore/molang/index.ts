@@ -18,3 +18,4 @@ export * from "./MolangParser";
 export * from "./MolangCompletions";
 export * from "./MolangHover";
 export * from "./MolangDiagnostics";
+export * from "./MolangMathDocs";

@@ -1,0 +1,5 @@
+# The build embeds these TypeScript sources in the source maps it packages with the world template,
+# and validation reports measure those maps. Check the sources out with LF on every OS, so a Windows
+# checkout produces the same reports (app/test/scenarios/serveCommandValidateWorld and
+# serveCommandValidateMashup) as macOS and Linux.
+scripts/**/*.ts text eol=lf

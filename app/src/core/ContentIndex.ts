@@ -456,6 +456,18 @@ export default class ContentIndex implements IContentIndex {
     });
   }
 
+  /**
+   * Values indexed under exactly this key. Unlike getMatches, longer keys that start with it
+   * (`minecraft:iron_ingot` for `minecraft:iron`) don't match.
+   */
+  async getExactKeyMatches(key: string, withAnyAnnotation?: AnnotationCategory[]) {
+    key = key.toLowerCase().trim();
+
+    const results = await this.getDescendentStrings(key);
+
+    return ContentIndex.processResultValues(results?.[key], withAnyAnnotation) ?? [];
+  }
+
   getTermMatchStrings(term: string) {
     const results = this.getTermMatch(term);
 

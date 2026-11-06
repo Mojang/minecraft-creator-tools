@@ -1,22 +1,69 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+/// <reference lib="dom" />
+
 /**
  * PlaywrightPageRenderer - Utility for rendering 3D content to PNG using Playwright.
  *
  * Browser resolution strategy (in order):
  * 1. Use system Chrome (channel: "chrome") - works on dev machines with Chrome installed
  * 2. Use system Edge (channel: "msedge") - works on Windows machines with Edge
- * 3. Use Playwright's bundled Chromium - requires `npx playwright install chromium`
- * 4. Use executable at CHROMIUM_PATH environment variable - for container scenarios
+ * 3. Use the executable at CHROMIUM_PATH - for container scenarios
+ * 4. Try common Linux Chromium executable paths
+ * 5. Use Playwright's bundled Chromium - requires `npx playwright install chromium`
  *
- * See app/docs/PlaywrightBrowserManagement.md for a discussion of Playwright session
- * management techniques.
+ * A browser that isn't installed is skipped rather than launched: Playwright creates two temporary
+ * folders before it looks for the browser, and leaves them behind when it can't find one
+ * (BrowserInstallation.ts).
+ *
+ * CLI callers opt into "auto": verify a working hardware WebGL context before
+ * publishing the browser. Each search closes rejected candidates and continues
+ * within its shared deadline; software follows the hardware search. Other callers
+ * keep the software default; explicit booleans retain their launch preference.
+ * Initialization is single-flight. close() cancels a pending probe and waits for
+ * owned browser cleanup, including a launch that completes after cancellation.
+ *
+ * Closing waits for the browser process, not for processes it started. Browsers
+ * launch without their updater, and once a browser process exits, its pipes are
+ * released even if a child process still holds them (BrowserProcessPipes.ts).
+ *
+ * See docs/PlaywrightBrowserManagement.md for the policy and lifecycle.
  */
 
 import Log from "../core/Log";
+import type { Browser, LaunchOptions, Page } from "playwright";
+import { RenderPresentationOptions, renderPresentationUrl } from "../app/RenderPresentation";
+import RenderPageDiagnostics from "./RenderPageDiagnostics";
+import { PNG } from "pngjs";
+import { releaseBrowserPipesAfterExit } from "./BrowserProcessPipes";
+import { isBrowserInstalled } from "./BrowserInstallation";
+
+/** Reject empty, corrupt, or incorrectly sized canvas output before a caller can write it. */
+export function decodePresentationPng(data: string, width: number, height: number): Buffer {
+  const match = /^data:image\/png;base64,([A-Za-z0-9+/]+={0,2})$/.exec(data);
+  if (!match) throw new Error("Render presentation capture did not produce a PNG image.");
+  const bytes = Buffer.from(match[1], "base64");
+  let png: PNG;
+  try {
+    png = PNG.sync.read(bytes);
+  } catch (error) {
+    throw new Error(
+      "Render presentation capture produced invalid PNG data: " +
+        (error instanceof Error ? error.message : String(error))
+    );
+  }
+  if (png.width !== width || png.height !== height) {
+    throw new Error(
+      `Render presentation capture produced ${png.width}x${png.height} pixels; expected ${width}x${height}.`
+    );
+  }
+  return bytes;
+}
 
 export interface RenderOptions {
+  /** CLI stage and exact pixel capture; omitted by other renderer consumers. */
+  presentation?: RenderPresentationOptions;
   /** Width of the rendered image in pixels */
   width?: number;
   /** Height of the rendered image in pixels */
@@ -67,31 +114,30 @@ export interface RenderResult {
 }
 
 export interface PlaywrightPageRendererOptions {
-  /** Prefer hardware GPU rendering instead of SwiftShader software WebGL. */
-  useHardwareGpu?: boolean;
+  /** "auto" verifies hardware WebGL with software fallback. Booleans retain the explicit launch preference. */
+  useHardwareGpu?: boolean | "auto";
 }
 
 interface BrowserLaunchConfig {
   name: string;
-  launchOptions: {
-    channel?: string;
-    executablePath?: string;
-    headless?: boolean;
-    args?: string[];
-  };
+  launchOptions: LaunchOptions;
 }
 
 export default class PlaywrightPageRenderer {
   private _baseUrl: string;
-  private _useHardwareGpu: boolean;
-  private _browser: any = null;
+  private _useHardwareGpu: boolean | "auto";
+  private _browser: Browser | null = null;
   private _browserName: string = "";
-  private _playwright: any = null;
+  private _playwright: typeof import("playwright") | null = null;
+  private _initialization: Promise<boolean> | undefined;
+  private _initializationAbort: AbortController | undefined;
+  private _closing: Promise<void> | undefined;
 
   // Persistent context/page for fast batch rendering
   private _persistentContext: any = null;
   private _persistentPage: any = null;
   private _persistentViewport: { width: number; height: number } | null = null;
+  private _persistentDiagnostics: RenderPageDiagnostics | null = null;
   private _lastModelPath: string | null = null; // Track last model key (without camera params) to detect changes
   private _lastFullUrl: string | null = null; // Track full URL to detect camera param changes
 
@@ -106,6 +152,10 @@ export default class PlaywrightPageRenderer {
    */
   async resetPersistentPage(): Promise<void> {
     if (this._persistentContext) {
+      if (this._lastFullUrl?.includes("&presentation=true") && !this._persistentPage?.isClosed()) {
+        await this.releasePresentation(this._persistentPage);
+      }
+
       try {
         await this._persistentContext.close();
       } catch {
@@ -114,15 +164,45 @@ export default class PlaywrightPageRenderer {
     }
     this._persistentContext = null;
     this._persistentPage = null;
+    this._persistentDiagnostics = null;
     this._persistentViewport = null;
     this._lastModelPath = null;
     this._lastFullUrl = null;
   }
 
   /**
+   * Asks the page to release its presentation scene before its context closes. Playwright's
+   * page.evaluate() has no timeout and never settles while a navigation is stalled, as when the
+   * render server never returns a document. So this waits at most `timeoutMs`, a second unless a
+   * test passes less; callers then close the context, and a failed render reports its own error
+   * instead of hanging.
+   */
+  private async releasePresentation(page: Page | undefined, timeoutMs = 1000): Promise<void> {
+    if (!page || page.isClosed()) return;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    try {
+      const released = await Promise.race([
+        page.evaluate(() => window.mctPresentation?.release()).then(() => true),
+        new Promise<false>((resolve) => {
+          timer = setTimeout(() => resolve(false), timeoutMs);
+        }),
+      ]);
+      if (!released) {
+        Log.debug(
+          `The render page didn't release its presentation scene within ${timeoutMs}ms; closing its context anyway.`
+        );
+      }
+    } catch (error) {
+      Log.debug("Could not release the presentation scene before closing its context: " + String(error));
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  /**
    * Get the list of browser configurations to try, in order of preference.
    */
-  private _getBrowserConfigs(): BrowserLaunchConfig[] {
+  private _getBrowserConfigs(useHardwareGpu: boolean): BrowserLaunchConfig[] {
     const configs: BrowserLaunchConfig[] = [];
 
     const baseArgs = [
@@ -132,8 +212,11 @@ export default class PlaywrightPageRenderer {
       "--allow-running-insecure-content",
       "--enable-webgl",
       "--use-gl=angle", // Use ANGLE for WebGL (works on most systems)
+      // Edge and Chrome start their updater about 19 seconds into a session. It inherits the
+      // browser's stdout and stderr and can outlive the browser. Playwright 1.62 adds this switch too.
+      "--disable-updater-scheduler",
     ];
-    const rendererArgs = this._useHardwareGpu
+    const rendererArgs = useHardwareGpu
       ? [
           // Prefer Chromium's normal hardware ANGLE backend.
           "--enable-gpu",
@@ -143,10 +226,7 @@ export default class PlaywrightPageRenderer {
           "--use-angle=swiftshader",
           "--enable-unsafe-swiftshader",
         ];
-    const commonArgs = [
-      ...baseArgs,
-      ...rendererArgs,
-    ];
+    const commonArgs = [...baseArgs, ...rendererArgs];
 
     // 1. System Chrome (most common on dev machines)
     configs.push({
@@ -212,40 +292,159 @@ export default class PlaywrightPageRenderer {
    * Tries multiple browser configurations until one works.
    */
   async initialize(): Promise<boolean> {
-    if (this._browser) {
+    if (this._closing) {
+      await this._closing;
+    }
+    if (this.isBrowserReady()) {
       return true;
     }
 
+    if (!this._initialization) {
+      const abort = new AbortController();
+      this._initializationAbort = abort;
+      this._initialization = this._initialize(abort.signal).finally(() => {
+        this._initialization = undefined;
+        this._initializationAbort = undefined;
+      });
+    }
+    return this._initialization;
+  }
+
+  private async _initialize(signal: AbortSignal): Promise<boolean> {
     try {
-      // Dynamic import of playwright
       this._playwright = await import("playwright");
-    } catch (e) {
+    } catch {
       Log.fail("Playwright not installed. Run: npm install playwright");
       return false;
     }
 
-    const configs = this._getBrowserConfigs();
-
-    for (const config of configs) {
-      try {
-        Log.verbose(`Trying browser: ${config.name}...`);
-        this._browser = await this._playwright.chromium.launch(config.launchOptions);
-        this._browserName = config.name;
-        Log.verbose(`HeadlessRenderer: Using ${config.name}`);
+    const automatic = this._useHardwareGpu === "auto";
+    if (await this._tryBrowser(this._useHardwareGpu !== false, automatic, signal)) {
+      return true;
+    }
+    if (automatic && !signal.aborted) {
+      Log.verbose("HeadlessRenderer: Hardware WebGL unavailable; using software WebGL.");
+      if (await this._tryBrowser(false, true, signal)) {
         return true;
-      } catch (e: any) {
-        Log.verbose(`${config.name} not available: ${e.message}`);
-        continue;
       }
     }
-
-    Log.fail(
-      "HeadlessRenderer: No browser available. Options:\n" +
-        "  1. Install Chrome or Edge on your system\n" +
-        "  2. Run: npx playwright install chromium\n" +
-        "  3. In containers, install chromium and set CHROMIUM_PATH=/usr/bin/chromium"
-    );
+    if (!signal.aborted) {
+      Log.fail(
+        "HeadlessRenderer: No browser available. Options:\n" +
+          "  1. Install Chrome or Edge on your system\n" +
+          "  2. Run: npx playwright install chromium\n" +
+          "  3. In containers, install chromium and set CHROMIUM_PATH=/usr/bin/chromium"
+      );
+    }
     return false;
+  }
+
+  private async _tryBrowser(useHardwareGpu: boolean, verifyWebGl: boolean, signal: AbortSignal): Promise<boolean> {
+    const deadline = verifyWebGl ? Date.now() + (useHardwareGpu ? 10000 : 30000) : Infinity;
+    for (const config of this._getBrowserConfigs(useHardwareGpu)) {
+      if (!(await isBrowserInstalled(this._playwright!.chromium, config.launchOptions))) {
+        Log.verbose(`${config.name} not available: not installed.`);
+        continue;
+      }
+      const remaining = deadline - Date.now();
+      if (signal.aborted || remaining <= 0) {
+        break;
+      }
+      let browser: Browser | undefined;
+      try {
+        Log.verbose(`Trying browser: ${config.name}...`);
+        browser = await this._playwright!.chromium.launch({
+          ...config.launchOptions,
+          timeout: verifyWebGl ? Math.min(5000, remaining) : undefined,
+        });
+        releaseBrowserPipesAfterExit(browser);
+        if (
+          !signal.aborted &&
+          (!verifyWebGl || (await this._checkWebGl(browser, useHardwareGpu, signal, deadline))) &&
+          !signal.aborted
+        ) {
+          this._browser = browser;
+          this._browserName = config.name;
+          Log.verbose(`HeadlessRenderer: Using ${config.name}`);
+          return true;
+        }
+      } catch (error) {
+        Log.verbose(`${config.name} not available: ${error instanceof Error ? error.message : String(error)}`);
+      } finally {
+        if (browser && browser !== this._browser) {
+          await browser.close();
+        }
+      }
+    }
+    return false;
+  }
+
+  private async _checkWebGl(
+    browser: Browser,
+    requireHardware: boolean,
+    signal: AbortSignal,
+    deadline: number
+  ): Promise<boolean> {
+    const timeout = Math.min(3000, deadline - Date.now());
+    if (timeout <= 0) throw new Error("WebGL search timed out");
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let cancel = () => {};
+    const interrupted = new Promise<never>((_, reject) => {
+      timer = setTimeout(() => reject(new Error("WebGL check timed out")), timeout);
+      cancel = () => reject(new Error("Renderer initialization cancelled"));
+      signal.addEventListener("abort", cancel, { once: true });
+      if (signal.aborted) cancel();
+    });
+    const probe = async () => {
+      const context = await browser.newContext({ viewport: { width: 1, height: 1 } });
+      try {
+        const page = await context.newPage();
+        return await page.evaluate((hardware) => {
+          const canvas = document.createElement("canvas");
+          canvas.width = canvas.height = 1;
+          const attributes = { failIfMajorPerformanceCaveat: hardware };
+          const gl = canvas.getContext("webgl2", attributes) ?? canvas.getContext("webgl", attributes);
+          if (!gl || !("readPixels" in gl)) return null;
+          try {
+            const info = gl.getExtension("WEBGL_debug_renderer_info");
+            gl.clearColor(0.25, 0.5, 0.75, 1);
+            gl.clear(gl.COLOR_BUFFER_BIT);
+            const pixel = new Uint8Array(4);
+            // Readback waits for completed drawing, not just successful context creation.
+            gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixel);
+            if (
+              gl.isContextLost() ||
+              gl.getError() !== gl.NO_ERROR ||
+              Math.abs(pixel[0] - 64) > 1 ||
+              Math.abs(pixel[1] - 128) > 1 ||
+              Math.abs(pixel[2] - 191) > 1 ||
+              pixel[3] !== 255
+            ) {
+              return null;
+            }
+            return { renderer: info ? String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL)) : null };
+          } finally {
+            gl.getExtension("WEBGL_lose_context")?.loseContext();
+          }
+        }, requireHardware);
+      } finally {
+        await context.close();
+      }
+    };
+    try {
+      const result = await Promise.race([probe(), interrupted]);
+      if (Date.now() >= deadline) throw new Error("WebGL search timed out");
+      const renderer = result?.renderer;
+      const software =
+        /swiftshader|llvmpipe|softpipe|lavapipe|swrast|openswr|software|basic render|gdi generic|warp|virgl|virtio|vmware|parallels|virtualbox/i;
+      const hardware = /apple|nvidia|geforce|quadro|amd|radeon|intel|adreno|mali|powervr|qualcomm/i;
+      const available = typeof renderer === "string" && !software.test(renderer) && hardware.test(renderer);
+      Log.verbose(`HeadlessRenderer: WebGL renderer: ${renderer ?? "unavailable"}; hardware verified: ${available}.`);
+      return result !== null && (!requireHardware || available) && !signal.aborted;
+    } finally {
+      clearTimeout(timer);
+      signal.removeEventListener("abort", cancel);
+    }
   }
 
   /**
@@ -289,6 +488,7 @@ export default class PlaywrightPageRenderer {
    * @param options - Rendering options
    */
   async renderModel(modelPath: string, options: RenderOptions = {}): Promise<RenderResult> {
+    if (options.presentation) modelPath = renderPresentationUrl(modelPath, options.presentation);
     const width = options.width ?? 512;
     const height = options.height ?? 512;
     const renderWaitTime = options.renderWaitTime ?? 3000;
@@ -303,12 +503,20 @@ export default class PlaywrightPageRenderer {
       }
     }
 
+    const browser = this._browser;
+    if (!browser) {
+      return { imageData: undefined, error: "Browser was closed before rendering" };
+    }
+    let presentationPage: Page | undefined;
+    let diagnostics: RenderPageDiagnostics | undefined;
     try {
-      const context = await this._browser.newContext({
+      const context = await browser.newContext({
         viewport: { width, height },
       });
 
       const page = await context.newPage();
+      diagnostics = RenderPageDiagnostics.watch(page, this._baseUrl);
+      if (options.presentation) presentationPage = page;
 
       // Capture console messages for debugging
       page.on("console", (msg: any) => {
@@ -332,6 +540,16 @@ export default class PlaywrightPageRenderer {
 
       // Use domcontentloaded instead of networkidle to prevent hangs when fetching textures
       await page.goto(fullUrl, { waitUntil: "domcontentloaded" });
+
+      if (options.presentation) {
+        await page
+          .locator("canvas")
+          .first()
+          .waitFor({
+            state: "visible",
+            timeout: options.canvasTimeout ?? 30000,
+          });
+      }
 
       // Wait for the scene to render
       await page.waitForTimeout(renderWaitTime);
@@ -363,6 +581,7 @@ export default class PlaywrightPageRenderer {
           Log.debugAlert(`Page error text: ${errorText}`);
         }
 
+        await this.releasePresentation(presentationPage);
         await context.close();
         return {
           imageData: undefined,
@@ -374,7 +593,7 @@ export default class PlaywrightPageRenderer {
       // locator.screenshot() waits for element "stability" (no bounding box changes between
       // animation frames), which can fail unpredictably with WebGL/Babylon.js canvases that
       // resize during initialization. page.screenshot() captures the viewport directly.
-      const format = options.imageFormat || "png";
+      const format = options.presentation ? "png" : options.imageFormat || "png";
       const canvasTimeout = options.canvasTimeout ?? 30000;
 
       // Wait for canvas to be visible before capturing
@@ -384,14 +603,17 @@ export default class PlaywrightPageRenderer {
         Log.debugAlert("Canvas element not visible within timeout, attempting screenshot anyway.");
       }
 
-      const screenshotBuffer = await page.screenshot({
-        type: format,
-        quality: format === "jpeg" ? options.jpegQuality || 80 : undefined,
-        omitBackground: false,
-        fullPage: false,
-        timeout: canvasTimeout,
-      });
+      const screenshotBuffer = options.presentation
+        ? await this.capturePresentation(page, options)
+        : await page.screenshot({
+            type: format,
+            quality: format === "jpeg" ? options.jpegQuality || 80 : undefined,
+            omitBackground: false,
+            fullPage: false,
+            timeout: canvasTimeout,
+          });
 
+      await this.releasePresentation(presentationPage);
       await context.close();
 
       return {
@@ -401,6 +623,8 @@ export default class PlaywrightPageRenderer {
       };
     } catch (e: any) {
       Log.debugAlert(`renderModel error: ${e.message}`);
+      const error = await RenderPageDiagnostics.explain(diagnostics, `Rendering failed: ${e.message}`, e);
+      await this.releasePresentation(presentationPage);
       // Ensure context is closed even on error to prevent resource leaks
       try {
         const contexts = this._browser?.contexts?.() ?? [];
@@ -412,7 +636,7 @@ export default class PlaywrightPageRenderer {
       }
       return {
         imageData: undefined,
-        error: `Rendering failed: ${e.message}`,
+        error,
       };
     }
   }
@@ -425,6 +649,7 @@ export default class PlaywrightPageRenderer {
    * @param options - Rendering options
    */
   async renderModelFast(modelPath: string, options: RenderOptions = {}): Promise<RenderResult> {
+    if (options.presentation) modelPath = renderPresentationUrl(modelPath, options.presentation);
     const width = options.width ?? 512;
     const height = options.height ?? 512;
     const renderWaitTime = options.renderWaitTime ?? 1500; // Shorter default for fast mode
@@ -444,6 +669,10 @@ export default class PlaywrightPageRenderer {
       };
     }
 
+    const browser = this._browser;
+    if (!browser) {
+      return { imageData: undefined, error: "Browser was closed before rendering" };
+    }
     try {
       // Extract a model identifier from the path (geometry file path is the key)
       // For MCP previews, this is /temp/preview-geometry.json which is the same across calls,
@@ -469,22 +698,17 @@ export default class PlaywrightPageRenderer {
       if (needsNewContext) {
         // Close existing context if any
         if (this._persistentContext) {
-          try {
-            await this._persistentContext.close();
-          } catch (e) {
-            // Ignore close errors
-          }
-          this._persistentContext = null;
-          this._persistentPage = null;
+          await this.resetPersistentPage();
           // Brief delay to allow browser to fully clean up previous context
           await new Promise((resolve) => setTimeout(resolve, 50));
         }
 
         try {
-          this._persistentContext = await this._browser.newContext({
+          this._persistentContext = await browser.newContext({
             viewport: { width, height },
           });
           this._persistentPage = await this._persistentContext.newPage();
+          this._persistentDiagnostics = RenderPageDiagnostics.watch(this._persistentPage, this._baseUrl);
           this._persistentPage.on("console", (msg: any) => {
             const text = msg.text();
             if (text.includes("[STRUCTURE DEBUG]") || text.includes("[TEXTURE DEBUG]")) {
@@ -500,6 +724,7 @@ export default class PlaywrightPageRenderer {
       }
 
       const page = this._persistentPage;
+      const diagnostics = this._persistentDiagnostics;
 
       // Defensive check - page should never be null at this point
       if (!page) {
@@ -515,10 +740,14 @@ export default class PlaywrightPageRenderer {
         // This causes waitFor({ state: "visible" }) to return immediately with stale content.
         // Solution: Navigate and wait for a fresh render cycle.
 
+        diagnostics?.reset();
         try {
           await page.goto(fullUrl, { waitUntil: "load", timeout: 30000 });
         } catch (e: any) {
-          return { imageData: undefined, error: `Page navigation failed (reload): ${e.message}` };
+          return {
+            imageData: undefined,
+            error: await RenderPageDiagnostics.explain(diagnostics, `Page navigation failed (reload): ${e.message}`, e),
+          };
         }
 
         // After navigation, wait for the canvas to appear
@@ -533,7 +762,10 @@ export default class PlaywrightPageRenderer {
         try {
           await page.goto(fullUrl, { waitUntil: "load", timeout: 30000 });
         } catch (e: any) {
-          return { imageData: undefined, error: `Page navigation failed: ${e.message}` };
+          return {
+            imageData: undefined,
+            error: await RenderPageDiagnostics.explain(diagnostics, `Page navigation failed: ${e.message}`, e),
+          };
         }
       }
       this._lastFullUrl = modelPath;
@@ -547,7 +779,11 @@ export default class PlaywrightPageRenderer {
         // Canvas not found, provide helpful error
         return {
           imageData: undefined,
-          error: `Canvas not found within ${canvasTimeout}ms timeout. Structure may be too large or page failed to load.`,
+          error: await RenderPageDiagnostics.explain(
+            diagnostics,
+            `Canvas not found within ${canvasTimeout}ms timeout. Structure may be too large or page failed to load.`,
+            e
+          ),
         };
       }
 
@@ -556,20 +792,26 @@ export default class PlaywrightPageRenderer {
 
       // Capture screenshot of just the canvas element
       const canvas = page.locator("canvas").first();
-      const format = options.imageFormat || "png";
+      const format = options.presentation ? "png" : options.imageFormat || "png";
 
       let screenshotBuffer: Buffer;
       try {
-        screenshotBuffer = await canvas.screenshot({
-          type: format,
-          quality: format === "jpeg" ? options.jpegQuality || 80 : undefined,
-          omitBackground: false,
-          timeout: canvasTimeout, // Use same timeout for screenshot
-        });
+        screenshotBuffer = options.presentation
+          ? await this.capturePresentation(page, options)
+          : await canvas.screenshot({
+              type: format,
+              quality: format === "jpeg" ? options.jpegQuality || 80 : undefined,
+              omitBackground: false,
+              timeout: canvasTimeout, // Use same timeout for screenshot
+            });
       } catch (screenshotError: any) {
         return {
           imageData: undefined,
-          error: `Screenshot capture failed: ${screenshotError.message}. Canvas may have disappeared or browser context was closed.`,
+          error: await RenderPageDiagnostics.explain(
+            diagnostics,
+            `Screenshot capture failed: ${screenshotError.message}. Canvas may have disappeared or browser context was closed.`,
+            screenshotError
+          ),
         };
       }
 
@@ -595,6 +837,67 @@ export default class PlaywrightPageRenderer {
   async renderBlock(blockName: string, options: RenderOptions = {}): Promise<RenderResult> {
     const flat = options.flatBackground ? "&flatbg=true" : "";
     return this.renderModel(`/?mode=blockviewer&block=${encodeURIComponent(blockName)}&headless=true${flat}`, options);
+  }
+
+  private async capturePresentation(page: Page, options: RenderOptions): Promise<Buffer> {
+    await page.waitForFunction(
+      () => window.mctPresentation !== undefined || window.mctPresentationError !== undefined,
+      {},
+      { timeout: options.canvasTimeout ?? 30000 }
+    );
+    const data = await page.evaluate(
+      async ({ width, height, presentation }) => {
+        if (window.mctPresentationError) throw new Error(window.mctPresentationError);
+        const renderer = window.mctPresentation;
+        if (!renderer || !presentation) throw new Error("The presentation renderer is unavailable.");
+        if (!presentation.allViews) return renderer.capture(presentation.view, width, height);
+        const canvas = document.createElement("canvas");
+        canvas.width = width * 2;
+        canvas.height = height * 2;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) throw new Error("Could not create the four-view image.");
+        const labelHeight = Math.max(
+          1,
+          Math.min(height - 1, Math.round(Math.min(height / 5, Math.max(36, height * 0.06))))
+        );
+        ctx.fillStyle = "#363636";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        const views = ["three-quarter", "front", "side", "back"] as const;
+        for (let i = 0; i < views.length; i++) {
+          const x = (i % 2) * width;
+          const y = Math.floor(i / 2) * height;
+          const image = new Image();
+          image.src = renderer.capture(views[i], width, height - labelHeight);
+          await image.decode();
+          ctx.drawImage(image, x, y + labelHeight, width, height - labelHeight);
+          ctx.fillStyle = "#dedede";
+          ctx.font = `${Math.max(8, Math.round(labelHeight * 0.4))}px monospace`;
+          ctx.textBaseline = "middle";
+          ctx.fillText(
+            ["THREE-QUARTER", "FRONT", "SIDE (+X)", "BACK"][i],
+            x + labelHeight * 0.35,
+            y + labelHeight / 2,
+            width - labelHeight * 0.7
+          );
+        }
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
+        ctx.lineWidth = Math.max(1, Math.round(Math.min(width, height) / 512));
+        const alignment = ctx.lineWidth % 2 === 1 ? 0.5 : 0;
+        ctx.beginPath();
+        ctx.moveTo(width + alignment, 0);
+        ctx.lineTo(width + alignment, canvas.height);
+        ctx.moveTo(0, height + alignment);
+        ctx.lineTo(canvas.width, height + alignment);
+        ctx.stroke();
+        return canvas.toDataURL("image/png");
+      },
+      { width: options.width ?? 1024, height: options.height ?? 1024, presentation: options.presentation }
+    );
+    Log.verbose(
+      "Render presentation capture: " + JSON.stringify(await page.evaluate(() => window.mctPresentation?.describe()))
+    );
+    const factor = options.presentation?.allViews ? 2 : 1;
+    return decodePresentationPng(data, (options.width ?? 1024) * factor, (options.height ?? 1024) * factor);
   }
 
   /**
@@ -648,11 +951,7 @@ export default class PlaywrightPageRenderer {
     }
 
     // Clean up persistent context after batch
-    if (this._persistentContext) {
-      await this._persistentContext.close();
-      this._persistentContext = null;
-      this._persistentPage = null;
-    }
+    await this.resetPersistentPage();
 
     return results;
   }
@@ -762,11 +1061,7 @@ export default class PlaywrightPageRenderer {
     }
 
     // Clean up persistent context after batch
-    if (this._persistentContext) {
-      await this._persistentContext.close();
-      this._persistentContext = null;
-      this._persistentPage = null;
-    }
+    await this.resetPersistentPage();
 
     return results;
   }
@@ -786,17 +1081,28 @@ export default class PlaywrightPageRenderer {
    * Close the browser and clean up resources.
    */
   async close(): Promise<void> {
-    if (this._browser) {
-      try {
-        // Use a timeout to prevent hanging if the browser process is unresponsive
-        await Promise.race([
-          this._browser.close(),
-          new Promise<void>((_, reject) => setTimeout(() => reject(new Error("Browser close timeout")), 15000)),
-        ]);
-      } catch (e: any) {
-        Log.debugAlert(`Browser close issue: ${e.message}`);
+    if (!this._closing) {
+      this._initializationAbort?.abort();
+      this._closing = (async () => {
+        await this._initialization;
+        const browser = this._browser;
+        try {
+          await this.resetPersistentPage();
+        } finally {
+          this._browser = null;
+          // Playwright closes its owned process and force-kills it if graceful close times out.
+          // It resolves once the process has exited and its pipes have closed (BrowserProcessPipes.ts).
+          await browser?.close();
+        }
+      })();
+    }
+    const closing = this._closing;
+    try {
+      await closing;
+    } finally {
+      if (this._closing === closing) {
+        this._closing = undefined;
       }
-      this._browser = null;
     }
   }
 

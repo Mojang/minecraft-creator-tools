@@ -969,6 +969,11 @@ export default class FormDefinitionTypeScriptGenerator {
       });
 
       for (const field of form.fields) {
+        // Removed fields are build-time placeholders for upstream fields that no longer exist.
+        if (field.isRemoved) {
+          continue;
+        }
+
         let fieldName = field.id ? field.id : field.title;
 
         if (!fieldName) {

@@ -57,8 +57,9 @@
  *   entry includes what a client can do through those tools, marked unverified like the mcp
  *   entry. No other command's HTTP server does: view, edit, and the render commands' temporary
  *   servers answer /mcp with 404. Clients signed in with the updateState or admin passcode can
- *   also run tool commands through /api/commands, and edit signs its browser in as admin, so
- *   the serve and edit entries include those tool commands too, also unverified.
+ *   also run the tool commands that opt in to the server API through /api/commands, and edit signs
+ *   its browser in as admin, so the serve and edit entries include those tool commands too, also
+ *   unverified.
  *
  * KEEPING IT CURRENT:
  * Add an entry when you register a command, and update it when you change what a command
@@ -257,7 +258,10 @@ export const STARTUP_EFFECTS: Readonly<Record<StartupEffectId, IStartupEffect>> 
       "the explicit package before execution, after applying dry-run read-only settings. Missing or unreadable " +
       "packages fail with exit code 1 instead of reading or changing a same-name saved project. Empty or missing " +
       "--if values are rejected during parsing, before startup; direct factory calls validate raw values before " +
-      "selecting any input or output folder.",
+      "selecting any input or output folder. --single treats the folder as one project. --psw/--project-starts-with " +
+      "filters detected folder leaf names or full package filenames, ignoring case, before loading projects. " +
+      "An unmatched prefix exits with 1 without falling back to another target; empty or missing prefixes are " +
+      "rejected before startup, and direct factory calls also reject non-string prefixes before folder selection.",
     exceptCommands: SKIPS_SHARED_STARTUP,
   },
   detectsProjectsInOutputFolder: {
@@ -280,7 +284,8 @@ export const STARTUP_EFFECTS: Readonly<Record<StartupEffectId, IStartupEffect>> 
       "default options, which have no -i. The folder isn't created when -o resolves to the input folder, or under --dry-run, which for these " +
       "runs fails instead where a real run couldn't create it, as when -o is a file. Without -i, cli/index.ts's " +
       "older project scan also creates it for world, create, add, and fix (ClUtils.getIsWriteCommand), which all " +
-      "need it then anyway.",
+      "need it then anyway. With --psw/--project-starts-with, both startup paths defer creation until the factory " +
+      "finds matching projects, so a failed selection creates no output folder.",
     // Derived from the table, so it can't disagree with the entries' writesOutputFolder.
     get commands(): readonly CommandName[] {
       return (Object.keys(COMMAND_EFFECTS) as CommandName[]).filter((name) => needsOutputFolder(name));
@@ -384,7 +389,9 @@ const RENDER_SERVER =
   "A temporary HTTP server that serves the viewer to headless Chromium, on --port or a random port from " +
   "--port-start to --port-end (default 6200-6299).";
 
-const HEADLESS_CHROMIUM = "Headless Chromium, through Playwright.";
+const HEADLESS_CHROMIUM =
+  "Headless Chromium, through Playwright. By default, checks hardware WebGL and falls back to software. " +
+  "--no-gpu skips hardware detection.";
 
 const MCP_TOOLS_UNTRACED =
   "Tool effects come from MinecraftMcpServer.ts and weren't traced tool by tool; only createProject and " +
@@ -409,12 +416,19 @@ const SERVER_VANILLA_FILES =
   "When a client asks for vanilla files under /res/latest/van/, such as textures, the server fetches them from " +
   "mctools.dev unless --isolated or --offline is given or a local copy is installed with the CLI.";
 
-// /api/commands runs every tool command that doesn't limit its scopes, for clients with the updateState or admin
-// passcode, in a context with no open project. Their effects aren't traced one by one, like the MCP tools.
+// /api/commands runs only the tool commands that opt in to the serverApi scope (add, create, script, and server), for
+// clients with the updateState or admin passcode, in a context with no open project. Their effects aren't traced one
+// by one, like the MCP tools.
 const TOOL_COMMANDS_WRITE_FILES =
-  "Through /api/commands, a client signed in with the updateState or admin passcode can run tool commands. No " +
-  "project is open there, so deploy, export, remove, and rename fail; create writes a new project to the folder " +
-  "its --output flag names or to Creator Tools' projects storage, and add first creates a new project there.";
+  "Through /api/commands, a client signed in with the updateState or admin passcode can run the add, create, " +
+  "script, and server tool commands. Once the EULA is accepted, create writes a new project to Creator Tools' " +
+  "projects storage, and add first creates a new project there; the API refuses file and folder paths, such as " +
+  "create's output flag, and path-like names and creators.";
+
+// Like the CLI's create and add, /api/commands saves EULA acceptance from the environment variable.
+const TOOL_COMMANDS_SAVED_STATE =
+  "add and create run through /api/commands save EULA acceptance to envprefs.json when it isn't saved yet and " +
+  "MCTOOLS_I_ACCEPT_EULA_AT_MINECRAFTDOTNETSLASHEULA=true.";
 
 const TOOL_COMMANDS_UNTRACED = "What the tool commands run through /api/commands do wasn't traced one by one.";
 
@@ -554,7 +568,8 @@ export const COMMAND_EFFECTS: Readonly<Record<CommandName, ICommandEffects>> = {
     ),
     changesProject: sometimes(
       "With -i, copies the template into that folder, renames its pack folders, applies the creator name and " +
-        "description, runs the project updaters, and saves."
+        "description, records Creator Tools in each pack manifest's metadata.generated_with, runs the project " +
+        "updaters, and saves."
     ),
     writesOutputFolder: always(
       "Without -i (the default), creates the project in the output folder (-o, default ./out), because it looks " +
@@ -590,8 +605,8 @@ export const COMMAND_EFFECTS: Readonly<Record<CommandName, ICommandEffects>> = {
   add: {
     readsInput: always("Loads the target project; --list-types reads only the gallery."),
     changesProject: sometimes(
-      "Copies the chosen gallery template's files into the project and saves it. Without -i, the project is " +
-        "the output folder (./out)."
+      "Copies the chosen gallery template's files into the project, records Creator Tools in each pack " +
+        "manifest's metadata.generated_with, and saves it. Without -i, the project is the output folder (./out)."
     ),
     writesOutputFolder: sometimes(
       "Without -i, the project is the output folder (./out), so the files described in changesProject land there."
@@ -757,7 +772,9 @@ export const COMMAND_EFFECTS: Readonly<Record<CommandName, ICommandEffects>> = {
       "Saves envprefs.json on start, with the port (--port, or 6126) and the default server domain (not with " +
         "the dedicatedserver features). An admin accepting the EULA in the web UI saves that too. When it " +
         "starts Bedrock Dedicated Server, downloads it into the data folder and creates server folders there. " +
-        MCP_CLIENT_SAVED_STATE,
+        MCP_CLIENT_SAVED_STATE +
+        " " +
+        TOOL_COMMANDS_SAVED_STATE,
       BDS_AND_MCP_UNVERIFIED
     ),
     usesNetwork: sometimes(
@@ -1252,7 +1269,8 @@ export const COMMAND_EFFECTS: Readonly<Record<CommandName, ICommandEffects>> = {
       SAVES_SERVER_DEFAULTS +
         " The browser is signed in with the admin passcode, so accepting the EULA in the web UI saves that too. " +
         "Deploying to Bedrock Dedicated Server from the web UI downloads it into the data folder and creates " +
-        "server folders there (Windows and Linux).",
+        "server folders there (Windows and Linux). " +
+        TOOL_COMMANDS_SAVED_STATE,
       BDS_PLATFORMS_UNVERIFIED
     ),
     usesNetwork: sometimes(

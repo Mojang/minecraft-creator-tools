@@ -5,6 +5,7 @@ import IFile from "../storage/IFile";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import { IAddonManifestHeader, ISkinPackManifest } from "./IAddonManifest";
 import Utilities from "../core/Utilities";
+import { getDefaultMinEngineVersion } from "./MinecraftVersionDefaults";
 import Project from "../app/Project";
 import StorageUtilities from "../storage/StorageUtilities";
 
@@ -159,7 +160,7 @@ export default class SkinManifestDefinition {
           name: name,
           description: description,
           version: [0, 0, 1],
-          min_engine_version: [1, 20, 10],
+          min_engine_version: getDefaultMinEngineVersion(),
           uuid: Utilities.createUuid(),
         },
         modules: [],
@@ -187,7 +188,7 @@ export default class SkinManifestDefinition {
       name: name,
       description: description,
       version: [0, 0, 1],
-      min_engine_version: [1, 20, 10],
+      min_engine_version: getDefaultMinEngineVersion(),
       uuid: Utilities.createUuid(),
     };
   }

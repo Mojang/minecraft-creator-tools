@@ -8,6 +8,8 @@
  * features like inlay hints (comparisons), hover info, and completions.
  */
 
+import { getBedrockKnowledge, onDidChangeBedrockKnowledge } from "../../knowledge/BedrockKnowledge";
+
 /**
  * Known reference values for health comparisons
  */
@@ -150,44 +152,18 @@ export function getDamageComparison(value: number): string | null {
 }
 
 /**
- * Common vanilla entity identifiers for completions
+ * Vanilla identifiers from engine metadata for the active Bedrock channel.
+ * The array instances are stable; their contents are refreshed in place when the knowledge changes.
  */
-export const VANILLA_ENTITIES = [
-  "minecraft:pig",
-  "minecraft:cow",
-  "minecraft:sheep",
-  "minecraft:chicken",
-  "minecraft:wolf",
-  "minecraft:cat",
-  "minecraft:horse",
-  "minecraft:donkey",
-  "minecraft:mule",
-  "minecraft:llama",
-  "minecraft:villager",
-  "minecraft:iron_golem",
-  "minecraft:zombie",
-  "minecraft:skeleton",
-  "minecraft:creeper",
-  "minecraft:spider",
-  "minecraft:enderman",
-  "minecraft:slime",
-  "minecraft:phantom",
-  "minecraft:drowned",
-  "minecraft:husk",
-  "minecraft:stray",
-  "minecraft:wither_skeleton",
-  "minecraft:blaze",
-  "minecraft:ghast",
-  "minecraft:magma_cube",
-  "minecraft:piglin",
-  "minecraft:piglin_brute",
-  "minecraft:hoglin",
-  "minecraft:zoglin",
-  "minecraft:warden",
-  "minecraft:ender_dragon",
-  "minecraft:wither",
-  "minecraft:player",
-];
+export const VANILLA_ENTITIES: string[] = [...getBedrockKnowledge().vanilla.entities];
+export const VANILLA_ITEMS: string[] = [...getBedrockKnowledge().vanilla.items];
+export const VANILLA_BLOCKS: string[] = getBedrockKnowledge().vanilla.blocks.map((b) => b.name);
+
+onDidChangeBedrockKnowledge((knowledge) => {
+  VANILLA_ENTITIES.splice(0, VANILLA_ENTITIES.length, ...knowledge.vanilla.entities);
+  VANILLA_ITEMS.splice(0, VANILLA_ITEMS.length, ...knowledge.vanilla.items);
+  VANILLA_BLOCKS.splice(0, VANILLA_BLOCKS.length, ...knowledge.vanilla.blocks.map((b) => b.name));
+});
 
 // Note: MOLANG_QUERIES, MOLANG_MATH, IScriptModuleInfo, and SCRIPT_MODULES are exported
 // from their respective modules (molang/MolangParser.ts and javascript/ScriptModuleInfo.ts).

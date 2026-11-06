@@ -25,10 +25,23 @@ export default class Entity extends ComponentizedBase implements IPropertyObject
   /** Pre-transformed geometry that takes precedence over customModel.defaultGeometry.
    *  Set by VanillaProjectManager after applying VanillaGeometryTransforms. */
   customGeometry?: IGeometry | undefined;
+  /** Exact selected source before rendering corrections; not necessarily the file's first geometry. */
+  customAuthoredGeometry?: IGeometry | undefined;
   customTextureData?: Uint8Array | undefined;
   customTextureUrl?: string | undefined;
   customTintColor?: { r: number; g: number; b: number; a: number } | undefined;
   customIgnoreAlpha?: boolean | undefined;
+
+  getCustomModelGeometry(requireAuthored = false): { geometry?: IGeometry; authoredGeometry?: IGeometry } {
+    const geometry = this.customGeometry ?? this.customModel?.defaultGeometry;
+    const authoredGeometry = this.customGeometry ? this.customAuthoredGeometry : geometry;
+    if (requireAuthored && geometry && !authoredGeometry) {
+      throw new Error(
+        "Can't draw --skeleton: the selected geometry's authored bone hierarchy isn't available."
+      );
+    }
+    return { geometry, authoredGeometry };
+  }
 
   private _onPropertyChanged = new EventDispatcher<Entity, IProperty>();
 

@@ -242,6 +242,19 @@ export default class ProjectItemInference {
       }
     }
 
+    // Vibrant Visuals settings folders (water/, pbr/, lighting/, ...) only have meaning at the root of a
+    // resource pack (or subpack). Creators often reuse those words for their own subfolders, such as
+    // entity/abilities/water/ or items/water/, so matching them anywhere in the path misclassifies ordinary
+    // client entities and items as Vibrant Visuals content.
+    const packRootFolderName = ProjectItemInference.getPackRootFolderName(folder, rootFolder);
+    const isVibrantVisualsRootFolder = (pathLower: string, vvFolderName: string) => {
+      if (packRootFolderName !== undefined) {
+        return packRootFolderName === vvFolderName;
+      }
+
+      return pathLower.indexOf("/" + vvFolderName + "/") >= 0;
+    };
+
     for (const fileName in folder.files) {
       const canonFileName = StorageUtilities.canonicalizeName(fileName);
       // console.log("Considering " + canonFileName + " in folder " + folder.storageRelativePath);
@@ -987,11 +1000,11 @@ export default class ProjectItemInference {
                 newJsonType = ProjectItemType.behaviorTreeJson;
               } else if (folderPathLower.indexOf("/spawn_groups/") >= 0) {
                 newJsonType = ProjectItemType.spawnGroupJson;
-              } else if (isResourcePack && folderPathLower.indexOf("/atmospherics/") >= 0) {
+              } else if (isResourcePack && isVibrantVisualsRootFolder(folderPathLower, "atmospherics")) {
                 newJsonType = ProjectItemType.atmosphericsJson;
-              } else if (isResourcePack && folderPathLower.indexOf("/point_lights/") >= 0) {
+              } else if (isResourcePack && isVibrantVisualsRootFolder(folderPathLower, "point_lights")) {
                 newJsonType = ProjectItemType.pointLightsJson;
-              } else if (isResourcePack && folderPathLower.indexOf("/color_grading/") >= 0) {
+              } else if (isResourcePack && isVibrantVisualsRootFolder(folderPathLower, "color_grading")) {
                 newJsonType = ProjectItemType.colorGradingJson;
               } else if (folderContext === FolderContext.behaviorPack && folderPathLower.indexOf("/cameras/") >= 0) {
                 newJsonType = ProjectItemType.cameraBehaviorJson;
@@ -1094,19 +1107,18 @@ export default class ProjectItemInference {
                 newJsonType = ProjectItemType.ninesliceJson;
               } else if (isResourcePack && folderPathLower.indexOf("/texture_sets/") >= 0) {
                 newJsonType = ProjectItemType.textureSetJson;
-              } else if (isResourcePack && folderPathLower.indexOf("/lighting/") >= 0) {
+              } else if (isResourcePack && isVibrantVisualsRootFolder(folderPathLower, "lighting")) {
                 newJsonType = ProjectItemType.lightingJson;
-              } else if (isResourcePack && folderPathLower.indexOf("/point_lights/") >= 0) {
-                newJsonType = ProjectItemType.lightingJson;
-              } else if (isResourcePack && folderPathLower.indexOf("/pbr/") >= 0) {
+              } else if (isResourcePack && isVibrantVisualsRootFolder(folderPathLower, "pbr")) {
                 newJsonType = ProjectItemType.pbrJson;
-              } else if (isResourcePack && folderPathLower.indexOf("/water/") >= 0) {
+              } else if (isResourcePack && isVibrantVisualsRootFolder(folderPathLower, "water")) {
                 newJsonType = ProjectItemType.waterJson;
-              } else if (isResourcePack && folderPathLower.indexOf("/shadows/") >= 0) {
+              } else if (isResourcePack && isVibrantVisualsRootFolder(folderPathLower, "shadows")) {
                 newJsonType = ProjectItemType.shadowsJson;
               } else if (
                 folderContext === FolderContext.behaviorPack &&
-                folderPathLower.indexOf("/worldgen/jigsaw_structures/") >= 0
+                (folderPathLower.indexOf("/worldgen/jigsaw_structures/") >= 0 ||
+                  folderPathLower.indexOf("/worldgen/structures/") >= 0)
               ) {
                 newJsonType = ProjectItemType.jigsawStructure;
               } else if (
@@ -1304,7 +1316,7 @@ export default class ProjectItemInference {
           project.libFolder = folder;
         } else if (name === "project_item_data" && folderContext === FolderContext.designPack) {
           if (!project.projectItemAccessoryFolder) {
-            project.projectItemAccessoryFolder = folder;
+            project.projectItemAccessoryFolder = childFolder;
           }
         } else if (
           (name.startsWith(".mct") || name.startsWith(".vscode") || !name.startsWith(".")) && // disallow any "." folders, except for .mct or .vscode
@@ -1332,5 +1344,34 @@ export default class ProjectItemInference {
         }
       }
     }
+  }
+
+  /**
+   * Returns the lowercased name of the top-level folder (directly under the pack root, or under a
+   * subpacks/<name>/ root) that contains the given folder. Returns "" when the folder is the pack root
+   * itself, and undefined when no pack manifest can be found above the folder.
+   */
+  static getPackRootFolderName(folder: IFolder, rootFolder: IFolder): string | undefined {
+    const segments: string[] = [];
+    let current: IFolder | null = folder;
+
+    while (current) {
+      if (current.files["manifest.json"] || current.files["pack_manifest.json"]) {
+        if (segments.length >= 2 && segments[0] === "subpacks") {
+          return segments.length >= 3 ? segments[2] : "";
+        }
+
+        return segments.length > 0 ? segments[0] : "";
+      }
+
+      if (current === rootFolder) {
+        break;
+      }
+
+      segments.unshift(current.name.toLowerCase());
+      current = current.parentFolder;
+    }
+
+    return undefined;
   }
 }

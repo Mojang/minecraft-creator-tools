@@ -39,7 +39,11 @@ describe("CLI reference for the creator-tools-cli skill", () => {
         continue;
       }
 
-      expect(reference).to.match(new RegExp("^#### `" + metadata.name + "[ `]", "m"), metadata.name);
+      const commandPath = metadata.route?.join(" ") ?? metadata.name;
+      expect(reference).to.match(new RegExp("^#### `" + commandPath + "[ `]", "m"), metadata.name);
+      if (metadata.route) {
+        expect(reference).to.include("Compatibility commands: `" + metadata.name + "`");
+      }
       for (const alias of metadata.aliases ?? []) {
         expect(reference).to.include("`" + alias + "`", `${metadata.name} alias ${alias}`);
       }

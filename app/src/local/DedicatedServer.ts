@@ -342,6 +342,12 @@ export interface OutputLine {
   message: string;
   received: number;
   isInternal?: boolean;
+  /**
+   * Identity of the process output stream that produced this line. A restart
+   * attaches a new stream (with a higher id) while the old one may still be
+   * draining, so lines from different runs can interleave.
+   */
+  streamId?: number;
 }
 
 export enum DedicatedServerBackupStatus {
@@ -2719,6 +2725,7 @@ export default class DedicatedServer {
           message: lineUp,
           received: time,
           isInternal: sm.category === ServerMessageCategory.internalSystemMessage,
+          streamId: outputStreamId,
         });
         time++;
 

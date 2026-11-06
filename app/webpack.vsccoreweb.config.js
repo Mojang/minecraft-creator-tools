@@ -11,6 +11,7 @@
 
 const path = require("path");
 const webpack = require("webpack");
+const knowledgeJsonRule = require("./webpack.knowledgeJsonRule");
 
 // Read version from package.json
 const packageJson = require("./package.json");
@@ -58,6 +59,7 @@ const webExtensionConfig = {
   // shared with Node-only folders such as src/local/ belongs in a shared folder (src/app/).
   module: {
     rules: [
+      knowledgeJsonRule,
       {
         test: /\.js$/,
         exclude: [

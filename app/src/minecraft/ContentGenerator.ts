@@ -41,6 +41,7 @@ import {
 import CreatorToolsHost from "../app/CreatorToolsHost";
 import ImageCodec from "../core/ImageCodec";
 import PngEncoder from "./PngEncoder";
+import { getDefaultMinEngineVersion } from "./MinecraftVersionDefaults";
 import { generateItemTextureFromTemplate } from "./ItemTextureTemplates";
 import { TraitRegistry, registerAllEntityTraits, registerAllBlockTraits, registerAllItemTraits } from "./traits";
 import ModelDesignUtilities from "./ModelDesignUtilities";
@@ -1097,7 +1098,7 @@ export class ContentGenerator {
         description: this._definition.description || `Generated content for ${this._namespace}`,
         uuid: uuid1,
         version: [1, 0, 0],
-        min_engine_version: [1, 21, 0],
+        min_engine_version: getDefaultMinEngineVersion(),
       },
       modules: [
         {
@@ -1143,7 +1144,7 @@ export class ContentGenerator {
           description: this._definition.description || `Resources for ${this._namespace}`,
           uuid: uuid1,
           version: [1, 0, 0],
-          min_engine_version: [1, 21, 0],
+          min_engine_version: getDefaultMinEngineVersion(),
         },
         modules: [
           {

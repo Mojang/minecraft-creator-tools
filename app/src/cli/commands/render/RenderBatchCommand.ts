@@ -2,7 +2,7 @@
  * RenderBatchCommand - Render many model geometries in one process.
  *
  * Why this exists:
- * `mct rendermodel` starts a fresh temporary HTTP server and Playwright Chromium
+ * `mct render model` starts a fresh temporary HTTP server and Playwright Chromium
  * per invocation, which dominates wall time when a caller needs many renders
  * (per-angle previews, benchmark suites, etc.). This command initializes those
  * once, then walks a manifest of (geometryPath, outputPath) entries.
@@ -21,7 +21,7 @@
  * `--height`, `--vanilla`/`--no-vanilla`).
  *
  * USAGE:
- *   mct renderbatch <manifestPath> -i <project>
+ *   mct render batch <manifestPath> -i <project>
  */
 
 import { Command } from "commander";
@@ -36,8 +36,24 @@ import type HttpServer from "../../../local/HttpServer";
 import LocalUtilities, { UNSAFE_PORTS } from "../../../local/LocalUtilities";
 import * as path from "path";
 import * as fs from "fs";
+import { configureRenderGpuOptions, getRenderGpuOptions } from "./RenderGpuOptions";
+import {
+  configureRenderPresentationOptions,
+  getRenderPresentationOptions,
+  resolveRenderPresentationOptions,
+  renderDimension,
+  validateRenderDimensions,
+} from "./RenderPresentationOptions";
+import { RenderPresentationOptions } from "../../../app/RenderPresentation";
 
 interface IBatchManifestEntry {
+  grid?: boolean;
+  skeleton?: boolean;
+  appearance?: RenderPresentationOptions["appearance"];
+  view?: RenderPresentationOptions["view"];
+  allViews?: boolean;
+  environment?: RenderPresentationOptions["environment"];
+  timeOfDay?: RenderPresentationOptions["timeOfDay"];
   geometryPath: string;
   outputPath: string;
   renderWaitMs?: number;
@@ -53,17 +69,20 @@ interface IBatchManifest {
   renders: IBatchManifestEntry[];
 }
 
+type BatchManifestReadResult = IBatchManifest | "invalid-entry" | undefined;
+
 interface IRenderBatchOptions {
+  presentation: RenderPresentationOptions;
   port: number;
   width: number;
   height: number;
   renderWaitMs?: number;
   canvasTimeoutMs: number;
   vanilla: boolean;
-  gpu: boolean;
 }
 
 interface IResolvedBatchRender {
+  presentation: RenderPresentationOptions;
   entry: IBatchManifestEntry;
   geometryJson: string;
   geometryId: string;
@@ -74,15 +93,19 @@ interface IResolvedBatchRender {
 interface IRenderBatchSession {
   httpServer: HttpServer;
   renderer: PlaywrightPageRenderer;
+  initialized?: boolean;
+}
+
+interface IRenderBatchStream {
+  session?: IRenderBatchSession;
+  failed?: boolean;
 }
 
 export class RenderBatchCommand extends CommandBase {
   readonly metadata: ICommandMetadata = {
     name: "renderbatch",
-    description:
-      "Renders many model geometry files in one process, reusing a headless " +
-      "Chromium instance for the entire batch. Much faster than calling " +
-      "rendermodel once per geometry.",
+    route: ["render", "batch"],
+    description: "Render model images from a JSON manifest in one process.",
     taskType: TaskType.renderBatch,
     aliases: ["rb"],
     requiresProjects: true,
@@ -91,6 +114,22 @@ export class RenderBatchCommand extends CommandBase {
     isLongRunning: true,
     category: "Render",
     globalOptionGroups: ["input", "projects"],
+    examples: [
+      { command: 'mct render batch ./renders.json -i "./My Addon"' },
+      { command: 'mct render batch ./renders.json -i "./My Addon" --stdin --no-vanilla --no-gpu' },
+      {
+        command: 'mct render batch ./renders.json -i "./My Addon" --appearance bones --all-views',
+        description: "Default each entry to a four-camera bone study",
+      },
+    ],
+    learnMore: [
+      "Each manifest entry supplies geometryPath and outputPath; rendering options can be overridden per entry.",
+      "With --stdin, check each RENDER_DONE or RENDER_ERROR frame, not just the process exit code.",
+      "Entries can override appearance, grid, skeleton, view, allViews, environment, timeOfDay, width, and height.",
+      "An entry view, allViews, or complete cameraX/cameraY/cameraZ replaces the inherited camera choice.",
+      "Choose only one of view, allViews: true, or camera coordinates within an entry.",
+      "An empty initial --stdin manifest acknowledges browser readiness.",
+    ],
     arguments: [
       {
         name: "manifestPath",
@@ -102,6 +141,8 @@ export class RenderBatchCommand extends CommandBase {
   };
 
   configure(cmd: Command): void {
+    configureRenderGpuOptions(cmd);
+    configureRenderPresentationOptions(cmd);
     cmd
       .option("--vanilla", "Default to loading vanilla Minecraft resources from mctools.dev for fallback textures")
       .option(
@@ -111,9 +152,6 @@ export class RenderBatchCommand extends CommandBase {
       .option("--port <port>", "Use a specific localhost port for the temporary render server")
       .option("--port-start <port>", "First port in the random temporary render server range", "6200")
       .option("--port-end <port>", "Last port in the random temporary render server range", "6299")
-      .option("--width <pixels>", "Default rendered image width in pixels", "512")
-      .option("--height <pixels>", "Default rendered image height in pixels", "512")
-      .option("--gpu", "Prefer hardware GPU rendering instead of SwiftShader software WebGL")
       .option(
         "--stdin",
         "Keep the process alive and read render requests from stdin. Each line is <manifestPath> or <projectDir>|<manifestPath>."
@@ -131,7 +169,7 @@ export class RenderBatchCommand extends CommandBase {
 
     const manifestPath = context.mode;
     if (!manifestPath) {
-      context.log.error("No manifest path specified. Usage: mct renderbatch <manifestPath> -i <project>");
+      context.log.error("No manifest path specified. Usage: mct render batch <manifestPath> -i <project>");
       context.setExitCode(ErrorCodes.INIT_ERROR);
       return;
     }
@@ -149,7 +187,7 @@ export class RenderBatchCommand extends CommandBase {
     const options = (context.commandOptions ?? {}) as Record<string, unknown>;
     const stdinMode = options.stdin === true;
     const manifest = this.readManifest(context, manifestPath, stdinMode);
-    if (!manifest) {
+    if (!manifest || (manifest === "invalid-entry" && !stdinMode)) {
       if (stdinMode) {
         process.stdout.write("RENDER_ERROR\n");
         context.exitCode = 0;
@@ -171,30 +209,35 @@ export class RenderBatchCommand extends CommandBase {
     }
 
     if (stdinMode) {
-      const session = await this.startRenderSession(context, batchOptions);
-      if (!session) {
-        process.stdout.write("RENDER_ERROR\n");
-        context.exitCode = 0;
-        return;
-      }
+      const stream: IRenderBatchStream = {};
       try {
-        const succeeded = await this.renderManifestForProjects(
-          context,
-          context.projects,
-          manifest,
-          batchOptions,
-          session
-        );
+        let succeeded = false;
+        if (manifest !== "invalid-entry") {
+          const session = await this.ensureStreamSession(context, batchOptions, stream);
+          if (!session) {
+            process.stdout.write("RENDER_ERROR\n");
+            return;
+          }
+          // An empty initial manifest is the existing browser-ready handshake.
+          if (manifest.renders.length === 0 && !(await this.initializeRenderer(context, session))) {
+            process.stdout.write("RENDER_ERROR\n");
+            return;
+          }
+          succeeded = await this.renderManifestForProjects(context, context.projects, manifest, batchOptions, session);
+        }
         process.stdout.write(succeeded ? "RENDER_DONE\n" : "RENDER_ERROR\n");
         context.exitCode = 0;
-        await this.processStdinRequests(context, batchOptions, session);
+        if (!stream.failed && stream.session?.initialized !== false) {
+          await this.processStdinRequests(context, batchOptions, stream);
+        }
       } finally {
-        await this.stopRenderSession(context, session);
+        if (stream.session) await this.stopRenderSession(context, stream.session);
         context.exitCode = 0;
       }
       return;
     }
 
+    if (manifest === "invalid-entry") return;
     const succeeded = await this.renderManifestForProjects(context, context.projects, manifest, batchOptions);
     if (!succeeded) {
       context.setExitCode(ErrorCodes.INIT_ERROR);
@@ -221,7 +264,7 @@ export class RenderBatchCommand extends CommandBase {
   private async processStdinRequests(
     context: ICommandContext,
     batchOptions: IRenderBatchOptions,
-    session: IRenderBatchSession
+    stream: IRenderBatchStream
   ): Promise<void> {
     process.stdin.setEncoding("utf8");
     let buffer = "";
@@ -236,13 +279,16 @@ export class RenderBatchCommand extends CommandBase {
         }
         let succeeded = false;
         try {
-          succeeded = await this.processStdinRequest(context, batchOptions, session, line);
+          succeeded = await this.processStdinRequest(context, batchOptions, stream, line);
         } catch (e: any) {
           context.log.error("Could not process stdin render request: " + (e?.message ?? String(e)));
         } finally {
           context.exitCode = 0;
         }
         process.stdout.write(succeeded ? "RENDER_DONE\n" : "RENDER_ERROR\n");
+        if (stream.failed || stream.session?.initialized === false) {
+          return;
+        }
       }
     }
   }
@@ -250,14 +296,14 @@ export class RenderBatchCommand extends CommandBase {
   private async processStdinRequest(
     context: ICommandContext,
     batchOptions: IRenderBatchOptions,
-    session: IRenderBatchSession,
+    stream: IRenderBatchStream,
     line: string
   ): Promise<boolean> {
     const separatorIndex = line.indexOf("|");
     const projectDir = separatorIndex >= 0 ? line.slice(0, separatorIndex).trim() : undefined;
     const manifestPath = separatorIndex >= 0 ? line.slice(separatorIndex + 1).trim() : line;
     const manifest = this.readManifest(context, manifestPath);
-    if (!manifest) {
+    if (!manifest || manifest === "invalid-entry") {
       return false;
     }
 
@@ -267,7 +313,20 @@ export class RenderBatchCommand extends CommandBase {
       return false;
     }
 
-    return await this.renderBatchForProject(context, project, manifest, batchOptions, session);
+    const session = await this.ensureStreamSession(context, batchOptions, stream);
+    return session ? await this.renderBatchForProject(context, project, manifest, batchOptions, session) : false;
+  }
+
+  private async ensureStreamSession(
+    context: ICommandContext,
+    batchOptions: IRenderBatchOptions,
+    stream: IRenderBatchStream
+  ): Promise<IRenderBatchSession | undefined> {
+    if (!stream.session && !stream.failed) {
+      stream.session = await this.startRenderSession(context, batchOptions);
+      stream.failed = !stream.session;
+    }
+    return stream.session;
   }
 
   private createProjectForFolder(
@@ -308,6 +367,7 @@ export class RenderBatchCommand extends CommandBase {
     const { ProjectItemType } = await import("../../../app/IProjectItemData");
 
     for (const entry of manifest.renders) {
+      const presentation = resolveRenderPresentationOptions({ ...entry }, batchOptions.presentation);
       const geometryItem = this.findGeometryItem(project, entry.geometryPath);
       if (!geometryItem) {
         context.log.error(`Could not find geometry file matching: ${entry.geometryPath}`);
@@ -331,6 +391,20 @@ export class RenderBatchCommand extends CommandBase {
         return false;
       }
       const geometryId = geoDef.identifiers[0];
+      if (
+        (presentation.appearance === "bones" || presentation.skeleton) &&
+        !geoDef.defaultGeometry?.bones?.some(
+          (bone) => bone.name && (bone.cubes?.length || bone.poly_mesh || bone.texture_meshes?.length)
+        )
+      ) {
+        context.log.error(
+          "Bones and skeleton views require named, renderable bones in " +
+            entry.geometryPath +
+            ". Use another appearance without --skeleton."
+        );
+        context.setExitCode(ErrorCodes.INIT_ERROR);
+        return false;
+      }
       const geometryJson = typeof file.content === "string" ? file.content : undefined;
       if (!geometryJson) {
         context.log.error("Geometry file content is not a string: " + entry.geometryPath);
@@ -371,7 +445,7 @@ export class RenderBatchCommand extends CommandBase {
         }
       }
 
-      resolved.push({ entry, geometryJson, geometryId, textureData, textureMime });
+      resolved.push({ entry, geometryJson, geometryId, textureData, textureMime, presentation });
     }
 
     const renderSession = session ?? (await this.startRenderSession(context, batchOptions));
@@ -396,24 +470,14 @@ export class RenderBatchCommand extends CommandBase {
 
     const sm = new ServerManager(context.localEnv, context.creatorTools);
     sm.features = ServerManagerFeatures.all;
-    const httpServer = sm.ensureHttpServer();
+    let startedServer: HttpServer | undefined;
     let renderer: PlaywrightPageRenderer | undefined;
     try {
+      const httpServer = await sm.ensureHttpServer();
+      startedServer = httpServer;
       await httpServer.waitForReady(30000);
       const baseUrl = `http://localhost:${port}`;
-      renderer = new PlaywrightPageRenderer(baseUrl, { useHardwareGpu: batchOptions.gpu });
-      const initialized = await renderer.initialize();
-      if (!initialized) {
-        context.log.error("Could not initialize headless renderer. Run: npx playwright install chromium");
-        context.setExitCode(ErrorCodes.INIT_ERROR);
-        await this.runCleanupStep(context, "close renderer", () => renderer!.close());
-        httpServer.clearTempContent();
-        await this.runCleanupStep(context, "stop render server", () => httpServer.stop("batch renderer init failed"));
-        return undefined;
-      }
-
-      // Warm-up reduces flakiness on the first real render.
-      await renderer.warmUp();
+      renderer = new PlaywrightPageRenderer(baseUrl, getRenderGpuOptions(context.commandOptions));
       return { httpServer, renderer };
     } catch (e: any) {
       context.log.error("Could not initialize batch renderer: " + (e?.message ?? String(e)));
@@ -421,8 +485,11 @@ export class RenderBatchCommand extends CommandBase {
       if (renderer) {
         await this.runCleanupStep(context, "close renderer", () => renderer!.close());
       }
-      httpServer.clearTempContent();
-      await this.runCleanupStep(context, "stop render server", () => httpServer.stop("batch renderer init failed"));
+      if (startedServer) {
+        const httpServer = startedServer;
+        httpServer.clearTempContent();
+        await this.runCleanupStep(context, "stop render server", () => httpServer.stop("batch renderer init failed"));
+      }
       return undefined;
     }
   }
@@ -434,6 +501,10 @@ export class RenderBatchCommand extends CommandBase {
     session: IRenderBatchSession
   ): Promise<boolean> {
     const { httpServer, renderer } = session;
+    // Resolve input before launching, including the initial request in stdin mode.
+    if (!(await this.initializeRenderer(context, session))) {
+      return false;
+    }
     let succeeded = 0;
     let failed = 0;
 
@@ -470,6 +541,7 @@ export class RenderBatchCommand extends CommandBase {
         modelViewerUrl += `&_batch=${index}`;
 
         const result = await renderer.renderModelFast(modelViewerUrl, {
+          presentation: item.presentation,
           width,
           height,
           renderWaitTime: renderWaitMs,
@@ -508,6 +580,27 @@ export class RenderBatchCommand extends CommandBase {
     return failed === 0;
   }
 
+  private async initializeRenderer(context: ICommandContext, session: IRenderBatchSession): Promise<boolean> {
+    if (session.initialized !== undefined) {
+      return session.initialized;
+    }
+    session.initialized = false;
+    try {
+      if (await session.renderer.initialize()) {
+        await session.renderer.warmUp();
+        session.initialized = true;
+        return true;
+      }
+      context.log.error("Could not initialize headless renderer. Run: npx playwright install chromium");
+    } catch (error) {
+      context.log.error(
+        "Could not initialize batch renderer: " + (error instanceof Error ? error.message : String(error))
+      );
+    }
+    context.setExitCode(ErrorCodes.INIT_ERROR);
+    return false;
+  }
+
   private async stopRenderSession(context: ICommandContext, session: IRenderBatchSession): Promise<void> {
     await this.runCleanupStep(context, "reset renderer page", () => session.renderer.resetPersistentPage(), false);
     await this.runCleanupStep(context, "close renderer", () => session.renderer.close());
@@ -515,7 +608,7 @@ export class RenderBatchCommand extends CommandBase {
     await this.runCleanupStep(context, "stop render server", () => session.httpServer.stop("batch rendering complete"));
   }
 
-  private readManifest(context: ICommandContext, manifestPath: string, allowEmpty = false): IBatchManifest | undefined {
+  private readManifest(context: ICommandContext, manifestPath: string, allowEmpty = false): BatchManifestReadResult {
     if (!manifestPath) {
       context.log.error("No manifest path specified.");
       context.setExitCode(ErrorCodes.INIT_ERROR);
@@ -540,11 +633,7 @@ export class RenderBatchCommand extends CommandBase {
     return this.parseManifest(context, manifestJson, allowEmpty);
   }
 
-  private parseManifest(
-    context: ICommandContext,
-    manifestJson: unknown,
-    allowEmpty: boolean
-  ): IBatchManifest | undefined {
+  private parseManifest(context: ICommandContext, manifestJson: unknown, allowEmpty: boolean): BatchManifestReadResult {
     if (
       !manifestJson ||
       typeof manifestJson !== "object" ||
@@ -565,7 +654,7 @@ export class RenderBatchCommand extends CommandBase {
     for (const [index, entryJson] of (manifestJson as { renders: unknown[] }).renders.entries()) {
       const entry = this.parseManifestEntry(context, entryJson, index);
       if (!entry) {
-        return undefined;
+        return "invalid-entry";
       }
       renders.push(entry);
     }
@@ -596,6 +685,20 @@ export class RenderBatchCommand extends CommandBase {
     );
     const vanilla = this.parseOptionalBooleanField(context, entry.vanilla, `renders[${index}].vanilla`);
     const camera = this.parseOptionalCameraFields(context, entry, index);
+    let presentation: RenderPresentationOptions;
+    try {
+      const defaults = resolveRenderPresentationOptions(context.commandOptions ?? {});
+      presentation = resolveRenderPresentationOptions(entry, defaults);
+      validateRenderDimensions(
+        presentation,
+        width ?? renderDimension(context.commandOptions?.width ?? 1024, "--width"),
+        height ?? renderDimension(context.commandOptions?.height ?? 1024, "--height")
+      );
+    } catch (error) {
+      context.log.error(`renders[${index}]: ${error instanceof Error ? error.message : String(error)}`);
+      context.setExitCode(ErrorCodes.INIT_ERROR);
+      return undefined;
+    }
 
     if (
       geometryPath === undefined ||
@@ -612,6 +715,13 @@ export class RenderBatchCommand extends CommandBase {
     return {
       geometryPath,
       outputPath,
+      ...(entry.appearance !== undefined ? { appearance: presentation.appearance } : {}),
+      ...(entry.grid !== undefined ? { grid: presentation.grid } : {}),
+      ...(entry.skeleton !== undefined ? { skeleton: presentation.skeleton } : {}),
+      ...(entry.view !== undefined ? { view: presentation.view } : {}),
+      ...(entry.allViews !== undefined ? { allViews: presentation.allViews } : {}),
+      ...(entry.environment !== undefined ? { environment: presentation.environment } : {}),
+      ...(entry.timeOfDay !== undefined ? { timeOfDay: presentation.timeOfDay } : {}),
       ...(width !== undefined ? { width } : {}),
       ...(height !== undefined ? { height } : {}),
       ...(renderWaitMs !== undefined ? { renderWaitMs } : {}),
@@ -723,6 +833,8 @@ export class RenderBatchCommand extends CommandBase {
   }
 
   private resolveBatchOptions(context: ICommandContext, defaultVanilla: boolean): IRenderBatchOptions | undefined {
+    const presentation = getRenderPresentationOptions(context);
+    if (!presentation) return undefined;
     const options = (context.commandOptions ?? {}) as Record<string, unknown>;
     const portStart = this.parsePositiveIntegerOption(context, options.portStart, "--port-start");
     const portEnd = this.parsePositiveIntegerOption(context, options.portEnd, "--port-end");
@@ -780,13 +892,13 @@ export class RenderBatchCommand extends CommandBase {
     }
 
     return {
+      presentation,
       port: explicitPort ?? LocalUtilities.getRandomSafePort(portStart, portEnd),
       width,
       height,
       renderWaitMs,
       canvasTimeoutMs,
       vanilla: defaultVanilla,
-      gpu: options.gpu === true,
     };
   }
 

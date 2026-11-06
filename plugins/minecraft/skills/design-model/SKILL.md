@@ -64,10 +64,11 @@ Ask the user before creating that file; it's their permission switch. Pass fully
 To see a model that wasn't made with `designModel`:
 
 ```bash
-npx -y @minecraft/creator-tools@latest rendermodel <file>.geo.json <output>.png -i <project-folder> --no-vanilla
+npx -y @minecraft/creator-tools@latest render model <file>.geo.json <output>.png -i <project-folder> --no-vanilla
 ```
 
 This uses a headless browser and takes a few seconds. If it fails because no browser is available, skip it and rely on the file contents.
+The flat `rendermodel` command and `rm` alias still work with the same arguments on older pinned CLIs.
 
 ## 7. Validate
 

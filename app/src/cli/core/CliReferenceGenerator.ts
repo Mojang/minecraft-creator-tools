@@ -2,6 +2,7 @@ import { Argument, Command, Option } from "commander";
 import { ICommand } from "./ICommand";
 import { CommandRegistry } from "./CommandRegistry";
 import { configureGlobalOptions } from "./GlobalOptions";
+import { formatCommandPath, resolveCommandPath } from "./CommandHelpWriter";
 
 /**
  * Generates the markdown command reference for the `creator-tools-cli` agent skill from the same
@@ -49,15 +50,35 @@ export function generateCliReference(commands: ICommand[]): string {
     }
   }
 
-  lines.push("", "## Commands");
+  lines.push(
+    "",
+    "## Command groups",
+    "",
+    "Use `mct help <group>` or `mct help <group> <command>` to explore a task.",
+    ""
+  );
+  for (const group of program.commands.filter((command) => command.commands.length > 0)) {
+    lines.push(`- \`${group.name()}\`: ${group.commands.map((command) => `\`${command.name()}\``).join(", ")}.`);
+  }
+  lines.push(
+    "",
+    "Existing flat commands and their aliases remain supported; each task command lists them below.",
+    "",
+    "## Commands"
+  );
 
   for (const category of registry.getCategories()) {
     lines.push("", `### ${category}`);
 
     for (const command of registry.getByCategory(category)) {
-      const commanderCommand = program.commands.find((candidate) => candidate.name() === command.metadata.name);
+      const commanderCommand = resolveCommandPath(program, [
+        ...(command.metadata.route ?? [command.metadata.name]),
+      ]).command;
       if (commanderCommand) {
-        lines.push("", ...formatCommand(commanderCommand));
+        const compatibility = command.metadata.route
+          ? [command.metadata.name, ...(command.metadata.aliases ?? [])]
+          : [];
+        lines.push("", ...formatCommand(program, commanderCommand, compatibility));
       }
     }
   }
@@ -65,13 +86,20 @@ export function generateCliReference(commands: ICommand[]): string {
   return lines.join("\n") + "\n";
 }
 
-function formatCommand(command: Command): string[] {
-  const usage = [command.name(), ...command.registeredArguments.map(formatArgumentName)].join(" ");
+function formatCommand(root: Command, command: Command, compatibility: string[]): string[] {
+  const commandPath = formatCommandPath(root, command).slice(root.name().length + 1);
+  const usage = [commandPath, ...command.registeredArguments.map(formatArgumentName)].join(" ");
   const aliases = command.aliases();
   const lines = [`#### \`${usage}\``, ""];
 
   if (aliases.length > 0) {
     lines.push(`Aliases: ${aliases.map((alias) => `\`${alias}\``).join(", ")}`, "");
+  }
+  if (compatibility.length > 0) {
+    lines.push(
+      `Compatibility commands: ${compatibility.map((name) => `\`${name}\``).join(", ")}. Same arguments, flags, results, and exit codes.`,
+      ""
+    );
   }
 
   lines.push(oneLine(command.description()));

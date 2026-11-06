@@ -132,7 +132,7 @@ class DownloadResources {
 
   // as an additional security defense, enforce an explicit allow list of file extensions (never extract .exes, say.)
   // note that LICENSE (no extension) is also allowed through special case code.
-  fileExtensionAllowList = ["json", "js", "ts", "png", "tga", "jpg", "lang"];
+  fileExtensionAllowList = ["json", "js", "ts", "png", "tga", "jpg", "lang", "mcstructure"];
   pathDisallowList = ["./", "/.", "just.config.ts"];
 
   constructor(targetFilePath, excludeIfContents) {

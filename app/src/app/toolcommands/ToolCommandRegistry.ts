@@ -14,8 +14,13 @@
  * 2. Provide lookup by command name or alias
  * 3. Execute commands with parsed arguments
  * 4. Provide autocomplete suggestions
- * 5. Filter commands by scope
+ * 5. Filter commands by scope (isAvailableIn)
  * 6. Generate help documentation
+ *
+ * SCOPES:
+ * A command without metadata.scopes is available in every scope except the opt-in ones in
+ * OPT_IN_SCOPES. Today that's only serverApi: HttpServer's /api/commands runs commands for
+ * clients over HTTP, so a command runs there only when its scopes list serverApi.
  *
  * SINGLETON PATTERN:
  * Use ToolCommandRegistry.instance to access the global registry.
@@ -34,6 +39,12 @@ import type { IToolCommandContext } from "./IToolCommandContext";
 import { ToolCommandParser } from "./ToolCommandParser";
 
 /**
+ * Scopes a command must list in metadata.scopes to run in. Commands that don't declare scopes are
+ * available in every other scope.
+ */
+const OPT_IN_SCOPES: readonly ToolCommandScope[] = [ToolCommandScope.serverApi];
+
+/**
  * Central registry for ToolCommands.
  */
 export class ToolCommandRegistry {
@@ -49,6 +60,20 @@ export class ToolCommandRegistry {
       this._instance = new ToolCommandRegistry();
     }
     return this._instance;
+  }
+
+  /**
+   * Whether a command can run in a scope: a scope its metadata.scopes lists, or, when it declares
+   * no scopes, any scope that isn't opt-in.
+   */
+  static isAvailableIn(command: IToolCommand, scope: ToolCommandScope): boolean {
+    const scopes = command.metadata.scopes;
+
+    if (!scopes) {
+      return !OPT_IN_SCOPES.includes(scope);
+    }
+
+    return scopes.includes(scope);
   }
 
   /**
@@ -118,12 +143,8 @@ export class ToolCommandRegistry {
       seen.add(command);
 
       // Filter by scope if specified
-      if (scope) {
-        const scopes = command.metadata.scopes;
-        // If no scopes defined, command is available everywhere
-        if (scopes && !scopes.includes(scope)) {
-          continue;
-        }
+      if (scope && !ToolCommandRegistry.isAvailableIn(command, scope)) {
+        continue;
       }
 
       result.push(command);
@@ -178,8 +199,7 @@ export class ToolCommandRegistry {
     }
 
     // Check scope restrictions
-    const scopes = command.metadata.scopes;
-    if (scopes && !scopes.includes(context.scope as ToolCommandScope)) {
+    if (!ToolCommandRegistry.isAvailableIn(command, context.scope as ToolCommandScope)) {
       return {
         success: false,
         error: {

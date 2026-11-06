@@ -84,6 +84,7 @@ interface IModelViewerState {
   ignoreAlpha?: boolean;
   /** Pre-transformed geometry from VanillaProjectManager (has VanillaGeometryTransforms applied). */
   transformedGeometry?: IGeometry;
+  authoredGeometry?: IGeometry;
   /** Counter incremented after each bbmodel upload to force VolumeEditor remount. */
   uploadGeneration?: number;
   /** Geometry ProjectItem resolved during entity loading, used for full bbmodel export with textures. */
@@ -293,6 +294,7 @@ class ModelViewer extends Component<IModelViewerProps, IModelViewerState> {
       // loadFromModelItem) — this instance may previously have shown a model
       // loaded through a different path.
       transformedGeometry: undefined,
+      authoredGeometry: undefined,
       tintColor: undefined,
       ignoreAlpha: undefined,
       baseModel: undefined,
@@ -364,6 +366,7 @@ class ModelViewer extends Component<IModelViewerProps, IModelViewerState> {
         // Reset cross-load-path state (see the Bug 1633420 note in
         // loadFromModelItem).
         transformedGeometry: undefined,
+        authoredGeometry: undefined,
         tintColor: undefined,
         ignoreAlpha: undefined,
         baseModel: undefined,
@@ -637,6 +640,7 @@ class ModelViewer extends Component<IModelViewerProps, IModelViewerState> {
       effectiveTexturePath: effectiveTexturePath,
       skipVanillaResources: false,
       transformedGeometry: undefined,
+      authoredGeometry: undefined,
       tintColor: undefined,
       ignoreAlpha: undefined,
       baseModel: undefined,
@@ -701,6 +705,7 @@ class ModelViewer extends Component<IModelViewerProps, IModelViewerState> {
       blockVolume: blockVolume,
       model: modelData.modelDefinition,
       transformedGeometry: modelData.geometry,
+      authoredGeometry: modelData.authoredGeometry,
       textureData: modelData.textureData,
       textureUrl: modelData.textureUrl,
       tintColor: modelData.tintColor,
@@ -953,6 +958,7 @@ class ModelViewer extends Component<IModelViewerProps, IModelViewerState> {
             // customGeometry over the fresh model — rendering the old entity's
             // model under this entity's texture until the project is reloaded.
             transformedGeometry: undefined,
+            authoredGeometry: undefined,
             tintColor: undefined,
             ignoreAlpha: undefined,
             baseModel: undefined,
@@ -1229,6 +1235,7 @@ class ModelViewer extends Component<IModelViewerProps, IModelViewerState> {
         : new Location(3.5, 2.0, 3.5); // Position above the grass blocks (y=1 surface + 1 block)
       entity.customModel = this.state.model;
       entity.customGeometry = this.state.transformedGeometry;
+      entity.customAuthoredGeometry = this.state.authoredGeometry;
       entity.customTextureData = this.state.textureData;
       entity.customTextureUrl = this.state.textureUrl;
       entity.customTintColor = this.state.tintColor;

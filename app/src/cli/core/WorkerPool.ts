@@ -6,16 +6,30 @@
  * - ThreadWorkerPool: Node.js worker_threads implementation
  * - SingleThreadPool: Executes tasks via worker but one at a time
  *
- * Both pools use the same TaskWorker.js script for execution,
- * ensuring consistent behavior between single and multi-threaded modes.
+ * Both pools share the same per-task lifecycle and TaskWorker.mjs entry point.
+ * A result message is only a candidate result: completion also waits for the
+ * worker's exit and for stdout/stderr to end. Node forwards those streams over
+ * a separate channel, so terminating on "message" discards queued output.
+ * TaskWorker closes its one-task parent port to allow a natural, drained exit.
+ * TaskWorkerResult tags success/failure explicitly; payload text is never parsed
+ * as an error. Errors and nonzero exits override a candidate success; exit 0
+ * without a defined result is a failure. There is no total task deadline.
+ * Boolean discriminants need explicit comparisons: the library also imports
+ * this module with strictNullChecks disabled, unlike the strict CLI graph.
+ *
+ * shutdown() stops admission, terminates active workers, and waits for their
+ * terminal results and stream cleanup. Cancellation is not a successful result.
  *
  * The factory function createWorkerPool() selects the appropriate
  * implementation based on thread count.
  */
 
 import { Worker as NodeWorker } from "worker_threads";
+import { Readable } from "stream";
+import { finished } from "stream/promises";
 import * as path from "path";
 import { IWorkerPool, IWorkerTask, IWorkerResult } from "./ICommandContext";
+import { isTaskWorkerResult } from "./TaskWorkerResult";
 
 /**
  * Get the path to the TaskWorker.mjs script.
@@ -26,48 +40,6 @@ function getWorkerPath(): string {
 }
 
 /**
- * SingleThreadPool executes tasks one at a time using a single worker.
- * This provides consistent behavior with ThreadWorkerPool but without parallelism.
- */
-export class SingleThreadPool implements IWorkerPool {
-  readonly concurrency = 1;
-
-  private workerPath: string;
-  private memoryLimitMb: number;
-
-  constructor(workerPath?: string, memoryLimitMb = 16384) {
-    this.workerPath = workerPath || getWorkerPath();
-    this.memoryLimitMb = memoryLimitMb;
-  }
-
-  async execute<TArgs, TResult>(task: IWorkerTask<TArgs, TResult>): Promise<IWorkerResult<TResult>> {
-    return executeInWorker<TArgs, TResult>(task, this.workerPath, this.memoryLimitMb);
-  }
-
-  async executeBatch<TArgs, TResult>(
-    tasks: IWorkerTask<TArgs, TResult>[],
-    onProgress?: (completed: number, total: number) => void
-  ): Promise<IWorkerResult<TResult>[]> {
-    const results: IWorkerResult<TResult>[] = [];
-
-    for (let i = 0; i < tasks.length; i++) {
-      const result = await this.execute(tasks[i]);
-      results.push(result);
-
-      if (onProgress) {
-        onProgress(i + 1, tasks.length);
-      }
-    }
-
-    return results;
-  }
-
-  async shutdown(): Promise<void> {
-    // Nothing to clean up - workers are created per-task
-  }
-}
-
-/**
  * ThreadWorkerPool uses Node.js worker_threads for parallel execution.
  */
 export class ThreadWorkerPool implements IWorkerPool {
@@ -75,13 +47,13 @@ export class ThreadWorkerPool implements IWorkerPool {
 
   private workerPath: string;
   private memoryLimitMb: number;
-  private activeWorkers: Set<NodeWorker> = new Set();
+  private activeWorkers = new Map<NodeWorker, Promise<IWorkerResult>>();
   private isShutdown = false;
 
   /**
    * Create a thread worker pool.
    * @param concurrency Maximum concurrent workers
-   * @param workerPath Path to the worker script (TaskWorker.js)
+   * @param workerPath Path to the worker script (TaskWorker.mjs)
    * @param memoryLimitMb Memory limit per worker in MB
    */
   constructor(concurrency: number, workerPath?: string, memoryLimitMb = 16384) {
@@ -98,66 +70,24 @@ export class ThreadWorkerPool implements IWorkerPool {
       };
     }
 
-    return new Promise((resolve) => {
-      const worker = new NodeWorker(this.workerPath, {
+    let worker: NodeWorker;
+    try {
+      worker = new NodeWorker(this.workerPath, {
         resourceLimits: {
           maxOldGenerationSizeMb: this.memoryLimitMb,
         },
       });
+    } catch (error) {
+      return workerFailure(error);
+    }
 
-      this.activeWorkers.add(worker);
-
-      const cleanup = () => {
-        worker.removeAllListeners();
-        this.activeWorkers.delete(worker);
-        worker.terminate();
-      };
-
-      const onMessage = (result: unknown) => {
-        cleanup();
-        // Handle error strings returned from worker
-        if (typeof result === "string" && result.startsWith("Error")) {
-          resolve({
-            success: false,
-            error: result,
-          });
-        } else {
-          resolve({
-            success: true,
-            result: result as TResult,
-          });
-        }
-      };
-
-      const onError = (error: Error) => {
-        cleanup();
-        resolve({
-          success: false,
-          error: error.message,
-          stack: error.stack,
-        });
-      };
-
-      const onExit = (code: number) => {
-        cleanup();
-        if (code !== 0) {
-          resolve({
-            success: false,
-            error: `Worker exited with code ${code}`,
-          });
-        }
-      };
-
-      worker.on("message", onMessage);
-      worker.on("error", onError);
-      worker.on("exit", onExit);
-
-      // Post the task data to the worker
-      worker.postMessage({
-        task: task.taskType,
-        ...task.args,
-      });
-    });
+    const completion = executeInWorker(task, worker);
+    this.activeWorkers.set(worker, completion);
+    try {
+      return await completion;
+    } finally {
+      this.activeWorkers.delete(worker);
+    }
   }
 
   async executeBatch<TArgs, TResult>(
@@ -177,12 +107,10 @@ export class ThreadWorkerPool implements IWorkerPool {
 
     const processNextBatch = async (): Promise<void> => {
       const batchPromises: Promise<void>[] = [];
-      const batchIndices: number[] = [];
 
       // Start up to concurrency tasks
       for (let i = 0; i < this.concurrency && currentIndex < tasks.length; i++) {
         const taskIndex = currentIndex++;
-        batchIndices.push(taskIndex);
 
         const promise = this.execute(tasks[taskIndex]).then((result) => {
           results[taskIndex] = result;
@@ -209,89 +137,102 @@ export class ThreadWorkerPool implements IWorkerPool {
   async shutdown(): Promise<void> {
     this.isShutdown = true;
 
-    const terminatePromises: Promise<number>[] = [];
-    for (const worker of this.activeWorkers) {
-      terminatePromises.push(worker.terminate());
-    }
-
-    await Promise.all(terminatePromises);
-    this.activeWorkers.clear();
+    await Promise.all(
+      Array.from(this.activeWorkers, async ([worker, completion]) => {
+        await worker.terminate();
+        await completion;
+      })
+    );
   }
 }
 
 /**
- * Execute a single task in a worker and return the result.
- * This is a helper used by both SingleThreadPool and ThreadWorkerPool.
+ * Uses the same lifecycle and batch ordering as ThreadWorkerPool, one task at a time.
+ */
+export class SingleThreadPool extends ThreadWorkerPool {
+  constructor(workerPath?: string, memoryLimitMb = 16384) {
+    super(1, workerPath, memoryLimitMb);
+  }
+}
+
+function workerFailure(error: unknown): IWorkerResult<never> {
+  return {
+    success: false,
+    error: error instanceof Error ? error.message : String(error),
+    stack: error instanceof Error ? error.stack : undefined,
+  };
+}
+
+/**
+ * Retain the actual result while both the worker and its forwarded streams finish.
+ * The CLI's exitAfterFlush handles the destination process streams after this handoff.
  */
 async function executeInWorker<TArgs, TResult>(
   task: IWorkerTask<TArgs, TResult>,
-  workerPath: string,
-  memoryLimitMb: number
+  worker: NodeWorker
 ): Promise<IWorkerResult<TResult>> {
-  return new Promise((resolve) => {
-    const worker = new NodeWorker(workerPath, {
-      resourceLimits: {
-        maxOldGenerationSizeMb: memoryLimitMb,
-      },
-    });
+  let result: IWorkerResult<TResult> | undefined;
+  let failure: IWorkerResult<never> | undefined;
+  let receivedMessage = false;
 
-    const cleanup = () => {
-      worker.removeAllListeners();
-      worker.terminate();
-    };
+  const onMessage = (message: unknown) => {
+    if (receivedMessage) {
+      return;
+    }
+    receivedMessage = true;
+    if (message === undefined) {
+      return;
+    }
+    if (!isTaskWorkerResult(message)) {
+      result = { success: false, error: "Worker returned an invalid task result" };
+    } else if (message.success === false) {
+      result = { success: false, error: message.error, stack: message.stack };
+    } else if (message.result !== undefined) {
+      result = { success: true, result: message.result as TResult };
+    }
+  };
+  const onError = (error: Error) => {
+    failure = workerFailure(error);
+  };
+  const drain = async (stream: Readable) => {
+    try {
+      await finished(stream, { cleanup: true });
+    } catch (error) {
+      failure ??= workerFailure(error);
+    }
+  };
 
-    const onMessage = (result: unknown) => {
-      cleanup();
-      // Handle error strings returned from worker
-      if (typeof result === "string" && result.startsWith("Error")) {
-        resolve({
-          success: false,
-          error: result,
-        });
-      } else {
-        resolve({
-          success: true,
-          result: result as TResult,
-        });
-      }
-    };
+  worker.on("message", onMessage);
+  worker.on("error", onError);
+  const exited = new Promise<number>((resolve) => worker.once("exit", resolve));
+  const drained = Promise.all([drain(worker.stdout), drain(worker.stderr)]);
 
-    const onError = (error: Error) => {
-      cleanup();
-      resolve({
-        success: false,
-        error: error.message,
-        stack: error.stack,
-      });
-    };
+  try {
+    try {
+      worker.postMessage({ task: task.taskType, ...task.args });
+    } catch (error) {
+      failure = workerFailure(error);
+      await worker.terminate();
+    }
 
-    const onExit = (code: number) => {
-      cleanup();
-      if (code !== 0) {
-        resolve({
-          success: false,
-          error: `Worker exited with code ${code}`,
-        });
-      }
-    };
-
-    worker.on("message", onMessage);
-    worker.on("error", onError);
-    worker.on("exit", onExit);
-
-    // Post the task data to the worker
-    // Convert IWorkerTask to the format expected by TaskWorker
-    worker.postMessage({
-      task: task.taskType,
-      ...task.args,
-    });
-  });
+    const [code] = await Promise.all([exited, drained]);
+    if (failure) {
+      return failure;
+    }
+    if (code !== 0) {
+      return result?.success === false ? result : { success: false, error: `Worker exited with code ${code}` };
+    }
+    return result ?? { success: false, error: "Worker exited with code 0 without returning a result" };
+  } finally {
+    worker.off("message", onMessage);
+    worker.off("error", onError);
+  }
 }
 
 /**
  * Factory function to create the appropriate worker pool.
  * @param threads Number of threads (1 = single-threaded, >1 = multi-threaded)
- * @param workerPath Optional path to worker script (defaults to TaskWorker.js)
+ * @param workerPath Optional path to worker script (defaults to TaskWorker.mjs)
  */
 export function createWorkerPool(threads: number, workerPath?: string): IWorkerPool {
   if (threads <= 1) {

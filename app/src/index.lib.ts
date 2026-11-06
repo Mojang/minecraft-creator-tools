@@ -88,7 +88,7 @@ export { default as MolangNode } from "./minecraft/MolangNode";
 export { default as NbtBinary } from "./minecraft/NbtBinary";
 export { default as Pack } from "./minecraft/Pack";
 export { default as Player } from "./minecraft/Player";
-export { default as ServerPropertiesManager } from "./minecraft/ServerPropertiesManager";
+export { default as ServerPropertiesManager, ServerTransport } from "./minecraft/ServerPropertiesManager";
 export { default as VanillaProjectManager } from "./minecraft/VanillaProjectManager";
 export { default as WorldChunk } from "./minecraft/WorldChunk";
 export { default as WorldLevelDat } from "./minecraft/WorldLevelDat";

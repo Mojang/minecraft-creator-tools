@@ -9,6 +9,9 @@
  * miss the actual work, so this command sets `profileMode` on each task —
  * TaskWorker.ts then wraps `executeTask` with the V8 inspector profiler
  * inside the worker itself.
+ * Task failures still produce one JSON document (success=false) or stderr in
+ * human mode, with exit code 5. Never announce successful profiling after a
+ * caught task exception, missing result, or failed report/profile write.
  *
  * MODES (`--profile-mode`):
  *  - `cpu`    : `.cpuprofile` per project — where is CPU time spent?
@@ -91,6 +94,7 @@ export class ProfileValidationCommand extends CommandBase {
     // Resolve profile mode from CLI option / context. Commander stores
     // --profile-mode in cmdline option flags as `profileMode`.
     const requestedMode = this.resolveProfileMode(context);
+    let success = true;
 
     for (let i = 0; i < context.projects.length; i++) {
       const project = context.projects[i];
@@ -125,11 +129,15 @@ export class ProfileValidationCommand extends CommandBase {
           args: taskArgs,
         });
 
-        if (!result.success) {
-          context.log.error(`Validation failed during profiling: ${result.error}`);
+        if (!result.success || result.result === undefined) {
+          success = false;
+          context.log.error(
+            `Validation failed during profiling: ${result.error ?? "Validation did not return a result."}`
+          );
           context.setExitCode(ErrorCodes.VALIDATION_INTERNALPROCESSINGERROR);
         }
       } catch (e: unknown) {
+        success = false;
         const message = e instanceof Error ? e.message : String(e);
         context.log.error(`Internal Processing Error during profiling: ${message}`);
         context.setExitCode(ErrorCodes.VALIDATION_INTERNALPROCESSINGERROR);
@@ -142,16 +150,20 @@ export class ProfileValidationCommand extends CommandBase {
           schemaVersion: "1.0.0",
           command: "profilevalidation",
           mode: requestedMode,
-          success: true,
-          message: "Profiling complete. Check debugoutput/ for output files.",
+          success,
+          message: success
+            ? "Profiling complete. Check debugoutput/ for output files."
+            : "Profiling failed. See stderr for details.",
         })
       );
-    } else {
+    } else if (success) {
       context.log.success(
         `Profiling (${requestedMode}) complete. Check debugoutput/ for .cpuprofile / .heapprofile / .heapsnapshot / .memstats.json files.`
       );
     }
-    this.logComplete(context);
+    if (success) {
+      this.logComplete(context);
+    }
   }
 
   /**

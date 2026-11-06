@@ -60,3 +60,76 @@ describe("StorageUtilities.setJsonObjectWithComments", () => {
     assert.equal(file.content, original);
   });
 });
+
+describe("StorageUtilities.getBaseRelativePath", () => {
+  it("resolves pack root and subpack files to the same content path, from either root", () => {
+    const packRoot = new ZipStorage().rootFolder.ensureFolder("RP");
+    const rootFile = packRoot.ensureFolder("textures").ensureFolder("entity").ensureFile("Pig.png");
+    const subpackFile = packRoot
+      .ensureFolder("subpacks")
+      .ensureFolder("0_e")
+      .ensureFolder("textures")
+      .ensureFolder("entity")
+      .ensureFile("pig.png");
+
+    assert.equal(StorageUtilities.getBaseRelativePath(rootFile, packRoot), "textures/entity/pig");
+    assert.equal(StorageUtilities.getBaseRelativePath(subpackFile, packRoot), "textures/entity/pig");
+    assert.equal(
+      StorageUtilities.getBaseRelativePath(rootFile, packRoot.ensureFolder("subpacks").ensureFolder("0_e")),
+      "textures/entity/pig"
+    );
+  });
+
+  it("does not resolve a file in a sibling subpack", () => {
+    const subpacks = new ZipStorage().rootFolder.ensureFolder("RP").ensureFolder("subpacks");
+    const subpackA = subpacks.ensureFolder("a");
+    const ownFile = subpackA.ensureFolder("textures").ensureFile("own.png");
+    const siblingFile = subpacks.ensureFolder("b").ensureFolder("textures").ensureFile("sibling.png");
+
+    assert.equal(StorageUtilities.getBaseRelativePath(ownFile, subpackA), "textures/own");
+    assert.isUndefined(StorageUtilities.getBaseRelativePath(siblingFile, subpackA));
+  });
+});
+
+describe("StorageUtilities.resolvePackPathCandidates", () => {
+  it("links every override from the pack root, and own-or-parent copies from a subpack", async () => {
+    const packRoot = new ZipStorage().rootFolder.ensureFolder("RP");
+    const subpacks = packRoot.ensureFolder("subpacks");
+    const asItem = (file: any) => ({
+      ensureAllFiles: async () => [file],
+      ensureStorage: async () => {},
+      loadContent: async () => {},
+    });
+    const texture = (folder: any, name: string) => {
+      const file = folder.ensureFolder("textures").ensureFile(name + ".png");
+      file.setContent(new Uint8Array([1]));
+      return asItem(file);
+    };
+    const rootPig = texture(packRoot, "pig");
+    const lowPig = texture(subpacks.ensureFolder("low"), "pig");
+    const highPig = texture(subpacks.ensureFolder("high"), "pig");
+    const highCow = texture(subpacks.ensureFolder("high"), "cow");
+    const items = [highCow, highPig, lowPig, rootPig];
+    const resolve = (folder: any, paths: string[]) =>
+      StorageUtilities.resolvePackPathCandidates(items, folder, paths, (file) =>
+        StorageUtilities.getBaseRelativePath(file, folder)
+      );
+
+    const fromRoot = await resolve(packRoot, ["textures/pig", "textures/sheep"]);
+    assert.sameMembers(fromRoot.matches, [rootPig, lowPig, highPig]);
+    assert.deepEqual(fromRoot.unmatched, ["textures/sheep"]);
+
+    const fromLow = await resolve(subpacks.ensureFolder("low"), ["textures/pig", "textures/cow"]);
+    assert.deepEqual(fromLow.matches, [lowPig]);
+    assert.deepEqual(fromLow.unmatched, ["textures/cow"]);
+
+    const high = subpacks.ensureFolder("high");
+    const fromHighWithoutOverride = await StorageUtilities.resolvePackPathCandidates(
+      [lowPig, highCow, rootPig],
+      high,
+      ["textures/pig"],
+      (file) => StorageUtilities.getBaseRelativePath(file, high)
+    );
+    assert.deepEqual(fromHighWithoutOverride.matches, [rootPig]);
+  });
+});

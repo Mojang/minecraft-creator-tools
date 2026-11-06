@@ -46,6 +46,15 @@ These work with every command, though each command only uses the ones that apply
 - `--experimental-ssl-port <port>`: (Experimental) Port for HTTPS server. Defaults to 443. Use a port > 1024 to avoid requiring admin privileges.
 - `--experimental-ssl-only`: (Experimental) Only start HTTPS server, do not start HTTP. Use this for production to ensure all traffic is encrypted.
 
+## Command groups
+
+Use `mct help <group>` or `mct help <group> <command>` to explore a task.
+
+- `export`: `addon`, `world`.
+- `render`: `model`, `batch`, `vanilla`, `structure`.
+
+Existing flat commands and their aliases remain supported; each task command lists them below.
+
 ## Commands
 
 ### Content
@@ -158,25 +167,29 @@ Options:
 - `--server-path <path>`: Dedicated server folder to deploy to, for `deploy server`.
 - `--env-file <path>`: Custom .env file path for `deploy env` mode. Default: <project>/.env. Useful when the .env lives elsewhere (CI runners, monorepos).
 
-#### `exportaddon`
+#### `export addon`
 
-Packages the specified project into an addon file. Produces .mcaddon when both a behavior and resource pack are present, .mcpack for single-pack projects.
+Compatibility commands: `exportaddon`. Same arguments, flags, results, and exit codes.
+
+Package your project's packs for sharing. Produces .mcaddon when both a behavior and resource pack are present, .mcpack for single-pack projects.
 
 Options:
 
 - `--format <format>`: Output format: 'auto' (default — picks mcaddon for BP+RP, mcpack otherwise), 'mcpack', or 'mcaddon'. Default: `auto`.
 
-#### `exportworld`
+#### `export world`
 
-Exports a flat GameTest world for the behavior packs in the project folder.
+Compatibility commands: `exportworld`. Same arguments, flags, results, and exit codes.
+
+Export a flat GameTest world with your project's packs.
 
 ### Render
 
-#### `rendermodel <geometryPath> [outputPath]`
+#### `render model <geometryPath> [outputPath]`
 
-Aliases: `rm`
+Compatibility commands: `rendermodel`, `rm`. Same arguments, flags, results, and exit codes.
 
-Renders a model geometry file from the project to a PNG image. Automatically finds related textures via project item relationships.
+Render a model from your project to an image. Uses a related texture when available.
 
 Arguments:
 
@@ -185,22 +198,30 @@ Arguments:
 
 Options:
 
+- `--gpu`: Prefer hardware GPU rendering instead of SwiftShader software WebGL.
+- `--no-gpu`: Use software WebGL and skip hardware detection, for repeatable images.
+- `--appearance <mode>`: Choose how to show the model. One of: `textured`, `clay`, `wireframe`, `bones`. Default: `textured`.
+- `--view <view>`: Choose a camera view (default: three-quarter) One of: `three-quarter`, `front`, `side`, `back`.
+- `--all-views`: Combine three-quarter, front, side, and back in one labeled 2x2 image.
+- `--no-grid`: Hide the ground grid while keeping the ground plane and shadows.
+- `--skeleton`: Overlay bone pivots and their parent connections on named model geometry.
+- `--environment <preset>`: Choose neutral or biome-inspired lighting, sky, and ground. One of: `neutral`, `plains`, `desert`, `snowy`. Default: `neutral`.
+- `--time-of-day <time>`: Choose the time for a biome environment (default: noon) One of: `noon`, `sunset`, `night`.
+- `--width <pixels>`: Set each view's width in pixels; a four-view sheet is twice as wide. Default: `1024`.
+- `--height <pixels>`: Set each view's height in pixels, including sheet labels; scaled canvases are limited to 4096 pixels per side and 32 Mi pixels combined. Default: `1024`.
 - `--vanilla`: Load vanilla Minecraft resources from mctools.dev for fallback textures.
 - `--no-vanilla`: Skip the vanilla Minecraft texture fallback. Useful when the project ships its own textures; renders faster and avoids the mctools.dev network fetch.
 - `--port <port>`: Use a specific localhost port for the temporary render server.
 - `--port-start <port>`: First port in the random temporary render server range. Default: `6200`.
 - `--port-end <port>`: Last port in the random temporary render server range. Default: `6299`.
-- `--width <pixels>`: Rendered image width in pixels. Default: `512`.
-- `--height <pixels>`: Rendered image height in pixels. Default: `512`.
-- `--gpu`: Prefer hardware GPU rendering instead of SwiftShader software WebGL.
 - `--render-wait-ms <milliseconds>`: Milliseconds to wait after loading the model before capture.
 - `--canvas-timeout-ms <milliseconds>`: Milliseconds to wait for the viewer canvas. Default: `15000`.
 
-#### `renderbatch <manifestPath>`
+#### `render batch <manifestPath>`
 
-Aliases: `rb`
+Compatibility commands: `renderbatch`, `rb`. Same arguments, flags, results, and exit codes.
 
-Renders many model geometry files in one process, reusing a headless Chromium instance for the entire batch. Much faster than calling rendermodel once per geometry.
+Render model images from a JSON manifest in one process.
 
 Arguments:
 
@@ -208,23 +229,31 @@ Arguments:
 
 Options:
 
+- `--gpu`: Prefer hardware GPU rendering instead of SwiftShader software WebGL.
+- `--no-gpu`: Use software WebGL and skip hardware detection, for repeatable images.
+- `--appearance <mode>`: Choose how to show the model. One of: `textured`, `clay`, `wireframe`, `bones`. Default: `textured`.
+- `--view <view>`: Choose a camera view (default: three-quarter) One of: `three-quarter`, `front`, `side`, `back`.
+- `--all-views`: Combine three-quarter, front, side, and back in one labeled 2x2 image.
+- `--no-grid`: Hide the ground grid while keeping the ground plane and shadows.
+- `--skeleton`: Overlay bone pivots and their parent connections on named model geometry.
+- `--environment <preset>`: Choose neutral or biome-inspired lighting, sky, and ground. One of: `neutral`, `plains`, `desert`, `snowy`. Default: `neutral`.
+- `--time-of-day <time>`: Choose the time for a biome environment (default: noon) One of: `noon`, `sunset`, `night`.
+- `--width <pixels>`: Set each view's width in pixels; a four-view sheet is twice as wide. Default: `1024`.
+- `--height <pixels>`: Set each view's height in pixels, including sheet labels; scaled canvases are limited to 4096 pixels per side and 32 Mi pixels combined. Default: `1024`.
 - `--vanilla`: Default to loading vanilla Minecraft resources from mctools.dev for fallback textures.
 - `--no-vanilla`: Default to skipping the vanilla Minecraft texture fallback. Per-entry `vanilla` in the manifest overrides this.
 - `--port <port>`: Use a specific localhost port for the temporary render server.
 - `--port-start <port>`: First port in the random temporary render server range. Default: `6200`.
 - `--port-end <port>`: Last port in the random temporary render server range. Default: `6299`.
-- `--width <pixels>`: Default rendered image width in pixels. Default: `512`.
-- `--height <pixels>`: Default rendered image height in pixels. Default: `512`.
-- `--gpu`: Prefer hardware GPU rendering instead of SwiftShader software WebGL.
 - `--stdin`: Keep the process alive and read render requests from stdin. Each line is <manifestPath> or <projectDir>|<manifestPath>.
 - `--render-wait-ms <milliseconds>`: Default milliseconds to wait after loading each model before capture.
 - `--canvas-timeout-ms <milliseconds>`: Milliseconds to wait for the viewer canvas to become visible. Default: `15000`.
 
-#### `rendervanilla <type> <identifier> [outputPath]`
+#### `render vanilla <type> <identifier> [outputPath]`
 
-Aliases: `rv`
+Compatibility commands: `rendervanilla`, `rv`. Same arguments, flags, results, and exit codes.
 
-Renders vanilla Minecraft block(s) or mob(s) to PNG image(s). Use comma-separated identifiers or @filename for batch mode.
+Render vanilla blocks, entities, or items to images. Use comma-separated identifiers or @filename to render several at once.
 
 Arguments:
 
@@ -232,11 +261,25 @@ Arguments:
 - `<identifier>`: Identifier(s) to render (e.g., 'oak_stairs', 'pig,cow,sheep', '@blocks.txt')
 - `[outputPath]`: Output path: file for single item, directory for batch.
 
-#### `renderstructure <structureName> [outputPath]`
+Options:
 
-Aliases: `renstruct`, `renderst`
+- `--gpu`: Prefer hardware GPU rendering instead of SwiftShader software WebGL.
+- `--no-gpu`: Use software WebGL and skip hardware detection, for repeatable images.
+- `--appearance <mode>`: Choose how to show the model. One of: `textured`, `clay`, `wireframe`, `bones`. Default: `textured`.
+- `--view <view>`: Choose a camera view (default: three-quarter) One of: `three-quarter`, `front`, `side`, `back`.
+- `--all-views`: Combine three-quarter, front, side, and back in one labeled 2x2 image.
+- `--no-grid`: Hide the ground grid while keeping the ground plane and shadows.
+- `--skeleton`: Overlay bone pivots and their parent connections on named model geometry.
+- `--environment <preset>`: Choose neutral or biome-inspired lighting, sky, and ground. One of: `neutral`, `plains`, `desert`, `snowy`. Default: `neutral`.
+- `--time-of-day <time>`: Choose the time for a biome environment (default: noon) One of: `noon`, `sunset`, `night`.
+- `--width <pixels>`: Set each view's width in pixels; a four-view sheet is twice as wide. Default: `1024`.
+- `--height <pixels>`: Set each view's height in pixels, including sheet labels; scaled canvases are limited to 4096 pixels per side and 32 Mi pixels combined. Default: `1024`.
 
-Render a .mcstructure file to a PNG image.
+#### `render structure <structureName> [outputPath]`
+
+Compatibility commands: `renderstructure`, `renstruct`, `renderst`. Same arguments, flags, results, and exit codes.
+
+Render a structure from your project to an image.
 
 Arguments:
 
@@ -245,17 +288,28 @@ Arguments:
 
 Options:
 
+- `--gpu`: Prefer hardware GPU rendering instead of SwiftShader software WebGL.
+- `--no-gpu`: Use software WebGL and skip hardware detection, for repeatable images.
+- `--appearance <mode>`: Choose how to show the model. One of: `textured`, `clay`, `wireframe`, `bones`. Default: `textured`.
+- `--view <view>`: Choose a camera view (default: three-quarter) One of: `three-quarter`, `front`, `side`, `back`.
+- `--all-views`: Combine three-quarter, front, side, and back in one labeled 2x2 image.
+- `--no-grid`: Hide the ground grid while keeping the ground plane and shadows.
+- `--skeleton`: Overlay bone pivots and their parent connections on named model geometry.
+- `--environment <preset>`: Choose neutral or biome-inspired lighting, sky, and ground. One of: `neutral`, `plains`, `desert`, `snowy`. Default: `neutral`.
+- `--time-of-day <time>`: Choose the time for a biome environment (default: noon) One of: `noon`, `sunset`, `night`.
+- `--width <pixels>`: Set each view's width in pixels; a four-view sheet is twice as wide. Default: `1024`.
+- `--height <pixels>`: Set each view's height in pixels, including sheet labels; scaled canvases are limited to 4096 pixels per side and 32 Mi pixels combined. Default: `1024`.
 - `--isolated`: Use isolated mode (skip vanilla resources)
 
 #### `buildstructure <inputPath> [outputPath]`
 
 Aliases: `buildstruct`
 
-Build an .mcstructure file from IBlockVolume JSON.
+Build an .mcstructure file from IBlockVolume JSON or a structure program (JavaScript)
 
 Arguments:
 
-- `<inputPath>`: Path to IBlockVolume JSON file, or '-' to read from stdin.
+- `<inputPath>`: Path to an IBlockVolume JSON file or a structure program (.js), or '-' to read from stdin.
 - `[outputPath]`: Path to save the .mcstructure file.
 
 Options:
@@ -263,6 +317,9 @@ Options:
 - `--preview <path>`: Also render a PNG preview image to the specified path.
 - `--overwrite`: Overwrite existing files without prompting.
 - `--isolated`: Use isolated mode for preview (skip vanilla resources)
+- `--program`: Treat the input as a structure program (implied for .js/.mjs/.cjs input)
+- `--program-seed <seed>`: Seed for api.random/api.pick in a structure program.
+- `--base <path>`: Existing .mcstructure for a structure program to edit.
 
 ### Server
 

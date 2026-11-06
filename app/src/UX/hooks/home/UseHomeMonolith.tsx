@@ -14,6 +14,7 @@ import { MinecraftFlavor } from "../../../app/ICreatorToolsData";
 import FileSystemFolder from "../../../storage/FileSystemFolder";
 import FileSystemStorage from "../../../storage/FileSystemStorage";
 import WebUtilities from "../../utils/WebUtilities";
+import { pickDirectory } from "../../utils/DirectoryPicker";
 import IAppProps from "../../appShell/IAppProps";
 import { GalleryProjectCommand } from "../../home/CodeProjectGallery";
 import { LocalFolderType, LocalGalleryCommand } from "../../utils/LocalGalleryCommand";
@@ -276,11 +277,11 @@ export default function useHomeMonolith(creatorTools: CreatorTools, props: IHome
 
       if (safeMessage !== undefined) {
         setState({
+          ...state,
           errorMessage:
             "Folder has unsupported files within it. Please choose a folder on your device that only has Minecraft asset files in it (.json, .png, .mcfunction, etc.)\n\nDetails: " +
             safeMessage,
           dialogMode: HomeDialogMode.errorMessage,
-          ...state,
         });
         return false;
       }
@@ -499,20 +500,40 @@ export default function useHomeMonolith(creatorTools: CreatorTools, props: IHome
   }
 
   async function openLocalFolder(isDocumentationProject?: boolean) {
-    if (typeof window.showDirectoryPicker !== "function") {
-      return;
+    const outcome = await pickDirectory(window, { mode: "readwrite" });
+
+    switch (outcome.status) {
+      case "cancelled":
+      case "busy":
+        // The user closed the dialog, or one is already open and this was a
+        // repeated activation; the open dialog is the one that counts.
+        return;
+
+      case "unsupported":
+      case "failed":
+        setState({
+          ...state,
+          errorMessage: outcome.message,
+          dialogMode: HomeDialogMode.errorMessage,
+        });
+        return;
+
+      case "picked":
+        break;
     }
 
     try {
-      const result = (await window.showDirectoryPicker({
-        mode: "readwrite",
-      })) as FileSystemDirectoryHandle | undefined;
-
-      if (result) {
-        await _handleDirectoryHandle(result as FileSystemDirectoryHandle, isDocumentationProject);
-      }
+      await _handleDirectoryHandle(outcome.handle, isDocumentationProject);
     } catch (e) {
-      // likely an AbortError, which is the user canceling the dialog.
+      const message = e instanceof Error ? e.message : String(e);
+
+      Log.error("Could not open folder '" + outcome.handle.name + "': " + message);
+
+      setState({
+        ...state,
+        errorMessage: "Could not open the folder '" + outcome.handle.name + "': " + message,
+        dialogMode: HomeDialogMode.errorMessage,
+      });
     }
   }
 

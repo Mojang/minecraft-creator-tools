@@ -28,6 +28,7 @@ import * as path from "path";
 import { spawn } from "child_process";
 import { chunksToLinesAsync } from "@rauschma/stringio";
 import { Readable } from "stream";
+import "../test/TestDataDir";
 import {
   testFolders,
   assertValidPng,
@@ -81,6 +82,7 @@ describe("renderModelCommandBiceson", async () => {
     const process = spawn("node", [
       "./toolbuild/jsn/cli/index.mjs",
       "rendermodel",
+      "--no-gpu",
       "biceson.geo.json",
       "./test/results/renderModelCommandBiceson/biceson.png",
       "-i",
@@ -157,6 +159,7 @@ describe("renderModelCommandSheepomelon", async () => {
     const process = spawn("node", [
       "./toolbuild/jsn/cli/index.mjs",
       "rendermodel",
+      "--no-gpu",
       "sheepomelon.geo.json",
       "./test/results/renderModelCommandSheepomelon/sheepomelon.png",
       "-i",

@@ -1,7 +1,7 @@
 ﻿import CreatorTools from "./../app/CreatorTools.js";
 import CreatorToolsHost, { HostType } from "../app/CreatorToolsHost.js";
 import Utilities from "./../core/Utilities.js";
-import ServerManager from "../local/ServerManager.js";
+import ServerManager, { CommandKind } from "../local/ServerManager.js";
 import ISslConfig from "../local/ISslConfig.js";
 import StorageUtilities from "../storage/StorageUtilities.js";
 import { constants } from "../core/Constants.js";
@@ -93,6 +93,8 @@ async function executeViaRegistry(options: any): Promise<void> {
     additionalFiles: options.additionalFiles,
     basePath: options.basePath,
     threads: options.threads,
+    single: options.single,
+    projectStartsWith: options.projectStartsWith,
     force: options.force,
     verbose: options.verbose,
     quiet: options.quiet,
@@ -406,6 +408,10 @@ if (!errorLevel) {
         return;
       }
 
+      // Before any ServerManager exists: each one's signal handler exits by this kind once it has shut down.
+      ServerManager.commandKind = ClUtils.getIsServerCommand(capturedTaskType)
+        ? CommandKind.server
+        : CommandKind.oneShot;
       sm = new ServerManager(localEnv, creatorTools);
       sm.runOnce = options.once;
 
@@ -467,6 +473,9 @@ if (!errorLevel) {
       }
     }
   })();
+} else {
+  // Rejected global options skip command startup, but must still flush diagnostics and exit non-zero.
+  void exitAfterFlush(errorLevel);
 }
 
 // ============================================================================
@@ -535,7 +544,8 @@ async function loadProjects() {
     capturedTaskType,
     options.inputFolder,
     options.outputFolder,
-    options.dryRun
+    // This legacy scan must not create a project before the factory checks an explicit selector.
+    options.dryRun || options.projectStartsWith !== undefined
   );
 
   const name = StorageUtilities.getLeafName(workFolder.fullPath);
@@ -645,9 +655,6 @@ async function loadProjects() {
       }
 
       if (projectStarts.length > 0 || psw) {
-        if (psw) {
-          Log.message("No projects matched project starts with of `" + psw + "`");
-        }
         return;
       }
     } else {
@@ -750,9 +757,6 @@ async function loadProjects() {
         }
 
         if (projectStarts.length > 0 || psw) {
-          if (psw) {
-            Log.message("No projects matched project starts with of `" + psw + "`");
-          }
           return;
         }
       }

@@ -1,0 +1,124 @@
+$ mct help render batch
+cwd: <work>
+exit code: 0
+
+stdout:
+Render model images from a JSON manifest in one process.
+
+USAGE
+  mct render batch <manifestPath> [flags]
+
+ARGUMENTS
+  <manifestPath>  Path to a JSON manifest describing the renders to perform.
+
+FLAGS
+  --gpu                            Prefer hardware GPU rendering instead of
+                                   SwiftShader software WebGL
+  --no-gpu                         Use software WebGL and skip hardware
+                                   detection, for repeatable images
+  --appearance <mode>              Choose how to show the model (choices:
+                                   textured, clay, wireframe, bones; default:
+                                   textured)
+  --view <view>                    Choose a camera view (default: three-quarter)
+                                   (choices: three-quarter, front, side, back)
+  --all-views                      Combine three-quarter, front, side, and back
+                                   in one labeled 2x2 image
+  --no-grid                        Hide the ground grid while keeping the ground
+                                   plane and shadows
+  --skeleton                       Overlay bone pivots and their parent
+                                   connections on named model geometry
+  --environment <preset>           Choose neutral or biome-inspired lighting,
+                                   sky, and ground (choices: neutral, plains,
+                                   desert, snowy; default: neutral)
+  --time-of-day <time>             Choose the time for a biome environment
+                                   (default: noon) (choices: noon, sunset,
+                                   night)
+  --width <pixels>                 Set each view's width in pixels; a four-view
+                                   sheet is twice as wide (default: 1024)
+  --height <pixels>                Set each view's height in pixels, including
+                                   sheet labels; scaled canvases are limited to
+                                   4096 pixels per side and 32 Mi pixels
+                                   combined (default: 1024)
+  --vanilla                        Default to loading vanilla Minecraft
+                                   resources from mctools.dev for fallback
+                                   textures
+  --no-vanilla                     Default to skipping the vanilla Minecraft
+                                   texture fallback. Per-entry `vanilla` in the
+                                   manifest overrides this.
+  --port <port>                    Use a specific localhost port for the
+                                   temporary render server
+  --port-start <port>              First port in the random temporary render
+                                   server range (default: 6200)
+  --port-end <port>                Last port in the random temporary render
+                                   server range (default: 6299)
+  --stdin                          Keep the process alive and read render
+                                   requests from stdin. Each line is
+                                   <manifestPath> or
+                                   <projectDir>|<manifestPath>.
+  --render-wait-ms <milliseconds>  Default milliseconds to wait after loading
+                                   each model before capture
+  --canvas-timeout-ms <milliseconds>
+                                   Milliseconds to wait for the viewer canvas to
+                                   become visible (default: 15000)
+
+INHERITED FLAGS
+  -i, --input-folder [path]  Path to the input folder. If not specified, the
+                             current working directory is used.
+  --if, --input-file <path>  Path to the input MCWorld, MCTemplate, MCPack,
+                             MCAddon or other zip file.
+  --single                   When pointed at a folder via -i, force that folder
+                             to be processed as a single project.
+  --psw, --project-starts-with <prefix>
+                             Only process a project if it starts with the
+                             starter term; this can be used to subdivide
+                             processing.
+  --afs, --additional-files [paths]
+                             Comma-separated list of additional files to add to
+                             projects.
+
+  --bp, --base-path <path>   Path, relative to the current working folder, where
+                             common data files and folders are found.
+  --isolated                 Do not load vanilla Minecraft resources (e.g.,
+                             textures, ground blocks) from the web
+  --offline                  Same as --isolated. Useful in CI where the network
+                             is unreliable; some checks (e.g. latest version)
+                             may still use the network.
+  -d, --debug                Add debug logging, options, and even more
+                             experimental commands.
+  --verbose                  Show verbose log messages.
+  -q, --quiet                Suppress non-essential output. Only show errors and
+                             final results.
+
+  -h, --help                 Show help for the command.
+
+EXAMPLES
+  $ mct render batch ./renders.json -i "./My Addon"
+
+  $ mct render batch ./renders.json -i "./My Addon" --stdin --no-vanilla --no-gpu
+
+  # Default each entry to a four-camera bone study
+  $ mct render batch ./renders.json -i "./My Addon" --appearance bones --all-views
+
+LEARN MORE
+  Each manifest entry supplies geometryPath and outputPath; rendering options
+  can be overridden per entry.
+  With --stdin, check each RENDER_DONE or RENDER_ERROR frame, not just the
+  process exit code.
+  Entries can override appearance, grid, skeleton, view, allViews, environment,
+  timeOfDay, width, and height.
+  An entry view, allViews, or complete cameraX/cameraY/cameraZ replaces the
+  inherited camera choice.
+  Choose only one of view, allViews: true, or camera coordinates within an
+  entry.
+  An empty initial --stdin manifest acknowledges browser readiness.
+  Use `mct help` to see all commands.
+  Read the documentation at
+  https://learn.microsoft.com/minecraft/creator/documents/mctoolsoverview
+
+stderr: (empty)
+
+files under <work>: (none)
+
+files under <data-dir>: (none)
+
+network requests: (none)

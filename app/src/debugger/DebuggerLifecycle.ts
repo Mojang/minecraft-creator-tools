@@ -26,6 +26,7 @@
  */
 
 import { EventDispatcher, IEvent } from "ste-events";
+import { redactAbsolutePaths } from "../core/PathRedaction";
 
 /**
  * Stages of the managed debugger lifecycle, in rough chronological order.
@@ -136,48 +137,10 @@ const MAX_STAGE_HISTORY = 40;
  * absolute filesystem paths, passcodes, tokens, and player xuids.
  */
 export function sanitizeDebuggerDiagnosticText(text: string): string {
-  let result = text;
-
-  // Quoted paths first: the closing quote is a reliable terminator, so
-  // spaces anywhere inside - including the final segment - are covered.
-  // Unix paths match on ANY absolute root with two or more segments.
-  result = result.replace(/"(?:[A-Za-z]:[\\/]|\\\\|\/[^/"\r\n]+\/)[^"\r\n]*"/g, '"<path>"');
-  result = result.replace(/'(?:[A-Za-z]:[\\/]|\\\\|\/[^/'\r\n]+\/)[^'\r\n]*'/g, "'<path>'");
-
-  // Unquoted paths. Segment text may contain spaces (user-chosen folders
-  // like "C:\Program Files\Minecraft Server"), and a support payload must
-  // never leak a partial segment, so after a path root EVERYTHING is
-  // consumed up to a hard terminator (quote, |, comma, semicolon, newline)
-  // or a sentence-ending period. Over-redacting trailing words is the
-  // accepted cost of guaranteeing that no path fragment survives. A period
-  // continues the path only when followed by more path text
-  // ("bedrock_server.exe"), not when it ends a sentence.
-
-  // file:// URIs carry a filesystem path by definition (file:///home/...,
-  // file://C:/...), and their third slash defeats the prefix-class anchoring
-  // below (it is preceded by another slash). Consume the whole URI here,
-  // before the drive-letter rule can leave a "file://" husk behind.
-  result = result.replace(/file:\/\/(?:[^"'|,;\r\n.]|\.(?![\s"'|,;\r\n]|$))*/gi, "<path>");
-
-  // Windows drive paths (the drive letter must stand alone so URL text like
-  // "https://..." is never treated as a drive)
-  result = result.replace(/(^|[^A-Za-z0-9])[A-Za-z]:[\\/](?:[^"'|,;\r\n.]|\.(?![\s"'|,;\r\n]|$))*/g, "$1<path>");
-
-  // UNC paths
-  result = result.replace(/\\\\(?=\S)(?:[^"'|,;\r\n.]|\.(?![\s"'|,;\r\n]|$))*/g, "<path>");
-
-  // Absolute Unix paths with ANY root (/home, /opt, /mnt, /var, /tmp, ...):
-  // two or more segments, anchored at start/whitespace/quote or a delimiter
-  // commonly adjacent to paths in diagnostic text - ( = , : [ { > - so forms
-  // like "serverPath:/opt/server", "[/home/a/world]", "{path:/opt/x}", and
-  // "x->/home/a/world" are covered. URL slashes stay safe because inside
-  // "https://host/seg/..." every slash is preceded by "/" or an
-  // alphanumeric, neither of which is in the prefix class; word pairs
-  // ("and/or") stay safe because their "/" follows a letter.
-  result = result.replace(
-    /(^|[\s"'(=,:[{>])\/[^\s/"'|,;\r\n]+\/(?:[^"'|,;\r\n.]|\.(?![\s"'|,;\r\n]|$))*/g,
-    "$1<path>"
-  );
+  // Quoted, file://, drive, UNC, and Unix paths with any root. A support
+  // payload must never leak a partial segment, so each complete path
+  // (including folder names with spaces) becomes "<path>".
+  let result = redactAbsolutePaths(text);
 
   // Passcodes and tokens ("Bearer xyz" first, so the credential after the
   // Bearer keyword is consumed before the key:value pass sees it)

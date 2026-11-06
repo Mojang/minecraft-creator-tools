@@ -1331,6 +1331,11 @@ export default class JsonSchemaGenerator {
 
     if (formDef.fields) {
       for (const field of formDef.fields) {
+        // Removed fields are build-time placeholders for upstream fields that no longer exist.
+        if (field.isRemoved) {
+          continue;
+        }
+
         schema.properties = schema.properties || {};
 
         // Clean field ID - remove embedded enum syntax like `render_distance_type"<"fixed", "render"`
@@ -1444,6 +1449,10 @@ export default class JsonSchemaGenerator {
 
       if (subFormDef.fields) {
         for (const field of subFormDef.fields) {
+          if (field.isRemoved) {
+            continue;
+          }
+
           // Clean field ID - remove embedded enum syntax
           const cleanId = JsonSchemaGenerator.cleanFieldId(field.id);
 

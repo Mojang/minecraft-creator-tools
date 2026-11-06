@@ -12,6 +12,7 @@ import Project from "../app/Project";
 import ProjectItem from "../app/ProjectItem";
 import { ProjectItemType } from "../app/IProjectItemData";
 import ItemTypeDefinition from "./ItemTypeDefinition";
+import BlockTypeDefinition from "./BlockTypeDefinition";
 import RelationsIndex from "../app/RelationsIndex";
 
 export default class RecipeBehaviorDefinition implements IDefinition {
@@ -120,42 +121,55 @@ export default class RecipeBehaviorDefinition implements IDefinition {
   async addChildItems(project: Project, recipeItem: ProjectItem, index?: RelationsIndex) {
     const dependentItemIds: string[] = [];
 
-    // Collect all item IDs that this recipe depends on
+    // Collect all item IDs that this recipe depends on. Ingredients can be a descriptor
+    // object ({ "item": "..." }) or, in newer formats, a plain identifier string.
     if (this._interior) {
+      const addIngredient = (ingredient: any) => {
+        if (typeof ingredient === "string") {
+          dependentItemIds.push(ingredient);
+        } else if (ingredient && typeof ingredient.item === "string") {
+          dependentItemIds.push(ingredient.item);
+        }
+      };
+
       const ingredientsArray = (this._interior as any).ingredients;
 
       // For shapeless recipes, collect ingredients
       if (ingredientsArray && Array.isArray(ingredientsArray)) {
         for (const ingredient of ingredientsArray) {
-          if (ingredient && ingredient.item) {
-            dependentItemIds.push(ingredient.item);
-          }
+          addIngredient(ingredient);
         }
       }
 
       // For shaped recipes, collect key items
       if ("key" in this._interior && this._interior.key) {
         for (const keyItem of Object.values(this._interior.key)) {
-          if (keyItem && keyItem.item) {
-            dependentItemIds.push(keyItem.item);
-          }
+          addIngredient(keyItem);
         }
       }
     }
 
-    // Check each dependent item ID against project items
-    for (const dependentItemId of dependentItemIds) {
-      let foundMatch = false;
+    let blockTypeItems: ProjectItem[] | undefined;
 
-      // Use index for O(1) lookup when available
+    // Check each dependent item ID against project items
+    for (const dependentItemId of new Set(dependentItemIds)) {
+      let foundMatch = false;
+      let isVanilla: boolean | undefined;
+
+      // Use index for O(1) lookup when available. A block is also an item, so a custom block
+      // can be a recipe ingredient.
       if (index) {
-        const matchingItems = index.getItemsById(index.itemTypesById, dependentItemId);
-        if (matchingItems.length > 0) {
-          for (const matchItem of matchingItems) {
-            recipeItem.addChildItem(matchItem);
-          }
-          foundMatch = true;
+        let matchingItems = index.getItemsById(index.itemTypesById, dependentItemId);
+
+        if (matchingItems.length === 0) {
+          matchingItems = index.getItemsById(index.blockTypesById, dependentItemId);
         }
+
+        for (const matchItem of matchingItems) {
+          recipeItem.addChildItem(matchItem);
+        }
+
+        foundMatch = matchingItems.length > 0;
       } else {
         const itemTypeItems = project.getItemsByType(ProjectItemType.itemTypeBehavior);
         for (const candItem of itemTypeItems) {
@@ -173,10 +187,37 @@ export default class RecipeBehaviorDefinition implements IDefinition {
             }
           }
         }
+
+        if (!foundMatch) {
+          isVanilla = await Database.isVanillaItemOrBlock(dependentItemId);
+        }
+
+        // A block is also an item, so scan custom blocks for unresolved, non-vanilla ingredients.
+        if (!foundMatch && !isVanilla) {
+          if (!blockTypeItems) {
+            blockTypeItems = project.getItemsByType(ProjectItemType.blockTypeBehavior);
+          }
+
+          for (const candItem of blockTypeItems) {
+            if (!candItem.isContentLoaded) {
+              await candItem.loadContent();
+            }
+
+            if (candItem.primaryFile) {
+              const btd = await BlockTypeDefinition.ensureOnFile(candItem.primaryFile);
+
+              if (btd && btd.id === dependentItemId) {
+                recipeItem.addChildItem(candItem);
+                foundMatch = true;
+                break;
+              }
+            }
+          }
+        }
       }
 
-      // If no matching item type was found, add as unfulfilled relationship
-      if (!foundMatch) {
+      // Vanilla items and blocks are expected in recipes, so only unknown IDs are reported.
+      if (!foundMatch && !(isVanilla ?? (await Database.isVanillaItemOrBlock(dependentItemId)))) {
         recipeItem.addUnfulfilledRelationship(dependentItemId, ProjectItemType.itemTypeBehavior, false);
       }
     }

@@ -4,7 +4,7 @@ Work through the section that matches the symptom. Paths are relative to the pac
 
 ## The pack doesn't show up in Minecraft
 
-- `manifest.json` must sit directly in the pack folder, not one level deeper. This is the most common mistake when zipping packs by hand; `exportaddon` gets it right.
+- `manifest.json` must sit directly in the pack folder, not one level deeper. This is the most common mistake when zipping packs by hand; `export addon` gets it right (`exportaddon` on older pinned CLIs).
 - Two packs with the same `header.uuid`: Minecraft shows only one. Give each pack its own UUID.
 - `min_engine_version` newer than the player's game version hides the pack. Lower it or update the game.
 - During development, packs must be in the game's `development_behavior_packs` / `development_resource_packs` folders. On Windows, `npx -y @minecraft/creator-tools@latest deploy mcuwp -i <folder>` copies them there.

@@ -28,6 +28,7 @@ import "../app/Project";
 import { ErrorCodes } from "../cli/core/ICommandContext";
 import TestPaths from "./TestPaths";
 import { applyTestDataDir, cliEnv, createTestDataDir, DATA_DIR_ENV } from "./TestDataDir";
+import { workerTaskFailures } from "./CliWorkerTestCases";
 
 // The spawned CLI keeps its saved state in a temporary folder, not the real profile.
 applyTestDataDir();
@@ -35,10 +36,19 @@ applyTestDataDir();
 const cliPath = path.resolve(TestPaths.appRoot, "toolbuild/jsn/cli/index.mjs");
 const resultsRoot = path.resolve(TestPaths.testRoot, "results", "cliJsonContract");
 const simpleProject = path.resolve(TestPaths.sampleContentPath("simple"));
+const selectionProjects = path.join(resultsRoot, "selection");
 const launchProject = path.join(resultsRoot, "simple");
 const launchRecorder = path.resolve(TestPaths.testRoot, "scenarios", "cliJsonContract", "recordLaunch.cjs");
 const worldName = "simple Test World";
 const launchNotice = "Running minecraft://mode/?load=" + worldName;
+const workerInjector = path.resolve(TestPaths.testRoot, "scenarios", "workerPool", "injectTaskWorker.cjs");
+const taskFaultInjector = path.resolve(TestPaths.testRoot, "scenarios", "workerPool", "injectTaskFault.cjs");
+const workerFailures = [
+  { mode: "exit-zero", error: "Worker exited with code 0 without returning a result" },
+  { mode: "exit-nonzero", error: "Worker exited with code 7" },
+  { mode: "throw", error: "Worker fixture threw" },
+  { mode: "error-result", error: "Error: Worker fixture task failed" },
+];
 
 /**
  * A copy of samplecontent/addon, whose altdiffs/ folder holds partial packs that fail validation.
@@ -145,8 +155,7 @@ function profileRun(name: string, ...flags: string[]): { args: string[]; cwd: st
 
 /**
  * Asserts that `output` holds the profiler status line that starts with `prefix`, and that the file
- * it names exists. Each check uses the first line the profiler writes. Later lines, like the memory
- * summary, reach the main process in a separate batch, which can be lost when the worker stops.
+ * it names exists.
  */
 function assertProfilerStatus(output: string, prefix: string) {
   const line = output.split("\n").find((outputLine) => outputLine.startsWith(prefix));
@@ -154,6 +163,28 @@ function assertProfilerStatus(output: string, prefix: string) {
 
   const file = line!.slice(prefix.length).trim();
   assert(fs.existsSync(file), `The profile named in "${line}" should exist`);
+}
+
+function assertMemoryProfileStatus(output: string) {
+  assertProfilerStatus(output, "Heap sampling profile saved to ");
+  assertProfilerStatus(output, "  Mem stats  : ");
+  let previous = -1;
+  for (const label of [
+    "===== Memory profile summary =====",
+    "  Trace name : ",
+    "  Duration   : ",
+    "  Peak RSS   : ",
+    "  Final RSS  : ",
+    "  Final heap : ",
+    "  External   : ",
+    "  Heap prof  : ",
+    "  Mem stats  : ",
+    "===================================",
+  ]) {
+    const position = output.indexOf(label, previous + 1);
+    assert.isAbove(position, previous, `Expected complete, ordered profiler output through "${label}"`);
+    previous = position;
+  }
 }
 
 function checkVersion(doc: any) {
@@ -301,6 +332,107 @@ function deployJsonCase(name: string, ...flags: string[]): IJsonCase {
  */
 const pipeBufferBytes = 64 * 1024;
 
+function workerFailureCase(threads: number, failure: (typeof workerFailures)[number]): IJsonCase {
+  return {
+    name: `validate --json --threads ${threads} when its worker reports ${failure.mode}`,
+    args: validateArgs(
+      simpleProject,
+      `worker-${threads}-${failure.mode}`,
+      "--threads",
+      String(threads),
+      "--warn-only"
+    ),
+    env: () => ({ ...cliEnv(), MCT_TEST_WORKER_MODE: failure.mode }),
+    nodeArgs: ["--require", workerInjector],
+    exitCode: ErrorCodes.VALIDATION_INTERNALPROCESSINGERROR,
+    check: (doc) => {
+      assert.equal(doc.command, "validate");
+      assert.deepEqual(doc.projects, []);
+      // Terminal failures use the existing stderr/exit contract, not a new JSON envelope.
+      assert.deepEqual(Object.keys(doc).sort(), [
+        "command",
+        "errors",
+        "projects",
+        "recommendations",
+        "schemaVersion",
+        "warnings",
+      ]);
+    },
+    checkStderr: (stderr) => {
+      assert.include(stderr, failure.error);
+      assert.include(stderr, threads === 1 ? "Validation failed for " : "Worker process error for ");
+      assert.notMatch(stderr, /\n\s+at /, "Default diagnostics must not include a stack trace");
+    },
+  };
+}
+
+function caughtTaskFailureCase(
+  command: "validate" | "profileValidation",
+  threads: number,
+  failure: (typeof workerTaskFailures)[number]
+): IJsonCase {
+  const name = `caught-task-${command}-${threads}-${failure.mode}`;
+  const cwd = path.join(resultsRoot, name);
+  return {
+    name: `${command} --json --threads ${threads} caught task outcome (${failure.mode})`,
+    cwd,
+    args: [
+      command,
+      "--json",
+      "--isolated",
+      "--threads",
+      String(threads),
+      "-i",
+      simpleProject,
+      "-o",
+      path.join(cwd, "out"),
+      ...(command === "profileValidation" ? ["--profile-mode", "cpu"] : ["--warn-only"]),
+    ],
+    env: () => ({
+      ...cliEnv(),
+      MCT_TEST_WORKER_MODE: failure.mode,
+      MCT_TEST_WORKER_FAULT: failure.mode,
+    }),
+    nodeArgs: ["--require", failure.producer ? taskFaultInjector : workerInjector],
+    exitCode: ErrorCodes.VALIDATION_INTERNALPROCESSINGERROR,
+    check: (doc) => {
+      if (command === "profileValidation") {
+        assert.deepEqual(doc, {
+          schemaVersion: "1.0.0",
+          command: "profilevalidation",
+          mode: "cpu",
+          success: false,
+          message: "Profiling failed. See stderr for details.",
+        });
+      } else {
+        assert.deepEqual(doc, {
+          schemaVersion: "1.0.0",
+          command: "validate",
+          projects: [],
+          errors: 0,
+          warnings: 0,
+          recommendations: 0,
+        });
+      }
+    },
+    checkStderr: (stderr) => {
+      assert.include(stderr, failure.error);
+      const prefix =
+        command === "profileValidation"
+          ? "Validation failed during profiling: "
+          : threads === 1
+          ? "Validation failed for "
+          : "Worker process error for ";
+      assert.include(stderr, "Error: " + prefix);
+      assert.notMatch(stderr, /\n\s+at /);
+      assert.notMatch(stderr, /Profiling (?:complete|\(cpu\) complete)/);
+      if (failure.mode.includes("-inner-") || failure.mode.includes("-outer-")) {
+        assert.include(stderr, `Injected read reached: ${failure.mode}`);
+      }
+    },
+  };
+}
+
 const cases: IJsonCase[] = [
   { name: "version --json", args: ["version", "--json"], exitCode: ErrorCodes.SUCCESS, check: checkVersion },
   // --debug is read before logging is set up, so this checks that its notice stays off stdout.
@@ -355,6 +487,24 @@ const cases: IJsonCase[] = [
     check: checkInfo,
   },
   {
+    name: "info --json --psw alpha",
+    args: ["info", "--json", "--isolated", "--quiet", "-i", selectionProjects, "--psw", "alpha"],
+    exitCode: ErrorCodes.SUCCESS,
+    check: (doc) => {
+      checkInfo(doc);
+      assert.equal(doc.name, "alpha");
+    },
+  },
+  {
+    name: "info --json --single",
+    args: ["info", "--json", "--isolated", "--quiet", "-i", selectionProjects, "--single"],
+    exitCode: ErrorCodes.SUCCESS,
+    check: (doc) => {
+      checkInfo(doc);
+      assert.equal(doc.name, "selection");
+    },
+  },
+  {
     name: "validate --json",
     args: validateArgs(simpleProject, "simple"),
     exitCode: ErrorCodes.SUCCESS,
@@ -388,6 +538,10 @@ const cases: IJsonCase[] = [
     check: checkValidate(true),
     exceedsPipeBuffer: true,
   },
+  ...[1, 3].flatMap((threads) => workerFailures.map((failure) => workerFailureCase(threads, failure))),
+  ...(["validate", "profileValidation"] as const).flatMap((command) =>
+    [1, 3].flatMap((threads) => workerTaskFailures.map((failure) => caughtTaskFailureCase(command, threads, failure)))
+  ),
   // The profiler runs in the validation worker and prints where it saved each profile.
   {
     name: "profileValidation --json --profile-mode cpu",
@@ -402,7 +556,7 @@ const cases: IJsonCase[] = [
     ...profileRun("profileMemory", "--json"),
     exitCode: ErrorCodes.SUCCESS,
     check: checkProfileValidation("memory"),
-    checkStderr: (stderr) => assertProfilerStatus(stderr, "Heap sampling profile saved to "),
+    checkStderr: assertMemoryProfileStatus,
   },
 ];
 
@@ -419,6 +573,9 @@ describe("cliJsonContract", () => {
       },
     });
     fs.cpSync(simpleProject, launchProject, { recursive: true });
+    for (const name of ["alpha", "beta"]) {
+      fs.cpSync(simpleProject, path.join(selectionProjects, name), { recursive: true });
+    }
   });
 
   for (const c of cases) {
@@ -457,6 +614,78 @@ describe("cliJsonContract", () => {
         it("should write more to stdout than a pipe buffer holds", () => {
           assert.isAbove(Buffer.byteLength(run.stdout), pipeBufferBytes);
         });
+      }
+    });
+  }
+
+  for (const threads of [1, 3]) {
+    for (const failure of workerFailures) {
+      it(`validate human output reports ${failure.mode} with threads=${threads}`, async function () {
+        this.timeout(60000);
+        const c = workerFailureCase(threads, failure);
+        const run = await runCli(c.args.filter((arg) => arg !== "--json"), undefined, c.env?.(), c.nodeArgs);
+        assert.equal(run.exitCode, ErrorCodes.VALIDATION_INTERNALPROCESSINGERROR, run.stderr);
+        c.checkStderr!(run.stderr);
+      });
+    }
+  }
+
+  it("profileValidation reports a terminal worker failure through stderr and its exit code", async function () {
+    this.timeout(60000);
+    const { args, cwd } = profileRun("profileWorkerFailure", "--profile-mode", "cpu");
+    const run = await runCli(
+      args,
+      cwd,
+      { ...cliEnv(), MCT_TEST_WORKER_MODE: "exit-zero" },
+      ["--require", workerInjector]
+    );
+    assert.equal(run.exitCode, ErrorCodes.VALIDATION_INTERNALPROCESSINGERROR, run.stderr);
+    assert.include(
+      run.stderr,
+      "Validation failed during profiling: Worker exited with code 0 without returning a result"
+    );
+  });
+
+  for (const command of ["validate", "profileValidation"] as const) {
+    for (const threads of [1, 3]) {
+      for (const failure of workerTaskFailures) {
+        it(`${command} human caught task outcome (${failure.mode}, threads=${threads})`, async function () {
+          this.timeout(60000);
+          const c = caughtTaskFailureCase(command, threads, failure);
+          const run = await runCli(c.args.filter((arg) => arg !== "--json"), c.cwd, c.env?.(), c.nodeArgs);
+          assert.equal(run.exitCode, ErrorCodes.VALIDATION_INTERNALPROCESSINGERROR, run.stderr + run.stdout);
+          c.checkStderr!(run.stderr);
+          assert.notMatch(run.stdout, /Profiling (?:complete|\(cpu\) complete)/);
+        });
+      }
+    }
+  }
+
+  for (const threads of [1, 3]) {
+    it(`validate --json preserves a cached worker result with threads=${threads}`, async function () {
+      this.timeout(60000);
+      const args = validateArgs(simpleProject, `cached-${threads}`, "--threads", String(threads), "--quiet");
+      const first = await runCli(args);
+      const cached = await runCli(
+        args,
+        undefined,
+        { ...cliEnv(), MCT_TEST_WORKER_FAULT: "producer-report-failure" },
+        ["--require", taskFaultInjector]
+      );
+      assert.equal(first.exitCode, ErrorCodes.SUCCESS, first.stderr);
+      assert.equal(cached.exitCode, ErrorCodes.SUCCESS, cached.stderr);
+      const firstDocument = JSON.parse(first.stdout);
+      const cachedDocument = JSON.parse(cached.stdout);
+      checkValidate(false)(firstDocument);
+      checkValidate(false)(cachedDocument);
+      assert.lengthOf(cachedDocument.projects, 1);
+      assert.equal(firstDocument.projects[0].path, "/");
+      // Cache hits return before project-folder hydration, so their existing JSON omits this path.
+      assert.notProperty(cachedDocument.projects[0], "path");
+      assert.equal(cachedDocument.projects[0].name, firstDocument.projects[0].name);
+      assert.deepEqual(cachedDocument.projects[0].items, firstDocument.projects[0].items);
+      for (const field of ["errors", "warnings", "recommendations"]) {
+        assert.equal(cachedDocument[field], firstDocument[field]);
       }
     });
   }
@@ -585,6 +814,9 @@ describe("cliJsonContract", () => {
 
         it("should write profiler status to stdout, not stderr", () => {
           assertProfilerStatus(run.stdout, h.status);
+          if (h.flags.length === 0) {
+            assertMemoryProfileStatus(run.stdout);
+          }
           assert.notInclude(run.stderr, h.status);
           assert.notInclude(run.stderr, "Memory profile summary");
         });

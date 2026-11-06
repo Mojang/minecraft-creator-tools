@@ -3,6 +3,7 @@ import { ICommand, ICommandMetadata, CommandBase } from "../../core/ICommand";
 import { ICommandContext, ErrorCodes } from "../../core/ICommandContext";
 import { TaskType } from "../../ClUtils";
 import ServerManager, { ServerManagerFeatures } from "../../../local/ServerManager";
+import { HttpServerListenError } from "../../../local/HttpServer";
 import { getMessageCategoryPrefix } from "../../../local/ServerMessage";
 
 // Dynamic import of Ink UI to avoid loading TSX files at module load time
@@ -238,22 +239,20 @@ export class ServeCommand extends CommandBase implements ICommand {
     // Start the HTTP server first (doesn't require EULA) - unless dedicatedServerOnly
     if (sm.features !== ServerManagerFeatures.dedicatedServerOnly) {
       await this.applyServerProps(localEnv);
-      // serve is the only command that offers MCP over HTTP at /mcp (see HttpServer).
-      const httpServer = sm.ensureHttpServer();
-      httpServer.setMcpEnabled(true);
-      if (context.server.mcpRequireAuth) {
-        httpServer.setMcpRequireAuth(true);
-      }
-
-      // Wait for the underlying socket to actually be in listening state before
-      // announcing the URL. The "Web UI available at:" line is treated as the
-      // readiness signal by ServerCommandLineTest; if we log it before listen()
-      // has bound the port, the test may send a POST that hits ECONNREFUSED
-      // (surfaced as AggregateError when DNS returns both ::1 and 127.0.0.1).
       try {
-        await httpServer.waitForReady(30000);
+        // Announce readiness only after every configured HTTP/HTTPS listener has bound.
+        const httpServer = await sm.ensureHttpServer();
+        // serve is the only command that offers MCP over HTTP at /mcp (see HttpServer).
+        httpServer.setMcpEnabled(true);
+        if (context.server.mcpRequireAuth) {
+          httpServer.setMcpRequireAuth(true);
+        }
       } catch (err) {
-        log.error("HTTP server failed to start listening: " + (err instanceof Error ? err.message : String(err)));
+        if (!(err instanceof HttpServerListenError)) {
+          throw err;
+        }
+        const portOption = err.protocol === "HTTPS" ? "--experimental-ssl-port" : "--port";
+        log.error(`${err.message} Use ${portOption} <number> to choose another port.`);
         context.setExitCode(ErrorCodes.INIT_ERROR);
         return;
       }

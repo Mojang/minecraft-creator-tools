@@ -41,6 +41,25 @@ export default interface IProjectInfo {
   customDimensionCount?: number;
   customDimensionChunkCount?: number;
   capabilities?: string[];
+  /**
+   * Component ids used anywhere in the project, per definition type, as
+   * JSON keys (`minecraft:replace_biomes` -> `minecraftReplaceBiomes`),
+   * sorted and de-duplicated. Built by the JSONTAGS generator; downstream
+   * consumers (Auger) index these as search facets, so the tokens are a
+   * contract: never rename them.
+   */
+  entityTypeComponents?: string[];
+  blockTypeComponents?: string[];
+  itemTypeComponents?: string[];
+  /**
+   * Components used by behavior-pack biome definitions. Contains
+   * `minecraftReplaceBiomes` exactly when some biome in the project
+   * actually replaces a target biome through `minecraft:replace_biomes`.
+   */
+  biomeBehaviorTypeComponents?: string[];
+  biomeClientTypeComponents?: string[];
+  particleEmitterTypeComponents?: string[];
+  particleTypeComponents?: string[];
   summary?: { [name: string]: { [index: number]: IGeneratorSummary | undefined } | undefined };
   featureSets?: { [setName: string]: { [measureName: string]: number | undefined } | undefined } | undefined;
 }

@@ -15,6 +15,8 @@ If the user has it installed globally, `mct <command>` works too. Most commands 
 
 `references/commands.md` lists every command with its arguments and options. It's generated from the CLI itself, so trust it over memory or older docs. `<command> --help` prints the same details.
 
+Discover rendering with `mct help render`, then `mct help render model` (or `structure`, `vanilla`, `batch`). Discover packaging with `mct help export`, then `mct help export addon` or `mct help export world`. Bare groups show help and exit 1; explicit help exits 0 without running a task.
+
 ## CLI or MCP tools?
 
 When the Minecraft Creator Tools MCP server is connected, prefer its tools for what they cover: `createMinecraftContent` (new mobs, items, and blocks), `designModel`, `designStructure`, the `writeImageFile*` tools, and `validateFile`. Use the CLI for everything else: whole-project validation, fixes, packaging, deploying, rendering, and the browser viewer.
@@ -25,15 +27,29 @@ When the Minecraft Creator Tools MCP server is connected, prefer its tools for w
 | ------------------------------------ | ------------------------------------------------------------------------------- |
 | Check a project for problems         | `validate -i <folder>` (use the debug-addon skill, which wraps this)            |
 | Apply an automatic fix or upgrade    | `fix --list`, then `fix <fix-name> -i <folder>`                                 |
-| Package for sharing                  | Validate first (debug-addon), then `exportaddon -i <folder> -o <output-folder>` |
+| Package for sharing                  | Validate first (debug-addon), then `export addon -i <folder> -o <output-folder>` |
+| Package a flat GameTest world        | `export world -i <folder> -o <output-folder>` |
 | Copy packs into Minecraft (Windows)  | `deploy retail -i <folder>` (or `preview` for Minecraft Preview)                |
-| Render a model to a PNG              | `rendermodel <file>.geo.json <output>.png -i <folder>`                          |
-| Render a vanilla block, mob, or item | `rendervanilla <block\|mob\|item> minecraft:<id> <output>.png`                  |
+| Render a model to a PNG              | `render model <file>.geo.json <output>.png -i <folder>`                          |
+| Render a structure to a PNG          | `render structure <file>.mcstructure <output>.png -i <folder>` |
+| Render models from a manifest        | `render batch <manifest>.json -i <folder>` |
+| Render a vanilla block, mob, or item | `render vanilla <block\|mob\|item> minecraft:<id> <output>.png`                  |
 | Let the user browse or edit content  | `view -i <folder>` or `edit -i <folder>`                                        |
 | Create a project from a template     | `create <name> <template> <creator> <description> -y` (creates `./<name>`)      |
 | Add template content to a project    | `add --list-types`, then `add <type> <namespace:name> -i <folder> -y`           |
 | Show project details                 | `info -i <folder>`                                                              |
 | Show the installed version           | `version`                                                                       |
+
+## Non-interactive execution and results
+
+- Pass explicit input and output paths, quoting paths with spaces. Global options work before or after a command, including between a group and its leaf. Put command-specific flags after the leaf: `mct --offline -i "./My Addon" render model mob.geo.json preview.png --no-vanilla --no-gpu`.
+- Rendering writes to its positional PNG path (or each manifest entry's `outputPath`), not `-o`. Preserve manifest fields such as `geometryPath`, `vanilla`, and `cameraX`/`cameraY`/`cameraZ`. `--no-gpu` explicitly selects software; omitting it keeps automatic GPU selection.
+- For exports, use `--json` and check the existing per-project records plus the exit code and the files at `outputPath`. Their `command` fields remain `exportaddon` and `exportworld`. For one precise destination use, for example, `mct --json -i "./My Addon" -o ./packages --of ./packages/demo.mcpack export addon`. Multiple projects produce multiple JSON records, not one enclosing document.
+- Rendering does not supply an export-style JSON result. Check the exit code and that each PNG exists and decodes. For `render batch --stdin`, check each `RENDER_DONE` or `RENDER_ERROR` frame and its output files; exit 0 alone does not mean every request succeeded. Request lines remain `<manifestPath>` or `<projectDir>|<manifestPath>`. An empty initial manifest is the browser-ready handshake.
+
+## Compatibility
+
+Existing invocations still work with the same arguments, options, results and exits: `rendermodel` / `rm`, `renderstructure` / `renstruct` / `renderst`, `rendervanilla` / `rv`, `renderbatch` / `rb`, `exportaddon`, and `exportworld`. They are listed by `mct --all-commands` and still have direct help, such as `mct help rb`. No migration is required for older scripts or skills. When using a pinned older CLI that lacks groups, use those flat commands.
 
 ## Rules
 

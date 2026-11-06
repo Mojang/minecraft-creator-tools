@@ -13,6 +13,7 @@ const textReplace = require("./tools/gulp-textReplace");
 const stampSiteBootstrapUrl = require("./tools/stampSiteBootstrapUrl");
 const through2 = require("through2");
 const tgaToPng = require("./tools/gulp-tgaToPng");
+const { mergeServeTextureMaps } = require("./tools/mergeTextureMaps");
 const webpack = require("webpack");
 
 const jsncorebuildfilesigs = [
@@ -525,11 +526,21 @@ function copyJsNodeResPreviewMetadataIndex() {
     .pipe(gulp.dest("toolbuild/jsn/res/latest/van/preview/metadata/"));
 }
 
-function copyResLatestPreviewToServe() {
+function copyResLatestPreviewOnlyToServe() {
   return gulp
     .src(["public/res/latest/van/preview/**/*"], { encoding: false })
     .pipe(gulp.dest("public/res/latest/van/serve/"));
 }
+
+function mergeReleaseTextureMapsIntoServe(done) {
+  mergeServeTextureMaps(
+    "public/res/latest/van/release/resource_pack/textures",
+    "public/res/latest/van/serve/resource_pack/textures"
+  );
+  done();
+}
+
+const copyResLatestPreviewToServe = gulp.series(copyResLatestPreviewOnlyToServe, mergeReleaseTextureMapsIntoServe);
 
 function copyJsNodeResSchemas() {
   const srcDir = "public/res/latest/schemas";
@@ -777,15 +788,18 @@ function packageVsix(done) {
   }
 }
 
+// The three VS Code webpack builds run one after another: they share one Node heap, and running them
+// in parallel needs about the sum of their peaks, which is close to the 4 GB limit the build uses.
+// Webpack work is single-threaded, so building them in sequence costs little time.
+const vscWebpackBuilds = gulp.series("vsccoreexebuild", "vsccorewebbuild", compileVscWebBuild, "postclean-vscwebbuild");
+
 gulp.task(
   "vscbuild",
   gulp.series(
     "clean-vscbuild",
     copyCheckedInRes,
     gulp.parallel(
-      "vsccoreexebuild",
-      "vsccorewebbuild",
-      gulp.series(compileVscWebBuild, "postclean-vscwebbuild"),
+      vscWebpackBuilds,
       copyVscAssets,
       copyVscDocs,
       copyVscData,
@@ -819,9 +833,7 @@ gulp.task(
   gulp.series(
     copyCheckedInRes,
     gulp.parallel(
-      "vsccoreexebuild",
-      "vsccorewebbuild",
-      gulp.series(compileVscWebBuild, "postclean-vscwebbuild"),
+      vscWebpackBuilds,
       copyVscAssets,
       copyVscDocs,
       copyVscData,

@@ -5,6 +5,7 @@ import IFile from "../storage/IFile";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import { IAddonManifestHeader, IAddonMetadata, IResourcePackManifest } from "./IAddonManifest";
 import Utilities from "../core/Utilities";
+import { getDefaultMinEngineVersion } from "./MinecraftVersionDefaults";
 import Project from "../app/Project";
 import StorageUtilities from "../storage/StorageUtilities";
 import { ProjectItemType } from "../app/IProjectItemData";
@@ -12,6 +13,7 @@ import BehaviorManifestDefinition from "./BehaviorManifestDefinition";
 import MinecraftUtilities from "./MinecraftUtilities";
 import Log from "../core/Log";
 import { getManifestVersionValue } from "../core/versioning/MinecraftVersionRules";
+import { addGeneratedWith } from "./ManifestGeneratedWith";
 
 export default class ResourceManifestDefinition {
   private _file?: IFile;
@@ -309,7 +311,7 @@ export default class ResourceManifestDefinition {
           name: name,
           description: description,
           version: [0, 0, 1],
-          min_engine_version: [1, 20, 10],
+          min_engine_version: getDefaultMinEngineVersion(),
           uuid: Utilities.createUuid(),
         },
         modules: [],
@@ -355,31 +357,27 @@ export default class ResourceManifestDefinition {
       return undefined;
     }
 
-    if (!this.definition.metadata) {
+    // creator-authored JSON may hold a string or array here; replace anything that isn't a plain object
+    if (
+      !this.definition.metadata ||
+      typeof this.definition.metadata !== "object" ||
+      Array.isArray(this.definition.metadata)
+    ) {
       this.definition.metadata = {};
     }
 
     return this.definition.metadata;
   }
 
-  public ensureGeneratedWith(toolName: string, versionString: string): void {
+  /** Records `toolName`/`versionString` in `metadata.generated_with`. Returns true if the manifest changed. */
+  public ensureGeneratedWith(toolName: string, versionString: string): boolean {
     const metadata = this.ensureMetadata();
 
     if (!metadata) {
-      return undefined;
+      return false;
     }
 
-    if (!metadata.generated_with) {
-      metadata.generated_with = {};
-    }
-
-    if (!metadata.generated_with[toolName]) {
-      metadata.generated_with[toolName] = [];
-    }
-
-    if (!metadata.generated_with[toolName].includes(versionString)) {
-      metadata.generated_with[toolName].push(versionString);
-    }
+    return addGeneratedWith(metadata, toolName, versionString);
   }
 
   public getDefaultHeader(name: string, description: string) {
@@ -387,7 +385,7 @@ export default class ResourceManifestDefinition {
       name: name,
       description: description,
       version: [0, 0, 1],
-      min_engine_version: [1, 20, 10],
+      min_engine_version: getDefaultMinEngineVersion(),
       uuid: Utilities.createUuid(),
     };
   }

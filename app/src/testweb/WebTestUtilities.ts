@@ -636,12 +636,29 @@ export async function selectEditMode(page: Page, mode: EditModePreference = "foc
     await page.keyboard.press("Escape");
 
     // The mode label is nested inside the View toolbar button, whose accessible
-    // name remains "View". Treat the requested mode as already selected when
-    // that nested label is present.
-    if (
-      (await viewButton.isVisible({ timeout: 2000 }).catch(() => false)) &&
-      (await viewButton.textContent())?.match(modeText)
-    ) {
+    // name remains "View". At narrow (mobile) widths the toolbar is compact and
+    // the label text is not rendered, but the label span still carries
+    // "View: <Mode> Mode" as its aria-label, so check both.
+    const viewButtonShowsMode = async (): Promise<boolean> => {
+      if (!(await viewButton.isVisible({ timeout: 2000 }).catch(() => false))) {
+        return false;
+      }
+
+      if ((await viewButton.textContent())?.match(modeText)) {
+        return true;
+      }
+
+      const label = await viewButton
+        .locator("[aria-label]")
+        .first()
+        .getAttribute("aria-label")
+        .catch(() => null);
+
+      return !!label?.match(modeText);
+    };
+
+    // Treat the requested mode as already selected when the View button shows it.
+    if (await viewButtonShowsMode()) {
       return true;
     }
 
@@ -674,7 +691,7 @@ export async function selectEditMode(page: Page, mode: EditModePreference = "foc
       if (await modeMenuItem.isVisible({ timeout: 2000 }).catch(() => false)) {
         await modeMenuItem.click();
         console.log(`selectEditMode: Selected ${modeLabel} mode via View menu`);
-        await expect(viewButton).toContainText(modeText, { timeout: 5000 });
+        await expect.poll(viewButtonShowsMode, { timeout: 5000 }).toBe(true);
         await page.keyboard.press("Escape");
         return true;
       }

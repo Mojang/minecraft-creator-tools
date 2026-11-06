@@ -1,13 +1,80 @@
 $ mct validate -i platform_version_errors
 cwd: <work>
 exit code: 4
-note: The per-check lines that validate prints from its worker thread are left out. The CLI stops the worker as soon as it returns its results, so how many of those lines get through varies from run to run.
 
 stdout:
 [<timestamp>] [MESSAGE ] [##] mct v<version>  in (-i): <work>/platform_version_errors  out (-o): <work>/out
 Processing project 1/1: platform_version_errors
+[<timestamp>] [MESSAGE ] UNKNOWN: [BASEGAMEVER002] No applicable items found for test Base Game Version (BASEGAMEVER)
+[<timestamp>] [MESSAGE ] UNKNOWN: [BLOCKSCAT002] No applicable items found for test Blocks Catalog (BLOCKSCAT)
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [CBFG001] Beta Features completed successfully
+[<timestamp>] [MESSAGE ] UNKNOWN: [CDWORLDDATA002] No applicable items found for test Custom Dimension World Data Validation (CDWORLDDATA)
+[<timestamp>] [MESSAGE ] UNKNOWN: [CHECKFEATUREDEPRECATION002] No applicable items found for test Feature Deprecation (CHECKFEATUREDEPRECATION)
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [COMJSON001] Community JSON Schema Validation completed successfully
+[<timestamp>] [MESSAGE ] WARNING: [COMJSON144] (/behavior_packs/test_bp/spawn_rules/old_entity.json) JSON structure error: (format_version) does not have a value in the enumeration 1.8.0, 1.10.0, 1.12.0
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [CPARTI001] Particle Identifiers completed successfully
+[<timestamp>] [MESSAGE ] UNKNOWN: [CROSSREFINDEX002] No applicable items found for test Cross-Reference Index (CROSSREFINDEX)
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [CSPJ001] Skin Pack Validation completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [CWI001] World Icons completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [ENTITYTYPE001] Entity Type completed successfully
+[<timestamp>] [MESSAGE ] RECOMMENDATION: [ENTITYTYPE120] (/behavior_packs/test_bp/entities/old_entity.json) Behavior pack entity type format version (1.16.0) has a lower minor version number compared to the current version or the previous current minor version
+[<timestamp>] [MESSAGE ] UNKNOWN: [EXPFLAG002] No applicable items found for test Experimental Flags (EXPFLAG)
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [FORBFILE001] Forbidden Files completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [FORMATVER001] Format Version completed successfully
+[<timestamp>] [MESSAGE ] RECOMMENDATION: [FORMATVER116] (/behavior_packs/test_bp/blocks/old_block.json) Block type version (1.16.0) has a lower minor version number compared to the expected version (1.26.60) or its previous minor version
+[<timestamp>] [MESSAGE ] RECOMMENDATION: [FORMATVER136] (/behavior_packs/test_bp/items/old_item.json) Item type version (1.16.0) has a lower minor version number compared to the expected version (1.26.60) or its previous minor version
+[<timestamp>] [MESSAGE ] WARNING: [FORMATVER258] (/behavior_packs/test_bp/spawn_rules/old_entity.json) Spawn rules version (1.16.0) has a higher minor version number compared to the expected version (1.12.0)
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [GEOFMT001] Geometry Format completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [GEOMETRY001] Model Geometry Validation completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [ITEMS001] Minimum Definition of a Pack completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [ITEMTYPE001] Item Type completed successfully
+[<timestamp>] [MESSAGE ] RECOMMENDATION: [ITEMTYPE120] (/behavior_packs/test_bp/items/old_item.json) Behavior pack Item Type format version (1.16.0) has a lower minor version number compared to the current version or the previous current minor version
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [JSON001] JSON Schema Validation completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [JSONF001] JSON Structure completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [JSONTAGS001] JSON Tags completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [LINESIZE001] File Line/Size Information completed successfully
+[<timestamp>] [MESSAGE ] UNKNOWN: [MCFUNCTION002] No applicable items found for test MC Function Validation (MCFUNCTION)
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [MINENGINEVER001] Min Engine Version completed successfully
+[<timestamp>] [MESSAGE ] RECOMMENDATION: [MINENGINEVER120] (/behavior_pack/manifest.json) Behavior pack manifest (1.12.0) has a lower minor version number compared to the expected version (1.26.60) or its previous minor version
+[<timestamp>] [MESSAGE ] RECOMMENDATION: [MINENGINEVER120] (/behavior_packs/test_bp/manifest.json) Behavior pack manifest (1.19.0) has a lower minor version number compared to the expected version (1.26.60) or its previous minor version
+[<timestamp>] [MESSAGE ] RECOMMENDATION: [MINENGINEVER220] (/resource_packs/test_rp/manifest.json) Resource pack manifest (1.19.0) has a lower minor version number compared to the expected version (1.26.60) or its previous minor version
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [NOBOM001] No Byte Order Mark allowed in json file. completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [PACK001] General info completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [PACKFILECOUNT001] Pack File Count completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [PACKMETADATA001] General info completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [PACKSIZE001] Pack Size Information completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [PATHLENGTH001] Path Length completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [PRJINT001] Project Integrity completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [RESOURCEANIMATION001] Resource Animation completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [RPDEPENDS001] Resource Pack Dependencies completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [SCRIPT001] Script completed successfully
+[<timestamp>] [MESSAGE ] UNKNOWN: [SCRIPTMODULE002] No applicable items found for test Script Modules (SCRIPTMODULE)
+[<timestamp>] [MESSAGE ] UNKNOWN: [SNDSDEF002] No applicable items found for test Sound Definitions (SNDSDEF)
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [STRICT001] Strict Platform completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [SUMMARY001] Summary Information completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [TEXTURE001] Texture Validation completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [TEXTUREIMAGE001] Texture Image Validation completed successfully
+[<timestamp>] [MESSAGE ] UNKNOWN: [TEXTURELIST002] No applicable items found for test Texture List Validation (TEXTURELIST)
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [TEXTUREREF001] Texture References completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [TYPES001] Types Info Aggregation completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [UNKFILE001] Unknown files completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [UNKJSON001] Unknown JSON completed successfully
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [UNLINK001] Unlinked Items completed successfully
+[<timestamp>] [MESSAGE ] UNKNOWN: [VALFILE002] No applicable items found for test Valid files (VALFILE)
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [VANPRO001] Vanilla Protected Assets completed successfully
+[<timestamp>] [MESSAGE ] UNKNOWN: [VSCODEFILE002] No applicable items found for test VSCode Files (VSCODEFILE)
+[<timestamp>] [MESSAGE ] UNKNOWN: [WORLD002] No applicable items found for test World Validation (WORLD)
+[<timestamp>] [MESSAGE ] UNKNOWN: [WORLDDATA002] No applicable items found for test World Data Validation (WORLDDATA)
+[<timestamp>] [MESSAGE ] TESTSUCCESS: [WPACKREFS001] World Pack References completed successfully
 
 stderr:
+␛[31m[<timestamp>] [ERROR   ] TESTFAIL: [CHKMANIF000] Found 4 errors in Manifest Validation check␛[0m
+␛[31m[<timestamp>] [ERROR   ] ERROR: [CHKMANIF101] All new content targeting published client version must conform to format version [2].: 1␛[0m
+␛[31m[<timestamp>] [ERROR   ] ERROR: [CHKMANIF106] (/resource_packs/test_rp/manifest.json) [min_engine_version] is too high. To use a higher version, you need to use [format_version] [2]: 1,19,0␛[0m
+␛[31m[<timestamp>] [ERROR   ] TESTFAIL: [CPACKICON000] Found 3 errors in Pack Icon check␛[0m
+␛[31m[<timestamp>] [ERROR   ] ERROR: [CPACKICON101] pack_icon image file not found for behavior_pack. It must use the .png extension.␛[0m
+␛[31m[<timestamp>] [ERROR   ] ERROR: [CPACKICON101] pack_icon image file not found for test_bp. It must use the .png extension.␛[0m
+␛[31m[<timestamp>] [ERROR   ] ERROR: [CPACKICON101] pack_icon image file not found for test_rp. It must use the .png extension.␛[0m
 Error: Test Fail: Found 4 errors in Manifest Validation check
 Error: All new content targeting published client version must conform to format version [2].: 1
 Error: All new content targeting published client version must conform to format version [2].: 1

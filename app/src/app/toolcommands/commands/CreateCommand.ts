@@ -12,7 +12,7 @@
  */
 
 import type { IToolCommandMetadata, IToolCommandResult } from "../IToolCommand";
-import { ToolCommandBase } from "../IToolCommand";
+import { ToolCommandBase, ToolCommandScope } from "../IToolCommand";
 import type { IToolCommandContext } from "../IToolCommandContext";
 import { projectTemplateProvider } from "../AutocompleteProviders";
 import { GalleryItemType } from "../../IGalleryItem";
@@ -57,6 +57,7 @@ export class CreateCommand extends ToolCommandBase {
         shortName: "d",
         description: "Project description",
         type: "string",
+        freeText: true,
       },
       {
         name: "output",
@@ -66,6 +67,16 @@ export class CreateCommand extends ToolCommandBase {
       },
     ],
     isWriteCommand: true,
+    // Every scope, including the opt-in serverApi. There, HttpServer requires the Minecraft EULA and
+    // refuses the output flag and path-like names and creators, so projects go only to the server's
+    // projects folder.
+    scopes: [
+      ToolCommandScope.ui,
+      ToolCommandScope.mcp,
+      ToolCommandScope.serveTerminal,
+      ToolCommandScope.cli,
+      ToolCommandScope.serverApi,
+    ],
     examples: [
       "/create",
       "/create addonstarter my-addon",
@@ -163,7 +174,13 @@ export class CreateCommand extends ToolCommandBase {
       }
 
       const suggestedShortName = ProjectUtilities.getSuggestedProjectShortName(creator, projectName);
-      await ProjectUtilities.processNewProject(project, projectName, description, suggestedShortName, false);
+      await ProjectUtilities.processNewProject(
+        project,
+        projectName,
+        description,
+        suggestedShortName,
+        ProjectUtilities.getGeneratedWithToolForScope(context.scope)
+      );
 
       await project.save();
 

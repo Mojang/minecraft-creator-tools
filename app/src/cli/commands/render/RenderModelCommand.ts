@@ -14,8 +14,8 @@
  * - Uses Playwright for headless Chrome/Edge rendering
  *
  * USAGE:
- * npx mct rendermodel <geometryPath> [outputPath] -i <project-folder>
- * npx mct rm biceson.geo.json output.png -i ./my-addon
+ * npx mct render model <geometryPath> [outputPath] -i <project-folder>
+ * npx mct render model biceson.geo.json output.png -i ./my-addon
  */
 
 import { Command } from "commander";
@@ -29,22 +29,24 @@ import ServerManager, { ServerManagerFeatures } from "../../../local/ServerManag
 import LocalUtilities, { UNSAFE_PORTS } from "../../../local/LocalUtilities";
 import * as path from "path";
 import * as fs from "fs";
+import { configureRenderGpuOptions, getRenderGpuOptions } from "./RenderGpuOptions";
+import { configureRenderPresentationOptions, getRenderPresentationOptions } from "./RenderPresentationOptions";
+import { RenderPresentationOptions } from "../../../app/RenderPresentation";
 
 interface IRenderModelOptions {
+  presentation: RenderPresentationOptions;
   port: number;
   width: number;
   height: number;
   renderWaitMs: number;
   canvasTimeoutMs: number;
-  gpu: boolean;
 }
 
 export class RenderModelCommand extends CommandBase {
   readonly metadata: ICommandMetadata = {
     name: "rendermodel",
-    description:
-      "Renders a model geometry file from the project to a PNG image. " +
-      "Automatically finds related textures via project item relationships.",
+    route: ["render", "model"],
+    description: "Render a model from your project to an image. Uses a related texture when available.",
     taskType: TaskType.renderModel,
     aliases: ["rm"],
     requiresProjects: true,
@@ -53,6 +55,25 @@ export class RenderModelCommand extends CommandBase {
     isLongRunning: true,
     category: "Render",
     globalOptionGroups: ["input", "projects"],
+    examples: [
+      { command: 'mct render model mob.geo.json preview.png -i "./My Addon"' },
+      {
+        description: "Use project textures and software rendering for repeatable images",
+        command: 'mct render model mob.geo.json preview.png -i "./My Addon" --no-vanilla --no-gpu',
+      },
+      {
+        command: 'mct render model mob.geo.json study.png -i "./My Addon" --appearance clay --all-views',
+        description: "Compare four cameras in one image",
+      },
+      {
+        command: 'mct render model mob.geo.json rig.png -i "./My Addon" --skeleton --all-views',
+        description: "Inspect pivots and parent connections",
+      },
+    ],
+    learnMore: [
+      "Named views use matching orthographic scale; front faces negative Z and side faces positive X.",
+      "A four-view sheet is twice --width by twice --height, including its labels.",
+    ],
     arguments: [
       {
         name: "geometryPath",
@@ -70,6 +91,8 @@ export class RenderModelCommand extends CommandBase {
   };
 
   configure(cmd: Command): void {
+    configureRenderGpuOptions(cmd);
+    configureRenderPresentationOptions(cmd);
     // Arguments are configured via metadata.arguments
     cmd
       .option("--vanilla", "Load vanilla Minecraft resources from mctools.dev for fallback textures")
@@ -80,9 +103,6 @@ export class RenderModelCommand extends CommandBase {
       .option("--port <port>", "Use a specific localhost port for the temporary render server")
       .option("--port-start <port>", "First port in the random temporary render server range", "6200")
       .option("--port-end <port>", "Last port in the random temporary render server range", "6299")
-      .option("--width <pixels>", "Rendered image width in pixels", "512")
-      .option("--height <pixels>", "Rendered image height in pixels", "512")
-      .option("--gpu", "Prefer hardware GPU rendering instead of SwiftShader software WebGL")
       .option("--render-wait-ms <milliseconds>", "Milliseconds to wait after loading the model before capture")
       .option("--canvas-timeout-ms <milliseconds>", "Milliseconds to wait for the viewer canvas", "15000");
   }
@@ -104,7 +124,7 @@ export class RenderModelCommand extends CommandBase {
     }
 
     if (!geometryPath) {
-      context.log.error("No geometry path specified. Usage: mct rendermodel <geometryPath> [outputPath] -i <project>");
+      context.log.error("No geometry path specified. Usage: mct render model <geometryPath> [outputPath] -i <project>");
       context.setExitCode(ErrorCodes.INIT_ERROR);
       return;
     }
@@ -216,6 +236,18 @@ export class RenderModelCommand extends CommandBase {
     }
 
     const geometryId = geoIds[0];
+    if (
+      (renderOptions.presentation.appearance === "bones" || renderOptions.presentation.skeleton) &&
+      !geoDef.defaultGeometry?.bones?.some(
+        (bone) => bone.name && (bone.cubes?.length || bone.poly_mesh || bone.texture_meshes?.length)
+      )
+    ) {
+      context.log.error(
+        "Bones and skeleton views require named, renderable bones. Use another appearance without --skeleton."
+      );
+      context.setExitCode(ErrorCodes.INIT_ERROR);
+      return;
+    }
     context.log.verbose(`Geometry identifier: ${geometryId}`);
 
     if (!outputPath) {
@@ -275,7 +307,7 @@ export class RenderModelCommand extends CommandBase {
 
     const sm = new ServerManager(context.localEnv, context.creatorTools);
     sm.features = ServerManagerFeatures.all;
-    const httpServer = sm.ensureHttpServer();
+    const httpServer = await sm.ensureHttpServer();
     let renderer: PlaywrightPageRenderer | undefined;
 
     try {
@@ -289,7 +321,7 @@ export class RenderModelCommand extends CommandBase {
 
       const baseUrl = `http://localhost:${port}`;
       context.log.verbose(`Rendering model through ${baseUrl}`);
-      renderer = new PlaywrightPageRenderer(baseUrl, { useHardwareGpu: renderOptions.gpu });
+      renderer = new PlaywrightPageRenderer(baseUrl, getRenderGpuOptions(context.commandOptions));
       const initialized = await renderer.initialize();
 
       if (!initialized) {
@@ -309,6 +341,7 @@ export class RenderModelCommand extends CommandBase {
       }
 
       const result = await renderer.renderModel(modelViewerUrl, {
+        presentation: renderOptions.presentation,
         width: renderOptions.width,
         height: renderOptions.height,
         renderWaitTime: renderOptions.renderWaitMs,
@@ -335,15 +368,18 @@ export class RenderModelCommand extends CommandBase {
         context.setExitCode(ErrorCodes.INIT_ERROR);
       }
     } finally {
-      if (renderer) {
-        await renderer.close();
+      try {
+        if (renderer) await renderer.close();
+      } finally {
+        httpServer.clearTempContent();
+        await httpServer.stop("rendering complete");
       }
-      httpServer.clearTempContent();
-      await httpServer.stop("rendering complete");
     }
   }
 
   private resolveRenderOptions(context: ICommandContext, useVanilla: boolean): IRenderModelOptions | undefined {
+    const presentation = getRenderPresentationOptions(context);
+    if (!presentation) return undefined;
     const options = context.commandOptions ?? {};
     const portStart = this.parsePositiveIntegerOption(context, options.portStart, "--port-start");
     const portEnd = this.parsePositiveIntegerOption(context, options.portEnd, "--port-end");
@@ -396,12 +432,12 @@ export class RenderModelCommand extends CommandBase {
     }
 
     return {
+      presentation,
       port: explicitPort ?? LocalUtilities.getRandomSafePort(portStart, portEnd),
       width,
       height,
       renderWaitMs,
       canvasTimeoutMs,
-      gpu: options.gpu === true,
     };
   }
 

@@ -1920,7 +1920,6 @@ describe("Telemetry build configuration", () => {
   const configsThatMustDisableAnalytics = [
     { file: "webpack.jsnweb.config.js", description: "CLI-served web (jsnweb)" },
     { file: "webpack.jsnweb.debug.config.js", description: "CLI-served web debug" },
-    { file: "webpack.jsn.config.js", description: "CLI Node.js bundle" },
     { file: "webpack.vsccore.config.js", description: "VS Code core extension" },
     { file: "webpack.vsccoreweb.config.js", description: "VS Code core web extension" },
     { file: "webpack.vscweb.config.js", description: "VS Code webview" },

@@ -20,7 +20,9 @@
  *   design_pack/project_item_data/behavior_packs/my_pack/structures/wizard_tower_mcstructure/
  *
  * And contains:
- *   - structure_design.json: The IBlockVolume specification
+ *   - structure_design.json: How the structure was made. Either the IBlockVolume
+ *     specification (`design`), or the build program (`program`) plus any edit
+ *     programs applied since (`edits`). See StructureProgramRunner.
  *   - preview.png: Last rendered preview image
  *   - generation_meta.json: Timestamp, model used, etc.
  *
@@ -40,7 +42,7 @@ import Log from "../core/Log";
 
 /**
  * Block volume design - the structure specification.
- * Matches the format used by previewStructureDesign/exportStructureDesign.
+ * Matches the blockVolume format used by the designStructure MCP tool.
  */
 export interface IBlockVolumeDesign {
   /** The world position of the south-west-bottom corner of the structure */
@@ -59,6 +61,20 @@ export interface IBlockVolumeDesign {
 }
 
 /**
+ * A build program run recorded for a structure. Replaying the generate program
+ * and then each edit program, in order and with the same seeds, reproduces the
+ * saved .mcstructure.
+ */
+export interface IStructureProgramRecord {
+  /** JavaScript source that defines `function build(api)`. */
+  code: string;
+  /** Seed for `api.random`/`api.pick`. */
+  seed: number;
+  /** When the program was run. */
+  ranAt: string;
+}
+
+/**
  * Metadata about when/how the structure was generated.
  */
 export interface IStructureGenerationMeta {
@@ -68,21 +84,38 @@ export interface IStructureGenerationMeta {
   generatorModel?: string;
   /** The prompt or request that led to generation (if known) */
   prompt?: string;
-  /** Version of the design schema */
-  schemaVersion: "1.0.0";
+  /**
+   * Version of the design schema. 1.1.0 adds `program`/`edits` and makes
+   * `design` optional; 1.0.0 files always have `design`.
+   */
+  schemaVersion: "1.0.0" | "1.1.0";
 }
 
 /**
  * The complete persisted structure design data.
  */
 export interface IStructureDesignData {
-  /** The structure design specification */
-  design: IBlockVolumeDesign;
+  /** The block volume specification, when the structure came from a blockVolume. */
+  design?: IBlockVolumeDesign;
+  /** The build program that generated the structure, when it came from a program. */
+  program?: IStructureProgramRecord;
+  /**
+   * Edit programs applied, in order, on top of `design` or `program`. Capped at
+   * MAX_RECORDED_EDITS; `editsTruncated` is set once older edits were dropped.
+   */
+  edits?: IStructureProgramRecord[];
+  /**
+   * True when the history does not replay exactly: older edits were dropped, or
+   * the first recorded edit applied to a structure with no recorded source.
+   */
+  editsTruncated?: boolean;
   /** Generation metadata */
   meta: IStructureGenerationMeta;
   /** What feature rule this structure was wired to (if any) */
   wiredTo?: string;
 }
+
+const MAX_RECORDED_EDITS = 20;
 
 /**
  * Manages persistence of structure design data in accessory folders.
@@ -118,8 +151,59 @@ export default class StructureDesignDefinition {
     return this.data?.design;
   }
 
+  public get program(): IStructureProgramRecord | undefined {
+    return this.data?.program;
+  }
+
+  public get edits(): IStructureProgramRecord[] {
+    return this.data?.edits ?? [];
+  }
+
   public get wiredTo(): string | undefined {
     return this.data?.wiredTo;
+  }
+
+  /**
+   * Records a build program run and persists it. A generate run replaces any
+   * previous design, program, and edits; an edit run is appended to the history.
+   */
+  async recordProgram(
+    mode: "generate" | "edit",
+    code: string,
+    seed: number,
+    options?: { generatorModel?: string; prompt?: string }
+  ): Promise<void> {
+    const now = new Date().toISOString();
+    const record: IStructureProgramRecord = { code, seed, ranAt: now };
+    const previous = this.data;
+    const meta: IStructureGenerationMeta = {
+      generatedAt: now,
+      generatorModel: options?.generatorModel,
+      prompt: options?.prompt,
+      schemaVersion: "1.1.0",
+    };
+
+    if (mode === "generate" || !previous) {
+      this.data = {
+        program: mode === "generate" ? record : undefined,
+        edits: mode === "edit" ? [record] : undefined,
+        // An edit with no recorded history starts from an unknown base.
+        editsTruncated: mode === "edit" ? true : undefined,
+        meta,
+        wiredTo: previous?.wiredTo,
+      };
+    } else {
+      const edits = [...(previous.edits ?? []), record];
+      const truncated = edits.length > MAX_RECORDED_EDITS;
+      this.data = {
+        ...previous,
+        edits: truncated ? edits.slice(edits.length - MAX_RECORDED_EDITS) : edits,
+        editsTruncated: truncated || previous.editsTruncated || undefined,
+        meta,
+      };
+    }
+
+    await this.save();
   }
 
   /**

@@ -103,13 +103,27 @@
   line-height: 1.3;
 }
 
+/* Add state and Remove state share the row; when the two labels need more
+   than the panel has they wrap onto a second line rather than widening the
+   panel into a horizontal scroll. */
 .ete-addStateRow {
   padding: 8px 8px 4px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 .ete-addStateRow .eat-mcBtn {
-  width: 100%;
+  flex: 1 1 auto;
+  min-width: 0;
+  margin-right: 0;
   font-size: 12px;
+}
+
+.ete-addStateRow .eat-mcBtn.Mui-disabled,
+.ete-addButtonRow .eat-mcBtn.Mui-disabled {
+  color: #fff;
+  opacity: 0.5;
 }
 
 /* Item bin panel (main content) */
@@ -184,15 +198,30 @@
   padding: 4px 0;
 }
 
+/* Add Action and Remove action share the row the same way as the states
+   row above, wrapping instead of scrolling when the panel is narrow. */
 .ete-addButtonRow {
   padding: 4px 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ete-addButtonRow .eat-mcBtn {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin-right: 0;
+  padding: 8px;
+  font-size: 12px;
+  letter-spacing: 0.5px;
 }
 
 .ete-addActionBtn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
+  flex: 1 1 auto;
+  min-width: 0;
   padding: 8px 8px;
   border: none;
   cursor: pointer;

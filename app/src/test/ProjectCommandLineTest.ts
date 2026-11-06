@@ -96,6 +96,14 @@ describe("addLootTable", async () => {
     assert(content.header?.name, "Manifest should have header.name");
     assert(content.header?.uuid, "Manifest should have header.uuid");
   });
+
+  it("should record the CLI in the manifest's generated_with metadata", () => {
+    const manifestPath = "./test/results/addLootTable/behavior_packs/contoso_lt_bp/manifest.json";
+    const content = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+    const versions = content.metadata?.generated_with?.mctoolscli;
+    assert.isArray(versions, "Manifest should have metadata.generated_with.mctoolscli: " + JSON.stringify(content));
+    assert.isAbove(versions.length, 0);
+  });
 });
 
 describe("deployCommand", async () => {

@@ -1,6 +1,9 @@
 {
   "extends": "../../tsconfig.jsncore.json",
   "compilerOptions": {
+    "module": "esnext",
     "noEmit": true
-  }
+  },
+  "files": ["index.ts", "TaskWorker.ts", "ui/ink.d.ts"],
+  "include": []
 }

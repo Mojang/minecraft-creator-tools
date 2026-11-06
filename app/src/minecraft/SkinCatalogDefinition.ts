@@ -8,7 +8,6 @@ import StorageUtilities from "../storage/StorageUtilities";
 import Project from "../app/Project";
 import ProjectItem from "../app/ProjectItem";
 import { ProjectItemType } from "../app/IProjectItemData";
-import Utilities from "../core/Utilities";
 import TextureDefinition from "./TextureDefinition";
 import ISkinCatalog from "./ISkinCatalog";
 
@@ -212,26 +211,19 @@ export default class SkinCatalogDefinition {
 
     let textureList = this.getCanonicalizedTexturesList();
 
-    for (const candItem of textureItems) {
-      if (packRootFolder && textureList) {
-        if (!candItem.isContentLoaded) {
-          await candItem.loadContent();
-        }
+    if (textureList) {
+      const resolved = await StorageUtilities.resolvePackPathCandidates(
+        textureItems,
+        packRootFolder,
+        textureList,
+        (file) => TextureDefinition.canonicalizeTexturePath(StorageUtilities.getBaseRelativePath(file, packRootFolder))
+      );
 
-        if (candItem.primaryFile) {
-          let relativePath = TextureDefinition.canonicalizeTexturePath(
-            StorageUtilities.getBaseRelativePath(candItem.primaryFile, packRootFolder)
-          );
-
-          if (relativePath) {
-            if (textureList && textureList.includes(relativePath)) {
-              item.addChildItem(candItem);
-
-              textureList = Utilities.removeItemInArray(relativePath, textureList);
-            }
-          }
-        }
+      for (const candItem of resolved.matches) {
+        item.addChildItem(candItem);
       }
+
+      textureList = resolved.unmatched;
     }
 
     if (textureList) {

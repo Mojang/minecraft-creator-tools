@@ -169,13 +169,16 @@ export default class VanillaProtectedAssetsInfoGenerator implements IProjectInfo
   }
 
   private getMatchingEntry(packType: PackType, relativePath: string): ProtectedVanillaAssetEntry | undefined {
-    return this.protectedEntries.find(
-      (entry) => entry.packType === packType && relativePath.startsWith(this.normalizeProtectedPath(entry.protectedPath))
-    );
-  }
+    return this.protectedEntries.find((entry) => {
+      if (entry.packType !== packType) {
+        return false;
+      }
 
-  private normalizeProtectedPath(path: string): string {
-    return this.ensureTrailingSlash(this.normalizePath(path));
+      const protectedPath = this.normalizePath(entry.protectedPath);
+
+      // A folder entry ends with "/" and covers everything under it; any other entry covers only that file.
+      return protectedPath.endsWith("/") ? relativePath.startsWith(protectedPath) : relativePath === protectedPath;
+    });
   }
 
   private normalizePath(path: string): string {

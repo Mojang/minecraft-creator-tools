@@ -51,7 +51,7 @@ Run the summary script again after each round of fixes. Stop when there are zero
 
 ## 5. If it still doesn't work in game
 
-Validation only checks files. For symptoms like an invisible mob, a purple-and-black texture, or a raw name such as `entity.demo:goblin.name`, work through `references/runtime-symptoms.md`. If that doesn't explain it, ask the user to turn on Minecraft's Content Log and paste what it shows; `references/content-log.md` explains how to turn it on and read it.
+Validation only checks files. For symptoms like an invisible mob, a purple-and-black texture, or a raw name such as `entity.demo:goblin.name`, work through `references/runtime-symptoms.md`. If the content is running in a Creator Tools session (started with `createMinecraftSessionWithContent` or `mct serve`) and you have the MCP tools, call `getMinecraftSessionLogs` to read the server's errors yourself, including script errors and JSON schema failures. Otherwise, ask the user to turn on Minecraft's Content Log and paste what it shows; `references/content-log.md` explains how to turn it on and read it.
 
 Raw names are the most common runtime complaint, because Creator Tools doesn't generate localization. Fix them all at once:
 
@@ -76,10 +76,10 @@ Run `npx -y @minecraft/creator-tools@latest fix --list` to see all fixes. Sugges
 Once validation shows no errors:
 
 ```bash
-npx -y @minecraft/creator-tools@latest exportaddon -i <project-folder> -o <output-folder>
+npx -y @minecraft/creator-tools@latest export addon -i <project-folder> -o <output-folder>
 ```
 
-This writes `<project>.mcaddon` containing every behavior and resource pack. Opening that file on a device with Minecraft installed imports it. Before exporting, check that each pack has a real `pack_icon.png` (not a placeholder, if the user cares) and a sensible `header.version` in `manifest.json`.
+This writes `<project>.mcaddon` for a behavior/resource pack pair, or `<project>.mcpack` for a single-pack project. Opening that file on a device with Minecraft installed imports it. Before exporting, check that each pack has a real `pack_icon.png` (not a placeholder, if the user cares) and a sensible `header.version` in `manifest.json`. The flat `exportaddon` command still works with the same options on older pinned CLIs.
 
 ## Things to avoid
 

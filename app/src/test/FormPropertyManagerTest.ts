@@ -560,6 +560,48 @@ describe("FormPropertyManager", () => {
 
       expect(result?.newValue).to.be.undefined;
     });
+
+    // A scalar field with alternates (interact_button: boolean, or a string
+    // caption) edits the same property from whichever editor its current value
+    // selected. The alternate carries the same __scalar id as the primary.
+    function createScalarWithStringAlternateDefinition(primaryType: FieldDataType): IFormDefinition {
+      return {
+        id: "scalarAlternateForm",
+        title: "Scalar Alternate Form",
+        scalarField: {
+          id: "__scalar",
+          dataType: primaryType,
+          title: "Value",
+          alternates: [{ id: "__scalar", dataType: FieldDataType.string }],
+        },
+        fields: [],
+      };
+    }
+
+    it("should keep a string scalar as a string when the primary scalar type is boolean", () => {
+      const definition = createScalarWithStringAlternateDefinition(FieldDataType.boolean);
+      const manager = new FormPropertyManager(definition);
+
+      const result = manager.processInputUpdate("__scalar", "Open Shop", "Open Menu");
+
+      expect(result?.newValue).to.equal("Open Shop");
+      expect(result?.updatedDirectObject).to.equal("Open Shop");
+    });
+
+    it("should type the input with the alternate that matches the current value", () => {
+      const definition = createScalarWithStringAlternateDefinition(FieldDataType.int);
+      const manager = new FormPropertyManager(definition);
+
+      // Current value is a string, so the string alternate owns the edit: no int parsing.
+      const asString = manager.processInputUpdate("__scalar", "twelve", "eleven");
+      expect(asString?.newValue).to.equal("twelve");
+      expect(asString?.updatedDirectObject).to.equal("twelve");
+
+      // Current value is a number, so the primary int field owns the edit.
+      const asInt = manager.processInputUpdate("__scalar", "12", 11);
+      expect(asInt?.newValue).to.equal(12);
+      expect(asInt?.updatedDirectObject).to.equal(12);
+    });
   });
 
   describe("toggleBooleanProperty", () => {

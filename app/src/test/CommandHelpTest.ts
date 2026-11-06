@@ -18,7 +18,8 @@ import { CommandRegistry } from "../cli/core/CommandRegistry";
 import { getAllCommands } from "../cli/commands/index";
 import { createCliProgram } from "../cli/core/CliProgram";
 import { renderCommandHelp, wrap } from "../cli/core/CommandHelpWriter";
-import { parseCommandLine } from "../cli/core/CommandLineHelp";
+import { escapeControlCharacters, parseCommandLine } from "../cli/core/CommandLineHelp";
+import Utilities from "../core/Utilities";
 import { TaskType } from "../cli/ClUtils";
 import { applyMcpInputAlias } from "../cli/commands/server/McpCommand";
 import { applyWorldSettings } from "../cli/commands/world/WorldCommand";
@@ -172,7 +173,10 @@ describe("CLI help", () => {
       const lines = help.split("\n");
 
       expect(help).to.not.include("ADDITIONAL COMMANDS");
-      for (const name of visibleCommandNames()) {
+      const compatibilityNames = getAllCommands()
+        .filter((command) => command.metadata.route)
+        .map((command) => command.metadata.name);
+      for (const name of visibleCommandNames().filter((name) => !compatibilityNames.includes(name))) {
         expect(
           lines.some((line) => line.startsWith(`  ${name}:`)),
           `root help should list ${name}`
@@ -279,7 +283,11 @@ describe("CLI help", () => {
     }
 
     it("lists the process-wide options on every command", () => {
-      for (const name of visibleCommandNames().filter((n) => n !== "help")) {
+      const { program, registry } = buildProgram(100, false, { stdout: "", stderr: "" });
+      for (const name of visibleCommandNames().filter((name) => {
+        const command = program.commands.find((candidate) => candidate.name() === name);
+        return command && registry.getForCommand(command);
+      })) {
         const inherited = sectionBody(runCli([name, "--help"]).stdout, "INHERITED FLAGS");
         for (const flag of ["--verbose", "-q, --quiet", "-d, --debug", "--isolated"]) {
           expect(inherited, `${name} ${flag}`).to.include(flag);
@@ -425,6 +433,20 @@ describe("CLI help", () => {
     }
 
     // Commander echoes argv into its own errors; none of it may reach the terminal as a control sequence.
+    it("shares core control escaping while preserving the CLI's newline and tab layout", () => {
+      const codes = [
+        ...Array.from({ length: 32 }, (_, index) => index),
+        ...Array.from({ length: 33 }, (_, index) => index + 127),
+      ];
+      for (const code of codes) {
+        const character = String.fromCharCode(code);
+        const escaped = `\\u${code.toString(16).padStart(4, "0")}`;
+        expect(Utilities.escapeControlCharacters(character)).to.equal(escaped);
+        expect(escapeControlCharacters(character)).to.equal(code === 9 || code === 10 ? character : escaped);
+      }
+      expect(Utilities.escapeControlCharacters("@minecraft/server 2.0.0")).to.equal("@minecraft/server 2.0.0");
+    });
+
     const injectionCases: { name: string; args: string[] }[] = [
       { name: "unknown option (CSI)", args: ["--bo\u001b[31mgus"] },
       { name: "unknown option (OSC)", args: ["validate", "--x\u001b]8;;https://example.test\u0007y"] },

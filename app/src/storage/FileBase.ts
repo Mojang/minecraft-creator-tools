@@ -24,13 +24,36 @@ export default abstract class FileBase implements IFile {
   isInErrorState?: boolean;
   errorStateMessage?: string;
 
+  protected _content: string | Uint8Array | null;
+
+  #commentJsonCache: unknown;
+  /** The content `#commentJsonCache` was parsed from or written as; the cache is only good while `_content` is still it. */
+  #commentJsonCacheContent: string | Uint8Array | null | undefined;
+
   /**
    * Cache for comment-json parsed object.
    * When set, contains the parsed JSON with comment metadata preserved as Symbol properties.
+   *
+   * The cache belongs to the content it was parsed from. Once the content has
+   * been replaced (a code editor's `setContent`, a forced `loadContent` from
+   * disk, `unload`) it is stale, and handing it out would hand a definition
+   * manager the previous text to edit and then write back over the newer one.
+   * Rather than relying on every path that replaces `_content` to clear it,
+   * the cache checks itself against the current content on every read.
    */
-  commentJsonCache?: unknown;
+  get commentJsonCache(): unknown {
+    if (this.#commentJsonCache !== undefined && this.#commentJsonCacheContent !== this._content) {
+      this.#commentJsonCache = undefined;
+      this.#commentJsonCacheContent = undefined;
+    }
 
-  protected _content: string | Uint8Array | null;
+    return this.#commentJsonCache;
+  }
+
+  set commentJsonCache(value: unknown) {
+    this.#commentJsonCache = value;
+    this.#commentJsonCacheContent = value === undefined ? undefined : this._content;
+  }
 
   #fileContainerStorage: IStorage | null = null;
   #onFileContentUpdated = new EventDispatcher<IFile, IFile>();
@@ -312,9 +335,14 @@ export default abstract class FileBase implements IFile {
       return false;
     }
 
+    // The cache came from a comment-preserving parse, so write it with comments even when they only sit on nested
+    // objects (hasCommentMetadata only looks at the root); a plain JSON.stringify would drop them.
+    const isCommentJsonCache = this.commentJsonCache !== undefined && this.commentJsonCache === value;
+    const preserveComments = isCommentJsonCache || JsonUtilities.hasCommentMetadata(value);
+
     if (!(typeof this._content === "string")) {
       // No existing content - check if the new value has comment metadata
-      if (JsonUtilities.hasCommentMetadata(value)) {
+      if (preserveComments) {
         this.setContent(JsonUtilities.stringifyJsonWithComments(value), updateType, sourceId);
         this.commentJsonCache = value;
       } else {
@@ -325,8 +353,13 @@ export default abstract class FileBase implements IFile {
 
     try {
       // If the value has comment metadata, use comment-preserving comparison and stringify
-      if (JsonUtilities.hasCommentMetadata(value)) {
-        const currentObj = this.commentJsonCache ?? JsonUtilities.parseJsonWithComments(this._content as string);
+      if (preserveComments) {
+        // The cache is the object callers edit in place, so when it's the value being saved, compare against the
+        // stored text instead; otherwise in-place edits always look unchanged and never get written.
+        const currentObj =
+          this.commentJsonCache !== undefined && !isCommentJsonCache
+            ? this.commentJsonCache
+            : JsonUtilities.parseJsonWithComments(this._content as string);
 
         if (!JsonUtilities.jsonObjectsSemanticallyEqual(currentObj, value)) {
           this.setContent(JsonUtilities.stringifyJsonWithComments(value), updateType, sourceId);
@@ -355,7 +388,7 @@ export default abstract class FileBase implements IFile {
         // Both parses failed — content is truly unparseable, proceed with overwrite
       }
 
-      if (JsonUtilities.hasCommentMetadata(value)) {
+      if (preserveComments) {
         this.setContent(JsonUtilities.stringifyJsonWithComments(value), updateType, sourceId);
         this.commentJsonCache = value;
       } else {

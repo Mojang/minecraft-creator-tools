@@ -112,6 +112,13 @@ export default class DataFormValidator {
     // Guard against forms with undefined or null fields array
     if (fields && Array.isArray(fields)) {
       for (const field of fields) {
+        // Removed fields are build-time placeholders that mark an upstream field as gone
+        // (e.g. "attack_interval|attack_interval_min"). They carry no data type, so
+        // validating against them only produces false type mismatches.
+        if (field.isRemoved) {
+          continue;
+        }
+
         if (field.id) {
           // Clean the field ID to remove embedded enum syntax like 'render_distance_type"<"fixed", "render"'
           const cleanedFieldId = cleanFieldId(field.id);
@@ -752,8 +759,10 @@ export default class DataFormValidator {
 
     let pattern: RegExp;
     try {
-      // Anchor the pattern to match the full key
-      pattern = new RegExp("^" + fieldIdToUse + "$");
+      // Anchor the pattern to match the full key. The pattern is grouped so that
+      // alternation ids such as "block_allowlist|block_whitelist" anchor every
+      // alternative, rather than only the first and last.
+      pattern = new RegExp("^(?:" + fieldIdToUse + ")$");
     } catch (e) {
       // Invalid regex - treat as literal field ID (fallback)
       const fieldData = (data as any)[fieldIdToUse];

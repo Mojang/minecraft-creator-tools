@@ -9,7 +9,6 @@ import { IJsonUIControl, IJsonUIScreen } from "./IJsonUIScreen";
 import Project from "../app/Project";
 import ProjectItem from "../app/ProjectItem";
 import { ProjectItemType } from "../app/IProjectItemData";
-import Utilities from "../core/Utilities";
 import Database from "./Database";
 import TextureDefinition from "./TextureDefinition";
 
@@ -217,26 +216,20 @@ export default class JsonUIResourceDefinition {
     let textureList = this.getTexturePaths();
 
     if (textureList.length > 0) {
-      for (const candItem of allTextureItems) {
-        if (packRootFolder && textureList) {
-          if (!candItem.isContentLoaded) {
-            await candItem.loadContent();
-          }
+      if (packRootFolder) {
+        const resolved = await StorageUtilities.resolvePackPathCandidates(
+          allTextureItems,
+          packRootFolder,
+          textureList,
+          (file) =>
+            TextureDefinition.canonicalizeTexturePath(StorageUtilities.getBaseRelativePath(file, packRootFolder))
+        );
 
-          if (candItem.primaryFile) {
-            let relativePath = TextureDefinition.canonicalizeTexturePath(
-              StorageUtilities.getBaseRelativePath(candItem.primaryFile, packRootFolder)
-            );
-
-            if (relativePath) {
-              if (textureList && textureList.includes(relativePath)) {
-                item.addChildItem(candItem);
-
-                textureList = Utilities.removeItemInArray(relativePath, textureList);
-              }
-            }
-          }
+        for (const candItem of resolved.matches) {
+          item.addChildItem(candItem);
         }
+
+        textureList = resolved.unmatched;
       }
 
       if (textureList) {

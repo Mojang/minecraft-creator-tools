@@ -40,13 +40,15 @@ export interface IScriptModuleInfo {
 }
 
 /**
- * Known Minecraft Script API modules
+ * Known Minecraft Script API modules. Versions track the current retail Bedrock release
+ * (see docs/UpdatingMinecraftVersion.md); beta versions correspond to the
+ * `*-beta.<mc version>-stable` npm packages for that release.
  */
 export const SCRIPT_MODULES: IScriptModuleInfo[] = [
   {
     name: "@minecraft/server",
-    latestStableVersion: "1.17.0",
-    latestBetaVersion: "1.18.0-beta",
+    latestStableVersion: "2.11.0",
+    latestBetaVersion: "2.12.0-beta",
     minMinecraftVersion: "1.20.0",
     description: "Core Minecraft server APIs for entities, blocks, dimensions, and world manipulation",
     stability: ModuleStability.Stable,
@@ -55,8 +57,8 @@ export const SCRIPT_MODULES: IScriptModuleInfo[] = [
   },
   {
     name: "@minecraft/server-ui",
-    latestStableVersion: "1.4.0",
-    latestBetaVersion: "1.5.0-beta",
+    latestStableVersion: "2.3.0",
+    latestBetaVersion: "2.4.0-beta",
     minMinecraftVersion: "1.20.0",
     description: "UI APIs for creating forms, dialogs, and player interactions",
     stability: ModuleStability.Stable,
@@ -106,8 +108,8 @@ export const SCRIPT_MODULES: IScriptModuleInfo[] = [
   },
   {
     name: "@minecraft/vanilla-data",
-    latestStableVersion: "1.20.80",
-    latestBetaVersion: "1.21.40",
+    latestStableVersion: "1.26.60",
+    latestBetaVersion: "1.26.60",
     minMinecraftVersion: "1.20.0",
     description: "Type definitions for vanilla Minecraft identifiers (blocks, items, entities)",
     stability: ModuleStability.Stable,
@@ -116,8 +118,8 @@ export const SCRIPT_MODULES: IScriptModuleInfo[] = [
   },
   {
     name: "@minecraft/common",
-    latestStableVersion: "1.2.0",
-    latestBetaVersion: "1.2.0",
+    latestStableVersion: "1.3.0",
+    latestBetaVersion: "1.3.0",
     minMinecraftVersion: "1.20.0",
     description: "Common types and utilities used across Minecraft modules",
     stability: ModuleStability.Stable,

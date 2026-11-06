@@ -1520,12 +1520,16 @@
         "<RPME>cow.v2",
         "<RPME>cow.cold",
         "<RPME>cow.warm",
-        "<RPRC>cow.v2",
+        "<RPME>baby_cow",
+        "<RPRC>cow.v3",
         "<RPA>cow",
         "<RPTE>cow/cow",
         "<RPTE>cow/cow_cold",
         "<RPTE>cow/cow_v2",
-        "<RPTE>cow/cow_warm"
+        "<RPTE>cow/cow_warm",
+        "<RPTE>cow/cow_temperate_baby",
+        "<RPTE>cow/cow_cold_baby",
+        "<RPTE>cow/cow_warm_baby"
       ],
       "titleKey": "gallery.cow.title",
       "descriptionKey": "gallery.cow.description"
@@ -1553,6 +1557,7 @@
         "<BPSR>creeper",
         "<RPE>creeper",
         "<RPRC>creeper",
+        "<RPRC>creeper_armor",
         "<RPAC>creeper",
         "<RPA>creeper",
         "<RPME>creeper",

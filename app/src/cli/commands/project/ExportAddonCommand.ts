@@ -40,8 +40,9 @@ type AddonFormat = "auto" | "mcpack" | "mcaddon";
 export class ExportAddonCommand extends CommandBase {
   readonly metadata: ICommandMetadata = {
     name: "exportaddon",
+    route: ["export", "addon"],
     description:
-      "Packages the specified project into an addon file. Produces .mcaddon when both a behavior and resource pack are present, .mcpack for single-pack projects.",
+      "Package your project's packs for sharing. Produces .mcaddon when both a behavior and resource pack are present, .mcpack for single-pack projects.",
     taskType: TaskType.exportAddon,
     aliases: [],
     requiresProjects: true,
@@ -51,10 +52,14 @@ export class ExportAddonCommand extends CommandBase {
     category: "Project",
     globalOptionGroups: ["input", "projects", "outputFolder", "outputFile", "dryRun", "json"],
     examples: [
-      { description: "Auto-detect the format", command: "mct exportaddon -i ./myproj -o ./out" },
-      { description: "Force .mcaddon", command: "mct exportaddon -i ./myproj -o ./out --format mcaddon" },
-      { description: "Explicit file name", command: "mct exportaddon -i ./myproj --of ./out/myproj.mcpack" },
+      { description: "Auto-detect the format", command: "mct export addon -i ./myproj -o ./out" },
+      { description: "Force .mcaddon", command: "mct export addon -i ./myproj -o ./out --format mcaddon" },
+      {
+        description: "Explicit file name and JSON result",
+        command: "mct export addon -i ./myproj -o ./out --of ./out/myproj.mcpack --json",
+      },
     ],
+    learnMore: ["JSON results retain the command name exportaddon, with one record per project."],
   };
 
   configure(cmd: Command): void {

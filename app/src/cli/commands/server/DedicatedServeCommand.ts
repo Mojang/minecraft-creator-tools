@@ -3,6 +3,7 @@ import { ICommand, ICommandMetadata, CommandBase } from "../../core/ICommand";
 import { ICommandContext, ErrorCodes } from "../../core/ICommandContext";
 import { TaskType } from "../../ClUtils";
 import ServerManager, { ServerManagerFeatures } from "../../../local/ServerManager";
+import LocalUtilities from "../../../local/LocalUtilities";
 
 /**
  * Start only the Bedrock Dedicated Server (no web UI).
@@ -51,11 +52,7 @@ export class DedicatedServeCommand extends CommandBase implements ICommand {
     if (!localEnv.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula) {
       // Check for environment variable
       if (!this.checkEnvEula()) {
-        log.error(
-          "EULA not accepted. Accept it via:\n" +
-            "  Interactive:    mct eula\n" +
-            "  Non-interactive: mct eula --accept   (or set MCTOOLS_I_ACCEPT_EULA_AT_MINECRAFTDOTNETSLASHEULA=true)"
-        );
+        log.error(LocalUtilities.eulaNotAcceptedMessage);
         context.setExitCode(ErrorCodes.INIT_ERROR);
         return;
       }

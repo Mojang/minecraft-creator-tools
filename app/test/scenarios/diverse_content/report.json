@@ -542,13 +542,13 @@
     },
     "errorCount": 0,
     "internalProcessingErrorCount": 0,
-    "warningCount": 8,
-    "testSuccessCount": 40,
+    "warningCount": 6,
+    "testSuccessCount": 41,
     "testFailCount": 0,
     "testNotApplicableCount": 13,
     "errorSummary": "",
     "internalProcessingErrorSummary": "",
-    "warningSummary": "WARNING: [COMJSON144] (/behavior_packs/diverse_bp/spawn_rules/sample_mob_spawn.json) JSON structure error: (format_version) does not have a value in the enumeration 1.8.0, 1.10.0, 1.12.0\nWARNING: [FORMATVER218] (/resource_packs/diverse_rp/animations/sample_mob_animations.json) Resource animation version (1.21.0) has a higher minor version number compared to the expected version (1.10.0)\nWARNING: [FORMATVER238] (/resource_packs/diverse_rp/animation_controllers/sample_mob_controller.json) Resource animation controller version (1.21.0) has a higher minor version number compared to the expected version (1.10.0)\nWARNING: [FORMATVER258] (/behavior_packs/diverse_bp/spawn_rules/sample_mob_spawn.json) Spawn rules version (1.21.0) has a higher minor version number compared to the expected version (1.12.0)\nWARNING: [JSON139] (/behavior_packs/diverse_bp/dialogue/sample_dialogue.json) Structure issue: In \"minecraft:npc_dialogue.scenes[0]\": {\"scene_tag\":\"sample_greeting\"... - object value found, but a string is required\nWARNING: [JSON139] (/behavior_packs/diverse_bp/dialogue/sample_dialogue.json) Structure issue: In \"minecraft:npc_dialogue.scenes[1]\": {\"scene_tag\":\"sample_trade\",\"n... - object value found, but a string is required\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:iron_ingot`\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:stick`",
+    "warningSummary": "WARNING: [COMJSON144] (/behavior_packs/diverse_bp/spawn_rules/sample_mob_spawn.json) JSON structure error: (format_version) does not have a value in the enumeration 1.8.0, 1.10.0, 1.12.0\nWARNING: [FORMATVER218] (/resource_packs/diverse_rp/animations/sample_mob_animations.json) Resource animation version (1.21.0) has a higher minor version number compared to the expected version (1.10.0)\nWARNING: [FORMATVER238] (/resource_packs/diverse_rp/animation_controllers/sample_mob_controller.json) Resource animation controller version (1.21.0) has a higher minor version number compared to the expected version (1.10.0)\nWARNING: [FORMATVER258] (/behavior_packs/diverse_bp/spawn_rules/sample_mob_spawn.json) Spawn rules version (1.21.0) has a higher minor version number compared to the expected version (1.12.0)\nWARNING: [JSON139] (/behavior_packs/diverse_bp/dialogue/sample_dialogue.json) Structure issue: In \"minecraft:npc_dialogue.scenes[0]\": {\"scene_tag\":\"sample_greeting\"... - object value found, but a string is required\nWARNING: [JSON139] (/behavior_packs/diverse_bp/dialogue/sample_dialogue.json) Structure issue: In \"minecraft:npc_dialogue.scenes[1]\": {\"scene_tag\":\"sample_trade\",\"n... - object value found, but a string is required",
     "testFailSummary": "",
     "reds": 5248,
     "summary": {
@@ -1271,10 +1271,6 @@
           "title": "Vanilla Reference",
           "defaultMessage": "Link to vanilla item type item; avoid if possible",
           "recommendations": 1
-        },
-        "323": {
-          "defaultMessage": "Link to item type is not found in this pack",
-          "warnings": 2
         }
       },
       "VALFILE": {
@@ -2755,20 +2751,6 @@
       "gIx": 205,
       "p": "/behavior_packs/diverse_bp/loot_tables/sample_loot.json",
       "d": "minecraft:stick"
-    },
-    {
-      "iTp": 4,
-      "gId": "UNLINK",
-      "gIx": 323,
-      "p": "/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json",
-      "d": "/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:iron_ingot`"
-    },
-    {
-      "iTp": 4,
-      "gId": "UNLINK",
-      "gIx": 323,
-      "p": "/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json",
-      "d": "/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:stick`"
     },
     {
       "iTp": 8,

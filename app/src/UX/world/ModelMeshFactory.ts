@@ -147,6 +147,11 @@
  * KEY METHODS:
  * ------------
  * - createMesh(): Entry point, creates parent mesh, iterates bones, creates cube meshes
+ *   Each drawable mesh retains metadata.modelBone so cloned meshes can be colored
+ *   consistently by named bone in CLI RenderPresentationScene without parsing display names.
+ *   Optional modelSkeleton metadata uses that same nearest bind-pose transform
+ *   for pivots, with authored parent links retained separately. Do not use the
+ *   stacked _bone_ TransformNodes for this overlay: cubes do not follow them.
  * - _getAccumulatedBoneTransform(): Combined pivot/rotation including parent transforms
  * - _rotatePointAroundPivot(): Rotates point around pivot (X, then Y, then Z order)
  * - _createCubeMesh(): Creates Babylon.js box for a cube with proper UV mapping
@@ -179,6 +184,7 @@ import {
 } from "../../minecraft/IModelGeometry";
 import { applyGeometryTransforms } from "../../minecraft/VanillaGeometryTransforms";
 import ImageCodec from "../../core/ImageCodec";
+import { SkeletonJoint } from "../../app/RenderPresentation";
 
 // Bone transform data for applying bind_pose_rotation
 interface BoneTransform {
@@ -204,7 +210,9 @@ export class ModelMeshFactory {
     textureName: string,
     textureData?: Uint8Array,
     textureUrl?: string,
-    geometryId?: string
+    geometryId?: string,
+    authoredModel: IGeometry = model,
+    includeSkeleton = false
   ): BABYLON.Mesh | undefined {
     const parentMesh = new BABYLON.Mesh(name, this._scene);
     this._applyMeshSettings(parentMesh);
@@ -310,13 +318,20 @@ export class ModelMeshFactory {
       // the parent's rotation applied. Entities where child bones should NOT inherit
       // parent rotation (e.g., sheep legs are in world space) use VanillaGeometryTransforms
       // to detach those bones (removeParent) before this code runs.
-      const getAccumulatedRotation = (boneName: string): { pivot: number[]; rotation: number[] } | null => {
+      const getAccumulatedRotation = (
+        boneName: string
+      ): { pivot: number[]; rotation: number[]; name: string } | null => {
+        let name = boneName;
         let current = boneTransforms.get(boneName);
+        const visited = new Set<string>();
         while (current) {
+          if (visited.has(name)) throw new Error("Bone parent hierarchy contains a cycle: " + name);
+          visited.add(name);
           if (current.rotation[0] !== 0 || current.rotation[1] !== 0 || current.rotation[2] !== 0) {
-            return { pivot: current.pivot, rotation: current.rotation };
+            return { pivot: current.pivot, rotation: current.rotation, name };
           }
           if (current.parentName) {
+            name = current.parentName;
             current = boneTransforms.get(current.parentName);
           } else {
             break;
@@ -350,6 +365,31 @@ export class ModelMeshFactory {
           rotNode.parent = parentMesh;
           rotationNodes.set(bone.name, rotNode);
         }
+      }
+
+      if (includeSkeleton) {
+        const parents = new Map(authoredModel.bones?.map((bone) => [bone.name, bone.parent]));
+        const joints: SkeletonJoint[] = transformedModel.bones.map((bone) => {
+          const pivot = bone.pivot ?? [0, 0, 0];
+          const effective = getAccumulatedRotation(bone.name);
+          const node = effective ? rotationNodes.get(effective.name) : undefined;
+          let position = new BABYLON.Vector3(pivot[0] / 16, pivot[1] / 16, -pivot[2] / 16);
+          if (effective && node) {
+            node.computeWorldMatrix(true);
+            // Match cube placement, including its unreflected local Z under a
+            // bind-pose node. The separate stacked _bone_ hierarchy is not used.
+            position = BABYLON.Vector3.TransformCoordinates(
+              new BABYLON.Vector3(
+                (pivot[0] - effective.pivot[0]) / 16,
+                (pivot[1] - effective.pivot[1]) / 16,
+                (pivot[2] - effective.pivot[2]) / 16
+              ),
+              node.getWorldMatrix()
+            );
+          }
+          return { name: bone.name, parent: parents.get(bone.name), position: [position.x, position.y, position.z] };
+        });
+        parentMesh.metadata = { ...parentMesh.metadata, modelSkeleton: joints };
       }
 
       for (const bone of transformedModel.bones) {
@@ -453,29 +493,7 @@ export class ModelMeshFactory {
 
               mesh.parent = cubeRotNode;
             } else if (effectiveTransform) {
-              // Find the rotation node for this bone's effective transform
-              // We need to find which bone has the rotation
-              let rotatingBoneName: string | undefined;
-              let current = boneTransforms.get(bone.name);
-              while (current) {
-                if (current.rotation[0] !== 0 || current.rotation[1] !== 0 || current.rotation[2] !== 0) {
-                  // Find the bone name for this transform
-                  for (const [name, transform] of boneTransforms.entries()) {
-                    if (transform === current) {
-                      rotatingBoneName = name;
-                      break;
-                    }
-                  }
-                  break;
-                }
-                if (current.parentName) {
-                  current = boneTransforms.get(current.parentName);
-                } else {
-                  break;
-                }
-              }
-
-              const rotNode = rotatingBoneName ? rotationNodes.get(rotatingBoneName) : undefined;
+              const rotNode = rotationNodes.get(effectiveTransform.name);
 
               if (rotNode) {
                 // Position cube relative to the rotation pivot (which is at the bone's pivot)
@@ -509,6 +527,7 @@ export class ModelMeshFactory {
               mesh.parent = parentMesh;
             }
 
+            mesh.metadata = { ...mesh.metadata, modelBone: bone.name };
             this._applyMeshSettings(mesh);
           }
         }
@@ -525,6 +544,7 @@ export class ModelMeshFactory {
           );
 
           if (polyMesh) {
+            polyMesh.metadata = { ...polyMesh.metadata, modelBone: bone.name };
             polyMesh.parent = parentMesh;
           }
         }
@@ -539,6 +559,7 @@ export class ModelMeshFactory {
             const spriteMesh = this._createTextureMeshSprite(tmName, texMesh, texWidth, texHeight, mat);
 
             if (spriteMesh) {
+              spriteMesh.metadata = { ...spriteMesh.metadata, modelBone: bone.name };
               spriteMesh.parent = parentMesh;
             }
           }

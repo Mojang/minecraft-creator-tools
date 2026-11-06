@@ -87,6 +87,9 @@ export interface ICommandMetadata {
   /** Command aliases (e.g., ['v'] for 'validate') */
   aliases?: string[];
 
+  /** Task-oriented route to the same command. The flat name and aliases remain supported. */
+  route?: readonly [group: "render" | "export", command: string];
+
   /**
    * Positional arguments for this command.
    * These are automatically added to Commander.js during registration.

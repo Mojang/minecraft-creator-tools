@@ -2627,7 +2627,7 @@ describe("DebugAdapter", function () {
     it("delivers failed stage and reserved debug port to a web-panel subscriber", async function () {
       const env: ITestEnvironment = await TestPaths.createTestEnvironment();
       const dsm = new ServerManager(env.localEnv, env.creatorTools);
-      const httpServer = dsm.ensureHttpServer(6297);
+      const httpServer = await dsm.ensureHttpServer(6297);
 
       const server = new DedicatedServer("debugstage-test", dsm, env.localEnv, "debugstage-path", env.resultsFolder);
       server.debugOutboundConnect = false; // these tests exercise the legacy inbound listen flow

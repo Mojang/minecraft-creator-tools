@@ -24,6 +24,9 @@
  * PARALLELIZATION:
  * When threads > 1, validation is distributed across worker threads.
  * Each worker gets a serialized ITask and returns IProjectMetaState.
+ * Even threads=1 uses a worker. The pool settles only after worker exit and
+ * forwarded output completion; terminal failures use stderr and exit code 5
+ * in human and JSON modes, without changing the JSON report schema.
  *
  * RELATED FILES:
  * - TaskWorker.ts: Worker thread implementation
@@ -172,7 +175,7 @@ export class ValidateCommand extends CommandBase {
   }
 
   /**
-   * Process projects sequentially in the main thread.
+   * Process projects sequentially, using one worker at a time.
    */
   private async processSequentially(context: ICommandContext, projectList: IProjectMetaState[]): Promise<void> {
     for (let i = 0; i < context.projects.length; i++) {
@@ -192,12 +195,10 @@ export class ValidateCommand extends CommandBase {
           args: taskArgs,
         });
 
-        if (result.success && result.result) {
+        if (result.success) {
           await this.processValidationResult(context, result.result, projectStart, projectList);
         } else if (!result.success) {
-          if (!context.json) {
-            context.log.error(`Validation failed for ${project.name}: ${result.error}`);
-          }
+          context.log.error(`Validation failed for ${project.name}: ${result.error}`);
           context.setExitCode(ErrorCodes.VALIDATION_INTERNALPROCESSINGERROR);
         }
 
@@ -244,12 +245,10 @@ export class ValidateCommand extends CommandBase {
       const result = results[i];
       const projectStart = projectStarts[i];
 
-      if (result.success && result.result) {
+      if (result.success) {
         await this.processValidationResult(context, result.result, projectStart, projectList);
       } else if (!result.success) {
-        if (!context.json) {
-          context.log.error(`Worker process error for ${projectStart.ctorProjectName}: ${result.error}`);
-        }
+        context.log.error(`Worker process error for ${projectStart.ctorProjectName}: ${result.error}`);
         context.setExitCode(ErrorCodes.VALIDATION_INTERNALPROCESSINGERROR);
       }
     }
@@ -296,14 +295,12 @@ export class ValidateCommand extends CommandBase {
    */
   private async processValidationResult(
     context: ICommandContext,
-    result: IProjectMetaState[] | string,
+    result: IProjectMetaState[] | string | undefined,
     projectStart: IProjectStartInfo,
     projectList: IProjectMetaState[]
   ): Promise<void> {
-    if (typeof result === "string") {
-      if (!context.json) {
-        context.log.error(`${projectStart.ctorProjectName} error: ${result}`);
-      }
+    if (!Array.isArray(result)) {
+      context.log.error(`${projectStart.ctorProjectName} error: ${result ?? "Validation did not return a result."}`);
       context.setExitCode(ErrorCodes.VALIDATION_INTERNALPROCESSINGERROR);
       return;
     }

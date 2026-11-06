@@ -11,16 +11,59 @@ import CreatorToolsHost from "../../../app/CreatorToolsHost";
 import axios from "axios";
 import ProjectInfoSet from "../../ProjectInfoSet";
 import Utilities from "../../../core/Utilities";
+import Log from "../../../core/Log";
 import ContentIndex from "../../../core/ContentIndex";
 import MinecraftDefinitions from "../../../minecraft/MinecraftDefinitions";
 import ProjectItemUtilities from "../../../app/ProjectItemUtilities";
+import { ProjectItemType } from "../../../app/IProjectItemData";
 import { JSONSchema7, validate } from "json-schema";
-import { JsonSchemaErrorBase, JsonSchemaItemInfoGeneratorTest, JsonSchemaValidationRules } from "./JsonSchemaItemInfoData";
+import {
+  JsonSchemaErrorBase,
+  JsonSchemaItemInfoGeneratorTest,
+  JsonSchemaValidationRules,
+} from "./JsonSchemaItemInfoData";
 import { IValidationRuleProvider, ValidationRuleDefinition } from "../../tests/ValidationRuleDefinition";
+import { getValidatorSchema } from "../ValidatorSchema";
 
 export { JsonSchemaItemInfoGeneratorTest };
 
 const NotCurrentFormatVersionBase = 1100;
+
+// Event names often contain dots ("mob.zombie.say"), so the event is everything between the
+// fixed prefix and suffix rather than a single path segment.
+const SOUND_ENTRY_PATH = /^sound_definitions\.(.+)\.sounds\[(\d+)\]$/;
+
+/**
+ * Whether a schema error is the validator rejecting a plain string entry in a sound
+ * definition's "sounds" list. Bedrock accepts either a file path string or an object there,
+ * but the official schema only allows objects.
+ */
+export function isStringSoundEntryMismatch(
+  itemType: ProjectItemType,
+  property: string | undefined,
+  message: string | undefined,
+  contentObj: any
+): boolean {
+  if (itemType !== ProjectItemType.soundDefinitionCatalog || !property || !message) {
+    return false;
+  }
+
+  const match = SOUND_ENTRY_PATH.exec(property.replace(/^instance\.?/, ""));
+
+  if (!match || !message.includes("object is required")) {
+    return false;
+  }
+
+  const definitions = contentObj?.sound_definitions;
+
+  if (!definitions || typeof definitions !== "object" || !Object.prototype.hasOwnProperty.call(definitions, match[1])) {
+    return false;
+  }
+
+  const sounds = definitions[match[1]]?.sounds;
+
+  return Array.isArray(sounds) && typeof sounds[Number(match[2])] === "string";
+}
 
 /**
  * Validates JSON files against official JSON schema definitions at public/schemas.
@@ -69,11 +112,38 @@ export default class JsonSchemaItemInfoGenerator implements IProjectInfoItemGene
 
             content = Utilities.fixJsonContent(content);
 
+            let results: ReturnType<typeof validate> | undefined;
+
             try {
               contentObj = JSON.parse(content);
-              const results = validate(contentObj, schemaContents);
+            } catch (e: any) {
+              items.push(
+                new ProjectInfoItem(
+                  InfoItemType.error,
+                  this.id,
+                  JsonSchemaItemInfoGeneratorTest.couldNotParseJson,
+                  "This file has a syntax error and can't be read as JSON. Check for missing commas, brackets, or quotes. Details: " +
+                    (e?.message ?? e),
+                  projectItem
+                )
+              );
+            }
 
+            if (contentObj !== undefined) {
+              try {
+                results = validate(contentObj, getValidatorSchema(schemaContents));
+              } catch (e: any) {
+                // A validator failure says nothing about the content, so don't report it to the creator.
+                Log.debug(`JSON schema validation failed for ${projectItem.projectPath}: ${e?.message ?? e}`);
+              }
+            }
+
+            if (results) {
               for (const err of results.errors) {
+                if (isStringSoundEntryMismatch(projectItem.itemType, err.property, err.message, contentObj)) {
+                  continue;
+                }
+
                 let errorTitle = `JSON structure error`;
                 let errorDetail = `(${err.property}) ${err.message}`;
 
@@ -140,8 +210,7 @@ export default class JsonSchemaItemInfoGenerator implements IProjectInfoItemGene
 
                   const isStringForm = typeof formatVersionValue === "string";
                   const isArrayForm =
-                    Array.isArray(formatVersionValue) &&
-                    formatVersionValue.every((v) => typeof v === "number");
+                    Array.isArray(formatVersionValue) && formatVersionValue.every((v) => typeof v === "number");
 
                   if (isStringForm || isArrayForm) {
                     // Both array and string forms are acceptable for format_version - skip.
@@ -186,7 +255,10 @@ export default class JsonSchemaItemInfoGenerator implements IProjectInfoItemGene
                   try {
                     let resolved: any = contentObj;
                     if (err.property) {
-                      const parts = err.property.replace("instance.", "").replace(/\[(\d+)\]/g, ".$1").split(".");
+                      const parts = err.property
+                        .replace("instance.", "")
+                        .replace(/\[(\d+)\]/g, ".$1")
+                        .split(".");
                       for (const part of parts) {
                         if (resolved == null || part === "") break;
                         resolved = resolved[part];
@@ -292,26 +364,6 @@ export default class JsonSchemaItemInfoGenerator implements IProjectInfoItemGene
                   )
                 );
               }
-            } catch (e: any) {
-              let errorMess: any = e;
-
-              if (e.message) {
-                errorMess = e.message;
-              }
-
-              items.push(
-                new ProjectInfoItem(
-                  InfoItemType.error,
-                  this.id,
-                  JsonSchemaItemInfoGeneratorTest.couldNotParseJson,
-                  "This file has a syntax error and can't be read as JSON. Check for missing commas, brackets, or quotes. Details: " +
-                    errorMess,
-                  projectItem
-                )
-              );
-            }
-
-            if (contentObj) {
             }
           }
         } else {

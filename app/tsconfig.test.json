@@ -11,6 +11,7 @@
 		"sourceMap": true,
 		"rootDir": "src",
 		"esModuleInterop": true,
+		"resolveJsonModule": true,
 		"jsx": "react-jsx",
 		"strict": true,   /* enable all strict type-checking options */
 		"noImplicitReturns": true, 

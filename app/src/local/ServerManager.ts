@@ -9,11 +9,22 @@
  * ## Core Responsibilities
  *
  * 1. **Server Version Management**: Download and track Bedrock Dedicated Server versions
+ *    Metadata alone uses LocalUtilities' bounded request/CONNECT cancellation. ZIP downloads
+ *    are not subject to that deadline. Empty metadata is not a successful version discovery.
+ *    Fallback eligibility uses the active platform/track found in the current response, not cached
+ *    or other-target versions. Fallback must not overwrite other targets parsed from that response.
  * 2. **Server Provisioning**: Create runtime server instances from source downloads
  * 3. **Multi-Slot Support**: Manage multiple concurrent server instances on different ports
  * 4. **Pack Cache Management**: Extract and cache add-on packages for deployment
  * 5. **HTTP Server Integration**: Host web API and WebSocket notifications via HttpServer
  * 6. **Event Aggregation**: Bubble up events from individual DedicatedServer instances
+ *
+ * HTTP startup is shared through ensureHttpServer(): concurrent callers await the same
+ * attempt, and only a fully listening server is cached. Failed attempts release their
+ * resources in HttpServer.init(); stopping clears the cache after the listeners close,
+ * allowing a later call to retry without reusing a failed or stopped server.
+ * Shutdown guards each cleanup/notification step independently, then rethrows the first
+ * failure and logs later ones, so a secondary cleanup error cannot hide a startup failure.
  *
  * ## Server Download & Source Architecture
  *
@@ -187,6 +198,30 @@
  * - `preparePacksAndTemplates()`: Set up pack references for a world
  * - `updateDedicatedServerSymLinkFolder()`: Update symlink for a slot folder
  * - `updateDedicatedServerFile()`: Update a file in a slot folder (overwrite in place)
+ * - `shutdownForSignal()`: Stop everything after SIGINT/SIGTERM, then exit the process
+ *
+ * ## Process Signals
+ *
+ * The constructor registers SIGINT, SIGTERM, and (on Windows) SIGBREAK handlers, plus an
+ * uncaughtException handler, so ending the parent process doesn't leave bedrock_server processes
+ * holding ports. After a signal, `shutdownForSignal()` stops the web server and every Bedrock
+ * Dedicated Server, and only then exits, with a code that depends on `ServerManager.commandKind`:
+ *
+ * | commandKind      | Used by                                             | SIGINT | SIGTERM | SIGBREAK |
+ * |------------------|-----------------------------------------------------|--------|---------|----------|
+ * | server (default) | serve, dedicatedserve, view, edit, mcp; other hosts | 0      | 0       | 0        |
+ * | oneShot          | every other CLI command, such as validate           | 130    | 143     | 149      |
+ *
+ * Stopping a server is how it ends, so that's a success. A one-shot command that's interrupted
+ * didn't finish, so it exits 128 plus the signal's number, as POSIX shells report a process a
+ * signal ended, and `mct validate ... && next` stops after Ctrl+C. It also doesn't print
+ * "Graceful shutdown complete.". A failed shutdown exits 1 for either kind. `cli/index.ts` sets
+ * the kind from `ClUtils.getIsServerCommand()` before it creates its ServerManager.
+ *
+ * Pitfall: every instance registers its own set of handlers, and some commands create a second
+ * instance or register signal handlers of their own. Each ServerManager handler exits as soon as
+ * its own instance has shut down, so the first one to finish ends the process, and shutdown
+ * messages can print more than once.
  *
  * ## Event Flow
  *
@@ -206,11 +241,11 @@ import Player from "../minecraft/Player";
 import LocalUtilities from "./LocalUtilities";
 import * as fs from "fs";
 import * as os from "os";
+import * as path from "path";
 import NodeStorage from "./NodeStorage";
 import LocalEnvironment from "./LocalEnvironment";
 import axios, { AxiosProgressEvent } from "axios";
 import ZipStorage from "../storage/ZipStorage";
-import IMainInfoVersions from "../minecraft/IMainInfoVersions";
 import StorageUtilities from "../storage/StorageUtilities";
 import Log from "../core/Log";
 import DedicatedServer, { DedicatedServerStatus } from "./DedicatedServer";
@@ -257,6 +292,32 @@ export enum ServerType {
   bedrockWindowsPreview = 2,
   bedrockLinuxPreview = 3,
   java = 4,
+}
+
+/**
+ * The kind of command that owns the process, which decides how the process exits after a signal stops it
+ * (see getSignalExitCode). The CLI sets ServerManager.commandKind before it creates a ServerManager.
+ */
+export enum CommandKind {
+  /** Runs until it's stopped, like `mct serve` or `mct mcp`. The default, which other hosts keep too. */
+  server = "server",
+  /** Runs to completion, like `mct validate`. */
+  oneShot = "oneShot",
+}
+
+/** The signals ServerManager shuts down on, with their numbers. SIGBREAK (Ctrl+Break) is Windows-only. */
+const SHUTDOWN_SIGNAL_NUMBERS = { SIGINT: 2, SIGTERM: 15, SIGBREAK: 21 } as const;
+
+export type ShutdownSignal = keyof typeof SHUTDOWN_SIGNAL_NUMBERS;
+
+/**
+ * The code the process exits with once shutdown after a signal finishes. A server exits 0, because stopping it is
+ * how it ends. A one-shot command didn't finish, so it exits 128 plus the signal's number, as POSIX shells report a
+ * process a signal ended: 130 for SIGINT (Ctrl+C) and 143 for SIGTERM. The numbers are fixed rather than read from
+ * os.constants.signals, so the codes are the same on every platform.
+ */
+export function getSignalExitCode(signal: ShutdownSignal, kind: CommandKind): number {
+  return kind === CommandKind.server ? 0 : 128 + SHUTDOWN_SIGNAL_NUMBERS[signal];
 }
 
 export interface IServerVersion {
@@ -312,6 +373,12 @@ export interface ISlotProvisioningOptions {
 const SLOT_CONTEXT_FILENAME = "slot_context.json";
 
 export default class ServerManager {
+  /**
+   * The kind of command that owns this process, for every ServerManager in it, because each one registers its own
+   * signal handlers. The CLI sets it before it creates one.
+   */
+  static commandKind = CommandKind.server;
+
   #servers: { [name: string]: DedicatedServer } = {};
   #activeServersByPort: { [port: number]: DedicatedServer } = {};
 
@@ -321,6 +388,7 @@ export default class ServerManager {
 
   #usePreview: boolean | undefined;
   #httpServer: HttpServer | undefined;
+  #httpServerStartPromise: Promise<HttpServer> | undefined;
 
   #creatorTools: CreatorTools;
 
@@ -637,25 +705,13 @@ export default class ServerManager {
    * This prevents orphaned bedrock_server processes that could hold ports.
    */
   private registerProcessSignalHandlers() {
-    const gracefulShutdown = async (signal: string) => {
-      Log.message(`Received ${signal} signal - initiating graceful shutdown...`);
-      try {
-        await this.shutdown(`Process terminated by ${signal}`);
-        Log.message("Graceful shutdown complete.");
-        process.exit(0);
-      } catch (e: any) {
-        Log.error(`Error during graceful shutdown: ${e.message}`);
-        process.exit(1);
-      }
-    };
-
     // Handle common termination signals
-    process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
-    process.on("SIGINT", () => gracefulShutdown("SIGINT"));
+    process.on("SIGTERM", () => this.shutdownForSignal("SIGTERM"));
+    process.on("SIGINT", () => this.shutdownForSignal("SIGINT"));
 
     // On Windows, handle the CTRL+BREAK and window close events
     if (os.platform() === "win32") {
-      process.on("SIGBREAK", () => gracefulShutdown("SIGBREAK"));
+      process.on("SIGBREAK", () => this.shutdownForSignal("SIGBREAK"));
     }
 
     // Handle uncaught exceptions - try to clean up before crashing
@@ -671,40 +727,107 @@ export default class ServerManager {
     });
   }
 
+  /**
+   * Shuts down after a signal, then exits the process with getSignalExitCode() for ServerManager.commandKind, or 1
+   * when shutdown fails. It exits only after shutdown finishes, so a running Bedrock Dedicated Server is stopped
+   * first. Tests pass `exit` to see the exit code without ending the process.
+   */
+  public async shutdownForSignal(
+    signal: ShutdownSignal,
+    exit: (code: number) => void = (code) => process.exit(code)
+  ): Promise<void> {
+    const kind = ServerManager.commandKind;
+    let exitCode: number;
+
+    Log.message(`Received ${signal} signal - initiating graceful shutdown...`);
+    try {
+      await this.shutdown(`Process terminated by ${signal}`);
+      exitCode = getSignalExitCode(signal, kind);
+
+      // An interrupted one-shot command didn't complete, so only a server reports a clean stop.
+      if (kind === CommandKind.server) {
+        Log.message("Graceful shutdown complete.");
+      }
+    } catch (e: any) {
+      Log.error(`Error during graceful shutdown: ${e.message}`);
+      exitCode = 1;
+    }
+
+    exit(exitCode);
+  }
+
   public async stopWebServer(reason?: string) {
-    if (this.#httpServer) {
-      await this.#httpServer.stop(reason);
+    const httpServer = this.#httpServerStartPromise ? await this.#httpServerStartPromise : this.#httpServer;
+    if (httpServer) {
+      await httpServer.stop(reason);
+      if (this.#httpServer === httpServer) {
+        this.#httpServer = undefined;
+      }
     }
   }
 
   public async shutdown(message: string) {
-    await this.stopWebServer(message);
+    const steps = [
+      () => this.stopWebServer(message),
+      () => this.stopAllDedicatedServers(),
+      () => {
+        // Stop polling the content log folder; a later prepare creates a fresh watcher.
+        this.#contentLogWatcher?.stop();
+        this.#contentLogWatcher = undefined;
+      },
+      () => {
+        if (this.#onShutdown) {
+          this.#onShutdown.dispatch(this, message);
+        }
+      },
+    ];
+    const errors: unknown[] = [];
+    for (const step of steps) {
+      try {
+        await step();
+      } catch (error) {
+        errors.push(error);
+      }
+    }
 
-    await this.stopAllDedicatedServers();
-
-    if (this.#onShutdown) {
-      this.#onShutdown.dispatch(this, message);
+    if (errors.length > 0) {
+      for (const error of errors.slice(1)) {
+        Log.error("Additional error during shutdown: " + (error instanceof Error ? error.message : String(error)));
+        if ((Utilities.isDebug || process.env.MCT_DEBUG === "1") && error instanceof Error) {
+          Log.error(error.stack || error.message);
+        }
+      }
+      throw errors[0];
     }
   }
 
-  public ensureHttpServer(port?: number) {
-    if (!this.#httpServer) {
-      this.#httpServer = new HttpServer(this.#env, this);
-
-      if (port) {
-        this.#httpServer.port = port;
-      }
-
-      // Pass experimental SSL config if available (not persisted - command line only)
-      if (this.#env.sslConfig) {
-        this.#httpServer.sslConfig = this.#env.sslConfig;
-      }
-
-      this.#httpServer.creatorTools = this.#creatorTools;
-      this.#httpServer.init();
+  public ensureHttpServer(port?: number): Promise<HttpServer> {
+    if (this.#httpServerStartPromise) {
+      return this.#httpServerStartPromise;
+    }
+    if (this.#httpServer?.isListening) {
+      return Promise.resolve(this.#httpServer);
     }
 
-    return this.#httpServer;
+    this.#httpServer = undefined;
+    const httpServer = new HttpServer(this.#env, this);
+    if (port !== undefined) {
+      httpServer.port = port;
+    }
+
+    // Experimental SSL configuration is command-line only, never persisted.
+    httpServer.sslConfig = this.#env.sslConfig;
+    httpServer.creatorTools = this.#creatorTools;
+    this.#httpServerStartPromise = httpServer
+      .init()
+      .then(() => {
+        this.#httpServer = httpServer;
+        return httpServer;
+      })
+      .finally(() => {
+        this.#httpServerStartPromise = undefined;
+      });
+    return this.#httpServerStartPromise;
   }
 
   public get environment() {
@@ -1177,8 +1300,6 @@ export default class ServerManager {
   }
 
   async getLatestVersionInfo(force: boolean) {
-    let minecraftInfoResponse: any = undefined;
-
     if (
       this.#utilities.platform === Platform.linux &&
       ((this.serverVersions[ServerType.bedrockLinux].version && !this.effectiveIsUsingPreview) ||
@@ -1197,20 +1318,23 @@ export default class ServerManager {
       return true;
     }
 
-    let successfullyRetrievedVersions = false;
+    const activeServerType =
+      this.#utilities.platform === Platform.linux
+        ? this.effectiveIsUsingPreview
+          ? ServerType.bedrockLinuxPreview
+          : ServerType.bedrockLinux
+        : this.effectiveIsUsingPreview
+          ? ServerType.bedrockWindowsPreview
+          : ServerType.bedrockWindows;
+    const retrievedServerTypes = new Set<ServerType>();
     let serverVersionUrl = "https://net-secondary.web.minecraft-services.net/api/v1.0/download/links";
     try {
-      minecraftInfoResponse = (await axios.get(serverVersionUrl)) as IMinecraftNetVersionService | undefined;
+      const minecraftInfo = await this.#utilities.getMetadataJson<IMinecraftNetVersionService>(serverVersionUrl);
 
-      if (
-        minecraftInfoResponse &&
-        minecraftInfoResponse.data &&
-        minecraftInfoResponse.data.result &&
-        minecraftInfoResponse.data.result.links
-      ) {
-        const links = minecraftInfoResponse.data.result.links;
+      if (Array.isArray(minecraftInfo?.result?.links)) {
+        const links = minecraftInfo.result.links;
         for (const link of links) {
-          if (link.downloadType && link.downloadUrl) {
+          if (link && typeof link.downloadType === "string" && typeof link.downloadUrl === "string") {
             const lastDash = link.downloadUrl.lastIndexOf("-");
             const lastDot = link.downloadUrl.lastIndexOf(".zip");
 
@@ -1220,7 +1344,7 @@ export default class ServerManager {
               // re-constitute the version number ourselves
               const verNums = version.split(".");
 
-              if (verNums.length === 4) {
+              if (verNums.length === 4 && /^\d+\.\d+\.\d+\.\d+$/.test(version)) {
                 const verStr = String(
                   String(parseInt(verNums[0])) +
                     "." +
@@ -1255,20 +1379,23 @@ export default class ServerManager {
                 if (serverType !== undefined) {
                   this.serverVersions[serverType].version = verStr;
                   this.serverVersions[serverType].versionIndex = versionIndex;
+                  retrievedServerTypes.add(serverType);
                 }
               }
             }
           }
         }
-        successfullyRetrievedVersions = true;
       }
-    } catch (e: any) {
-      console.log("Could not access Bedrock Dedicated Server details." + e.toString());
+    } catch (error) {
+      Log.error(
+        "Could not access Bedrock Dedicated Server details: " +
+          Utilities.escapeControlCharacters(error instanceof Error ? error.message : String(error))
+      );
       return false;
     }
 
     // fallback: use version.json from githubusercontent.com
-    if (!successfullyRetrievedVersions) {
+    if (!retrievedServerTypes.has(activeServerType)) {
       let versionUrl = "https://raw.githubusercontent.com/Mojang/bedrock-samples/main/version.json";
 
       if (this.effectiveIsUsingPreview) {
@@ -1280,63 +1407,30 @@ export default class ServerManager {
       );
 
       try {
-        minecraftInfoResponse = await axios.get(versionUrl);
-      } catch (e: any) {
-        console.log("Could not access Bedrock Dedicated Server details." + e);
-        throw new Error(e.toString());
-      }
-
-      let latestVersionIndex = 0;
-
-      try {
-        if (minecraftInfoResponse === undefined || minecraftInfoResponse.data === undefined) {
-          return false;
-        }
-
-        const responseJson: IMainInfoVersions = JSON.parse(JSON.stringify(minecraftInfoResponse.data));
-
-        if (!responseJson) {
-          return false;
-        }
-
-        for (const verId in responseJson) {
-          const ver = responseJson[verId].version;
-
-          if (ver) {
-            const isPreview = Database.getVersionIsPreview(ver); // version ends with .20 or higher
-            const versionIndex = Database.getVersionIndexFromVersionStr(ver);
-
-            if (versionIndex > 0 && versionIndex > latestVersionIndex && isPreview === this.effectiveIsUsingPreview) {
-              latestVersionIndex = versionIndex;
-
-              // re-constitute the version number ourselves
-              const verNums = ver.split(".");
-
-              const verStr = String(
-                String(parseInt(verNums[0])) +
-                  "." +
-                  String(parseInt(verNums[1])) +
-                  "." +
-                  String(parseInt(verNums[2])) +
-                  "." +
-                  String(parseInt(verNums[3]))
-              );
-
-              // Set version for both Windows and Linux server types
-              // The version.json fallback only gives us the version number, which is the same
-              // for both platforms - only the download URL differs
-              const windowsServerType = isPreview ? ServerType.bedrockWindowsPreview : ServerType.bedrockWindows;
-              const linuxServerType = isPreview ? ServerType.bedrockLinuxPreview : ServerType.bedrockLinux;
-
-              this.serverVersions[windowsServerType].version = verStr;
-              this.serverVersions[windowsServerType].versionIndex = latestVersionIndex;
-              this.serverVersions[linuxServerType].version = verStr;
-              this.serverVersions[linuxServerType].versionIndex = latestVersionIndex;
-            }
+        const version = Database.getLatestVersionFromMetadata(
+          await this.#utilities.getMetadataJson<unknown>(versionUrl),
+          this.effectiveIsUsingPreview ? MinecraftTrack.preview : MinecraftTrack.main
+        );
+        const versionIndex = Database.getVersionIndexFromVersionStr(version);
+        const verStr = version
+          .split(".")
+          .map((part) => String(parseInt(part)))
+          .join(".");
+        const windowsServerType = this.effectiveIsUsingPreview
+          ? ServerType.bedrockWindowsPreview
+          : ServerType.bedrockWindows;
+        const linuxServerType = this.effectiveIsUsingPreview ? ServerType.bedrockLinuxPreview : ServerType.bedrockLinux;
+        for (const serverType of [windowsServerType, linuxServerType]) {
+          if (!retrievedServerTypes.has(serverType)) {
+            this.serverVersions[serverType].version = verStr;
+            this.serverVersions[serverType].versionIndex = versionIndex;
           }
         }
-      } catch (e: any) {
-        Log.error("Could not access Bedrock Dedicated Server details." + e);
+      } catch (error) {
+        Log.error(
+          "Could not access Bedrock Dedicated Server details: " +
+            Utilities.escapeControlCharacters(error instanceof Error ? error.message : String(error))
+        );
         return false;
       }
     }
@@ -1559,47 +1653,148 @@ export default class ServerManager {
     await zipStorage.loadFromUint8Array(zipData);
 
     const serverSourceFolder = this.ensureSourceServerFolder();
+    const serverVersionFolderName =
+      ServerManager.getServerTypeStr(serverType) + "v" + latestServerVersionAvailableLocal;
 
     const serverVersionFolder =
       serverSourceFolder +
       NodeStorage.platformFolderDelimiter +
-      ServerManager.getServerTypeStr(serverType) +
-      "v" +
-      latestServerVersionAvailableLocal +
+      serverVersionFolderName +
       NodeStorage.platformFolderDelimiter;
-
-    if (!fs.existsSync(serverVersionFolder)) {
-      fs.mkdirSync(serverVersionFolder, { recursive: true });
-    }
 
     await this.creatorTools.notifyStatusUpdate("Extracting to " + serverVersionFolder);
 
-    const serverVersionStorage = new NodeStorage(serverVersionFolder, "");
+    try {
+      await ServerManager.extractServerSource(zipStorage.rootFolder, serverVersionFolder);
+    } catch (e: any) {
+      Log.error("Could not extract server to '" + serverVersionFolder + "': " + (e?.message ?? e));
 
-    /*
-    // save a copy of the zip
-    const file = serverVersionStorage.rootFolder.ensureFile("source.zip");
-    file.setContent(zipData);
-    */
+      await this.creatorTools.notifyOperationEnded(
+        operId,
+        "Could not extract the server downloaded from '" + serverZipUrl + "'"
+      );
 
-    await StorageUtilities.syncFolderTo(
-      zipStorage.rootFolder,
-      serverVersionStorage.rootFolder,
-      false,
-      false,
-      false,
-      ["bedrock_server.pdb"],
-      undefined,
-      async (message: string) => {
-        // Log.message("Extracting: " + message + ".");
-      }
-    );
-
-    await serverVersionStorage.rootFolder.saveAll();
+      return false;
+    }
 
     await this.creatorTools.notifyOperationEnded(operId, "Downloaded and deployed server from '" + serverZipUrl + "'");
 
     return true;
+  }
+
+  /**
+   * Written into a server source folder only after every file in the server zip has been extracted.
+   * Server sources are extracted into a staging folder (prefixed with stagingSourceFolderPrefix) and
+   * only renamed to their final "<type>v<version>" name once complete, so an interrupted extraction is
+   * never mistaken for a usable server.
+   */
+  static readonly extractionCompleteMarkerName = ".mct_extraction_complete";
+  static readonly stagingSourceFolderPrefix = "tmp_";
+  static readonly staleStagingFolderAgeMs = 60 * 60 * 1000;
+
+  /**
+   * Extracts a server zip into finalFolderPath transactionally: files go into a staging sibling folder,
+   * the extracted file count is verified against the zip, a completion marker is written, and the
+   * staging folder is renamed into place. Throws (after removing the staging folder) on any failure.
+   */
+  static async extractServerSource(sourceRoot: IFolder, finalFolderPath: string) {
+    const exclude = ["bedrock_server.pdb"];
+    const finalPath = path.resolve(finalFolderPath);
+    const stagingPath = path.join(
+      path.dirname(finalPath),
+      ServerManager.stagingSourceFolderPrefix + path.basename(finalPath) + "_" + Date.now()
+    );
+
+    fs.mkdirSync(stagingPath, { recursive: true });
+
+    try {
+      const stagingStorage = new NodeStorage(NodeStorage.ensureEndsWithDelimiter(stagingPath), "");
+
+      // Extract verbatim (includeIgnorableFolders): the server reads vanilla data from __brarchive
+      // folders, and without them it fails to load biomes/features and never finishes starting.
+      await StorageUtilities.syncFolderTo(
+        sourceRoot,
+        stagingStorage.rootFolder,
+        false,
+        false,
+        false,
+        exclude,
+        undefined,
+        undefined,
+        undefined,
+        false,
+        false,
+        true
+      );
+
+      await stagingStorage.rootFolder.saveAll();
+
+      const expectedFileCount = await ServerManager.countFilesInFolder(sourceRoot, exclude);
+      const extractedFileCount = ServerManager.countFilesOnDisk(stagingPath);
+
+      if (extractedFileCount !== expectedFileCount) {
+        throw new Error(
+          "Extracted " + extractedFileCount + " of " + expectedFileCount + " server files to '" + stagingPath + "'."
+        );
+      }
+
+      ServerManager.publishExtractedSource(stagingPath, finalPath);
+    } catch (e) {
+      fs.rmSync(stagingPath, { recursive: true, force: true });
+      throw e;
+    }
+  }
+
+  /**
+   * Marks a fully extracted staging folder as complete and renames it to its final location,
+   * replacing any previous (e.g., incomplete) folder there.
+   */
+  static publishExtractedSource(stagingPath: string, finalPath: string) {
+    fs.writeFileSync(path.join(stagingPath, ServerManager.extractionCompleteMarkerName), new Date().toISOString());
+
+    if (fs.existsSync(finalPath)) {
+      fs.rmSync(finalPath, { recursive: true, force: true });
+    }
+
+    fs.renameSync(stagingPath, finalPath);
+  }
+
+  static async countFilesInFolder(folder: IFolder, exclude: string[]): Promise<number> {
+    if (!folder.isLoaded) {
+      await folder.load();
+    }
+
+    let count = 0;
+
+    for (const fileName in folder.files) {
+      if (folder.files[fileName] !== undefined && !StorageUtilities.matchesList(fileName, exclude)) {
+        count++;
+      }
+    }
+
+    for (const folderName in folder.folders) {
+      const childFolder = folder.folders[folderName];
+
+      if (childFolder !== undefined && !StorageUtilities.matchesList("/" + folderName, exclude)) {
+        count += await ServerManager.countFilesInFolder(childFolder, exclude);
+      }
+    }
+
+    return count;
+  }
+
+  static countFilesOnDisk(dirPath: string): number {
+    let count = 0;
+
+    for (const entry of fs.readdirSync(dirPath, { withFileTypes: true })) {
+      if (entry.isDirectory()) {
+        count += ServerManager.countFilesOnDisk(path.join(dirPath, entry.name));
+      } else if (entry.isFile()) {
+        count++;
+      }
+    }
+
+    return count;
   }
 
   replaceVersion(versionString: string, stub: string) {
@@ -1682,8 +1877,23 @@ export default class ServerManager {
     return serverSourceFolder;
   }
 
+  #watchContentLog() {
+    if (this.features === ServerManagerFeatures.basicWebServices) {
+      return;
+    }
+
+    if (!this.#contentLogWatcher) {
+      this.#contentLogWatcher = new ContentLogWatcher(this.#env);
+    }
+
+    this.#contentLogWatcher.watchMinecraftFolder(this.effectiveIsUsingPreview);
+  }
+
   async prepare(force?: boolean) {
     if (!force && this.#isPrepared) {
+      // A start request can switch between retail and Preview after preparation, and shutdown
+      // drops the watcher without resetting preparation.
+      this.#watchContentLog();
       return;
     }
 
@@ -1699,10 +1909,7 @@ export default class ServerManager {
         fs.mkdirSync(this.#utilities.serversPath, { recursive: true });
       }
 
-      if (!this.#contentLogWatcher) {
-        this.#contentLogWatcher = new ContentLogWatcher(this.#env);
-        this.#contentLogWatcher.watchServerFolder();
-      }
+      this.#watchContentLog();
 
       if (this.#env.worldContainerStorage.rootFolder) {
         this.backupWorldFileListings = await this.#env.worldContainerStorage.rootFolder.generateFileListings();
@@ -1819,34 +2026,102 @@ export default class ServerManager {
     this.#isPrepared = true;
   }
 
-  _loadLatestDownloadedSource() {
-    const serverSourceFolder = this.ensureSourceServerFolder();
+  /**
+   * Starting with 1.26, the server reads vanilla data from __brarchive folders and hangs at startup
+   * without them. Earlier builds of this tool dropped those folders during extraction, and an
+   * interrupted extraction can leave __brarchive partially written, so a 1.26+ source is only
+   * trusted when it carries the completion marker written by extractServerSource. Earlier server
+   * versions don't need __brarchive, so their cached sources stay usable (e.g., as an offline
+   * fallback) even without a marker.
+   */
+  static isIncompleteSourceServerFolder(serverSourcePath: string, versionStr: string) {
+    const verIndex = Database.getVersionIndexFromVersionStr(versionStr);
 
-    // e.g., C:\\Users\\<user>\\AppData\\Local\\mctools_server\\serverSources\\
-    const sourceFolders = fs.readdirSync(serverSourceFolder);
+    if (verIndex < ServerManager.firstBrarchiveVersionIndex) {
+      return false;
+    }
 
-    for (const folder of sourceFolders) {
-      if (folder.length > 3 && folder[2] === "v") {
-        const serverType = ServerManager.getServerTypeFromString(folder.substring(0, 2));
+    return !fs.existsSync(path.join(serverSourcePath, ServerManager.extractionCompleteMarkerName));
+  }
 
-        const verStr = folder.substring(3);
+  static readonly firstBrarchiveVersionIndex = Database.getVersionIndexFromVersionStr("1.26.0.0");
 
-        if (serverType !== undefined && Utilities.isNumeric(verStr.replace(/./g, ""))) {
-          const verIndex = Database.getVersionIndexFromVersionStr(verStr);
-          const serverVersion = this.serverVersions[serverType];
+  /**
+   * Finds the latest usable downloaded server source for each server type in a server sources
+   * folder (folders are named like "bwv1.26.52.3"). Incomplete sources are skipped so a newer
+   * server gets downloaded and re-extracted.
+   */
+  static findLatestDownloadedSources(sourceServersPath: string) {
+    const latest: { [serverType: number]: { path: string; index: number } } = {};
 
-          if (verIndex > 0 && serverVersion) {
-            const fullPath =
-              NodeStorage.ensureEndsWithDelimiter(this.#utilities.sourceServersPath) +
-              folder +
-              NodeStorage.platformFolderDelimiter;
+    if (!fs.existsSync(sourceServersPath)) {
+      return latest;
+    }
 
-            if (serverVersion.downloadedIndex === undefined || verIndex > serverVersion.downloadedIndex) {
-              serverVersion.downloadedPath = fullPath;
-              serverVersion.downloadedIndex = verIndex;
-            }
-          }
+    for (const folder of fs.readdirSync(sourceServersPath)) {
+      if (folder.startsWith(ServerManager.stagingSourceFolderPrefix)) {
+        // Staging folders are never usable. Remove stale ones left by an interrupted extraction, but
+        // leave recent ones alone since another process may still be extracting into them.
+        const startedAt = Number(folder.substring(folder.lastIndexOf("_") + 1));
+
+        if (!Number.isFinite(startedAt) || Date.now() - startedAt > ServerManager.staleStagingFolderAgeMs) {
+          fs.rmSync(path.join(sourceServersPath, folder), { recursive: true, force: true });
         }
+
+        continue;
+      }
+
+      if (folder.length <= 3 || folder[2] !== "v") {
+        continue;
+      }
+
+      const serverType = ServerManager.getServerTypeFromString(folder.substring(0, 2));
+      const verStr = folder.substring(3);
+
+      if (serverType === undefined || !Utilities.isNumeric(verStr.replace(/./g, ""))) {
+        continue;
+      }
+
+      const verIndex = Database.getVersionIndexFromVersionStr(verStr);
+
+      if (verIndex <= 0) {
+        continue;
+      }
+
+      const fullPath =
+        NodeStorage.ensureEndsWithDelimiter(sourceServersPath) + folder + NodeStorage.platformFolderDelimiter;
+
+      if (ServerManager.isIncompleteSourceServerFolder(fullPath, verStr)) {
+        Log.message(
+          "Ignoring incomplete server source at '" + fullPath + "' (no completed extraction); it will be re-extracted."
+        );
+        continue;
+      }
+
+      const current = latest[serverType];
+
+      if (current === undefined || verIndex > current.index) {
+        latest[serverType] = { path: fullPath, index: verIndex };
+      }
+    }
+
+    return latest;
+  }
+
+  _loadLatestDownloadedSource() {
+    // e.g., C:\\Users\\<user>\\AppData\\Local\\mctools_server\\serverSources\\
+    const latest = ServerManager.findLatestDownloadedSources(this.ensureSourceServerFolder());
+
+    for (const serverTypeKey in latest) {
+      const source = latest[serverTypeKey];
+      const serverVersion = this.serverVersions[Number(serverTypeKey) as ServerType];
+
+      if (
+        serverVersion &&
+        (serverVersion.downloadedIndex === undefined || source.index > serverVersion.downloadedIndex)
+      ) {
+        serverVersion.downloadedPath = source.path;
+        serverVersion.downloadedIndex = source.index;
       }
     }
   }
